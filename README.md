@@ -2,7 +2,7 @@
 
 | :warning: Disclaimer :warning: |
 |------------|
-| This codebase is currently unstable and requires improvements in various areas before using it. The remaining issues are being tracked in [this project](https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal/projects/1) and actively being developed. <br /> This disclaimer will be removed once all non-`priority:low` issues are being resolved. |
+| This codebase is currently work in progress and requires improvements in a few areas before using it. The remaining issues are being tracked in [this project](https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal/projects/1) and actively being developed. <br /> This disclaimer will be removed once all non-`priority:low` issues are being resolved. |
 
 
 
