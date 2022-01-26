@@ -1,0 +1,9 @@
+{
+ "apps": [{
+    "name": "simulator",
+    "script" : "src/__CONTAINER_TYPE__App.js",
+    "instances": __INSTANCES__,
+    "exec_mode": "cluster",
+    "autorestart": false
+ }]
+}

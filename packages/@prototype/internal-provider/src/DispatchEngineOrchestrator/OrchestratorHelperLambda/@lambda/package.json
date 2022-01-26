@@ -1,0 +1,26 @@
+{
+  "name": "@lambda/internal-provider-orchestrator-helper",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "main": "index.js",
+  "scripts": {
+    "mkdir": "mkdir -p ../../../../dist/@lambda",
+    "zipasset": "zip -FSrq ../../../../dist/$npm_package_name.zip *",
+    "build": "yarn mkdir &&  yarn zipasset"
+  },
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "license": "MIT-0",
+  "dependencies": {
+    "geocluster": "0.1.1",
+    "axios": "^0.21.1"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**/geocluster",
+      "**/geocluster/**",
+      "**/axios",
+      "**/axios/**"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+html, body, #root {
+  height: 100%;
+}
+
+.MuiGrid-root {
+  overflow: visible !important;
+}
+
+.MuiPaper-root {
+  overflow: scroll !important;
+}

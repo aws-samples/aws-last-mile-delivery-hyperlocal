@@ -1,0 +1,36 @@
+{
+  "name": "@prototype/data-streaming",
+  "description": "Data streaming resources",
+  "version": "0.0.0-alpha.0",
+  "license": "MIT-0",
+  "private": true,
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-play/cdk-core": "^0.0.0-alpha.14",
+    "@aws-play/cdk-lambda": "^0.0.0-alpha.1"
+  },
+   "peerDependencies": {
+    "@aws-cdk/aws-iam": "1.105.0",
+    "@aws-cdk/aws-kinesis": "1.105.0",
+    "@aws-cdk/aws-kinesisfirehose": "1.105.0",
+    "@aws-cdk/aws-s3": "1.105.0",
+    "@aws-cdk/core": "1.105.0"
+  }
+}

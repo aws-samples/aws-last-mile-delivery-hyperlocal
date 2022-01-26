@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "jsx": "react",
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "removeComments": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": ".out",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./@types"
+    ],
+  },
+  "include": ["prototype", "packages", "jest-dom/extend-expect"],
+  "exclude": ["node_modules", "dist", ".out"],
+  "files": [
+    "@types/global.d.ts"
+  ]
+}

@@ -1,0 +1,40 @@
+@startuml orchestrator-service
+
+skinparam monochrome true
+skinparam responseMessageBelowArrow true
+
+title Orchestrator Service
+
+' participants
+' ------------
+
+actor "Order Service" as orderService
+participant "Order Orchestrator" as orderOrchestrator
+participant "Provider Router" as providerRouter
+participant "Provider" as provider
+
+== Handle incoming order ==
+
+    orderService -> orderOrchestrator : Incoming order
+    activate orderOrchestrator
+    orderOrchestrator -> providerRouter : Route request
+    providerRouter --> orderOrchestrator : //providerId//
+
+    orderOrchestrator -> provider : Driver request
+    provider --> orderOrchestrator : //requestId//
+
+        loop while ack/reject
+            orderOrchestrator -> provider : Status(//requestId//)
+            provider --> orderOrchestrator : //ack | reject | pending//
+        end
+
+    provider --> orderOrchestrator : //{ orderId - requestId }//
+
+    orderOrchestrator -> orderOrchestrator: Order updates
+    orderOrchestrator -> orderOrchestrator: Order delivered
+
+
+    destroy orderOrchestrator
+
+
+@enduml

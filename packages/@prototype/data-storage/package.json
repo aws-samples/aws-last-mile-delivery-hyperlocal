@@ -1,0 +1,36 @@
+{
+  "name": "@prototype/data-storage",
+  "description": "Persistent data storage nested stack",
+  "version": "0.0.0-alpha.0",
+  "license": "MIT-0",
+  "private": true,
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@prototype/common": "0.0.0-alpha.0",
+    "@aws-play/cdk-core": "^0.0.0-alpha.14",
+    "@aws-sdk/types": "^3.20.0",
+    "@aws-sdk/util-dynamodb": "^3.21.0"
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-dynamodb": "1.105.0",
+    "@aws-cdk/aws-s3": "1.105.0",
+    "@aws-cdk/core": "1.105.0"
+  }
+}

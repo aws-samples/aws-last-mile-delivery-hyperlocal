@@ -1,0 +1,27 @@
+{
+  "name": "container",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node -r dotenv/config src/index.js",
+    "start:restaurant": "node -r dotenv/config src/restaurantApp.js",
+    "start:customer": "node -r dotenv/config src/customerApp.js",
+    "start:prod": "node src/index.js",
+    "build:docker": "./build.sh sim-simulator-repository hyperlocalAdmin"
+  },
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "license": "MIT-0",
+  "dependencies": {
+    "@mapbox/polyline": "^1.1.1",
+    "aws-amplify": "^3.3.25",
+    "aws-iot-device-sdk": "^2.2.6",
+    "aws-sdk": "^2.868.0",
+    "axios": "^0.21.1",
+    "commander": "^7.2.0",
+    "console-log-level": "^1.4.1",
+    "dotenv": "^8.2.0",
+    "glob": "^7.1.6",
+    "shortid": "^2.2.16"
+  }
+}

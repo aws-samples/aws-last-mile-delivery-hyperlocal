@@ -1,0 +1,1983 @@
+[
+  {
+    "filename": "./cdk.out.dev/Dev-Backend.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "IoTEndpointBackendStackCustomResourcePolicy80EB5EED"
+          ],
+          "line_numbers": [
+            5
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            84
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            84
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            84
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/Dev-DebugStack.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/Dev-PersistentBackend.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W33",
+          "type": "WARN",
+          "message": "EC2 Subnet should not have MapPublicIpOnLaunch set to true",
+          "logical_resource_ids": [
+            "VpcPersistentVpcdevprotopublicSubnet1SubnetC72F26B2",
+            "VpcPersistentVpcdevprotopublicSubnet2Subnet81CE9099",
+            "VpcPersistentVpcdevprotopublicSubnet3Subnet509A8694"
+          ],
+          "line_numbers": [
+            25,
+            140,
+            217
+          ]
+        },
+        {
+          "id": "W60",
+          "type": "WARN",
+          "message": "VPC should have a flow log attached",
+          "logical_resource_ids": [
+            "VpcPersistentVpc914608BE"
+          ],
+          "line_numbers": [
+            5
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendAppConfigNestedStack0AB9D01F.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "DeploymentHandlerLambdaServiceRoleDefaultPolicy5C7DE2FF"
+          ],
+          "line_numbers": [
+            239
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "DeploymentHandlerLambda04B758EE",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            328,
+            573
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "DeploymentHandlerLambda04B758EE",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            328,
+            573
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "DeploymentHandlerLambda04B758EE",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            328,
+            573
+          ]
+        },
+        {
+          "id": "W51",
+          "type": "WARN",
+          "message": "S3 bucket should likely have a bucket policy",
+          "logical_resource_ids": [
+            "ConfigStorageConfigBucketA9569935"
+          ],
+          "line_numbers": [
+            131
+          ]
+        },
+        {
+          "id": "W35",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "ConfigStorageConfigBucketA9569935"
+          ],
+          "line_numbers": [
+            131
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendCustomResourcesNestedStack078777DE.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "ProviderSetupProviderInitialSetupLambdaServiceRoleDefaultPolicy09CBAA48"
+          ],
+          "line_numbers": [
+            311
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "ESSetupESSetupCR464E7FB8",
+            "ESSetupESSetupProviderframeworkonEvent58B41B7C",
+            "ProviderSetupProviderInitialSetupLambda51CB974A",
+            "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
+          ],
+          "line_numbers": [
+            76,
+            205,
+            406,
+            526
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "ProviderSetupProviderInitialSetupLambda51CB974A",
+            "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
+          ],
+          "line_numbers": [
+            406,
+            526
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "ESSetupESSetupCR464E7FB8",
+            "ESSetupESSetupProviderframeworkonEvent58B41B7C",
+            "ProviderSetupProviderInitialSetupLambda51CB974A",
+            "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
+          ],
+          "line_numbers": [
+            76,
+            205,
+            406,
+            526
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendDispatcherStackE0810D9D.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W56",
+          "type": "WARN",
+          "message": "Elastic Load Balancer V2 Listener Protocol should use HTTPS for ALBs",
+          "logical_resource_ids": [
+            "DispatchSetupDispatchEcsServiceDispatcherALBDispatcherListener2E971289"
+          ],
+          "line_numbers": [
+            816
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "DispatchSetupDispatchEcsClusterDispatcherAsgInstanceRoleDefaultPolicyC466F12B",
+            "DispatchSetupDispatchEcsServiceDispatcherTaskDefExecutionRoleDefaultPolicy0080C216"
+          ],
+          "line_numbers": [
+            224,
+            642
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            890
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            890
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            890
+          ]
+        },
+        {
+          "id": "W84",
+          "type": "WARN",
+          "message": "CloudWatchLogs LogGroup should specify a KMS Key Id to encrypt the log data",
+          "logical_resource_ids": [
+            "DispatchSetupDispatchEcsServiceorderdispatchertaskloggroup8F6998C0"
+          ],
+          "line_numbers": [
+            699
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "DispatchSetupDispatchEcsServiceDispatcherALB3CAD3AB5",
+            "DispatchSetupDispatchEcsClusterDispatcherAsgInstanceRoleDA6E3DF2",
+            "DispatchSetupDispatchEcsServiceDispatcherTaskRoleFB87E9FF"
+          ],
+          "line_numbers": [
+            769,
+            167,
+            407
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendIotIngestionNestedStack15E0D292.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "IoTSetupIotToDriverDataIngestStream04A9156E"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendMicroServiceNestedStackC61F3420.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W59",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Method should not have AuthorizationType set to 'NONE' unless it is of HttpMethod: OPTIONS.",
+          "logical_resource_ids": [
+            "GeoTrackingRestApiANY20BFD93B",
+            "GeoTrackingRestApiapigeotrackinginternaldriverlocationiddriverIdGET43641EFB",
+            "GeoTrackingRestApiapigeotrackinginternaldriverlocationqueryGET6ADEEDBC",
+            "GeoTrackingRestApiapigeotrackinginternaldriverlocationqueryPOST47790ED0",
+            "GeoTrackingRestApiapigeotrackinginternaldriverlocationpolygonpolygonIdGET6333EC74",
+            "GeoTrackingRestApiapigeotrackinginternaldriverlocationpolygonPOSTE86934E0",
+            "GeoTrackingRestApiapigeotrackinginternaldemareasettingsGET2ABAA416"
+          ],
+          "line_numbers": [
+            203,
+            1431,
+            1596,
+            1715,
+            1937,
+            2045,
+            2210
+          ]
+        },
+        {
+          "id": "W69",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Stage should have the AccessLogSetting property defined.",
+          "logical_resource_ids": [
+            "GeoTrackingRestApiDeploymentStageprod14BF27C1"
+          ],
+          "line_numbers": [
+            143
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "GeoTrackingRestApiGetDriverLocationLambda16797A58",
+            "GeoTrackingRestApiQueryDriversLambdaDC17E2A5",
+            "GeoTrackingRestApiListDriversForPolygonLambda2F311273",
+            "GeoTrackingRestApiGeofencingServiceC5DE9446",
+            "LambdaFunctionsStackDriverLocationCleanupLambda1F1F880E",
+            "LambdaFunctionsStackDriverLocationUpdateIngestLambda504D6AD3",
+            "LambdaFunctionsStackDriverGeofencingLambda40A7BA6E",
+            "LambdaFunctionsStackDriverStatusUpdateLambda84DE0655",
+            "LambdaFunctionsStackESInitialSetupLambdaB25C3E0D",
+            "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
+          ],
+          "line_numbers": [
+            2697,
+            2824,
+            3017,
+            3180,
+            3460,
+            3721,
+            3984,
+            4218,
+            4378,
+            4565
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "GeoTrackingRestApiGetDriverLocationLambda16797A58",
+            "GeoTrackingRestApiQueryDriversLambdaDC17E2A5",
+            "GeoTrackingRestApiListDriversForPolygonLambda2F311273",
+            "GeoTrackingRestApiGeofencingServiceC5DE9446",
+            "LambdaFunctionsStackDriverLocationCleanupLambda1F1F880E",
+            "LambdaFunctionsStackDriverLocationUpdateIngestLambda504D6AD3",
+            "LambdaFunctionsStackDriverGeofencingLambda40A7BA6E",
+            "LambdaFunctionsStackDriverStatusUpdateLambda84DE0655",
+            "LambdaFunctionsStackESInitialSetupLambdaB25C3E0D",
+            "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
+          ],
+          "line_numbers": [
+            2697,
+            2824,
+            3017,
+            3180,
+            3460,
+            3721,
+            3984,
+            4218,
+            4378,
+            4565
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "GeoTrackingRestApidevprotoApiKeyGeoTrackingApiZ1tEWwP21360AF1"
+          ],
+          "line_numbers": [
+            2584
+          ]
+        },
+        {
+          "id": "W48",
+          "type": "WARN",
+          "message": "SQS Queue should specify KmsMasterKeyId property",
+          "logical_resource_ids": [
+            "LambdaFunctionsStackKinesisIngestConsumerdriverIngestDlqB65AFC33",
+            "LambdaFunctionsStackKinesisGeofencingConsumergeofencingDlq731D69E3"
+          ],
+          "line_numbers": [
+            3795,
+            4058
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendOrderOrchestrationStack113F9242.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "OrderManagerStackOrderManagerHandlerServiceRoleDefaultPolicy8E9977C4"
+          ],
+          "line_numbers": [
+            605
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "OrderManagerStackOrderManagerHelperA1E5F379",
+            "OrderManagerStackProviderRuleEngineACDAE3AD",
+            "OrderManagerStackOrderManagerHandler71247775"
+          ],
+          "line_numbers": [
+            98,
+            289,
+            649
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "OrderManagerStackProviderRuleEngineACDAE3AD"
+          ],
+          "line_numbers": [
+            289
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "OrderManagerStackOrderManagerHelperA1E5F379",
+            "OrderManagerStackProviderRuleEngineACDAE3AD",
+            "OrderManagerStackOrderManagerHandler71247775"
+          ],
+          "line_numbers": [
+            98,
+            289,
+            649
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendProvidersNestedStack32F64D01.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W59",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Method should not have AuthorizationType set to 'NONE' unless it is of HttpMethod: OPTIONS.",
+          "logical_resource_ids": [
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderANYCA97E4AF",
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderrequestorderfulfillmentPOST6DBB0CFB",
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderorderstatusorderIdGET92EB7B1B",
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProvidercancelorderorderIdDELETEF06E88E7",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderANYFC8E4D11",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderrequestorderfulfillmentPOSTAB94A4AF",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderorderstatusorderIdGETDA9F1BD8",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercancelorderorderIdDELETEF36357B0",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercallbackPOST5B983D75",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderANY85B8A564",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderrequestorderfulfillmentPOST70A276EA",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderorderstatusorderIdGETDAADE814",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProvidercancelorderorderIdDELETEED541754",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProvidercallbackPOST0D170ACF"
+          ],
+          "line_numbers": [
+            801,
+            951,
+            1176,
+            1401,
+            2653,
+            2803,
+            3028,
+            3253,
+            3421,
+            4634,
+            4784,
+            5009,
+            5234,
+            5402
+          ]
+        },
+        {
+          "id": "W69",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Stage should have the AccessLogSetting property defined.",
+          "logical_resource_ids": [
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderDeploymentStageprod577E8B25",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderDeploymentStageprod0FC4087A",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderDeploymentStageprod9647C981"
+          ],
+          "line_numbers": [
+            741,
+            2593,
+            4574
+          ]
+        },
+        {
+          "id": "W52",
+          "type": "WARN",
+          "message": "Elastic Load Balancer V2 should have access logging enabled",
+          "logical_resource_ids": [
+            "GraphhopperSetupGraphhopperALB4E50D909"
+          ],
+          "line_numbers": [
+            5727
+          ]
+        },
+        {
+          "id": "W56",
+          "type": "WARN",
+          "message": "Elastic Load Balancer V2 Listener Protocol should use HTTPS for ALBs",
+          "logical_resource_ids": [
+            "GraphhopperSetupGraphhopperALBGHListenerB51A0073"
+          ],
+          "line_numbers": [
+            5760
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourceks5rxxgxCustomResourcePolicy2EA9A53D",
+            "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
+            "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
+          ],
+          "line_numbers": [
+            3516,
+            5613,
+            5855
+          ]
+        },
+        {
+          "id": "W49",
+          "type": "WARN",
+          "message": "Kinesis Stream should specify StreamEncryption. EncryptionType should be KMS and specify KMS Key Id.",
+          "logical_resource_ids": [
+            "DriverDataIngestStreamIdB09121CE"
+          ],
+          "line_numbers": [
+            3738
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "ExamplePollingProviderGetOrderStatusLambda877019DA",
+            "ExamplePollingProviderCancelOrderLambdaA8D3C40D",
+            "ExamplePollingProviderRequestOrderFulfillmentLambda196B667A",
+            "ExamplePollingLambda73CF4FA6",
+            "WebhookProviderExampleCallbackLambdaB146918C",
+            "ExampleWebhookProviderRequestOrderFulfillmentLambda424EBFB2",
+            "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
+            "ExampleWebhookProviderCancelOrderLambda941062B6",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "InternalWebhookProviderInternalCallbackLambda2DD96B55",
+            "InternalWebhookProviderRequestOrderFulfillmentLambda7E376774",
+            "InternalWebhookProviderGetOrderStatusLambda999C94C0",
+            "InternalWebhookProviderCancelOrderLambdaD0CDF432",
+            "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
+            "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
+            "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
+            "DriverEventHandlerDriverCleanupLambda5B7EC372",
+            "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
+          ],
+          "line_numbers": [
+            104,
+            298,
+            550,
+            1622,
+            1822,
+            2014,
+            2208,
+            2402,
+            3712,
+            3845,
+            4031,
+            4211,
+            4391,
+            5936,
+            6417,
+            6595,
+            6773,
+            6907
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
+            "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
+            "DriverEventHandlerDriverCleanupLambda5B7EC372",
+            "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
+          ],
+          "line_numbers": [
+            3712,
+            6417,
+            6595,
+            6773,
+            6907
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "ExamplePollingProviderGetOrderStatusLambda877019DA",
+            "ExamplePollingProviderCancelOrderLambdaA8D3C40D",
+            "ExamplePollingProviderRequestOrderFulfillmentLambda196B667A",
+            "ExamplePollingLambda73CF4FA6",
+            "WebhookProviderExampleCallbackLambdaB146918C",
+            "ExampleWebhookProviderRequestOrderFulfillmentLambda424EBFB2",
+            "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
+            "ExampleWebhookProviderCancelOrderLambda941062B6",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "InternalWebhookProviderInternalCallbackLambda2DD96B55",
+            "InternalWebhookProviderRequestOrderFulfillmentLambda7E376774",
+            "InternalWebhookProviderGetOrderStatusLambda999C94C0",
+            "InternalWebhookProviderCancelOrderLambdaD0CDF432",
+            "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
+            "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
+            "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
+            "DriverEventHandlerDriverCleanupLambda5B7EC372",
+            "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
+          ],
+          "line_numbers": [
+            104,
+            298,
+            550,
+            1622,
+            1822,
+            2014,
+            2208,
+            2402,
+            3712,
+            3845,
+            4031,
+            4211,
+            4391,
+            5936,
+            6417,
+            6595,
+            6773,
+            6907
+          ]
+        },
+        {
+          "id": "W84",
+          "type": "WARN",
+          "message": "CloudWatchLogs LogGroup should specify a KMS Key Id to encrypt the log data",
+          "logical_resource_ids": [
+            "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
+          ],
+          "line_numbers": [
+            5585
+          ]
+        },
+        {
+          "id": "W86",
+          "type": "WARN",
+          "message": "CloudWatchLogs LogGroup should specify RetentionInDays to expire the log data",
+          "logical_resource_ids": [
+            "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
+          ],
+          "line_numbers": [
+            5585
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderApiKeyExamplePollingProviderIkwb4D23C2101",
+            "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderApiKeyExampleWebhookProvider1TIvh24C9D407B",
+            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderApiKeyInternalWebhookProviderZ1rezljE1D276E0",
+            "GraphhopperSetupGraphhopperALB4E50D909",
+            "DriverDataIngestStreamIdB09121CE"
+          ],
+          "line_numbers": [
+            1441,
+            3461,
+            5442,
+            5727,
+            3738
+          ]
+        },
+        {
+          "id": "W48",
+          "type": "WARN",
+          "message": "SQS Queue should specify KmsMasterKeyId property",
+          "logical_resource_ids": [
+            "PendingOrderDlqExamplePollingProviderFCB034E2",
+            "PendingOrderQExamplePollingProviderB7973C0F",
+            "DispatchEngineOrchestratorOrderIngestKinesisConsumerinternalproviderDlq16F2B34D"
+          ],
+          "line_numbers": [
+            392,
+            404,
+            6486
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevBackendStreamingNestedStackDF55A304.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W49",
+          "type": "WARN",
+          "message": "Kinesis Stream should specify StreamEncryption. EncryptionType should be KMS and specify KMS Key Id.",
+          "logical_resource_ids": [
+            "DriverDataStreamDriverDataIngestStreamId27485230"
+          ],
+          "line_numbers": [
+            4
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "DriverFirehoseDriverFirehoseRole726B5A11",
+            "DriverDataStreamDriverDataIngestStreamId27485230"
+          ],
+          "line_numbers": [
+            27,
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevDebugStackMonitoringNestedStackB8C8B473.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            413
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            413
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            413
+          ]
+        },
+        {
+          "id": "W51",
+          "type": "WARN",
+          "message": "S3 bucket should likely have a bucket policy",
+          "logical_resource_ids": [
+            "MonitoringInstDebugInstanceBucket375E51C4"
+          ],
+          "line_numbers": [
+            4
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "MonitoringInstDebugInstanceRole907F1010"
+          ],
+          "line_numbers": [
+            232
+          ]
+        },
+        {
+          "id": "W35",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "MonitoringInstDebugInstanceBucket375E51C4"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevPersistentBackendBackendBaseNestedStack3467B9F8.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            634
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            634
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            634
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
+            "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
+            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3",
+            "LiveDataCacheElasticSearchClusterESClusterBC5B0825"
+          ],
+          "line_numbers": [
+            4,
+            132,
+            152,
+            366
+          ]
+        },
+        {
+          "id": "W40",
+          "type": "WARN",
+          "message": "Security Groups egress with an IpProtocol of -1 found",
+          "logical_resource_ids": [
+            "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
+            "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
+            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+          ],
+          "line_numbers": [
+            4,
+            132,
+            152
+          ]
+        },
+        {
+          "id": "W5",
+          "type": "WARN",
+          "message": "Security Groups found with cidr open to world on egress",
+          "logical_resource_ids": [
+            "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
+            "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
+            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+          ],
+          "line_numbers": [
+            4,
+            132,
+            152
+          ]
+        },
+        {
+          "id": "W42",
+          "type": "WARN",
+          "message": "Security Groups ingress with an ipProtocol of -1 found ",
+          "logical_resource_ids": [
+            "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
+            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+          ],
+          "line_numbers": [
+            4,
+            152
+          ]
+        },
+        {
+          "id": "W9",
+          "type": "WARN",
+          "message": "Security Groups found with ingress cidr that is not /32",
+          "logical_resource_ids": [
+            "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevPersistentBackendDataStoragePersistent6BE19305.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W78",
+          "type": "WARN",
+          "message": "DynamoDB table should have backup enabled, should be set using PointInTimeRecoveryEnabled",
+          "logical_resource_ids": [
+            "GeoPolygonTable42E97153",
+            "OrderTable416EB896",
+            "InternalProviderOrders1554C70A",
+            "DemographicAreaDispatchSettingsB488376F",
+            "DemographicAreaProviderEngineSettingsC557CEE7",
+            "InternalProviderLocksF59A3CC4",
+            "DispatcherAssignmentsB45A6CFD"
+          ],
+          "line_numbers": [
+            107,
+            137,
+            164,
+            217,
+            244,
+            271,
+            526
+          ]
+        },
+        {
+          "id": "W73",
+          "type": "WARN",
+          "message": "DynamoDB table should have billing mode set to either PAY_PER_REQUEST or PROVISIONED",
+          "logical_resource_ids": [
+            "GeoPolygonTable42E97153"
+          ],
+          "line_numbers": [
+            107
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "DatabaseSeederSeedDBDemographicAreaProviderEngineSettingsCustomResourcePolicy07D102DC",
+            "DatabaseSeederSeedDBdemographicAreaDispatcherEngineSettingsCustomResourcePolicy4A4DBC5E",
+            "DatabaseSeederSeedDBPolygonTableCoordsCustomResourcePolicy86F9826E"
+          ],
+          "line_numbers": [
+            298,
+            354,
+            410
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            500
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            500
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            500
+          ]
+        },
+        {
+          "id": "W51",
+          "type": "WARN",
+          "message": "S3 bucket should likely have a bucket policy",
+          "logical_resource_ids": [
+            "DriversTelemetryBucket0AE0FD9C"
+          ],
+          "line_numbers": [
+            81
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "GeoPolygonTable42E97153",
+            "OrderTable416EB896",
+            "InternalProviderOrders1554C70A",
+            "DemographicAreaDispatchSettingsB488376F",
+            "DemographicAreaProviderEngineSettingsC557CEE7",
+            "InternalProviderLocksF59A3CC4",
+            "DispatcherAssignmentsB45A6CFD"
+          ],
+          "line_numbers": [
+            107,
+            137,
+            164,
+            217,
+            244,
+            271,
+            526
+          ]
+        },
+        {
+          "id": "W35",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "DispatchEngineBucketE3BFC9C5",
+            "DriversTelemetryBucket0AE0FD9C"
+          ],
+          "line_numbers": [
+            4,
+            81
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevPersistentBackendIdentityStackPersistentF9E4E218.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W57",
+          "type": "WARN",
+          "message": "AWS::Cognito::IdentityPool AllowUnauthenticatedIdentities property should be false but CAN be true if proper restrictive IAM roles and permissions are established for unauthenticated users.",
+          "logical_resource_ids": [
+            "devprotoIdentityPool"
+          ],
+          "line_numbers": [
+            257
+          ]
+        },
+        {
+          "id": "W11",
+          "type": "WARN",
+          "message": "IAM role should not allow * resource on its permissions policy",
+          "logical_resource_ids": [
+            "devprotoUserPoolsmsRole3D49E401",
+            "AuthenticatedRole86104F1A"
+          ],
+          "line_numbers": [
+            4,
+            302
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "AuthenticatedRole86104F1A",
+            "devprotoUnauthenticatedRole29C9E543"
+          ],
+          "line_numbers": [
+            302,
+            365
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/DevPersistentBackendInternalIdentityStackPersistent8522B336.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W11",
+          "type": "WARN",
+          "message": "IAM role should not allow * resource on its permissions policy",
+          "logical_resource_ids": [
+            "devprotoInternalUserPoolsmsRole32FADC23"
+          ],
+          "line_numbers": [
+            4
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "InternalAuthenticatedRole438E4A1B"
+          ],
+          "line_numbers": [
+            182
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/ExternalProviderStack-Mock.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W59",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Method should not have AuthorizationType set to 'NONE' unless it is of HttpMethod: OPTIONS.",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingProviderApiANY7B95B5C1",
+            "ExternalPollingProviderStackExternalPollingProviderApiorderPOSTE389D39B",
+            "ExternalPollingProviderStackExternalPollingProviderApiorderorderIdGET2FCDAFF8",
+            "ExternalPollingProviderStackExternalPollingProviderApiorderorderIdDELETEA8A385D4",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiANY13F89FC7",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiorderPOST0D88F875",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiorderorderIdGETCB428F34",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiorderorderIdDELETE0D496FC3"
+          ],
+          "line_numbers": [
+            282,
+            432,
+            597,
+            705,
+            1271,
+            1421,
+            1586,
+            1694
+          ]
+        },
+        {
+          "id": "W69",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Stage should have the AccessLogSetting property defined.",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingProviderApiDeploymentStageprod1FB12453",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiDeploymentStageprod1D68BB84"
+          ],
+          "line_numbers": [
+            222,
+            1211
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "ExternalProviderSetupServiceRoleDefaultPolicy8D6BF04A"
+          ],
+          "line_numbers": [
+            1823
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingServiceLambdaCCBAA714",
+            "ExternalWebhookProviderStackExternalWebhookServiceLambda2D80F960",
+            "ExternalWebhookProviderStackExternalWebhookInvokerStackExternalWebhookInvokerC5553C91",
+            "ExternalProviderSetupDB148285",
+            "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
+          ],
+          "line_numbers": [
+            94,
+            889,
+            1037,
+            1888,
+            2000
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingServiceLambdaCCBAA714",
+            "ExternalWebhookProviderStackExternalWebhookServiceLambda2D80F960",
+            "ExternalWebhookProviderStackExternalWebhookInvokerStackExternalWebhookInvokerC5553C91",
+            "ExternalProviderSetupDB148285",
+            "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
+          ],
+          "line_numbers": [
+            94,
+            889,
+            1037,
+            1888,
+            2000
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingServiceLambdaCCBAA714",
+            "ExternalWebhookProviderStackExternalWebhookServiceLambda2D80F960",
+            "ExternalWebhookProviderStackExternalWebhookInvokerStackExternalWebhookInvokerC5553C91",
+            "ExternalProviderSetupDB148285",
+            "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
+          ],
+          "line_numbers": [
+            94,
+            889,
+            1037,
+            1888,
+            2000
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "ExternalPollingProviderStackExternalPollingProviderApiApiKeyExternalPollingZz3wAnC0A33869",
+            "ExternalWebhookProviderStackExternalWebhookProviderApiApiKeyExternalWebhook2eJzFc92CC6DEA"
+          ],
+          "line_numbers": [
+            745,
+            1734
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/ExternalProviderStackMockExternalPollingProviderStackExternalPollingDataB5D68882.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W78",
+          "type": "WARN",
+          "message": "DynamoDB table should have backup enabled, should be set using PointInTimeRecoveryEnabled",
+          "logical_resource_ids": [
+            "ExamplePollingOrdersF4C35FA1"
+          ],
+          "line_numbers": [
+            4
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "ExamplePollingOrdersF4C35FA1"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/ExternalProviderStackMockExternalWebhookProviderStackExternalWebhookData656E544F.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W78",
+          "type": "WARN",
+          "message": "DynamoDB table should have backup enabled, should be set using PointInTimeRecoveryEnabled",
+          "logical_resource_ids": [
+            "ExampleWebhookOrders90AB4855"
+          ],
+          "line_numbers": [
+            4
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "ExampleWebhookOrders90AB4855"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/Simulator-Backend.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W68",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Deployment resources should be associated with an AWS::ApiGateway::UsagePlan. ",
+          "logical_resource_ids": [
+            "SimulatorRestApiDeployment7165AE7B741b52e537835a63399935998c4650d9"
+          ],
+          "line_numbers": [
+            175
+          ]
+        },
+        {
+          "id": "W59",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Method should not have AuthorizationType set to 'NONE' unless it is of HttpMethod: OPTIONS.",
+          "logical_resource_ids": [
+            "SimulatorRestApiANYB8AFA192"
+          ],
+          "line_numbers": [
+            328
+          ]
+        },
+        {
+          "id": "W69",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Stage should have the AccessLogSetting property defined.",
+          "logical_resource_ids": [
+            "SimulatorRestApiDeploymentStageprod2BCF2C02"
+          ],
+          "line_numbers": [
+            268
+          ]
+        },
+        {
+          "id": "W64",
+          "type": "WARN",
+          "message": "AWS::ApiGateway::Stage resources should be associated with an AWS::ApiGateway::UsagePlan. ",
+          "logical_resource_ids": [
+            "SimulatorRestApiDeploymentStageprod2BCF2C02"
+          ],
+          "line_numbers": [
+            268
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "IoTEndpointSimulatorStackCustomResourcePolicyD5FE1C80",
+            "SimulatorManagerSimulatorManagerLambdaServiceRoleDefaultPolicy875CCB78",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperServiceRoleDefaultPolicy715F1B69",
+            "SimulatorManagerRestaurantSimulatorLambdaServiceRoleDefaultPolicy278B7173",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerServiceRoleDefaultPolicy61640560",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperServiceRoleDefaultPolicy3FBF5ECF",
+            "SimulatorManagerCustomerSimulatorLambdaServiceRoleDefaultPolicyB4FDAF8A",
+            "UpdateLambdaConfigurationks5rxxuwCustomResourcePolicy134DE8B1"
+          ],
+          "line_numbers": [
+            5,
+            5556,
+            5972,
+            6867,
+            7298,
+            7475,
+            8357,
+            9386
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "SimulatorManagerSimulatorManagerLambdaESCSStepFunctionInvokerECSTaskRunHelperF98A49C7",
+            "SimulatorManagerSimulatorManagerLambda269D5609",
+            "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
+            "SimulatorManagerPolygonManagerLambdaB5FAE450",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
+            "SimulatorManagerRestaurantSimulatorLambda8BB6A355",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStatusUpdateLambda80394D9E",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
+            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStatusUpdateLambdaD2F8CF9F",
+            "SimulatorManagerOrderSimulatorLambda1D914205",
+            "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
+            "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
+          ],
+          "line_numbers": [
+            84,
+            5340,
+            5602,
+            5728,
+            5901,
+            6072,
+            6376,
+            6659,
+            6985,
+            7159,
+            7339,
+            7575,
+            7878,
+            8161,
+            8461,
+            8600,
+            8775,
+            9040,
+            9247
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "SimulatorManagerSimulatorManagerLambdaESCSStepFunctionInvokerECSTaskRunHelperF98A49C7",
+            "SimulatorManagerSimulatorManagerLambda269D5609",
+            "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
+            "SimulatorManagerPolygonManagerLambdaB5FAE450",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
+            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
+            "SimulatorManagerOrderSimulatorLambda1D914205",
+            "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
+          ],
+          "line_numbers": [
+            84,
+            5340,
+            5602,
+            5728,
+            5901,
+            6072,
+            6376,
+            6659,
+            7339,
+            7575,
+            7878,
+            8161,
+            8461,
+            8775,
+            9247
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
+            "SimulatorManagerSimulatorManagerLambdaESCSStepFunctionInvokerECSTaskRunHelperF98A49C7",
+            "SimulatorManagerSimulatorManagerLambda269D5609",
+            "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
+            "SimulatorManagerPolygonManagerLambdaB5FAE450",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
+            "SimulatorManagerRestaurantSimulatorLambda8BB6A355",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStatusUpdateLambda80394D9E",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
+            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStatusUpdateLambdaD2F8CF9F",
+            "SimulatorManagerOrderSimulatorLambda1D914205",
+            "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
+            "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
+          ],
+          "line_numbers": [
+            84,
+            5340,
+            5602,
+            5728,
+            5901,
+            6072,
+            6376,
+            6659,
+            6985,
+            7159,
+            7339,
+            7575,
+            7878,
+            8161,
+            8461,
+            8600,
+            8775,
+            9040,
+            9247
+          ]
+        },
+        {
+          "id": "W76",
+          "type": "WARN",
+          "message": "SPCM for IAM policy document is higher than 25",
+          "logical_resource_ids": [
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperServiceRoleDefaultPolicy715F1B69",
+            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperServiceRoleDefaultPolicy14C1C0DC",
+            "SimulatorManagerRestaurantSimulatorLambdaServiceRoleDefaultPolicy278B7173",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperServiceRoleDefaultPolicy3FBF5ECF",
+            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelperServiceRoleDefaultPolicyCE431ED3",
+            "SimulatorManagerCustomerSimulatorLambdaServiceRoleDefaultPolicyB4FDAF8A"
+          ],
+          "line_numbers": [
+            5972,
+            6290,
+            6867,
+            7475,
+            7792,
+            8357
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/Simulator-Persistent.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W10",
+          "type": "WARN",
+          "message": "CloudFront Distribution should enable access logging",
+          "logical_resource_ids": [
+            "SimulatorWebsiteHostingPLAYCloudFrontDistroCFDistributionCC62EADA"
+          ],
+          "line_numbers": [
+            1737
+          ]
+        },
+        {
+          "id": "W70",
+          "type": "WARN",
+          "message": "Cloudfront should use minimum protocol version TLS 1.2",
+          "logical_resource_ids": [
+            "SimulatorWebsiteHostingPLAYCloudFrontDistroCFDistributionCC62EADA"
+          ],
+          "line_numbers": [
+            1737
+          ]
+        },
+        {
+          "id": "W33",
+          "type": "WARN",
+          "message": "EC2 Subnet should not have MapPublicIpOnLaunch set to true",
+          "logical_resource_ids": [
+            "SimulatorVPCVpcsimpublicSubnet1Subnet146F7DB5",
+            "SimulatorVPCVpcsimpublicSubnet2Subnet5E741620"
+          ],
+          "line_numbers": [
+            22,
+            99
+          ]
+        },
+        {
+          "id": "W12",
+          "type": "WARN",
+          "message": "IAM policy should not allow * resource",
+          "logical_resource_ids": [
+            "SimulatorECSStackIoTEndpointCustomResourcePolicy0204C605",
+            "SimulatorECSStackDriverSimulatorContainerSimulatorRoledriverDefaultPolicy22E59F35",
+            "SimulatorECSStackDriverSimulatorContainerECSExecutionRoledriverDefaultPolicy070C0E29",
+            "SimulatorECSStackCustomerSimulatorContainerSimulatorRolecustomerDefaultPolicy1544560C",
+            "SimulatorECSStackCustomerSimulatorContainerECSExecutionRolecustomerDefaultPolicy9DF35E8F",
+            "SimulatorECSStackRestaurantSimulatorContainerSimulatorRolerestaurantDefaultPolicy3EE97BB6",
+            "SimulatorECSStackRestaurantSimulatorContainerECSExecutionRolerestaurantDefaultPolicy124D5D32"
+          ],
+          "line_numbers": [
+            412,
+            478,
+            549,
+            805,
+            919,
+            1199,
+            1313
+          ]
+        },
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            1606
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            1606
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            1606
+          ]
+        },
+        {
+          "id": "W84",
+          "type": "WARN",
+          "message": "CloudWatchLogs LogGroup should specify a KMS Key Id to encrypt the log data",
+          "logical_resource_ids": [
+            "SimulatorECSStackDriverSimulatorContainerECSTaskDefinitiondriverECSContainerDefdriverLogGroupFFC5028E",
+            "SimulatorECSStackCustomerSimulatorContainerECSTaskDefinitioncustomerECSContainerDefcustomerLogGroupD8CD78C5",
+            "SimulatorECSStackRestaurantSimulatorContainerECSTaskDefinitionrestaurantECSContainerDefrestaurantLogGroup5A8BC3A1"
+          ],
+          "line_numbers": [
+            776,
+            1170,
+            1564
+          ]
+        },
+        {
+          "id": "W86",
+          "type": "WARN",
+          "message": "CloudWatchLogs LogGroup should specify RetentionInDays to expire the log data",
+          "logical_resource_ids": [
+            "SimulatorECSStackDriverSimulatorContainerECSTaskDefinitiondriverECSContainerDefdriverLogGroupFFC5028E",
+            "SimulatorECSStackCustomerSimulatorContainerECSTaskDefinitioncustomerECSContainerDefcustomerLogGroupD8CD78C5",
+            "SimulatorECSStackRestaurantSimulatorContainerECSTaskDefinitionrestaurantECSContainerDefrestaurantLogGroup5A8BC3A1"
+          ],
+          "line_numbers": [
+            776,
+            1170,
+            1564
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "SimulatorVPCECSSecurityGroupEA9C0F68",
+            "SimulatorECSStackSimulatorCommonRepository716850DC",
+            "SimulatorECSStackDriverSimulatorContainerSimulatorRoledriverE93A15DF",
+            "SimulatorECSStackDriverSimulatorContainerECSExecutionRoledriver759B0CAF",
+            "SimulatorECSStackCustomerSimulatorContainerSimulatorRolecustomer812C9531",
+            "SimulatorECSStackCustomerSimulatorContainerECSExecutionRolecustomerD61843F2",
+            "SimulatorECSStackRestaurantSimulatorContainerSimulatorRolerestaurant5E2D72E3",
+            "SimulatorECSStackRestaurantSimulatorContainerECSExecutionRolerestaurant00C784E0"
+          ],
+          "line_numbers": [
+            204,
+            398,
+            457,
+            528,
+            784,
+            898,
+            1178,
+            1292
+          ]
+        },
+        {
+          "id": "W35",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "SimulatorWebsiteHostingPLAYHostingBucket45FA0BEF"
+          ],
+          "line_numbers": [
+            1632
+          ]
+        },
+        {
+          "id": "W41",
+          "type": "WARN",
+          "message": "S3 Bucket should have encryption option set",
+          "logical_resource_ids": [
+            "SimulatorWebsiteHostingPLAYHostingBucket45FA0BEF"
+          ],
+          "line_numbers": [
+            1632
+          ]
+        },
+        {
+          "id": "W40",
+          "type": "WARN",
+          "message": "Security Groups egress with an IpProtocol of -1 found",
+          "logical_resource_ids": [
+            "SimulatorVPCECSSecurityGroupEA9C0F68"
+          ],
+          "line_numbers": [
+            204
+          ]
+        },
+        {
+          "id": "W5",
+          "type": "WARN",
+          "message": "Security Groups found with cidr open to world on egress",
+          "logical_resource_ids": [
+            "SimulatorVPCECSSecurityGroupEA9C0F68"
+          ],
+          "line_numbers": [
+            204
+          ]
+        },
+        {
+          "id": "W42",
+          "type": "WARN",
+          "message": "Security Groups ingress with an ipProtocol of -1 found ",
+          "logical_resource_ids": [
+            "SimulatorVPCECSSecurityGroupEA9C0F68"
+          ],
+          "line_numbers": [
+            204
+          ]
+        },
+        {
+          "id": "W60",
+          "type": "WARN",
+          "message": "VPC should have a flow log attached",
+          "logical_resource_ids": [
+            "SimulatorVPCVpc5E6ED3C7"
+          ],
+          "line_numbers": [
+            4
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/SimulatorBackendSimulatorWebsiteHosting8EDC668F.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W58",
+          "type": "WARN",
+          "message": "Lambda functions require permission to write CloudWatch Logs",
+          "logical_resource_ids": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            180,
+            433
+          ]
+        },
+        {
+          "id": "W89",
+          "type": "WARN",
+          "message": "Lambda functions should be deployed inside a VPC",
+          "logical_resource_ids": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            180,
+            433
+          ]
+        },
+        {
+          "id": "W92",
+          "type": "WARN",
+          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
+          "logical_resource_ids": [
+            "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536",
+            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
+          ],
+          "line_numbers": [
+            180,
+            433
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "filename": "./cdk.out.dev/SimulatorPersistentSimulatorData9DDBBFF5.nested.template.json",
+    "file_results": {
+      "failure_count": 0,
+      "violations": [
+        {
+          "id": "W78",
+          "type": "WARN",
+          "message": "DynamoDB table should have backup enabled, should be set using PointInTimeRecoveryEnabled",
+          "logical_resource_ids": [
+            "SimulatorTableD8B9B513",
+            "EventTable3F3CD4B2",
+            "RestaurantTableBDE2029A",
+            "RestaurantStatsTableC9D91E83",
+            "RestaurantSimulationsTableD337F50F",
+            "CustomerTable260DCC08",
+            "CustomerStatsTable6A45FA43",
+            "CustomerSimulationsTableC2935AC0"
+          ],
+          "line_numbers": [
+            4,
+            31,
+            88,
+            149,
+            176,
+            203,
+            264,
+            291
+          ]
+        },
+        {
+          "id": "W28",
+          "type": "WARN",
+          "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
+          "logical_resource_ids": [
+            "SimulatorTableD8B9B513",
+            "EventTable3F3CD4B2",
+            "RestaurantTableBDE2029A",
+            "RestaurantStatsTableC9D91E83",
+            "RestaurantSimulationsTableD337F50F",
+            "CustomerTable260DCC08",
+            "CustomerStatsTable6A45FA43",
+            "CustomerSimulationsTableC2935AC0"
+          ],
+          "line_numbers": [
+            4,
+            31,
+            88,
+            149,
+            176,
+            203,
+            264,
+            291
+          ]
+        }
+      ]
+    }
+  }
+]

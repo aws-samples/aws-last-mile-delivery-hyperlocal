@@ -1,0 +1,16 @@
+@startuml states-customer
+
+skinparam monochrome true
+title Customer states
+
+[*] --> ORDER_SUBMITTED
+ORDER_SUBMITTED --> WAITING_FOR_DELIVERY
+ORDER_SUBMITTED --> CANCEL_ORDER
+
+WAITING_FOR_DELIVERY --> DELIVERY_RECEIVED
+WAITING_FOR_DELIVERY --> CANCEL_ORDER
+
+DELIVERY_RECEIVED --> [*]
+CANCEL_ORDER --> [*]
+
+@enduml

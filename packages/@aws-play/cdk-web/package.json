@@ -1,0 +1,42 @@
+{
+  "name": "@aws-play/cdk-web",
+  "description": "Web constructs",
+  "version": "0.0.0-alpha.3",
+  "license": "MIT-0",
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-play/cdk-core": "^0.0.0-alpha.14"
+  },
+  "peerDependencies": {
+    "@aws-cdk/aws-cloudfront": "1.105.0",
+    "@aws-cdk/aws-iam": "1.105.0",
+    "@aws-cdk/aws-s3": "1.105.0",
+    "@aws-cdk/aws-s3-deployment": "1.105.0",
+    "@aws-cdk/core": "1.105.0",
+    "@aws-cdk/custom-resources": "1.105.0",
+    "cdk-constants": "^3.0.3",
+    "cdk-iam-actions": "^1.0.0"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.105.0"
+  },
+  "private": true
+}

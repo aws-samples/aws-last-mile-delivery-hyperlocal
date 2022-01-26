@@ -1,0 +1,24 @@
+{
+  "name": "@aws-play/config-commitlint",
+  "version": "0.0.1",
+  "description": "Config for linting git commits",
+  "license": "MIT-0",
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
+    "commitizen": "^4.1.2",
+    "cz-lerna-changelog": "^2.0.3",
+    "husky": "^4.2.5"
+  },
+  "peerDependencies": {
+    "husky": "^4.2.5"
+  },
+  "private": true
+}

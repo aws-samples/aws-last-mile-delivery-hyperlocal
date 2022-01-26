@@ -1,0 +1,14 @@
+{
+  "name": "@lambda/lambda-utils",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "main": "index.js",
+  "scripts": {
+    "mkdir": "mkdir -p ../../../dist/@lambda && mkdir -p ../tmp/lambda-utils && cp -r ./* ../tmp/lambda-utils/",
+    "zipasset": "cd ../tmp && zip -rXq ../../../dist/$npm_package_name.zip lambda-utils/ && rm -rf ../tmp/",
+    "build": "yarn mkdir &&  yarn zipasset"
+  },
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "license": "MIT-0"
+}

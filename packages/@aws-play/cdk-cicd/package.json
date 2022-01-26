@@ -1,0 +1,35 @@
+{
+  "name": "@aws-play/cdk-cicd",
+  "version": "0.0.0-alpha.25",
+  "description": "Continuous Integration &amp; Continuous Deployment constructs, stack, utils, etc.",
+  "license": "MIT-0",
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-play/cdk-core": "^0.0.0-alpha.14",
+    "cdk-constants": "^3.0.3",
+    "chalk": "^4.1.0",
+    "shorthash": "^0.0.2"
+  },
+  "peerDependencies": {
+    "@aws-play/cdk-aws-cdk": "1.105.0"
+  },
+  "private": true
+}

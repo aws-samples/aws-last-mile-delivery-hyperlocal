@@ -1,0 +1,48 @@
+{
+	"env": {
+		"region": "ap-southeast-1",
+		"mapBoxToken": null
+	},
+	"namespace": "test",
+	"administratorName": "Admin",
+	"administratorEmail": "test@example.com",
+	"vpcNetworkConfig": {
+		"dmzSecurityIngress": []
+	},
+	"geoTrackingApiKeySecretName": "",
+	"esConfig": {},
+	"redisConfig": {},
+	"simulatorConfig": {},
+	"kinesisConfig": {
+		"driverLocationUpdateMaxBatchingWindowMs": 5000,
+		"geofencingMaxBatchingWindowMs": 5000
+	},
+	"deliveryAppConfig": {
+		"driverAppConfig": {}
+	},
+	"pollingProviderSettings": {
+		"pendingOrderQueueVisibilityTimeoutInMins": 1
+	},
+	"webhookProviderSettings": {},
+	"externalProviderConfig": {
+		"MockPollingProvider": {},
+		"MockWebhookProvider": {}
+	},
+	"providersConfig": {
+		"ExamplePollingProvider": {},
+		"ExampleWebhookProvider": {},
+		"InternalWebhookProvider": {}
+	},
+	"orderManagerSettings": {
+		"providerTimeoutInMinutes": 45,
+		"restaurantTimeoutInMinutes": 5
+	},
+	"internalWebhookProviderSettings": {
+		"driverAcknowledgeTimeoutInSeconds": 30,
+		"orderIngestMaxBatchingWindowMs": 60000,
+		"orderCancellationTimeoutInSeconds": 1500,
+		"geoClusteringBias": 1.8
+	},
+	"graphhopperDockerRepoName": "",
+	"dispatcherAppDockerRepoName": ""
+}

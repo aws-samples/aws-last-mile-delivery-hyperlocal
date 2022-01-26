@@ -1,0 +1,47 @@
+{
+  "private": true,
+  "name": "infra",
+  "version": "0.2.4",
+  "license": "MIT-0",
+  "bin": {
+    "infra": "bin/infra.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:packages": "cd ../../ && yarn build",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "deploy:pipeline": "cdk deploy PrototypeCode-Pipeline",
+    "bootstrap": "cdk bootstrap --cloudformationExecutionPolicies arn:aws:iam::aws:policy/AdministratorAccess",
+    "dev:cdk": "cdk --app=\"npx ts-node bin/dev-infra.ts\" --output cdk.out.dev",
+    "dev:deploy:persistent": "yarn dev:cdk deploy Dev-PersistentBackend",
+    "dev:deploy": "yarn dev:cdk deploy --require-approval never Dev-Backend",
+    "dev:deploy:externalmock": "yarn dev:cdk deploy --require-approval never ExternalProviderStack-Mock",
+    "dev:deploy:sim": "yarn dev:cdk deploy --require-approval never Simulator-Backend",
+    "dev:deploy:all": "yarn dev:cdk deploy --require-approval never '*'",
+    "dev:DESTROY:backend": "yarn dev:cdk destroy Dev-Backend",
+    "dev:DESTROY:all": "yarn dev:cdk destroy Dev-PeristentBackend",
+    "dev:synth": "yarn dev:cdk synth",
+    "postdev:synth": "yarn cfn-nag",
+    "cfn-nag": "cfn_nag_scan --input-path=./cdk.out.dev/ --template-pattern .*\\.template\\.json --output-format json > ../../reports/cfn-nag-report.json",
+    "cfn-nag:install": "brew install ruby brew-gem && brew gem install cfn-nag",
+    "prereview": "yarn dev:synth",
+    "review": "yarn cfn-nag"
+  },
+  "devDependencies": {
+    "jest": "^25.5.0",
+    "ts-jest": "^25.3.1",
+    "typescript": "~3.7.2"
+  },
+  "dependencies": {
+    "@aws-play/cdk-apigateway": "^0.0.0-alpha.4",
+    "@aws-play/cdk-cicd": "^0.0.0-alpha.25",
+    "@aws-play/cdk-constants": "^0.0.0-alpha.3",
+    "@aws-play/cdk-web": "^0.0.0-alpha.3",
+    "config": "^3.3.6",
+    "eslint": "^7.3.1",
+    "ts-node": "^8.10.2"
+  }
+}

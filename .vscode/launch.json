@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug CDK synth",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/cdk",
+            "cwd": "${workspaceFolder}/prototype/infra",
+            "console": "internalConsole",
+            "sourceMaps": false,
+            "skipFiles": [ "<node_internals>/**/*" ],
+            "port": 23933,
+            "env": {
+                "CDK_DEFAULT_ACCOUNT": "1111111111",
+                "CDK_DEFAULT_REGION": "ap-southeast-1",
+            },
+            "runtimeArgs": [
+                "--app",
+                "npx ts-node bin/infra.ts",
+            ],
+            "args": [
+                "synth",
+                "--verbose",
+                "--output", "cdk.out.debug"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "DEV - Debug CDK synth",
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/cdk",
+            "cwd": "${workspaceFolder}/prototype/infra",
+            "console": "internalConsole",
+            "sourceMaps": true,
+            "skipFiles": [ "<node_internals>/**/*" ],
+            "port": 23933,
+            "env": {
+                "CDK_DEFAULT_ACCOUNT": "1111111111",
+                "CDK_DEFAULT_REGION": "ap-southeast-1",
+            },
+            "runtimeArgs": [
+                "--app",
+                "npx ts-node bin/dev-infra.ts",
+            ],
+            "args": [
+                "synth",
+                "--verbose",
+                "--output", "cdk.out.debug",
+            ],
+        }
+    ]
+}

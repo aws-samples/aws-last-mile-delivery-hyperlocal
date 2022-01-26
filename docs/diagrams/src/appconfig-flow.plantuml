@@ -1,0 +1,64 @@
+@startuml appconfig-flow
+
+title AppConfig flow
+
+skinparam monochrome true
+
+' participants
+' ------------
+
+actor "Driver" as driver
+
+participant "Driver App" as app
+
+participant "S3 Bucket" as s3
+
+participant "IoT Core" as iot
+
+participant "Lambda" as lambda
+
+participant "Event Bridge" as eventbridge
+
+participant "AWS AppConfig" as appconfig
+
+actor "Operator" as operator
+
+participant "CDK/TF" as cdk
+' ------------
+
+== Deployment ==
+
+    cdk -> appconfig : Create apps
+    cdk -> appconfig : Create envs
+    cdk -> appconfig : Create hosted configs
+    cdk -> appconfig : Create deployment strategy
+    cdk -> appconfig : Deploy
+    cdk -> s3 : **PUT** //app/env/config.json//
+    cdk -> app : Set config //appId/env//
+
+== App startup ==
+
+
+    autonumber "0 "
+    driver -> app : login
+    activate app
+    app -> app : Generate\nPreSigned Url
+    app -> s3 : **GET** //presigned url//
+    s3 --> app : //app/env/config.json//
+
+== Config change ==
+
+
+    autonumber "0 "
+    operator -> appconfig : Deploy new config version
+    activate appconfig
+    appconfig --> eventbridge : //StartDeployment event//
+    eventbridge -> lambda : //event//
+    activate lambda
+    lambda -> iot : broadcast **CONFIG_UPDATE**
+    iot -> app : //{ type: CONFIG_UPDATE, payload: config }//
+    lambda -> s3 : update //app/env/config.json//
+
+    deactivate app
+    deactivate appconfig
+@enduml

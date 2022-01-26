@@ -1,0 +1,15 @@
+@startuml state-restaurant
+
+skinparam monochrome true
+title Restaurant states
+
+[*] --> NEW_ORDER
+NEW_ORDER --> ORDER_ACCEPTED
+ORDER_ACCEPTED --> PREPARING
+PREPARING --> PREPARED
+PREPARED --> PICKED_UP
+PICKED_UP -right--> [*]
+
+NEW_ORDER -right--> ORDER_REJECTED
+ORDER_REJECTED -down--> [*]
+@enduml

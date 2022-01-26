@@ -1,0 +1,65 @@
+@startuml order-orchestrator-states-internal-provider
+
+skinparam monochrome true
+title Order Orchestrator States (With Internal Provider)
+
+[*] --> INCOMING_ORDER
+INCOMING_ORDER: New order
+
+INCOMING_ORDER --> WAITING_FOR_RESTAURANT
+WAITING_FOR_RESTAURANT --> RESTAURANT_ACCEPTED
+WAITING_FOR_RESTAURANT --> RESTAURANT_REJECTED
+
+RESTAURANT_REJECTED --> ORDER_REJECTED
+ORDER_REJECTED: Cannot fulfill order
+ORDER_REJECTED -LEFT-> [*]
+
+RESTAURANT_ACCEPTED --> INTERNAL_PROVIDER
+INTERNAL_PROVIDER --> FIND_DRIVER
+
+' fail
+INTERNAL_PROVIDER --> DRIVER_ASSIGNMENT_TIMEOUT
+DRIVER_ASSIGNMENT_TIMEOUT --> ORDER_REJECTED
+
+FIND_DRIVER --> DRIVER_FOUND
+DRIVER_FOUND --> DRIVER_ASSIGNED
+DRIVER_FOUND --> DRIVER_REJECTED
+DRIVER_REJECTED --> INTERNAL_PROVIDER
+
+FIND_DRIVER --> DRIVER_NOT_FOUND
+DRIVER_NOT_FOUND --> INTERNAL_PROVIDER
+
+DRIVER_ASSIGNED --> ORDER_PICKED_UP
+ORDER_PICKED_UP --> ORDER_DELIVERED
+
+ORDER_DELIVERED --> [*]
+
+
+state FIND_DRIVER {
+    FIND_DRIVER: Looking for driver
+    FIND_DRIVER: Restaurant accepted
+    FIND_DRIVER: Handle rejections (extend radius)
+}
+
+state DRIVER_NOT_FOUND {
+    DRIVER_NOT_FOUND: Provider couldn't assign driver
+}
+
+state DRIVER_ASSIGNED {
+    DRIVER_ASSIGNED: Found available driver
+}
+
+state ORDER_PICKED_UP {
+    ORDER_PICKED_UP: Driver took the item from Restaurant
+}
+
+state INTERNAL_PROVIDER {
+    INTERNAL_PROVIDER: Use dispatch engine
+}
+
+state ALL_PROVIDERS_UNAVAILABLE {
+    ALL_PROVIDERS_UNAVAILABLE: None of the providers has drivers
+}
+
+
+@enduml

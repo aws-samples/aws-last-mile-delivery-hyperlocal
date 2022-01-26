@@ -1,0 +1,19 @@
+---
+to: <%= packageDir %>/tsconfig.json
+---
+{
+  "extends": "../../../configs/workspace/tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "../../../",
+    "outDir": "./dist"
+  },
+  "compileOnSave": true,
+  "exclude": ["node_modules", "dist"],
+  "include": ["src"]
+}

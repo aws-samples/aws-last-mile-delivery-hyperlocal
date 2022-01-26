@@ -1,0 +1,8 @@
+{
+    "apps": [
+        {
+            "name": "redis-commander",
+            "script": "npx redis-commander --redis-host __REDIS_HOST__ --redis-port 6379 --address 0.0.0.0 --port 6380"
+        }
+    ]
+}

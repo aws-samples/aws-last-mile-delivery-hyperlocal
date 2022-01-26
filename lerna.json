@@ -1,0 +1,14 @@
+{
+  "version": "independent",
+  "useWorkspaces": true,
+  "npmClient": "yarn",
+  "command": {
+    "version": {
+      "message": "chore(release): publish"
+    }
+  },
+  "ignoreChanges":[
+    "**/test/**",
+    "**/*.md"
+  ]
+}

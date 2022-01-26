@@ -1,0 +1,235 @@
+/*********************************************************************************************************************
+ *  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.                                               *
+ *                                                                                                                   *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of                                  *
+ *  this software and associated documentation files (the "Software"), to deal in                                    *
+ *  the Software without restriction, including without limitation the rights to                                     *
+ *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of                                 *
+ *  the Software, and to permit persons to whom the Software is furnished to do so.                                  *
+ *                                                                                                                   *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR                                       *
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS                                 *
+ *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR                                   *
+ *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER                                   *
+ *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
+ *********************************************************************************************************************/
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Construct, Stack, StackProps } from '@aws-cdk/core'
+import { AwsCustomResource, PhysicalResourceId, AwsCustomResourcePolicy } from '@aws-cdk/custom-resources'
+import { setNamespace } from '@aws-play/cdk-core'
+import { PersistentBackendStack } from '../PersistentBackendStack'
+import { StreamingStack } from '../../nested/StreamingStack'
+import { MicroServiceStack } from '../../nested/MicroServiceStack'
+import { IotIngestionStack } from '../../nested/IotIngestionStack'
+import { OrderOrchestrationStack } from '../../nested/OrderOrchestrationStack'
+import { AppConfigNestedStack } from '@prototype/appconfig'
+import { ProviderStack } from '../../nested/ProviderStack'
+import { CustomResourcesStack } from '../../nested/CustomResourcesStack'
+import { IoTStack } from '@prototype/iot-ingestion'
+import { ExternalProviderType } from '../ExternalProviderStack'
+import { DispatcherStack } from '../../nested/DispatcherStack'
+import { sync as findUp } from 'find-up'
+import * as path from 'path'
+
+export interface BackendStackProps extends StackProps {
+	readonly namespace: string
+	readonly persistent: PersistentBackendStack
+	readonly redisConfig: { [key: string]: string | number, }
+	readonly kinesisConfig: { [key: string]: string | number | boolean, }
+	readonly deliveryAppConfig: { [key: string]: any, }
+	readonly pollingProviderSettings: { [key: string]: string | number, }
+	readonly webhookProviderSettings: { [key: string]: string | number, }
+	readonly providersConfig: { [key: string]: any, }
+	readonly externalProviderConfig: {
+		MockPollingProvider: ExternalProviderType
+		MockWebhookProvider: ExternalProviderType
+	}
+	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
+	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
+	readonly geoTrackingApiKeySecretName: string
+	readonly graphhopperDockerRepoName: string
+	readonly dispatcherAppDockerRepoName: string
+}
+
+/**
+ * Prototype backend stack
+ */
+export class BackendStack extends Stack {
+	public readonly iotSetup: IoTStack
+
+	public readonly microService: MicroServiceStack
+
+	public readonly appConfig: AppConfigNestedStack
+
+	constructor (scope: Construct, id: string, props: BackendStackProps) {
+		super(scope, id, props)
+
+		const {
+			namespace,
+			persistent: {
+				vpcPersistent: {
+					vpc,
+				},
+				identityStackPersistent: {
+					userPool,
+					authenticatedRole: externalIdentityAuthenticatedRole,
+				},
+				internalIdentityStack: {
+					userPoolDomain: internalUserPoolDomain,
+				},
+				dataStoragePersistent: {
+					driversTelemetryBucket,
+					dispatchEngineBucket,
+					geoPolygonTable,
+					orderTable,
+					demographicAreaDispatchSettings,
+					dispatcherAssignmentsTable,
+					demographicAreaProviderEngineSettings,
+					internalProviderLocks,
+					internalProviderOrders,
+					internalProviderOrdersStatusIndex,
+				},
+				backendBaseNestedStack: {
+					vpcNetworking,
+					liveDataCache,
+				},
+				backendEcsCluster,
+			},
+			redisConfig,
+			kinesisConfig,
+			deliveryAppConfig,
+			pollingProviderSettings,
+			webhookProviderSettings,
+			internalWebhookProviderSettings,
+			providersConfig,
+			externalProviderConfig,
+			env,
+			geoTrackingApiKeySecretName,
+			orderManagerSettings,
+			graphhopperDockerRepoName,
+			dispatcherAppDockerRepoName,
+		} = props
+
+		setNamespace(this, namespace)
+
+		const getIoTEndpoint = new AwsCustomResource(this, 'IoTEndpointBackendStack', {
+			onCreate: {
+				service: 'Iot',
+				action: 'describeEndpoint',
+				physicalResourceId: PhysicalResourceId.fromResponse('endpointAddress'),
+				parameters: {
+					endpointType: 'iot:Data-ATS',
+				},
+			},
+			policy: AwsCustomResourcePolicy.fromSdkCalls({
+				resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+			}),
+		})
+		const iotEndpointAddress = getIoTEndpoint.getResponseField('endpointAddress')
+
+		const streamingNestedStack = new StreamingStack(this, 'StreamingNestedStack', {
+			driversTelemetryBucket,
+			kinesisConfig,
+		})
+
+		const microServiceNestedStack = new MicroServiceStack(this, 'MicroServiceNestedStack', {
+			geoPolygonTable,
+			demographicAreaDispatchSettings,
+			vpc,
+			userPool,
+			vpcNetworking,
+			redisCluster: liveDataCache.redisCluster,
+			elasticSearchCluster: liveDataCache.elasticSearchCluster,
+			driverDataIngestStream: streamingNestedStack.kinesisDataStreams.driverDataIngestStream,
+			redisConfig,
+			kinesisConfig,
+			env,
+		})
+		this.microService = microServiceNestedStack
+
+		const iotIngestionNestedStack = new IotIngestionStack(this, 'IotIngestionNestedStack', {
+			externalIdentityAuthenticatedRole,
+			driverDataIngestStream: streamingNestedStack.kinesisDataStreams.driverDataIngestStream,
+			lambdaRefs: microServiceNestedStack.lambdaRefs,
+		})
+		this.iotSetup = iotIngestionNestedStack.iotSetup
+
+		const appConfigNestedStack = new AppConfigNestedStack(this, 'AppConfigNestedStack', {
+			cognitoAuthenticatedRole: externalIdentityAuthenticatedRole,
+			deliveryAppConfig,
+			iotEndpointAddress,
+		})
+		this.appConfig = appConfigNestedStack
+
+		// find the website and solver bundle
+		const prototypeDir = findUp('prototype', { cwd: __dirname, type: 'directory' }) || '../../../../../'
+		const dispatcherConfigPath = path.join(prototypeDir, 'dispatch', 'order-dispatcher', 'deploy', 'application.properties')
+
+		const dispatcherStack = new DispatcherStack(this, 'DispatcherStack', {
+			vpc,
+			vpcNetworking,
+			dispatchEngineBucket,
+			dispatcherConfigPath,
+			dispatcherVersion: 'v2',
+			driverApiKeySecretName: geoTrackingApiKeySecretName,
+			driverApiUrl: microServiceNestedStack.geoTrackingRestApi.url,
+			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
+			dispatcherAssignmentsTable,
+			dispatcherAppDockerRepoName,
+		})
+
+		const providerNestedStack = new ProviderStack(this, 'ProvidersNestedStack', {
+			vpc,
+			vpcNetworking,
+			eventBus: microServiceNestedStack.eventBus,
+			lambdaLayers: microServiceNestedStack.lambdaLayers,
+			redisCluster: liveDataCache.redisCluster,
+			internalProviderOrders,
+			internalProviderOrdersStatusIndex,
+			pollingProviderSettings,
+			webhookProviderSettings,
+			externalProviderConfig,
+			internalWebhookProviderSettings,
+			internalProviderLocks,
+			dispatchEngineLB: dispatcherStack.dispatcherLB,
+			providersConfig,
+			backendEcsCluster,
+			graphhopperDockerRepoName,
+			iotEndpointAddress,
+		})
+
+		const orderOrchestrationStack = new OrderOrchestrationStack(this, 'OrderOrchestrationStack', {
+			orderTable,
+			eventBus: microServiceNestedStack.eventBus,
+			providersConfig,
+			demographicAreaProviderEngineSettings,
+			vpc,
+			vpcNetworking,
+			lambdaLayers: microServiceNestedStack.lambdaLayers,
+			redisCluster: liveDataCache.redisCluster,
+			orderManagerSettings,
+			providerApiUrls: {
+				InternalWebhookProvider: providerNestedStack.internalWebhookProvider.apiGwInstance,
+				ExampleWebhookProvider: providerNestedStack.exampleWebhookProvider.apiGwInstance,
+				ExamplePollingProvider: providerNestedStack.examplePollingProvider.apiGwInstance,
+			},
+		})
+
+		const customResourcesNestedStack = new CustomResourcesStack(this, 'CustomResourcesNestedStack', {
+			vpc,
+			vpcNetworking,
+			lambdaRefs: microServiceNestedStack.lambdaRefs,
+			providerNestedStack,
+			providersConfig,
+
+			additionalApiConfig: [
+				{
+					keyArn: microServiceNestedStack.geoTrackingRestApiKey.keyArn,
+					keyId: microServiceNestedStack.geoTrackingRestApiKey.keyId,
+					secret: 'GeoTrackingApiKeySecret',
+				},
+			],
+		})
+	}
+}

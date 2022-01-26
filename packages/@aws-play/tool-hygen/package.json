@@ -1,0 +1,34 @@
+{
+  "name": "@aws-play/tool-hygen",
+  "description": "Hygen tool related stuff",
+  "version": "0.1.4",
+  "license": "MIT-0",
+  "private": true,
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.module.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "node-persist": "^3.1.0",
+    "semver": "^7.3.5"
+  },
+  "devDependencies": {
+    "@types/node-persist": "^3.1.0",
+    "@types/semver": "^7.3.9"
+  }
+}
