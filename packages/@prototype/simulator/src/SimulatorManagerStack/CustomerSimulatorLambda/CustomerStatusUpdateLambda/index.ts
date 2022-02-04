@@ -14,14 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { EventBus } from '@aws-cdk/aws-events'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
@@ -34,11 +30,11 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
-	readonly eventBus: EventBus
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly eventBus: events.EventBus
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -56,7 +52,7 @@ export class CustomerStatusUpdateLambda extends DeclaredLambdaFunction<Environme
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'CustomerStatusUpdate'),
 			description: 'Customer Status Update function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-status-update.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-status-update.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -77,7 +73,7 @@ export class CustomerStatusUpdateLambda extends DeclaredLambdaFunction<Environme
 			layers: lambdaLayers,
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

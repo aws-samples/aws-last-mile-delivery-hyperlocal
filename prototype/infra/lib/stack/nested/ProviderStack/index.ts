@@ -14,28 +14,22 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import { LayerVersion, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { EventBus, IEventBus } from '@aws-cdk/aws-events'
-import { ICluster } from '@aws-cdk/aws-ecs'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IApplicationLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_elasticache as elasticache, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 import { ExamplePollingProvider, ExampleWebhookProvider, InternalWebhookProvider } from '@prototype/provider-impl'
 import { DispatchEngineOrchestrator, DriverEventHandler } from '@prototype/internal-provider'
 import { GraphhopperSetup } from '@prototype/dispatch-setup'
-import { IVpc } from '@aws-cdk/aws-ec2'
 import { ExternalProviderType } from '../../root/ExternalProviderStack'
 
 export interface ProviderStackProps extends NestedStackProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly eventBus: IEventBus
-	readonly internalProviderOrders: ITable
-	readonly internalProviderLocks: ITable
-	readonly lambdaLayers: { [key: string]: ILayerVersion, }
-	readonly redisCluster: CfnCacheCluster
+	readonly eventBus: events.IEventBus
+	readonly internalProviderOrders: ddb.ITable
+	readonly internalProviderLocks: ddb.ITable
+	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
+	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly pollingProviderSettings: { [key: string]: string | number, }
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
@@ -45,8 +39,8 @@ export interface ProviderStackProps extends NestedStackProps {
 		MockWebhookProvider: ExternalProviderType
 	}
 	readonly internalProviderOrdersStatusIndex: string
-	readonly dispatchEngineLB: IApplicationLoadBalancer
-	readonly backendEcsCluster: ICluster
+	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
+	readonly backendEcsCluster: ecs.ICluster
 	readonly graphhopperDockerRepoName: string
 	readonly iotEndpointAddress: string
 }
@@ -83,11 +77,11 @@ export class ProviderStack extends NestedStack {
 			iotEndpointAddress,
 		} = props
 
-		const _layers: { [key: string]: ILayerVersion, } = {}
+		const _layers: { [key: string]: lambda.ILayerVersion, } = {}
 		for (const key in lambdaLayers) {
 			if (Object.prototype.hasOwnProperty.call(lambdaLayers, key)) {
 				const layer = lambdaLayers[key]
-				_layers[key] = LayerVersion.fromLayerVersionArn(this, `Layer-${key}`, layer.layerVersionArn)
+				_layers[key] = lambda.LayerVersion.fromLayerVersionArn(this, `Layer-${key}`, layer.layerVersionArn)
 			}
 		}
 
@@ -95,7 +89,7 @@ export class ProviderStack extends NestedStack {
 			vpc,
 			lambdaSecurityGroups: [securityGroups.lambda],
 			layers: _layers,
-			eventBus: EventBus.fromEventBusArn(this, 'EventBus', eventBus.eventBusArn),
+			eventBus: events.EventBus.fromEventBusArn(this, 'EventBus', eventBus.eventBusArn),
 		}
 
 		this.examplePollingProvider = new ExamplePollingProvider(this, 'ExamplePollingProvider', {

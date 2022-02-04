@@ -15,19 +15,18 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import { IVpc, Peer, Port } from '@aws-cdk/aws-ec2'
-import { IRole } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { LiveDataCache } from '@prototype/live-data-cache'
 import { PersistentBackendStack } from '../../root/PersistentBackendStack'
 
 export interface BackendBaseNestedStackProps extends NestedStackProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly identityPoolId: string
 	readonly userPoolId: string
-	readonly internalIdentityAuthenticatedRole: IRole
-	readonly adminRole: IRole
+	readonly internalIdentityAuthenticatedRole: iam.IRole
+	readonly adminRole: iam.IRole
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
 	readonly esConfig: { [key: string]: string | number, }
 	readonly redisConfig: { [key: string]: string | number, }
@@ -58,7 +57,7 @@ export class BackendBaseNestedStack extends NestedStack {
 		this.vpcNetworking = new Networking(this, 'Networking', {
 			vpc,
 			ingressRules: {
-				dmz: vpcNetworkConfig.dmzSecurityIngress.map(o => ({ peer: Peer.ipv4(o.cidr), port: Port.tcp(o.port) })),
+				dmz: vpcNetworkConfig.dmzSecurityIngress.map(o => ({ peer: ec2.Peer.ipv4(o.cidr), port: ec2.Port.tcp(o.port) })),
 			},
 		})
 

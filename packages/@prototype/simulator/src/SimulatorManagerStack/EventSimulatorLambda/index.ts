@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as events from '@aws-cdk/aws-events'
-import * as eventTargets from '@aws-cdk/aws-events-targets'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, Stack, aws_iam as iam, aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -29,13 +25,13 @@ export interface EventSimulatorProps {
 	readonly eventBus: events.EventBus
 }
 
-export class EventSimulatorLambda extends cdk.Construct {
+export class EventSimulatorLambda extends Construct {
 	public readonly lambda: lambda.Function
 
-	constructor (scope: cdk.Construct, id: string, props: EventSimulatorProps) {
+	constructor (scope: Construct, id: string, props: EventSimulatorProps) {
 		super(scope, id)
 
-		const stack = cdk.Stack.of(this)
+		const stack = Stack.of(this)
 
 		this.lambda = new lambda.Function(this, 'EventSimulatorLambda', {
 			runtime: lambda.Runtime.NODEJS_12_X,
@@ -43,7 +39,7 @@ export class EventSimulatorLambda extends cdk.Construct {
 			description: 'Lambda used to expose events coming in the event bridge for debug/simulation purpose',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/event-simulator-lambda.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				EVENT_TABLE_NAME: props.eventTable.tableName,
 				EVENT_CREATED_AT_INDEX: props.eventCreatedAtIndex,
@@ -75,7 +71,7 @@ export class EventSimulatorLambda extends cdk.Construct {
 			description: 'Used for debug purpose',
 			eventBus: props.eventBus,
 			enabled: true,
-			targets: [new eventTargets.LambdaFunction(this.lambda)],
+			targets: [new events_targets.LambdaFunction(this.lambda)],
 			eventPattern: {
 				// catch all events in the bus
 				account: [stack.account],

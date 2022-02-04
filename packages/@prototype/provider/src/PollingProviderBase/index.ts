@@ -14,10 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as sqs from '@aws-cdk/aws-sqs'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as les from '@aws-cdk/aws-lambda-event-sources'
+import { Construct } from 'constructs'
+import { Duration, aws_sqs as sqs, aws_lambda as lambda, aws_lambda_event_sources as lambda_event_sources } from 'aws-cdk-lib'
 import { ProviderBase, ProviderBaseProps } from '../ProviderBase'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -32,7 +30,7 @@ export class PollingProviderBase extends ProviderBase {
 
 	readonly pendingOrdersQueue: sqs.Queue
 
-	constructor (scope: cdk.Construct, id: string, props: PollingProviderBaseProps) {
+	constructor (scope: Construct, id: string, props: PollingProviderBaseProps) {
 		const {
 			name,
 			providerSettings,
@@ -52,11 +50,11 @@ export class PollingProviderBase extends ProviderBase {
 			},
 			fifo: true,
 			queueName: namespaced(scope, `PendingOrderQ-${name}.fifo`),
-			visibilityTimeout: cdk.Duration.minutes(providerSettings.pendingOrderQueueVisibilityTimeoutInMins as number),
-			deliveryDelay: cdk.Duration.seconds(providerSettings.deliveryDelayInSec as number),
+			visibilityTimeout: Duration.minutes(providerSettings.pendingOrderQueueVisibilityTimeoutInMins as number),
+			deliveryDelay: Duration.seconds(providerSettings.deliveryDelayInSec as number),
 		})
 
-		const pendindOrderSqsEventSource = new les.SqsEventSource(pendingOrdersQueue, {
+		const pendindOrderSqsEventSource = new lambda_event_sources.SqsEventSource(pendingOrdersQueue, {
 			batchSize: providerSettings.sqsBatchSize as number,
 			enabled: true,
 		})

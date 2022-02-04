@@ -14,13 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_iam as iam, aws_ecs as ecs, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { ECSStepFunctionInvoker } from './ECSStepFunctionInvoker'
@@ -37,12 +32,12 @@ export interface SimulatorManagerLambdaProps {
 	readonly iotEndpointAddress: string
 }
 
-export class SimulatorManagerLambda extends cdk.Construct {
+export class SimulatorManagerLambda extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: SimulatorManagerLambdaProps) {
+	constructor (scope: Construct, id: string, props: SimulatorManagerLambdaProps) {
 		super(scope, id)
 
 		const {
@@ -76,7 +71,7 @@ export class SimulatorManagerLambda extends cdk.Construct {
 			description: 'Lambda used to handle ECS Task for Driver Simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/simulator-manager-lambda.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				IOT_ENDPOINT: iotEndpointAddress,
 				SIMULATOR_TABLE_NAME: props.simulatorTable.tableName,

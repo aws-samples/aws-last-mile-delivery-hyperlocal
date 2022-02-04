@@ -14,11 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { aws_elasticsearch as elasticsearch, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { ElasticSearchCluster, ElasticSearchClusterProps } from './ElasticSearchCluster'
 import { RedisCluster, RedisClusterProps } from './RedisCluster'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 
 export interface LiveDataCacheProps {
 	readonly redisClusterProps: RedisClusterProps
@@ -26,9 +25,9 @@ export interface LiveDataCacheProps {
 }
 
 export class LiveDataCache extends Construct {
-	readonly elasticSearchCluster: IDomain
+	readonly elasticSearchCluster: elasticsearch.IDomain
 
-	readonly redisCluster: CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 
 	constructor (scope: Construct, id: string, props: LiveDataCacheProps) {
 		super(scope, id)

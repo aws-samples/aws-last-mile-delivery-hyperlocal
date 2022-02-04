@@ -15,9 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-import { Construct } from '@aws-cdk/core'
-import { CfnCacheCluster, CfnSubnetGroup, CfnReplicationGroup } from '@aws-cdk/aws-elasticache'
-import { IVpc, ISecurityGroup, SubnetType } from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_elasticache as elasticache, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface RedisClusterProps {
@@ -27,26 +26,26 @@ export interface RedisClusterProps {
 	 * Check: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-elasticache-cache-cluster.html#cfn-elasticache-cachecluster-cachenodetype
 	 */
 	readonly nodeType?: string
-	readonly vpc: IVpc
-	readonly securityGroups: ISecurityGroup[]
+	readonly vpc: ec2.IVpc
+	readonly securityGroups: ec2.ISecurityGroup[]
 }
 
 export class RedisCluster extends Construct {
-	readonly redisCluster: CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 
 	constructor (scope: Construct, id: string, props: RedisClusterProps) {
 		super(scope, id)
 
 		const { numNodes, nodeType, vpc, securityGroups } = props
 
-		const redisSubnetGroup = new CfnSubnetGroup(this, 'RedisClusterSubnetGroup', {
+		const redisSubnetGroup = new elasticache.CfnSubnetGroup(this, 'RedisClusterSubnetGroup', {
 			cacheSubnetGroupName: namespaced(this, 'live-data', { lowerCase: true }), // NOTE: lowercase
 			description: 'Subnet for LiveData RedisCluster',
-			subnetIds: vpc.selectSubnets({ subnetType: SubnetType.ISOLATED }).subnetIds,
+			subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED }).subnetIds,
 		})
 
 		const redisClusterName = namespaced(this, 'live-data', { lowerCase: true }) // NOTE: lowercase
-		const redisCluster = new CfnCacheCluster(this, 'RedisClusterEC', {
+		const redisCluster = new elasticache.CfnCacheCluster(this, 'RedisClusterEC', {
 			clusterName: redisClusterName,
 			engine: 'redis',
 			cacheNodeType: nodeType || 'cache.t3.medium',

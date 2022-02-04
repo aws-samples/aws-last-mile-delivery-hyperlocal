@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack, StackProps } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { MonitoringNestedStack } from '../../nested/MonitoringNestedStack'

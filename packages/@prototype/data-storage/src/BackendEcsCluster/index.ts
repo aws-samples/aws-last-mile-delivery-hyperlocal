@@ -14,19 +14,18 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_ecs as ecs } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface BackendEcsClusterProps {
   readonly vpc: ec2.IVpc
 }
 
-export class BackendEcsCluster extends cdk.Construct {
+export class BackendEcsCluster extends Construct {
 	readonly cluster: ecs.ICluster
 
-	constructor (scope: cdk.Construct, id: string, props: BackendEcsClusterProps) {
+	constructor (scope: Construct, id: string, props: BackendEcsClusterProps) {
 		super(scope, id)
 
 		const { vpc } = props

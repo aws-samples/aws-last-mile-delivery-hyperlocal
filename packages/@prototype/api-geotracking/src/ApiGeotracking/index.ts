@@ -14,42 +14,36 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { ApiKey, AuthorizationType, CognitoUserPoolsAuthorizer, IApiKey, RequestValidator } from '@aws-cdk/aws-apigateway'
-import { IUserPool, IUserPoolClient } from '@aws-cdk/aws-cognito'
-import { IFunction, ILayerVersion } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
-import { IVpc, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 import HTTPMethod from 'http-method-enum'
 import { GetDriverLocationLambda } from './GetDriverLocation'
 import { QueryDriversLambda } from './QueryDrivers'
 import { ListDriversForPolygonLambda } from './ListDriversForPolygon'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
 import { GetDemAreaSettingsLambda } from './GetDemAreaSettings'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ApiGeoTrackingProps {
 	readonly restApi: RestApi
 	readonly apiPrefix?: string
-	readonly userPool: IUserPool
-	readonly lambdaLayers: { [key: string]: ILayerVersion, }
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly geoPolygonTable: ITable
-	readonly demographicAreaDispatchSettings: ITable
-	readonly esDomain: IDomain
+	readonly userPool: cognito.IUserPool
+	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly geoPolygonTable: ddb.ITable
+	readonly demographicAreaDispatchSettings: ddb.ITable
+	readonly esDomain: elasticsearch.IDomain
 }
 
 export class ApiGeoTracking extends Construct {
-	readonly userPoolClient: IUserPoolClient
+	readonly userPoolClient: cognito.IUserPoolClient
 
-	readonly geoTrackingApiKey: IApiKey
+	readonly geoTrackingApiKey: apigw.IApiKey
 
-	readonly queryDrivers: IFunction
+	readonly queryDrivers: lambda.IFunction
 
 	constructor (scope: Construct, id: string, props: ApiGeoTrackingProps) {
 		super(scope, id)
@@ -65,7 +59,7 @@ export class ApiGeoTracking extends Construct {
 			esDomain,
 		} = props
 
-		const cognitoAuthorizer = new CognitoUserPoolsAuthorizer(this, 'GeoTrackingApiCognitoAuthorizer', {
+		const cognitoAuthorizer = new apigw.CognitoUserPoolsAuthorizer(this, 'GeoTrackingApiCognitoAuthorizer', {
 			authorizerName: namespaced(this, 'GeoTrackingApiCognitorAuthorizer'),
 			cognitoUserPools: [userPool],
 		})
@@ -131,7 +125,7 @@ export class ApiGeoTracking extends Construct {
 				],
 			},
 		})
-		const queryDriversRequestValidator = new RequestValidator(this, 'QueryDriversLambdaReqValidator',
+		const queryDriversRequestValidator = new apigw.RequestValidator(this, 'QueryDriversLambdaReqValidator',
 			{
 				restApi,
 				requestValidatorName: namespaced(this, 'QueryDriversLambdaReqValidator'),

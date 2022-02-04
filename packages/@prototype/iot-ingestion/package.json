@@ -26,11 +26,9 @@
     "@aws-play/cdk-core": "^0.0.0-alpha.14",
     "cdk-iam-actions": "^1.0.0"
   },
-   "peerDependencies": {
-    "@aws-cdk/aws-iot": "1.105.0",
-    "@aws-cdk/aws-iam": "1.105.0",
-    "@aws-cdk/aws-lambda": "1.105.0",
-    "@aws-cdk/aws-kinesis": "1.105.0",
-    "@aws-cdk/core": "1.105.0"
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.10.0",
+    "constructs": "^10.0.0",
+    "typescript": "^4.5.5"
   }
 }

@@ -14,13 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { Secret } from '@aws-cdk/aws-secretsmanager'
-import { IEventBus } from '@aws-cdk/aws-events'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_secretsmanager as secretsmanager, aws_events as events, aws_elasticache as elasticache, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -38,13 +33,13 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly lambdaLayers: ILayerVersion[]
-	readonly eventBus: IEventBus
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly eventBus: events.IEventBus
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
-	readonly redisCluster: CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -61,12 +56,12 @@ export class CancelOrderLambda extends DeclaredLambdaFunction<Environment, Depen
 			externalProviderMockUrl,
 		} = props.dependencies
 
-		const externalProviderSecret = Secret.fromSecretNameV2(scope, 'ExternalPollingProviderSecretCancel', externalProviderSecretName)
+		const externalProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'ExternalPollingProviderSecretCancel', externalProviderSecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'ExamplePollingProvider-CancelOrder'),
 			description: 'Example polling provider - CancelOrder lambda function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/example-polling-provider-cancelorder.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/example-polling-provider-cancelorder.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -79,18 +74,18 @@ export class CancelOrderLambda extends DeclaredLambdaFunction<Environment, Depen
 				PROVIDER_NAME: PROVIDER_NAME.EXAMPLE_POLLING_PROVIDER,
 			},
 			initialPolicy: [
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'events:PutEvents',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'secretsmanager:GetSecretValue',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [
 						`${externalProviderSecret.secretArn}*`,
 					],
@@ -99,7 +94,7 @@ export class CancelOrderLambda extends DeclaredLambdaFunction<Environment, Depen
 			layers: lambdaLayers,
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

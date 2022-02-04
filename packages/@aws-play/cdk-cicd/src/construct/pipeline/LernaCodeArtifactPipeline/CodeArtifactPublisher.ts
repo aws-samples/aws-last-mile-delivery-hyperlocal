@@ -14,9 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { PipelineProject, BuildSpec, LinuxBuildImage, ComputeType, BuildEnvironment } from '@aws-cdk/aws-codebuild'
-import { Role, ServicePrincipal, PolicyDocument, PolicyStatement, Effect } from '@aws-cdk/aws-iam'
-import { Construct, Stack } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack, aws_iam as iam, aws_codebuild as codebuild } from 'aws-cdk-lib'
 import { ServicePrincipals } from 'cdk-constants'
 import { CodeArtifactBuildCommands, CodeArtifactRepositoryDefinition, CodeArtifactUtils } from '../CodeArtifactBuildCommands'
 
@@ -33,19 +32,19 @@ export interface CodeArtifactPublisherProps {
 	 */
 	readonly readRepositories?: CodeArtifactRepositoryDefinition[]
 
-	readonly buildEnvironment?: BuildEnvironment
+	readonly buildEnvironment?: codebuild.BuildEnvironment
 }
 
 export class CodeArtifactPublisher extends Construct {
-		readonly pipelineProject: PipelineProject
+		readonly pipelineProject: codebuild.PipelineProject
 
 		constructor (scope: Construct, id: string, props: CodeArtifactPublisherProps) {
 			super(scope, id)
 
 			const { repository, readRepositories, buildEnvironment } = props
 
-			this.pipelineProject = new PipelineProject(this, 'PipelineProject', {
-				buildSpec: BuildSpec.fromObject({
+			this.pipelineProject = new codebuild.PipelineProject(this, 'PipelineProject', {
+				buildSpec: codebuild.BuildSpec.fromObject({
 					version: '0.2',
 					phases: {
 						install: {
@@ -63,17 +62,17 @@ export class CodeArtifactPublisher extends Construct {
 					},
 				}),
 				environment: {
-					buildImage: LinuxBuildImage.STANDARD_2_0,
-					computeType: ComputeType.MEDIUM,
+					buildImage: codebuild.LinuxBuildImage.STANDARD_2_0,
+					computeType: codebuild.ComputeType.MEDIUM,
 					...buildEnvironment || {},
 				},
-				role: new Role(this, 'Role', {
-					assumedBy: new ServicePrincipal(ServicePrincipals.CODE_BUILD),
+				role: new iam.Role(this, 'Role', {
+					assumedBy: new iam.ServicePrincipal(ServicePrincipals.CODE_BUILD),
 					inlinePolicies: {
-						codeAtrifact: new PolicyDocument({
+						codeAtrifact: new iam.PolicyDocument({
 							statements: [
-								new PolicyStatement({
-									effect: Effect.ALLOW,
+								new iam.PolicyStatement({
+									effect: iam.Effect.ALLOW,
 									actions: [
 										'codeartifact:GetAuthorizationToken',
 										'codeartifact:GetRepositoryEndpoint',
@@ -81,8 +80,8 @@ export class CodeArtifactPublisher extends Construct {
 									],
 									resources: ['*'],
 								}),
-								new PolicyStatement({
-									effect: Effect.ALLOW,
+								new iam.PolicyStatement({
+									effect: iam.Effect.ALLOW,
 									actions: [
 										'codeartifact:PublishPackageVersion',
 									],
@@ -91,8 +90,8 @@ export class CodeArtifactPublisher extends Construct {
 										return CodeArtifactUtils.formatRepositoryNpmArn(Stack.of(this), repository, `${scope.replace('@', '')}/*`)
 									}),
 								}),
-								new PolicyStatement({
-									effect: Effect.ALLOW,
+								new iam.PolicyStatement({
+									effect: iam.Effect.ALLOW,
 									actions: [
 										'sts:GetServiceBearerToken',
 									],

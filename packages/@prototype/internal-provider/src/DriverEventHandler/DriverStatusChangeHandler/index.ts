@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IEventBus } from '@aws-cdk/aws-events'
-import { Secret } from '@aws-cdk/aws-secretsmanager'
-import { Code } from '@aws-cdk/aws-lambda'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_dynamodb as ddb, aws_events as events, aws_secretsmanager as secretsmanager, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
@@ -34,9 +30,9 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly internalProviderOrders: ITable
+	readonly internalProviderOrders: ddb.ITable
 	readonly internalProviderApi: RestApi
-	readonly eventBus: IEventBus
+	readonly eventBus: events.IEventBus
 	readonly internalProviderApiSecretName: string
 	readonly iotEndpointAddress: string
 }
@@ -53,12 +49,12 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 			iotEndpointAddress,
 		} = props.dependencies
 
-		const internalProviderApiSecret = Secret.fromSecretNameV2(scope, 'DriverStatusInternalProviderSecret', internalProviderApiSecretName)
+		const internalProviderApiSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'DriverStatusInternalProviderSecret', internalProviderApiSecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'InternalProviderDriverStatusHandler'),
 			description: 'Lambda used by the internal provider to handle driver status updates',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-driver-status-handler.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-driver-status-handler.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -70,23 +66,23 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 				INTERNAL_CALLBACK_API_URL: internalProviderApi.url,
 			},
 			initialPolicy: [
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'events:PutEvents',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['dynamodb:UpdateItem', 'dynamodb:GetItem'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [internalProviderOrders.tableArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'secretsmanager:GetSecretValue',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [
 						`${internalProviderApiSecret.secretArn}*`,
 					],

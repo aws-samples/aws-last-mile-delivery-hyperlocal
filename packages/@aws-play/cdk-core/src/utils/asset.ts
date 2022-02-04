@@ -17,7 +17,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { execSync } from 'child_process'
-import { FileSystem, SymlinkFollowMode } from '@aws-cdk/core/lib/fs'
+import { FileSystem, SymlinkFollowMode } from 'aws-cdk-lib'
 
 const ASSET_ROOT = process.env.CDK_OUTDIR as string
 

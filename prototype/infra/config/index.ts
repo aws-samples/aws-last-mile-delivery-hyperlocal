@@ -15,8 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
+import RootConfig from './RootConfig'
 import { sync as findUp } from 'find-up'
-import { BackendStageProps } from '../lib/stack/root/PipelineStack/stage/BackendStageProps'
 
 const CDK_CONTEXT_JSON = JSON.parse(process.env.CDK_CONTEXT_JSON || '{}')
 
@@ -46,7 +46,7 @@ if (process.env.CDK_CONFIG_SUPPRESS_WARNING) {
 	process.env.SUPPRESS_NO_CONFIG_WARNING = process.env.CDK_CONFIG_SUPPRESS_WARNING
 }
 
-export type Config = BackendStageProps
+export type Config = RootConfig
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const config: Config = require('config')

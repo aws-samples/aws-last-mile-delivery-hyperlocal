@@ -14,20 +14,17 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Stack, NestedStack, NestedStackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack, NestedStack, NestedStackProps, aws_ec2 as ec2, aws_elasticsearch as elasticsearch, aws_elasticache as elasticache, aws_cognito as cognito } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
-import { IVpc } from '@aws-cdk/aws-ec2'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IUserPoolDomain } from '@aws-cdk/aws-cognito'
 import { Monitoring } from '@prototype/monitoring'
 
 export interface MonitoringNestedStackProps extends NestedStackProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-    readonly esDomain: IDomain
-    readonly redisCluster: CfnCacheCluster
-    readonly internalUserPoolDomain: IUserPoolDomain
+    readonly esDomain: elasticsearch.IDomain
+    readonly redisCluster: elasticache.CfnCacheCluster
+    readonly internalUserPoolDomain: cognito.IUserPoolDomain
 }
 
 export class MonitoringNestedStack extends NestedStack {

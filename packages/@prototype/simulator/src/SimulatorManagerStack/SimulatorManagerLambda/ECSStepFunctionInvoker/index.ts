@@ -14,14 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_iam as iam, aws_ecs as ecs, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -36,12 +30,12 @@ export interface ECSStepFunctionInvokerProps {
 	readonly simulatorTable: ddb.ITable
 }
 
-export class ECSStepFunctionInvoker extends cdk.Construct {
+export class ECSStepFunctionInvoker extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: ECSStepFunctionInvokerProps) {
+	constructor (scope: Construct, id: string, props: ECSStepFunctionInvokerProps) {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'ECSTaskRunHelper', {
@@ -50,12 +44,12 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 			description: 'Lambda used by step function to start ECS Task',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/ecs-task-runner.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				CLUSTER_NAME: props.cluster.clusterName,
 				TASK_DEFINITION_NAME: props.taskDefinition.taskDefinitionArn,
 				SUBNETS: props.vpc.publicSubnets.map(q => q.subnetId).join(','),
-				SECURITY_GROUP: props.securityGroup.securityGroupName,
+				SECURITY_GROUP: props.securityGroup.securityGroupId, // TODO CDKv2 make sure Id is ok to use .securityGroupName,
 				CONTAINER_NAME: props.containerDefinition.containerName,
 				SIMULATOR_TABLE_NAME: props.simulatorTable.tableName,
 			},
@@ -105,8 +99,8 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 			}),
 		)
 
-		const waitX = new step.Wait(this, 'Wait few Seconds', {
-			time: step.WaitTime.duration(cdk.Duration.seconds(10)),
+		const waitX = new stepfunctions.Wait(this, 'Wait few Seconds', {
+			time: stepfunctions.WaitTime.duration(Duration.seconds(10)),
 		})
 
 		const startECSTask = new tasks.LambdaInvoke(
@@ -116,7 +110,7 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 				lambdaFunction: this.lambda,
 				resultPath: '$.executor',
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'runTask',
 						'payload.$': '$',
@@ -132,7 +126,7 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 				lambdaFunction: this.lambda,
 				resultPath: '$.ddb',
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'updateSimulation',
 						payload: {
@@ -151,7 +145,7 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 			{
 				lambdaFunction: this.lambda,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'updateSimulationState',
 						payload: {
@@ -162,7 +156,7 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 			},
 		)
 
-		const definition = new step.Map(this, 'iterator', {
+		const definition = new stepfunctions.Map(this, 'iterator', {
 			maxConcurrency: 1,
 			inputPath: '$',
 			itemsPath: '$.tasks',
@@ -172,7 +166,7 @@ export class ECSStepFunctionInvoker extends cdk.Construct {
 			.next(waitX),
 		).next(updateSimulationState)
 
-		this.stepFunction = new step.StateMachine(this, 'ECSTaskStartStepFunction', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'ECSTaskStartStepFunction', {
 			stateMachineName: namespaced(this, 'ECSTaskStartStepFunction'),
 			definition,
 			role: ecsTaskStarterRole,

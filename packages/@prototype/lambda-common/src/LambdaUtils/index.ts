@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { Runtime, Code } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_lambda as lambda } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { SharedLayer } from '../SharedLayer'
@@ -24,10 +24,10 @@ export class LambdaUtilsLayer extends SharedLayer {
 	constructor (scope: Construct, id: string) {
 		super(scope, id, {
 			layerId: 'LambdaUtilsLayer',
-			compatibleRuntimes: [Runtime.NODEJS_12_X],
+			compatibleRuntimes: [lambda.Runtime.NODEJS_12_X],
 			description: 'Lambda Utils Layer',
 			layerVersionName: namespaced(scope, 'LambdaUtils'),
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/lambda-utils.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/lambda-utils.zip')),
 		})
 	}
 }

@@ -14,13 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Duration } from '@aws-cdk/core'
-import { IFunction, StartingPosition, EventSourceMapping } from '@aws-cdk/aws-lambda'
-import { IStream, CfnStreamConsumer } from '@aws-cdk/aws-kinesis'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_lambda_event_sources as lambda_event_sources, aws_kinesis as kinesis, aws_iam as iam, aws_sqs as sqs } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
-import { SqsDlq, KinesisEventSource } from '@aws-cdk/aws-lambda-event-sources'
-import { Queue } from '@aws-cdk/aws-sqs'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -31,8 +27,8 @@ export interface KinesisConsumerProps {
 	readonly retryAttempts: number
 	readonly useFanOutConsumer: boolean
 	readonly maxBatchingWindowMs: number
-	readonly lambda: IFunction
-  readonly kinesisStream: IStream
+	readonly lambdaFn: lambda.IFunction
+  readonly kinesisStream: kinesis.IStream
 }
 
 export class KinesisConsumer extends Construct {
@@ -45,24 +41,24 @@ export class KinesisConsumer extends Construct {
 			retryAttempts,
 			useFanOutConsumer,
 			maxBatchingWindowMs,
-			lambda,
+			lambdaFn,
 			kinesisStream,
 			baseName,
 		} = props
 
-		const dlqForKinesisEventSource = new Queue(this, `${baseName}Dlq`, {
+		const dlqForKinesisEventSource = new sqs.Queue(this, `${baseName}Dlq`, {
 			queueName: namespaced(this, `${baseName}Dlq`),
 		})
-		const sqsDlq = new SqsDlq(dlqForKinesisEventSource)
+		const sqsDlq = new lambda_event_sources.SqsDlq(dlqForKinesisEventSource)
 
 		if (useFanOutConsumer) {
-			const streamConsumer = new CfnStreamConsumer(this, `${baseName}Consumer`, {
+			const streamConsumer = new kinesis.CfnStreamConsumer(this, `${baseName}Consumer`, {
 				consumerName: namespaced(this, `${baseName}Consumer`),
 				streamArn: kinesisStream.streamArn,
 			})
 
-			lambda.addToRolePolicy(new PolicyStatement({
-				effect: Effect.ALLOW,
+			lambdaFn.addToRolePolicy(new iam.PolicyStatement({
+				effect: iam.Effect.ALLOW,
 				actions: [
 					Kinesis.DESCRIBE_STREAM,
 					'kinesis:DescribeStreamSummary',
@@ -75,11 +71,11 @@ export class KinesisConsumer extends Construct {
 				resources: [streamConsumer.attrConsumerArn],
 			}))
 
-			new EventSourceMapping(this, `Kines${baseName}ToLambdaArn`, {
+			new lambda.EventSourceMapping(this, `Kines${baseName}ToLambdaArn`, {
 				eventSourceArn: streamConsumer.attrConsumerArn,
-				target: lambda,
+				target: lambdaFn,
 				// TODO: evaluate if to change to latest
-				startingPosition: StartingPosition.TRIM_HORIZON,
+				startingPosition: lambda.StartingPosition.TRIM_HORIZON,
 				onFailure: sqsDlq,
 				retryAttempts,
 				batchSize,
@@ -88,9 +84,9 @@ export class KinesisConsumer extends Construct {
 			})
 		} else {
 			/// if there are not fanout-consumers created a classic event and use shared throughout
-			const kinesisEventSource = new KinesisEventSource(kinesisStream, {
+			const kinesisEventSource = new lambda_event_sources.KinesisEventSource(kinesisStream, {
 				// TODO: evaluate if to change to latest
-				startingPosition: StartingPosition.TRIM_HORIZON,
+				startingPosition: lambda.StartingPosition.TRIM_HORIZON,
 				onFailure: sqsDlq,
 				retryAttempts,
 				batchSize,
@@ -98,7 +94,7 @@ export class KinesisConsumer extends Construct {
 				maxBatchingWindow: Duration.millis(maxBatchingWindowMs),
 			})
 
-			lambda.addEventSource(kinesisEventSource)
+			lambdaFn.addEventSource(kinesisEventSource)
 		}
 	}
 }

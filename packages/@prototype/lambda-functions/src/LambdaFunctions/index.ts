@@ -14,15 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { IVpc, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { IFunction, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_events as events, aws_elasticsearch as elasticsearch, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { KinesisConsumer } from '@prototype/lambda-common'
-import { Rule, Schedule, EventBus } from '@aws-cdk/aws-events'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
-import { LambdaFunction } from '@aws-cdk/aws-events-targets'
-import { IStream } from '@aws-cdk/aws-kinesis'
 import { DriverLocationCleanupLambda } from './DriverLocationCleanupLambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { DriverLocationUpdateIngestLambda } from './DriverLocationUpdateIngestLambda'
@@ -32,12 +26,12 @@ import { ESInitialSetupLambda } from './ESInitialSetupLambda'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LambdaFunctionsProps {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: { [key: string]: ILayerVersion, }
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly cleanupScheduleMins: number
-	readonly driverDataIngestStream: IStream
+	readonly driverDataIngestStream: kinesis.IStream
 	readonly driverLocationUpdateTTLInMs: number
 	readonly driverLocationUpdateBatchSize: number
 	readonly driverLocationUpdateParallelizationFactor: number
@@ -49,20 +43,20 @@ export interface LambdaFunctionsProps {
 	readonly geofencingRetryAttempts: number
 	readonly geofencingUseFanOutConsumer: boolean
 	readonly geofencingMaxBatchingWindowMs: number
-	readonly esDomain: IDomain
-	readonly eventBus: EventBus
+	readonly esDomain: elasticsearch.IDomain
+	readonly eventBus: events.EventBus
 }
 
 export class LambdaFunctions extends Construct {
-	readonly driverLocationCleanupLambda: IFunction
+	readonly driverLocationCleanupLambda: lambda.IFunction
 
-	readonly driverDataIngestLambda: IFunction
+	readonly driverDataIngestLambda: lambda.IFunction
 
-	readonly driverStatusUpdateLambda: IFunction
+	readonly driverStatusUpdateLambda: lambda.IFunction
 
-	readonly driverGeofencingLambda: IFunction
+	readonly driverGeofencingLambda: lambda.IFunction
 
-	readonly esInitialSetupLambda: IFunction
+	readonly esInitialSetupLambda: lambda.IFunction
 
 	constructor (scope: Construct, id: string, props: LambdaFunctionsProps) {
 		super(scope, id)
@@ -105,14 +99,14 @@ export class LambdaFunctions extends Construct {
 
 		this.driverLocationCleanupLambda = driverLocationCleanupLambda
 
-		const driverLocationCleanupLambdaTarget = new LambdaFunction(driverLocationCleanupLambda)
+		const driverLocationCleanupLambdaTarget = new events_targets.LambdaFunction(driverLocationCleanupLambda)
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const driverLocationCleanupRule = new Rule(this, 'DriverLocationCleanupRule', {
+		const driverLocationCleanupRule = new events.Rule(this, 'DriverLocationCleanupRule', {
 			description: 'Driver Location Cleanup Rule',
 			ruleName: namespaced(this, 'DriverLocationCleanupRule'),
 			targets: [driverLocationCleanupLambdaTarget],
-			schedule: Schedule.cron({ minute: `*/${cleanupScheduleMins}` }),
+			schedule: events.Schedule.cron({ minute: `*/${cleanupScheduleMins}` }),
 		})
 
 		const driverLocationUpdateIngestLambda = new DriverLocationUpdateIngestLambda(this, 'DriverLocationUpdateIngestLambda', {
@@ -136,7 +130,7 @@ export class LambdaFunctions extends Construct {
 		new KinesisConsumer(this, 'KinesisIngestConsumer', {
 			baseName: 'driverIngest',
 			kinesisStream: driverDataIngestStream,
-			lambda: driverLocationUpdateIngestLambda,
+			lambdaFn: driverLocationUpdateIngestLambda,
 			batchSize: driverLocationUpdateBatchSize,
 			parallelizationFactor: driverLocationUpdateParallelizationFactor,
 			retryAttempts: driverLocationUpdateRetryAttempts,
@@ -166,7 +160,7 @@ export class LambdaFunctions extends Construct {
 		new KinesisConsumer(this, 'KinesisGeofencingConsumer', {
 			baseName: 'geofencing',
 			kinesisStream: driverDataIngestStream,
-			lambda: driverGeofencingLambda,
+			lambdaFn: driverGeofencingLambda,
 			batchSize: geofencingBatchSize,
 			parallelizationFactor: geofencingParallelizationFactor,
 			retryAttempts: geofencingRetryAttempts,

@@ -14,15 +14,11 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import {
-	Vpc,
-	CfnEIP, CfnNatGateway,
-	CfnRouteTable, CfnRoute, CfnSubnetRouteTableAssociation,
-} from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2 } from 'aws-cdk-lib'
 
 export interface RoutingSetupProps {
-	readonly vpc: Vpc
+	readonly vpc: ec2.Vpc
 }
 
 export class RoutingSetup extends Construct {
@@ -35,22 +31,22 @@ export class RoutingSetup extends Construct {
 		const publicSubnet0 = vpc.publicSubnets[0]
 
 		// create route table
-		const privateToNatRouteTable = new CfnRouteTable(this, 'PrivateSubnetsToNatRouteTable', {
+		const privateToNatRouteTable = new ec2.CfnRouteTable(this, 'PrivateSubnetsToNatRouteTable', {
 			vpcId: vpc.vpcId,
 		})
 
 		// create an elastic IP for the NAT gateway
-		const elasticIp = new CfnEIP(this, 'ElasticIp')
+		const elasticIp = new ec2.CfnEIP(this, 'ElasticIp')
 
 		// create NAT gateway
-		const natGateway = new CfnNatGateway(this, 'NatGateway', {
+		const natGateway = new ec2.CfnNatGateway(this, 'NatGateway', {
 			allocationId: elasticIp.attrAllocationId,
 			subnetId: publicSubnet0.subnetId,
 		})
 
 		// route entry in the route table
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const routeToNat = new CfnRoute(this, 'RouteToNat', {
+		const routeToNat = new ec2.CfnRoute(this, 'RouteToNat', {
 			routeTableId: privateToNatRouteTable.ref,
 			destinationCidrBlock: '0.0.0.0/0',
 			natGatewayId: natGateway.ref,
@@ -59,7 +55,7 @@ export class RoutingSetup extends Construct {
 		// associate route table with private subnets
 		let i = 0
 		for (const privateSubnet of vpc.privateSubnets) {
-			new CfnSubnetRouteTableAssociation(this, `PrivSubnetToRouteTableAssoc-${i++}`, {
+			new ec2.CfnSubnetRouteTableAssociation(this, `PrivSubnetToRouteTableAssoc-${i++}`, {
 				routeTableId: privateToNatRouteTable.ref,
 				subnetId: privateSubnet.subnetId,
 			})

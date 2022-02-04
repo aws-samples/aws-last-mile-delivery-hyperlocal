@@ -14,9 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack, StackProps, aws_s3 as s3 } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
-import { IBucket } from '@aws-cdk/aws-s3'
 import { WebsiteHosting } from '@aws-play/cdk-web'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { ECSVpcStack, ECSContainerStack, SimulatorDataStack, IoTPolicyStack } from '@prototype/simulator'
@@ -38,7 +38,7 @@ export interface SimulatorPersistentStackProps extends StackProps {
  * Prototype backend stack
  */
 export class SimulatorPersistentStack extends Stack {
-	readonly simulatorWebsiteBucket: IBucket
+	readonly simulatorWebsiteBucket: s3.IBucket
 
 	readonly ecsVpc: ECSVpcStack
 

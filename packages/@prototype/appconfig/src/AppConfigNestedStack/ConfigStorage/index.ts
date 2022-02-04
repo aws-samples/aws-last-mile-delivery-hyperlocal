@@ -14,9 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
 import { namespacedBucket } from '@aws-play/cdk-core'
-import * as s3 from '@aws-cdk/aws-s3'
+import { aws_s3 as s3 } from 'aws-cdk-lib'
 
 export class ConfigStorage extends Construct {
 	public readonly configBucket: s3.IBucket

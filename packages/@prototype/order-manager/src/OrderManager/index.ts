@@ -14,15 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as events from '@aws-cdk/aws-events'
-import * as eventsTarget from '@aws-cdk/aws-events-targets'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as api from '@aws-cdk/aws-apigateway'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as elasticache from '@aws-cdk/aws-elasticache'
+import { Construct } from 'constructs'
+import { aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_apigateway as apigw, aws_ec2 as ec2, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { SERVICE_NAME } from '@prototype/common'
 import { OrderManagerHandlerLambda } from './OrderManagerHandler'
@@ -36,7 +29,7 @@ export interface OrderManagerStackProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
 	readonly orderTable: ddb.ITable
 	readonly providersConfig: { [key: string]: any, }
-	readonly providerApiUrls: {[key: string]: api.RestApi, }
+	readonly providerApiUrls: {[key: string]: apigw.RestApi, }
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly redisCluster: elasticache.CfnCacheCluster
@@ -44,14 +37,14 @@ export interface OrderManagerStackProps {
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
 
-export class OrderManagerStack extends cdk.Construct {
+export class OrderManagerStack extends Construct {
 	public readonly orderManagerHandler: lambda.Function
 
 	public readonly orderManagerHelper: lambda.Function
 
-	public readonly orderManagerStepFunction: step.StateMachine
+	public readonly orderManagerStepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: OrderManagerStackProps) {
+	constructor (scope: Construct, id: string, props: OrderManagerStackProps) {
 		super(scope, id)
 
 		const {
@@ -109,7 +102,7 @@ export class OrderManagerStack extends cdk.Construct {
 			description: 'Rule used by order manager to consume new incoming orders',
 			eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.orderManagerHandler)],
+			targets: [new events_targets.LambdaFunction(this.orderManagerHandler)],
 			eventPattern: {
 				source: [SERVICE_NAME.ORDER_SERVICE],
 				detailType: ['NEW_ORDER'],
@@ -121,7 +114,7 @@ export class OrderManagerStack extends cdk.Construct {
 			description: 'Rule used by order manager to consume restaurant ack events',
 			eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.orderManagerHandler)],
+			targets: [new events_targets.LambdaFunction(this.orderManagerHandler)],
 			eventPattern: {
 				source: [SERVICE_NAME.RESTAURANT_SERVICE],
 				detailType: ['RESTAURANT_ORDER_ACK'],
@@ -133,7 +126,7 @@ export class OrderManagerStack extends cdk.Construct {
 			description: 'Rule used by order manager to consume provider update events',
 			eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.orderManagerHandler)],
+			targets: [new events_targets.LambdaFunction(this.orderManagerHandler)],
 			eventPattern: {
 				source: [
 					SERVICE_NAME.EXAMPLE_POLLING_PROVIDER_SERVICE,

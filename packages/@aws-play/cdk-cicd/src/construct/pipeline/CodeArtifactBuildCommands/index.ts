@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { flatten } from 'lodash'
-import { Stack } from '@aws-cdk/core'
+import { Stack } from 'aws-cdk-lib'
 
 export interface CodeArtifactRepositoryDefinition {
 	/**

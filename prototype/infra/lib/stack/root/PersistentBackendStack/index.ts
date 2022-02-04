@@ -14,9 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
-import { CfnServiceLinkedRole } from '@aws-cdk/aws-iam'
-import { ICluster } from '@aws-cdk/aws-ecs'
+import { Construct } from 'constructs'
+import { Stack, StackProps, aws_iam as iam, aws_ecs as ecs } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { VpcPersistent } from '@prototype/networking'
 import { IdentityStackPersistent, InternalIdentityStackPersistent } from '@prototype/cognito-auth'
@@ -45,7 +44,7 @@ export class PersistentBackendStack extends Stack {
 
 	readonly dataStoragePersistent: DataStoragePersistent
 
-	readonly backendEcsCluster: ICluster
+	readonly backendEcsCluster: ecs.ICluster
 
 	readonly backendBaseNestedStack: BackendBaseNestedStack
 
@@ -67,7 +66,7 @@ export class PersistentBackendStack extends Stack {
 		// apparently this service role needs to be created,
 		// it needs to be created once, and for some reason it takes time to propagate
 		// and for ES to be able to detect. So moving it here.
-		const esServiceLinkedRole = new CfnServiceLinkedRole(this, 'EsServiceLinkedRole', {
+		const esServiceLinkedRole = new iam.CfnServiceLinkedRole(this, 'EsServiceLinkedRole', {
 			awsServiceName: 'es.amazonaws.com',
 			description: 'ES Service-Linked Role for VPC Access',
 		})

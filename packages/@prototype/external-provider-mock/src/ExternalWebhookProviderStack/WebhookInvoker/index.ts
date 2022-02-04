@@ -14,24 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as events from '@aws-cdk/aws-events'
-import * as targets from '@aws-cdk/aws-events-targets'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as secrets from '@aws-cdk/aws-secretsmanager'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_dynamodb as ddb, aws_events as events, aws_events_targets as events_targets, aws_lambda as lambda, aws_secretsmanager as secretsmanager, aws_iam as iam } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
 interface ExternalWebhookInvokerStackProps {
-  readonly exampleWebhookApiSecretName: string
+	readonly exampleWebhookApiSecretName: string
 	readonly externalOrderFinalisedIndex: string
-  readonly externalOrderTable: ddb.ITable
+	readonly externalOrderTable: ddb.ITable
 }
 
-export class ExternalWebhookInvokerStack extends cdk.Construct {
-	constructor (scope: cdk.Construct, id: string, props: ExternalWebhookInvokerStackProps) {
+export class ExternalWebhookInvokerStack extends Construct {
+	constructor (scope: Construct, id: string, props: ExternalWebhookInvokerStackProps) {
 		super(scope, id)
 
 		const {
@@ -40,7 +35,7 @@ export class ExternalWebhookInvokerStack extends cdk.Construct {
 			externalOrderFinalisedIndex,
 		} = props
 
-		const exampleWebhookProviderSecret = secrets.Secret.fromSecretNameV2(scope, 'InternalWebhookSecret', exampleWebhookApiSecretName)
+		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InternalWebhookSecret', exampleWebhookApiSecretName)
 
 		const webhookInvoker = new lambda.Function(this, 'ExternalWebhookInvoker', {
 			runtime: lambda.Runtime.NODEJS_12_X,
@@ -48,7 +43,7 @@ export class ExternalWebhookInvokerStack extends cdk.Construct {
 			description: 'External Webhook Invoker the internal webhook endpoint to update the system on the order status',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/external-webhook-invoker.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.minutes(1),
+			timeout: Duration.minutes(1),
 			environment: {
 				EXAMPLE_WEBHOOK_SECRET: exampleWebhookApiSecretName,
 				EXTERNAL_ORDER_TABLE: externalOrderTable.tableName,
@@ -90,7 +85,7 @@ export class ExternalWebhookInvokerStack extends cdk.Construct {
 		new events.Rule(this, 'ExternalWebhookInvokerRule', {
 			description: 'Invoke webhook from the external provider to update the status',
 			ruleName: namespaced(this, 'ExternalWebhookInvokerRule'),
-			targets: [new targets.LambdaFunction(webhookInvoker)],
+			targets: [new events_targets.LambdaFunction(webhookInvoker)],
 			schedule: events.Schedule.cron({ minute: '*/1' }),
 		})
 	}

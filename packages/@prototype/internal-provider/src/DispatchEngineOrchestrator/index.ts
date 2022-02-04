@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as kinesis from '@aws-cdk/aws-kinesis'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as events from '@aws-cdk/aws-events'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
-import * as ec2 from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_kinesis as kinesis, aws_dynamodb as ddb, aws_events as events, aws_elasticloadbalancingv2 as elb, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { KinesisConsumer } from '@prototype/lambda-common'
 import { DispatchEngineOrchestratorManager } from './DispatchEngineOrchestrator'
@@ -30,8 +26,8 @@ import { OrchestratorHelperLambda } from './OrchestratorHelperLambda'
 export interface DispatchEngineOrchestratorProps {
 	readonly internalProviderOrders: ddb.ITable
 	readonly internalProviderLocks: ddb.ITable
-  readonly orderBatchStream: kinesis.IStream
-  readonly eventBus: events.IEventBus
+	readonly orderBatchStream: kinesis.IStream
+	readonly eventBus: events.IEventBus
 	readonly internalProviderApi: RestApi
 	readonly iotEndpointAddress: string
 	readonly internalProviderApiSecretName: string
@@ -42,8 +38,8 @@ export interface DispatchEngineOrchestratorProps {
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 }
 
-export class DispatchEngineOrchestrator extends cdk.Construct {
-	constructor (scope: cdk.Construct, id: string, props: DispatchEngineOrchestratorProps) {
+export class DispatchEngineOrchestrator extends Construct {
+	constructor (scope: Construct, id: string, props: DispatchEngineOrchestratorProps) {
 		super(scope, id)
 
 		const {
@@ -96,7 +92,7 @@ export class DispatchEngineOrchestrator extends cdk.Construct {
 
 		new KinesisConsumer(this, 'OrderIngestKinesisConsumer', {
 			baseName: 'internal-provider',
-			lambda: orderIngestLambda,
+			lambdaFn: orderIngestLambda,
 			kinesisStream: orderBatchStream,
 			batchSize: internalWebhookProviderSettings.orderIngestBatchSize as number,
 			parallelizationFactor: internalWebhookProviderSettings.orderIngestParallelizationFactor as number,

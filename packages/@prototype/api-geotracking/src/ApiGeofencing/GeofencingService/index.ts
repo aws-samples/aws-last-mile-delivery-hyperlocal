@@ -14,14 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_iam as iam, aws_events as events, aws_ec2 as ec2, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { EventBus } from '@aws-cdk/aws-events'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { ILayerVersion } from '@aws-cdk/aws-lambda'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 import { namespaced } from '@aws-play/cdk-core'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
@@ -33,17 +28,17 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
-	readonly eventBus: EventBus
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly eventBus: events.EventBus
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
 
 export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
-	constructor (scope: cdk.Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
+	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
 		const {
 			vpc,
 			lambdaSecurityGroups,
@@ -58,7 +53,7 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/geofencing.zip')),
 			dependencies: props.dependencies,
 			runtime: lambda.Runtime.NODEJS_12_X,
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
@@ -77,7 +72,7 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 			],
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

@@ -14,16 +14,15 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as iam from '@aws-cdk/aws-iam'
-import * as cdk from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 
 export const LambdaInsightsExecutionPolicy = (): iam.IManagedPolicy => {
 	return iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLambdaInsightsExecutionRolePolicy')
 }
 
-export const LambdaInsightsLayer = (scope: cdk.Construct, id: string): lambda.LayerVersion => {
-	const stack = cdk.Stack.of(scope)
+export const LambdaInsightsLayer = (scope: Construct, id: string): lambda.LayerVersion => {
+	const stack = Stack.of(scope)
 	// note: the layer is deployed in a different account for some regions; eg. (HK, Cape Town, Milan, Beijing, Ningxia)
 	// see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versions.html
 	const layerArn = `arn:aws:lambda:${stack.region}:580247275435:layer:LambdaInsightsExtension:14`

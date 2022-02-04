@@ -14,10 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as cr from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { Duration, CustomResource, aws_iam as iam, aws_lambda as lambda, custom_resources as cr } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 
@@ -30,8 +28,8 @@ export interface ProviderInitialSetupProps {
 	}[]
 }
 
-export class ProviderInitialSetup extends cdk.Construct {
-	constructor (scope: cdk.Construct, id: string, props: ProviderInitialSetupProps) {
+export class ProviderInitialSetup extends Construct {
+	constructor (scope: Construct, id: string, props: ProviderInitialSetupProps) {
 		super(scope, id)
 
 		const { apiKeySecretNameList } = props
@@ -68,7 +66,7 @@ export class ProviderInitialSetup extends cdk.Construct {
 					resources: apiKeySecretNameList.map(item => item.keyArn),
 				}),
 			],
-			timeout: cdk.Duration.seconds(20),
+			timeout: Duration.seconds(20),
 		})
 
 		const providerSetupProvider = new cr.Provider(this, 'ProviderSetupProvider', {
@@ -76,7 +74,7 @@ export class ProviderInitialSetup extends cdk.Construct {
 		})
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const esSetupCustomResource = new cdk.CustomResource(this, 'ProviderSetupCR', {
+		const esSetupCustomResource = new CustomResource(this, 'ProviderSetupCR', {
 			serviceToken: providerSetupProvider.serviceToken,
 		})
 	}

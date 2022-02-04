@@ -14,14 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { LayerVersion as BaseLayerVersion, LayerVersionProps as BaseLayerVersionProps } from '@aws-cdk/aws-lambda'
-import { StringParameter } from '@aws-cdk/aws-ssm'
+import { Construct } from 'constructs'
+import { Annotations, Names, aws_lambda as lambda, aws_ssm as ssm } from 'aws-cdk-lib'
 
-export class LayerVersion extends BaseLayerVersion {
+export class LayerVersion extends lambda.LayerVersion {
 	private readonly secretParameterName: string
 
-	private secretParameter?: StringParameter
+	private secretParameter?: ssm.StringParameter
 
 	private createSecretParameter (): void {
 		if (this.secretParameter != null) {
@@ -29,7 +28,7 @@ export class LayerVersion extends BaseLayerVersion {
 		}
 
 		// Store the arn in a SSM enable cross-stack usage https://github.com/aws/aws-cdk/issues/1972
-		this.secretParameter = new StringParameter(this, 'SecretParameter', {
+		this.secretParameter = new ssm.StringParameter(this, 'SecretParameter', {
 			parameterName: this.secretParameterName,
 			stringValue: this.layerVersionArn,
 		})
@@ -38,10 +37,13 @@ export class LayerVersion extends BaseLayerVersion {
 	/**
 	 * @inheritdoc
 	 *
-	 * @override **WARNING:** Using `LayerVersion.layerVersionArn` getting may cause parameter issues between cross-stacks. Use `getLayerVersionArn(scope)` to resolve.
+	 * @override **WARNING:** Using `LayerVersion.layerVersionArn` getting may cause parameter issues between cross-stacks.
+	 * Use `getLayerVersionArn(scope)` to resolve.
 	 */
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	get layerVersionArn (): string {
-		this.node.addWarning('Using `LayerVersion.layerVersionArn` getting may cause parameter issues between cross-stacks. Use `getLayerVersionArn(scope)` to resolve.')
+		Annotations.of(this).addWarning('Using `LayerVersion.layerVersionArn` getting may cause parameter issues between cross-stacks. Use `getLayerVersionArn(scope)` to resolve.')
 
 		return super.layerVersionArn
 	}
@@ -51,12 +53,12 @@ export class LayerVersion extends BaseLayerVersion {
 			this.createSecretParameter()
 		}
 
-		return StringParameter.valueForStringParameter(scope, this.secretParameterName)
+		return ssm.StringParameter.valueForStringParameter(scope, this.secretParameterName)
 	}
 
-	constructor (scope: Construct, id: string, props: BaseLayerVersionProps) {
+	constructor (scope: Construct, id: string, props: lambda.LayerVersionProps) {
 		super(scope, id, props)
 
-		this.secretParameterName = `${this.node.uniqueId}/layerVersionArn`
+		this.secretParameterName = `${Names.uniqueId(this)}/layerVersionArn`
 	}
 }

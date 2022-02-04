@@ -14,34 +14,33 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { IVpc, IInstance, ISecurityGroup, SubnetType, BastionHostLinux, BlockDeviceVolume } from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
-import * as iam from '@aws-cdk/aws-iam'
 
 export interface BastionHostSetupProps {
-	readonly vpc: IVpc
-	readonly bastionSecurityGroup: ISecurityGroup
+	readonly vpc: ec2.IVpc
+	readonly bastionSecurityGroup: ec2.ISecurityGroup
 }
 
 export class BastionHostSetup extends Construct {
-	readonly bastionInstance: IInstance
+	readonly bastionInstance: ec2.IInstance
 
 	constructor (scope: Construct, id: string, props: BastionHostSetupProps) {
 		super(scope, id)
 
 		const { vpc, bastionSecurityGroup } = props
 
-		const volume = BlockDeviceVolume.ebs(10, {
+		const volume = ec2.BlockDeviceVolume.ebs(10, {
 			encrypted: true,
 		})
 
-		const bastionHost = new BastionHostLinux(this, 'BastionHostLinux', {
+		const bastionHost = new ec2.BastionHostLinux(this, 'BastionHostLinux', {
 			vpc,
 			instanceName: namespaced(this, 'BastionHost'),
 			securityGroup: bastionSecurityGroup,
 			subnetSelection: {
-				subnetType: SubnetType.PUBLIC,
+				subnetType: ec2.SubnetType.PUBLIC,
 			},
 			blockDevices: [
 				{

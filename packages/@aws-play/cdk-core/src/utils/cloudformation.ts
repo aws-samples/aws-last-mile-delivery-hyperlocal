@@ -18,7 +18,7 @@
 import { readFileSync } from 'fs'
 import { extname } from 'path'
 import { yamlParse } from 'yaml-cfn'
-import { Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
 
 export function parseTemplate (file: string): any {
 	if (['yml', 'yaml'].includes(extname(file))) {

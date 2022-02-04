@@ -14,36 +14,38 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { IApiKey, EndpointType, LambdaIntegration, MethodOptions, IResource, RestApi as CdkRestApi, RestApiProps as CdkRestApiProps, CfnAuthorizer, AuthorizationType } from '@aws-cdk/aws-apigateway'
-import { ManagedPolicy, Role, ServicePrincipal } from '@aws-cdk/aws-iam'
-import { IFunction, Function as LambdaFunction, FunctionProps } from '@aws-cdk/aws-lambda'
-import { NodejsFunction, NodejsFunctionProps } from '@aws-cdk/aws-lambda-nodejs'
-import { Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import {
+	aws_apigateway as apigw,
+	aws_iam as iam,
+	aws_lambda as lambda,
+	aws_lambda_nodejs as lambda_nodejs,
+} from 'aws-cdk-lib'
 import { ServicePrincipals, ManagedPolicies } from 'cdk-constants'
 import { namespaced, uniqueIdHash } from '@aws-play/cdk-core'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface RestApiProps extends CdkRestApiProps {}
+export interface RestApiProps extends apigw.RestApiProps {}
 
 interface BaseFunctionToResourceProps {
 	httpMethod: string
-	methodOptions?: MethodOptions
+	methodOptions?: apigw.MethodOptions
 }
 
 export interface CreateFunctionToResourceProps extends BaseFunctionToResourceProps{
 	functionId: string
-	functionProps: FunctionProps | NodejsFunctionProps
+	functionProps: lambda.FunctionProps | lambda_nodejs.NodejsFunctionProps
 }
 
 export interface AddFunctionToResourceProps extends BaseFunctionToResourceProps {
-	function: IFunction
+	function: lambda.IFunction
 }
 
-export class RestApi extends CdkRestApi {
+export class RestApi extends apigw.RestApi {
 	private static defaultProps ({ endpointTypes, ...props }: RestApiProps): RestApiProps {
 		return {
 			...props,
-			endpointTypes: endpointTypes || [EndpointType.REGIONAL],
+			endpointTypes: endpointTypes || [apigw.EndpointType.REGIONAL],
 		}
 	}
 
@@ -60,7 +62,7 @@ export class RestApi extends CdkRestApi {
 		}
 	}
 
-	addApiKeyWithUsagePlanAndStage (apiKeyId: string, usagePlanName?: string): IApiKey {
+	addApiKeyWithUsagePlanAndStage (apiKeyId: string, usagePlanName?: string): apigw.IApiKey {
 		const _usagePlanName = usagePlanName || `${apiKeyId}-usagePlan`
 
 		// create the api key
@@ -71,8 +73,8 @@ export class RestApi extends CdkRestApi {
 		// usage plan
 		const usagePlan = this.addUsagePlan(`${apiKeyId}-usagePlan`, {
 			name: _usagePlanName,
-			apiKey,
 		})
+		usagePlan.addApiKey(apiKey)
 
 		// stage
 		usagePlan.addApiStage({ api: this, stage: this.deploymentStage })
@@ -80,38 +82,40 @@ export class RestApi extends CdkRestApi {
 		return apiKey
 	}
 
-	addResourceWithAbsolutePath (path: string): IResource {
+	addResourceWithAbsolutePath (path: string): apigw.IResource {
 		return this.root.resourceForPath(path)
 	}
 
-	addCognitoAuthorizer (providerArns: string[]): CfnAuthorizer {
+	addCognitoAuthorizer (providerArns: string[]): apigw.CfnAuthorizer {
 		// add cognito authorizer
-		const cognitoAuthorizer = new CfnAuthorizer(this, `CognitoAuthorizer-${uniqueIdHash(this)}`, {
+		const cognitoAuthorizer = new apigw.CfnAuthorizer(this, `CognitoAuthorizer-${uniqueIdHash(this)}`, {
 			name: namespaced(this, 'CognitoAuthorizer'),
 			identitySource: 'method.request.header.Authorization',
 			providerArns,
 			restApiId: this.restApiId,
-			type: AuthorizationType.COGNITO,
+			type: apigw.AuthorizationType.COGNITO,
 		})
 
 		return cognitoAuthorizer
 	}
 
 	// helper for add*FunctionToResource
-	private createDefaultLambdaRole (id: string, functionName: string): Role {
-		return new Role(this, `${id}-role-${uniqueIdHash(this)}`, {
-			assumedBy: new ServicePrincipal(ServicePrincipals.LAMBDA),
+	private createDefaultLambdaRole (id: string, functionName: string): iam.Role {
+		return new iam.Role(this, `${id}-role-${uniqueIdHash(this)}`, {
+			assumedBy: new iam.ServicePrincipal(ServicePrincipals.LAMBDA),
 			description: `Execution role for ${functionName}`,
-			managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName(ManagedPolicies.AWS_LAMBDA_EXECUTE)],
+			managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName(ManagedPolicies.AWS_LAMBDA_EXECUTE)],
 			roleName: namespaced(this, functionName),
 		})
 	}
 
-	private createFunctionToResource<TProps extends FunctionProps | NodejsFunctionProps> (
-		resource: IResource,
+	private createFunctionToResource<TProps extends lambda.FunctionProps | lambda_nodejs.NodejsFunctionProps> (
+		resource: apigw.IResource,
 		props: CreateFunctionToResourceProps,
-		FnType: { new(scope: Construct, id: string, fnProps: TProps): IFunction, },
-	): IFunction {
+		FnType: {
+      new (scope: Construct, id: string, fnProps: TProps): lambda.IFunction
+    },
+	): lambda.IFunction {
 		const { httpMethod, functionId, functionProps, methodOptions } = props
 
 		const { functionName, role } = functionProps
@@ -127,7 +131,7 @@ export class RestApi extends CdkRestApi {
 		}
 
 		const lambdaFunctionProps = {
-			...functionProps as TProps,
+			...(functionProps as TProps),
 			role: role || lambdaExecutionRole,
 			functionName: namespaced(this, functionName),
 		}
@@ -143,30 +147,30 @@ export class RestApi extends CdkRestApi {
 		return lambdaFunction
 	}
 
-	addFunctionToResource (resource: IResource, props: AddFunctionToResourceProps): void {
+	addFunctionToResource (resource: apigw.IResource, props: AddFunctionToResourceProps): void {
 		const { httpMethod, methodOptions, function: lambdaFunction } = props
 
-		const lambdaIntegration = new LambdaIntegration(lambdaFunction)
+		const lambdaIntegration = new apigw.LambdaIntegration(lambdaFunction)
 		resource.addMethod(httpMethod, lambdaIntegration, methodOptions)
 	}
 
-	createLambdaFunctionToResource (resource: IResource, props: CreateFunctionToResourceProps): IFunction {
+	createLambdaFunctionToResource (resource: apigw.IResource, props: CreateFunctionToResourceProps): lambda.IFunction {
 		const { functionProps } = props
 
-		if ((functionProps as FunctionProps) === undefined) {
+		if ((functionProps as lambda.FunctionProps) === undefined) {
 			throw new Error('functionProps must be of type FunctionProps')
 		}
 
-		return this.createFunctionToResource(resource, props, LambdaFunction)
+		return this.createFunctionToResource(resource, props, lambda.Function)
 	}
 
-	createNodejsFunctionToResource (resource: IResource, props: CreateFunctionToResourceProps): IFunction {
+	createNodejsFunctionToResource (resource: apigw.IResource, props: CreateFunctionToResourceProps): lambda.IFunction {
 		const { functionProps } = props
 
-		if ((functionProps as NodejsFunctionProps) === undefined) {
+		if ((functionProps as lambda_nodejs.NodejsFunctionProps) === undefined) {
 			throw new Error('functionProps must be of type NodejsFunctionProps')
 		}
 
-		return this.createFunctionToResource(resource, props, NodejsFunction)
+		return this.createFunctionToResource(resource, props, lambda_nodejs.NodejsFunction)
 	}
 }

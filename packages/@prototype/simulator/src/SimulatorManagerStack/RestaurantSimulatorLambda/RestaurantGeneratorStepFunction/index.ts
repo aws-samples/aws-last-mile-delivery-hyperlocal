@@ -14,14 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iot from '@aws-cdk/aws-iot'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks, aws_cognito as cognito, aws_iot as iot } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -38,12 +32,12 @@ export interface RestaurantGeneratorStepFunctionProps {
 	readonly restaurantUserPassword: string
 }
 
-export class RestaurantGeneratorStepFunction extends cdk.Construct {
+export class RestaurantGeneratorStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: RestaurantGeneratorStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: RestaurantGeneratorStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -63,7 +57,7 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 			description: 'Lambda used by step function to generate restaurants',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-generator-helper.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				RESTAURANT_STATS_TABLE_NAME: restaurantStatsTable.tableName,
 				RESTAURANT_TABLE_NAME: restaurantTable.tableName,
@@ -118,8 +112,8 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 			}),
 		)
 
-		const waitX = new step.Wait(this, 'Wait few Seconds', {
-			time: step.WaitTime.duration(cdk.Duration.seconds(1)),
+		const waitX = new stepfunctions.Wait(this, 'Wait few Seconds', {
+			time: stepfunctions.WaitTime.duration(Duration.seconds(1)),
 		})
 
 		const iterate = new tasks.LambdaInvoke(
@@ -131,7 +125,7 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 					'iterator.$': '$.Payload',
 				},
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'iterate',
 						payload: {
@@ -149,9 +143,9 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 			'GenerateRestaurant',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'generateRestaurant',
 						payload: {
@@ -172,9 +166,9 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 				`UpdateStats_${state}`,
 				{
 					lambdaFunction: this.lambda,
-					resultPath: step.JsonPath.DISCARD,
+					resultPath: stepfunctions.JsonPath.DISCARD,
 					payload: {
-						type: step.InputType.OBJECT,
+						type: stepfunctions.InputType.OBJECT,
 						value: {
 							cmd: 'updateStats',
 							payload: {
@@ -186,9 +180,9 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 				},
 			)
 
-		const configureCount = new step.Pass(this, 'ConfigureCount', {
+		const configureCount = new stepfunctions.Pass(this, 'ConfigureCount', {
 			resultPath: '$.iterator',
-			result: step.Result.fromObject({
+			result: stepfunctions.Result.fromObject({
 				index: 0,
 				step: 1,
 			}),
@@ -199,12 +193,12 @@ export class RestaurantGeneratorStepFunction extends cdk.Construct {
 		.next(iterate)
 		.next(generateRestaurant)
 		.next(
-			new step.Choice(this, 'IsCountReached')
-			.when(step.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
+			new stepfunctions.Choice(this, 'IsCountReached')
+			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
 			.otherwise(updateStats('READY')),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'RestaurantGeneratorStepFunctions', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'RestaurantGeneratorStepFunctions', {
 			stateMachineName: namespaced(this, 'RestaurantGeneratorStepFunctions'),
 			definition,
 			role: stepFunctionRole,

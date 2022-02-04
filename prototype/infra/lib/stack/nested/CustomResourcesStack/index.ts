@@ -14,13 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_ec2 as ec2, aws_lambda as lambda } from 'aws-cdk-lib'
 import { ESInitialSetup } from '@prototype/live-data-cache'
-import { IVpc } from '@aws-cdk/aws-ec2'
 import { ProviderInitialSetup } from '@prototype/provider'
 import { ProviderStack } from '../ProviderStack'
 import { Networking } from '@prototype/networking'
-import { IFunction } from '@aws-cdk/aws-lambda'
 
 export interface ApiKeySecretConfigItem {
 	keyArn: string
@@ -28,9 +27,9 @@ export interface ApiKeySecretConfigItem {
 	secret: string
 }
 export interface CustomResourcesStackProps extends NestedStackProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly lambdaRefs: { [key: string]: IFunction, }
+	readonly lambdaRefs: { [key: string]: lambda.IFunction, }
 	readonly providerNestedStack: ProviderStack
 	readonly providersConfig: { [key: string]: any, }
 	readonly additionalApiConfig?: ApiKeySecretConfigItem[]

@@ -14,18 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as elasticache from '@aws-cdk/aws-elasticache'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_iam as iam, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb, aws_events as events } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { ITable } from '@aws-cdk/aws-dynamodb'
 import { namespaced } from '@aws-play/cdk-core'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
-import { EventBus } from '@aws-cdk/aws-events'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
@@ -33,8 +28,8 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly orderTable: ITable
-	readonly eventBus: EventBus
+	readonly orderTable: ddb.ITable
+	readonly eventBus: events.EventBus
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly redisCluster: elasticache.CfnCacheCluster
@@ -44,7 +39,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
 
 export class OrderManagerHelperLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
-	constructor (scope: cdk.Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
+	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
 		const {
 			orderTable,
 			eventBus,
@@ -60,7 +55,7 @@ export class OrderManagerHelperLambda extends DeclaredLambdaFunction<Environment
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-manager-helper.zip')),
 			dependencies: props.dependencies,
 			runtime: lambda.Runtime.NODEJS_12_X,
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
@@ -92,7 +87,7 @@ export class OrderManagerHelperLambda extends DeclaredLambdaFunction<Environment
 				lambdaLayers.lambdaInsightsLayer,
 			],
 			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: [vpcNetworking.securityGroups.lambda],
 		}

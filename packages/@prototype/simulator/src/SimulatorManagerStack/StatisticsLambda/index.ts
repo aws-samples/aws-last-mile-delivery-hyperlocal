@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as events from '@aws-cdk/aws-events'
-import * as eventTargets from '@aws-cdk/aws-events-targets'
-import * as elasticache from '@aws-cdk/aws-elasticache'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, Stack, aws_ec2 as ec2, aws_events as events, aws_events_targets as events_targets, aws_elasticache as elasticache, aws_lambda as lambda } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -33,13 +29,13 @@ export interface StatisticsProps {
 	readonly eventBus: events.EventBus
 }
 
-export class StatisticsLambda extends cdk.Construct {
+export class StatisticsLambda extends Construct {
 	public readonly lambda: lambda.Function
 
-	constructor (scope: cdk.Construct, id: string, props: StatisticsProps) {
+	constructor (scope: Construct, id: string, props: StatisticsProps) {
 		super(scope, id)
 
-		const stack = cdk.Stack.of(this)
+		const stack = Stack.of(this)
 		const {
 			eventBus,
 			redisCluster,
@@ -54,7 +50,7 @@ export class StatisticsLambda extends cdk.Construct {
 			description: 'Lambda used to consume event bridge events and build up statistics in redis to generate a system wide state',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/statistics-lambda.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
@@ -75,7 +71,7 @@ export class StatisticsLambda extends cdk.Construct {
 			],
 			vpc: privateVpc,
 			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: [vpcNetworking.securityGroups.lambda],
 		})
@@ -85,7 +81,7 @@ export class StatisticsLambda extends cdk.Construct {
 			description: 'Used for stats purpose',
 			eventBus,
 			enabled: true,
-			targets: [new eventTargets.LambdaFunction(this.lambda)],
+			targets: [new events_targets.LambdaFunction(this.lambda)],
 			eventPattern: {
 				// catch all events in the bus
 				account: [stack.account],

@@ -15,32 +15,24 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps, Environment } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { Cors, IApiKey } from '@aws-cdk/aws-apigateway'
-import { IFunction, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { Stream, IStream } from '@aws-cdk/aws-kinesis'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IUserPool } from '@aws-cdk/aws-cognito'
-import { EventBus } from '@aws-cdk/aws-events'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
-import { IVpc } from '@aws-cdk/aws-ec2'
 import { LambdaUtilsLayer, ESClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
 import { Networking } from '@prototype/networking'
 import { ApiGeoTracking, ApiGeofencing } from '@prototype/api-geotracking'
 import { LambdaFunctions } from '@prototype/lambda-functions'
 
 export interface MicroServiceStackProps extends NestedStackProps {
-	readonly vpc: IVpc
-	readonly geoPolygonTable: ITable
-	readonly demographicAreaDispatchSettings: ITable
-	readonly userPool: IUserPool
+	readonly vpc: ec2.IVpc
+	readonly geoPolygonTable: ddb.ITable
+	readonly demographicAreaDispatchSettings: ddb.ITable
+	readonly userPool: cognito.IUserPool
 	readonly vpcNetworking: Networking
-	readonly redisCluster: CfnCacheCluster
-	readonly elasticSearchCluster: IDomain
-	readonly driverDataIngestStream: IStream
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly elasticSearchCluster: elasticsearch.IDomain
+	readonly driverDataIngestStream: kinesis.IStream
 	readonly redisConfig: { [key: string]: string | number, }
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
 	readonly env?: Environment
@@ -52,13 +44,13 @@ export interface MicroServiceStackProps extends NestedStackProps {
 export class MicroServiceStack extends NestedStack {
 	public readonly geoTrackingRestApi: RestApi
 
-	public readonly geoTrackingRestApiKey: IApiKey
+	public readonly geoTrackingRestApiKey: apigw.IApiKey
 
-	public readonly eventBus: EventBus
+	public readonly eventBus: events.EventBus
 
-	public readonly lambdaRefs: { [key: string]: IFunction, }
+	public readonly lambdaRefs: { [key: string]: lambda.IFunction, }
 
-	public readonly lambdaLayers: { [key: string]: ILayerVersion, }
+	public readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
 	constructor (scope: Construct, id: string, props: MicroServiceStackProps) {
 		super(scope, id, props)
@@ -78,7 +70,7 @@ export class MicroServiceStack extends NestedStack {
 		} = props
 
 		// main comm eventbus
-		const eventBus = new EventBus(this, 'CommEventBus', {
+		const eventBus = new events.EventBus(this, 'CommEventBus', {
 			eventBusName: namespaced(this, 'event-bus'),
 		})
 		this.eventBus = eventBus
@@ -88,8 +80,8 @@ export class MicroServiceStack extends NestedStack {
 		const geoTrackingRestApi = new RestApi(this, 'GeoTrackingRestApi', {
 			restApiName: namespaced(this, 'GeoTrackingRestApi'),
 			defaultCorsPreflightOptions: {
-				allowOrigins: Cors.ALL_ORIGINS,
-				allowMethods: Cors.ALL_METHODS,
+				allowOrigins: apigw.Cors.ALL_ORIGINS,
+				allowMethods: apigw.Cors.ALL_METHODS,
 			},
 		})
 		this.geoTrackingRestApi = geoTrackingRestApi
@@ -120,7 +112,7 @@ export class MicroServiceStack extends NestedStack {
 			redisCluster,
 			lambdaLayers,
 			cleanupScheduleMins: 1,
-			driverDataIngestStream: Stream.fromStreamArn(this, 'DriverDataIngestStreamMS', driverDataIngestStream.streamArn),
+			driverDataIngestStream: kinesis.Stream.fromStreamArn(this, 'DriverDataIngestStreamMS', driverDataIngestStream.streamArn),
 			driverLocationUpdateTTLInMs: redisConfig.driverLocationUpdateTTLInMS as number,
 			esDomain: elasticSearchCluster,
 			eventBus,

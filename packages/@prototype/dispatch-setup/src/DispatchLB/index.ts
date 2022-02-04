@@ -14,9 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -25,14 +24,14 @@ export interface DispatchLBProps {
     readonly dmzSecurityGroup: ec2.ISecurityGroup
 }
 
-export class DispatchLB extends cdk.Construct {
+export class DispatchLB extends Construct {
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
 	readonly httpListener: elb.IApplicationListener
 
 	readonly instanceTargetGroup: elb.IApplicationTargetGroup
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchLBProps) {
+	constructor (scope: Construct, id: string, props: DispatchLBProps) {
 		super(scope, id)
 
 		const {

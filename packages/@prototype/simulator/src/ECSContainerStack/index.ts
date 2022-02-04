@@ -14,16 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ecr from '@aws-cdk/aws-ecr'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as iot from '@aws-cdk/aws-iot'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as customResource from '@aws-cdk/custom-resources'
-import * as cognito from '@aws-cdk/aws-cognito'
+import { Construct } from 'constructs'
+import { aws_ecs as ecs, aws_ecr as ecr, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { SimulatorContainer } from './SimulatorContainer'
 
@@ -52,7 +44,7 @@ interface ECSContainerStackProps {
 	readonly customerUserPassword: string
 }
 
-export class ECSContainerStack extends cdk.Construct {
+export class ECSContainerStack extends Construct {
 	public readonly repository: ecr.Repository
 
 	public readonly cluster: ecs.Cluster
@@ -63,7 +55,7 @@ export class ECSContainerStack extends cdk.Construct {
 
 	public readonly restaurantSimulator: SimulatorContainer
 
-	constructor (scope: cdk.Construct, id: string, props: ECSContainerStackProps) {
+	constructor (scope: Construct, id: string, props: ECSContainerStackProps) {
 		super(scope, id)
 
 		this.cluster = new ecs.Cluster(this, 'ECSSimulatorCluster', {
@@ -78,17 +70,17 @@ export class ECSContainerStack extends cdk.Construct {
 			imageScanOnPush: true,
 		})
 
-		const getIoTEndpoint = new customResource.AwsCustomResource(this, 'IoTEndpoint', {
+		const getIoTEndpoint = new cr.AwsCustomResource(this, 'IoTEndpoint', {
 			onCreate: {
 				service: 'Iot',
 				action: 'describeEndpoint',
-				physicalResourceId: customResource.PhysicalResourceId.fromResponse('endpointAddress'),
+				physicalResourceId: cr.PhysicalResourceId.fromResponse('endpointAddress'),
 				parameters: {
 					endpointType: 'iot:Data-ATS',
 				},
 			},
-			policy: customResource.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: customResource.AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 

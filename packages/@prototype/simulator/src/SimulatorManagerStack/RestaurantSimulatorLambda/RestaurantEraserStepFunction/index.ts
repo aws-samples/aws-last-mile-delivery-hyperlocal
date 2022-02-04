@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -29,12 +25,12 @@ export interface RestaurantEraserStepFunctionProps {
 	readonly restaurantStatsTable: ddb.ITable
 }
 
-export class RestaurantEraserStepFunction extends cdk.Construct {
+export class RestaurantEraserStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: RestaurantEraserStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: RestaurantEraserStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -49,7 +45,7 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 			description: 'Lambda used by step function to delete restaurants',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-eraser-helper.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				RESTAURANT_TABLE_NAME: restaurantTable.tableName,
 				RESTAURANT_STATS_TABLE_NAME: restaurantStatsTable.tableName,
@@ -114,7 +110,7 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 					'iterator.$': '$.Payload',
 				},
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'iterate',
 						payload: {
@@ -132,9 +128,9 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 			'DeleteRestaurants',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'deleteRestaurants',
 						payload: {
@@ -150,9 +146,9 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 			'DeleteRestaurantStats',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'deleteRestaurantStats',
 						payload: {
@@ -163,9 +159,9 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 			},
 		)
 
-		const configureIterator = new step.Pass(this, 'ConfigureIterator', {
+		const configureIterator = new stepfunctions.Pass(this, 'ConfigureIterator', {
 			resultPath: '$.iterator',
-			result: step.Result.fromObject({
+			result: stepfunctions.Result.fromObject({
 				lastEvaluatedKey: '',
 			}),
 		})
@@ -174,12 +170,12 @@ export class RestaurantEraserStepFunction extends cdk.Construct {
 		.next(iterate)
 		.next(deleteRestaurants)
 		.next(
-			new step.Choice(this, 'IsNextPage')
-			.when(step.Condition.booleanEquals('$.iterator.continue', true), iterate)
+			new stepfunctions.Choice(this, 'IsNextPage')
+			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), iterate)
 			.otherwise(deleteRestaurantStats),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'RestaurantEraserStepFunctions', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'RestaurantEraserStepFunctions', {
 			stateMachineName: namespaced(this, 'RestaurantEraserStepFunctions'),
 			definition,
 			role: stepFunctionRole,

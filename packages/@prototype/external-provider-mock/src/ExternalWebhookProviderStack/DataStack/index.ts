@@ -14,18 +14,18 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-type ExternalWebhookDataStackProps = cdk.NestedStackProps
+type ExternalWebhookDataStackProps = NestedStackProps
 
-export class ExternalWebhookDataStack extends cdk.NestedStack {
+export class ExternalWebhookDataStack extends NestedStack {
 	public readonly externalOrderTable: ddb.Table
 
 	public readonly externalOrderFinalisedIndex: string
 
-	constructor (scope: cdk.Construct, id: string, props: ExternalWebhookDataStackProps) {
+	constructor (scope: Construct, id: string, props: ExternalWebhookDataStackProps) {
 		super(scope, id)
 
 		this.externalOrderTable = new ddb.Table(this, 'ExampleWebhookOrders', {
@@ -36,7 +36,7 @@ export class ExternalWebhookDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.externalOrderFinalisedIndex = namespaced(this, 'idx-order-finalised')

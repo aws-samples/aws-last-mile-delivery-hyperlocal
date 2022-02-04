@@ -14,13 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
 import { AllowESDelete, AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -32,12 +29,12 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
-	readonly esDomain: IDomain
+	readonly esDomain: elasticsearch.IDomain
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -56,7 +53,7 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'DriverLocationCleanup'),
 			description: 'Driver Location Cleanup function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-location-cleanup.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-location-cleanup.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -73,7 +70,7 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 			],
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

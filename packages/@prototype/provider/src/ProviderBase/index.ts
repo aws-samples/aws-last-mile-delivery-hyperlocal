@@ -14,10 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import * as apig from '@aws-cdk/aws-apigateway'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as waf from '@aws-cdk/aws-wafv2'
+import { Construct } from 'constructs'
+import { aws_apigateway as apigw, aws_lambda as lambda, aws_wafv2 as waf } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -34,7 +32,7 @@ export interface ProviderBaseProps {
 export class ProviderBase extends Construct {
 	public readonly apiGwInstance: RestApi
 
-	public readonly apiKey: apig.IApiKey
+	public readonly apiKey: apigw.IApiKey
 
 	// public readonly webACL: waf.CfnWebACL
 
@@ -53,8 +51,8 @@ export class ProviderBase extends Construct {
 		this.apiGwInstance = new RestApi(this, `ProviderApiGwInstance-${name}`, {
 			restApiName: namespaced(this, `ProviderApi-${name}`),
 			defaultCorsPreflightOptions: {
-				allowOrigins: apig.Cors.ALL_ORIGINS,
-				allowMethods: apig.Cors.ALL_METHODS,
+				allowOrigins: apigw.Cors.ALL_ORIGINS,
+				allowMethods: apigw.Cors.ALL_METHODS,
 			},
 		})
 

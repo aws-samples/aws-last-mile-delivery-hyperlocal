@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Tags } from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { Tags, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export class ECSVpcStack extends Construct {

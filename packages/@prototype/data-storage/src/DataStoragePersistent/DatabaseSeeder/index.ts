@@ -14,10 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { aws_dynamodb as ddb, custom_resources } from 'aws-cdk-lib'
 import * as utils from '@aws-sdk/util-dynamodb'
-import * as customRes from '@aws-cdk/custom-resources'
-import * as ddb from '@aws-cdk/aws-dynamodb'
 import { DEMOGRAPHIC_AREA, STATIC_AREAS_POLYGON } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -186,7 +185,7 @@ export class DatabaseSeeder extends Construct {
 			},
 		]
 
-		new customRes.AwsCustomResource(this, 'SeedDBDemographicAreaProviderEngineSettings', {
+		new custom_resources.AwsCustomResource(this, 'SeedDBDemographicAreaProviderEngineSettings', {
 			onCreate: {
 				service: 'DynamoDB',
 				action: 'batchWriteItem',
@@ -236,10 +235,10 @@ export class DatabaseSeeder extends Construct {
 						],
 					},
 				},
-				physicalResourceId: customRes.PhysicalResourceId.of('onDemographicAreaDBSeed'),
+				physicalResourceId: custom_resources.PhysicalResourceId.of('onDemographicAreaDBSeed'),
 			},
-			policy: customRes.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: customRes.AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 
@@ -249,7 +248,7 @@ export class DatabaseSeeder extends Construct {
 			preferOccupiedDrivers: true,
 		}
 
-		new customRes.AwsCustomResource(this, 'SeedDBdemographicAreaDispatcherEngineSettings', {
+		new custom_resources.AwsCustomResource(this, 'SeedDBdemographicAreaDispatcherEngineSettings', {
 			onCreate: {
 				service: 'DynamoDB',
 				action: 'batchWriteItem',
@@ -299,14 +298,14 @@ export class DatabaseSeeder extends Construct {
 						],
 					},
 				},
-				physicalResourceId: customRes.PhysicalResourceId.of('onDemographicAreaDispatchSettingsDBSeed'),
+				physicalResourceId: custom_resources.PhysicalResourceId.of('onDemographicAreaDispatchSettingsDBSeed'),
 			},
-			policy: customRes.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: customRes.AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 
-		new customRes.AwsCustomResource(this, 'SeedDBPolygonTableCoords', {
+		new custom_resources.AwsCustomResource(this, 'SeedDBPolygonTableCoords', {
 			onCreate: {
 				service: 'DynamoDB',
 				action: 'batchWriteItem',
@@ -343,10 +342,10 @@ export class DatabaseSeeder extends Construct {
 						],
 					},
 				},
-				physicalResourceId: customRes.PhysicalResourceId.of('onPolygonTableSeedDBCoords'),
+				physicalResourceId: custom_resources.PhysicalResourceId.of('onPolygonTableSeedDBCoords'),
 			},
-			policy: customRes.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: customRes.AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 	}

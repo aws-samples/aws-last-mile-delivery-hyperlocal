@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as kinesis from '@aws-cdk/aws-kinesis'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as events from '@aws-cdk/aws-events'
-import * as eventsTarget from '@aws-cdk/aws-events-targets'
+import { Construct } from 'constructs'
+import { aws_kinesis as kinesis, aws_dynamodb as ddb, aws_lambda as lambda, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import { SERVICE_NAME } from '@prototype/common'
@@ -39,12 +35,12 @@ export interface DriverEventHandlerProps {
 	readonly iotEndpointAddress: string
 }
 
-export class DriverEventHandler extends cdk.Construct {
+export class DriverEventHandler extends Construct {
 	readonly driverStatusHandler: lambda.IFunction
 
 	readonly driverCleanupFunction: lambda.IFunction
 
-	constructor (scope: cdk.Construct, id: string, props: DriverEventHandlerProps) {
+	constructor (scope: Construct, id: string, props: DriverEventHandlerProps) {
 		super(scope, id)
 
 		const {
@@ -84,7 +80,7 @@ export class DriverEventHandler extends cdk.Construct {
 			description: 'Rule used by internal provider to consume driver status update events',
 			eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.driverStatusHandler)],
+			targets: [new events_targets.LambdaFunction(this.driverStatusHandler)],
 			eventPattern: {
 				source: [SERVICE_NAME.DRIVER_SERVICE],
 				detailType: ['DRIVER_STATUS_CHANGE'],
@@ -100,7 +96,7 @@ export class DriverEventHandler extends cdk.Construct {
 		new events.Rule(this, 'InternalProviderCleanupFunction', {
 			ruleName: namespaced(this, 'internal-provider-driver-cleanup'),
 			description: 'Used to cleanup the driver state for those who never acknowledge the orders',
-			targets: [new eventsTarget.SfnStateMachine(subMinuteExecutionStepFunction.stepFunction)],
+			targets: [new events_targets.SfnStateMachine(subMinuteExecutionStepFunction.stepFunction)],
 			schedule: events.Schedule.cron({ minute: `*/${internalWebhookProviderSettings.subMinuteStepFunctionIntervalInMinutes}` }),
 		})
 	}

@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IStream } from '@aws-cdk/aws-kinesis'
-import { Code } from '@aws-cdk/aws-lambda'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_dynamodb as ddb, aws_kinesis as kinesis, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -33,9 +30,9 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly internalProviderLocks: ITable
-	readonly internalProviderOrders: ITable
-	readonly orderBatchStream: IStream
+	readonly internalProviderLocks: ddb.ITable
+	readonly internalProviderOrders: ddb.ITable
+	readonly orderBatchStream: kinesis.IStream
 	readonly internalProviderOrdersStatusIndex: string
 	readonly driverAcknowledgeTimeoutInSeconds: number
 }
@@ -55,7 +52,7 @@ export class DriverCleanupLambda extends DeclaredLambdaFunction<Environment, Dep
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'InternalProviderDriverCleanup'),
 			description: 'Lambda used by the internal provider to cleaup the driver/order status if no updated received',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-driver-cleanup.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-driver-cleanup.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.minutes(10),
 			environment: {
@@ -66,19 +63,19 @@ export class DriverCleanupLambda extends DeclaredLambdaFunction<Environment, Dep
 				STREAM_NAME: orderBatchStream.streamName,
 			},
 			initialPolicy: [
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['kinesis:PutRecord'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [orderBatchStream.streamArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['dynamodb:UpdateItem'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [internalProviderOrders.tableArn, internalProviderLocks.tableArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['dynamodb:GetItem', 'dynamodb:Query'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [
 						internalProviderLocks.tableArn,
 						internalProviderOrders.tableArn,

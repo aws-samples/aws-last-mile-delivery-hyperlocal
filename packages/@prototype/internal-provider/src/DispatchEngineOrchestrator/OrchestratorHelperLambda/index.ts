@@ -14,16 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { Code } from '@aws-cdk/aws-lambda'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IEventBus } from '@aws-cdk/aws-events'
-import { Secret } from '@aws-cdk/aws-secretsmanager'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_dynamodb as ddb, aws_events as events, aws_secretsmanager as secretsmanager, aws_elasticloadbalancingv2 as elb, aws_ec2 as ec2, aws_kinesis as kinesis, aws_iam as iam } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { IApplicationLoadBalancer } from '@aws-cdk/aws-elasticloadbalancingv2'
-import { IVpc, ISecurityGroup, SubnetType } from '@aws-cdk/aws-ec2'
-import { IStream } from '@aws-cdk/aws-kinesis'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -44,18 +37,18 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly internalProviderOrders: ITable
-	readonly internalProviderLocks: ITable
-  readonly orderBatchStream: IStream
-  readonly eventBus: IEventBus
+	readonly internalProviderOrders: ddb.ITable
+	readonly internalProviderLocks: ddb.ITable
+	readonly orderBatchStream: kinesis.IStream
+	readonly eventBus: events.IEventBus
 	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
 	readonly internalProviderApi: RestApi
 	readonly internalProviderApiSecretName: string
 	readonly iotEndpointAddress: string
-	readonly dispatchEngineLB: IApplicationLoadBalancer
-	readonly graphhopperLB: IApplicationLoadBalancer
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
+	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
+	readonly graphhopperLB: elb.IApplicationLoadBalancer
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -79,12 +72,12 @@ export class OrchestratorHelperLambda extends DeclaredLambdaFunction<Environment
 			},
 		} = props
 
-		const internalProviderApiSecret = Secret.fromSecretNameV2(scope, 'OrchestrationInternalProviderSecret', internalProviderApiSecretName)
+		const internalProviderApiSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'OrchestrationInternalProviderSecret', internalProviderApiSecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'DispatchOrchestratorHelper'),
 			description: 'Lambda used by Dispatch Engine orchestrator step function to execute actions.',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-orchestrator-helper.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/internal-provider-orchestrator-helper.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -104,45 +97,45 @@ export class OrchestratorHelperLambda extends DeclaredLambdaFunction<Environment
 			},
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 			initialPolicy: [
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'events:PutEvents',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['kinesis:PutRecord'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [orderBatchStream.streamArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'iot:Connect',
 						'iot:Publish',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: ['*'],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['dynamodb:UpdateItem', 'dynamodb:GetItem'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [internalProviderOrders.tableArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: ['dynamodb:PutItem', 'dynamodb:UpdateItem', 'dynamodb:GetItem'],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [internalProviderLocks.tableArn],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'secretsmanager:GetSecretValue',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [
 						`${internalProviderApiSecret.secretArn}*`,
 					],

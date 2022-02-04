@@ -31,13 +31,8 @@
     "http-method-enum": "^1.0.0"
   },
   "peerDependencies": {
-    "@aws-cdk/aws-apigateway": "1.105.0",
-    "@aws-cdk/aws-cognito": "1.105.0",
-    "@aws-cdk/aws-dynamodb": "1.105.0",
-    "@aws-cdk/aws-ec2": "1.105.0",
-    "@aws-cdk/aws-lambda": "1.105.0",
-    "@aws-cdk/aws-elasticache": "1.105.0",
-    "@aws-cdk/aws-s3": "1.105.0",
-    "@aws-cdk/core": "1.105.0"
+    "aws-cdk-lib": "^2.10.0",
+    "constructs": "^10.0.0",
+    "typescript": "^4.5.5"
   }
 }

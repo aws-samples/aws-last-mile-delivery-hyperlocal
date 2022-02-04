@@ -14,12 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { CfnResource, CfnStack, Construct, Resource, Stack, NestedStack } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { CfnResource, CfnStack, Resource, Stack, NestedStack } from 'aws-cdk-lib'
 import { getRootStack } from './stack'
 import shorthash from 'shorthash2'
 
 export function uniqueIdHash (construct: Construct): string {
-	return shorthash(construct.node.uniqueId)
+	return shorthash(construct.node.addr)
 }
 
 export function overrideLogicalId (resource: Resource | CfnResource | CfnStack | NestedStack, logicalId: string): void {

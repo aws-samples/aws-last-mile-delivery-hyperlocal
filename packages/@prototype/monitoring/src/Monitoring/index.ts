@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as iam from '@aws-cdk/aws-iam'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as cr from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_iam as iam, aws_s3 as s3, custom_resources as cr } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
 import * as fs from 'fs'
 import * as path from 'path'
