@@ -14,21 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Arn, Stack } from '@aws-cdk/core'
-import { Domain, IDomain, ElasticsearchVersion } from '@aws-cdk/aws-elasticsearch'
-import { EbsDeviceVolumeType, ISecurityGroup, IVpc, SubnetType } from '@aws-cdk/aws-ec2'
-import { ArnPrincipal, Effect, IRole, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Arn, Stack, aws_elasticsearch as elasticsearch, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface ElasticSearchClusterProps {
 	readonly esConfig: { [key: string]: string | number, }
-	readonly vpc: IVpc
-	readonly securityGroups: ISecurityGroup[]
+	readonly vpc: ec2.IVpc
+	readonly securityGroups: ec2.ISecurityGroup[]
 
 	readonly identityPoolId: string
 	readonly userPoolId: string
-	readonly authenticatedUserRole: IRole
-	readonly adminRole: IRole
+	readonly authenticatedUserRole: iam.IRole
+	readonly adminRole: iam.IRole
 }
 
 /**
@@ -37,7 +35,7 @@ export interface ElasticSearchClusterProps {
  * An ES Service-Linked Role for VPC Access must be created before creating an ES Domain.
  */
 export class ElasticSearchCluster extends Construct {
-	readonly esDomain: IDomain
+	readonly esDomain: elasticsearch.IDomain
 
 	constructor (scope: Construct, id: string, props: ElasticSearchClusterProps) {
 		super(scope, id)
@@ -54,16 +52,16 @@ export class ElasticSearchCluster extends Construct {
 		} = props
 
 		// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-role
-		const cognitoKibanaRole = new Role(this, 'CognitoKabanaAuthRole', {
-			assumedBy: new ServicePrincipal('es.amazonaws.com'),
-			managedPolicies: [ManagedPolicy.fromManagedPolicyArn(this, 'AmazonESCognitoAccess', 'arn:aws:iam::aws:policy/AmazonESCognitoAccess')],
+		const cognitoKibanaRole = new iam.Role(this, 'CognitoKabanaAuthRole', {
+			assumedBy: new iam.ServicePrincipal('es.amazonaws.com'),
+			managedPolicies: [iam.ManagedPolicy.fromManagedPolicyArn(this, 'AmazonESCognitoAccess', 'arn:aws:iam::aws:policy/AmazonESCognitoAccess')],
 		})
 
 		const domainName = namespaced(this, 'live-data-es', { lowerCase: true })
 
 		authenticatedUserRole.addToPrincipalPolicy(
-			new PolicyStatement({
-				effect: Effect.ALLOW,
+			new iam.PolicyStatement({
+				effect: iam.Effect.ALLOW,
 				// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-config-ac
 				// https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticsearchservice.html
 				actions: [
@@ -75,8 +73,8 @@ export class ElasticSearchCluster extends Construct {
 			}),
 		)
 
-		const elasticSearchClusterDomain = new Domain(this, 'ESCluster', {
-			version: ElasticsearchVersion.V7_10,
+		const elasticSearchClusterDomain = new elasticsearch.Domain(this, 'ESCluster', {
+			version: elasticsearch.ElasticsearchVersion.V7_10,
 			domainName,
 			enableVersionUpgrade: true,
 			nodeToNodeEncryption: true,
@@ -87,7 +85,7 @@ export class ElasticSearchCluster extends Construct {
 				dataNodeInstanceType: esConfig.dataNodeInstanceType as string || 't3.medium.elasticsearch',
 			},
 			vpc,
-			vpcSubnets: [vpc.selectSubnets({ subnetType: SubnetType.ISOLATED })],
+			vpcSubnets: [vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED })],
 			securityGroups,
 			zoneAwareness: {
 				availabilityZoneCount: vpc.availabilityZones.length,
@@ -106,26 +104,26 @@ export class ElasticSearchCluster extends Construct {
 				// TODO: verify the right value for prod
 				iops: 1600,
 				volumeSize: 64,
-				volumeType: EbsDeviceVolumeType.IO1,
+				volumeType: ec2.EbsDeviceVolumeType.IO1,
 			},
 			accessPolicies: [
 				// eslint-disable-next-line max-len
 				// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-config-ac
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					principals: [
-						new ArnPrincipal(authenticatedUserRole.roleArn),
+						new iam.ArnPrincipal(authenticatedUserRole.roleArn),
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					actions: [
 						// TODO: restrict these to non PII scoped data
 						'es:ESHttp*',
 					],
 				}),
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					principals: [
-						new ArnPrincipal(adminRole.roleArn),
+						new iam.ArnPrincipal(adminRole.roleArn),
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					actions: [
 						// TODO: restrict these permissions to non destructive tasks
 						'es:*',

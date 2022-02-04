@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as secr from '@aws-cdk/aws-secretsmanager'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_iam as iam, aws_dynamodb as ddb, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -34,12 +30,12 @@ export interface DispatchInstanceProps {
 	readonly dispatcherAssignmentsTable: ddb.ITable
 }
 
-export class DispatchInstance extends cdk.Construct {
+export class DispatchInstance extends Construct {
     readonly instanceRole: iam.IRole
 
 	readonly instance: ec2.IInstance
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchInstanceProps) {
+	constructor (scope: Construct, id: string, props: DispatchInstanceProps) {
 		super(scope, id)
 
 		const {
@@ -51,7 +47,7 @@ export class DispatchInstance extends cdk.Construct {
 			dispatcherAssignmentsTable,
 		} = props
 
-		const driverApiKeySecret = secr.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
+		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
 
 		// instance IAM role
 		const instanceRole = new iam.Role(this, 'DispatchInstanceRole', {

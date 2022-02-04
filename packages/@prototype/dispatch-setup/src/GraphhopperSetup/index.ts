@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ecr from '@aws-cdk/aws-ecr'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface GraphhopperSetupProps {
@@ -28,10 +25,10 @@ export interface GraphhopperSetupProps {
 	readonly dockerRepoName: string
 }
 
-export class GraphhopperSetup extends cdk.Construct {
+export class GraphhopperSetup extends Construct {
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
-	constructor (scope: cdk.Construct, id: string, props: GraphhopperSetupProps) {
+	constructor (scope: Construct, id: string, props: GraphhopperSetupProps) {
 		super(scope, id)
 
 		const {
@@ -48,6 +45,7 @@ export class GraphhopperSetup extends cdk.Construct {
 			cpu: 4096,
 			memoryLimitMiB: 8192,
 		})
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const container = graphhopperTask.addContainer('graphhopper-indonesia', {
 			image: ecs.ContainerImage.fromEcrRepository(dockerRepo),
 			containerName: namespaced(this, 'graphhopper-indonesia'),

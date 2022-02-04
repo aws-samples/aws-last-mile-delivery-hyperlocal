@@ -14,13 +14,11 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct, Stack, Arn } from '@aws-cdk/core'
-import { Code } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, Stack, Arn, aws_lambda as lambda, aws_iam as iam, aws_s3 as s3 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
 import { S3, IoT } from 'cdk-iam-actions/lib/actions'
-import { IBucket } from '@aws-cdk/aws-s3'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
@@ -29,7 +27,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly configBucket: IBucket
+	readonly configBucket: s3.IBucket
 	readonly appConfigAppIds: string[]
 	readonly iotEndpointAddress: string
 }
@@ -52,7 +50,7 @@ export class DeploymentHandlerLambda extends DeclaredLambdaFunction<Environment,
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'AppConfigDeploymentHandler'),
 			description: 'AppConfig Deployment Handler function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/appconfig-deployment-handler.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/appconfig-deployment-handler.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -61,16 +59,16 @@ export class DeploymentHandlerLambda extends DeclaredLambdaFunction<Environment,
 				APP_IDS: appConfigAppIds.join(','),
 			},
 			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: [S3.PUT_OBJECT, S3.PUT_OBJECT_VERSION_TAGGING],
 					resources: [
 						configBucket.bucketArn,
 						`${configBucket.bucketArn}/*`,
 					],
 				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: [
 						'appconfig:GetConfiguration',
 						'appconfig:GetEnvironment',
@@ -80,8 +78,8 @@ export class DeploymentHandlerLambda extends DeclaredLambdaFunction<Environment,
 						`${baseArn}/*/environment/*`,
 					],
 				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: [
 						IoT.PUBLISH,
 						IoT.CONNECT,

@@ -14,15 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { Code } from '@aws-cdk/aws-lambda'
-import { EventBus } from '@aws-cdk/aws-events'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy, readDDBTablePolicyStatement } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
-import { ITable } from '@aws-cdk/aws-dynamodb'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
@@ -32,8 +29,8 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly eventBus: EventBus
-	readonly restaurantTable: ITable
+	readonly eventBus: events.EventBus
+	readonly restaurantTable: ddb.ITable
 	readonly iotEndpointAddress: string
 }
 
@@ -50,7 +47,7 @@ export class RestaurantEventHandlerLambda extends DeclaredLambdaFunction<Environ
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'RestaurantEventHandler'),
 			description: 'Restaurant event handler: read the event bridge events and handle the one that are related to the restaurant',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-event-handler.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-event-handler.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {

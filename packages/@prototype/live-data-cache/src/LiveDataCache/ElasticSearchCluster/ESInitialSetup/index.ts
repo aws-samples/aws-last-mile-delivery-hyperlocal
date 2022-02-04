@@ -14,18 +14,15 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, CustomResource, Duration } from '@aws-cdk/core'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Effect, PolicyStatement } from '@aws-cdk/aws-iam'
-import { Provider } from '@aws-cdk/custom-resources'
-import { Function as LambdaFunction, Code, Runtime } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { CustomResource, Duration, aws_ec2 as ec2, aws_iam as iam, custom_resources as cr, aws_lambda as lambda } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ESInitialSetupProps {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 	readonly setupLambdaArn: string
 }
 
@@ -35,18 +32,18 @@ export class ESInitialSetup extends Construct {
 
 		const { vpc, lambdaSecurityGroups, setupLambdaArn } = props
 
-		const esSetupLambda = new LambdaFunction(this, 'ESSetup-CR', {
+		const esSetupLambda = new lambda.Function(this, 'ESSetup-CR', {
 			functionName: namespaced(scope, 'ES-Initial-Setup-CustomResource'),
 			description: 'Setup initial ES settings - Custom Resource Lambda',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-setup-customresource.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-setup-customresource.zip')),
 			handler: 'index.onEvent',
-			runtime: Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_12_X,
 			environment: {
 				SETUP_LAMBDA_ARN: setupLambdaArn,
 			},
 			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: ['lambda:InvokeFunction'],
 					resources: [setupLambdaArn],
 				}),
@@ -54,16 +51,16 @@ export class ESInitialSetup extends Construct {
 			timeout: Duration.seconds(20),
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		})
 
-		const esSetupProvider = new Provider(this, 'ESSetupProvider', {
+		const esSetupProvider = new cr.Provider(this, 'ESSetupProvider', {
 			onEventHandler: esSetupLambda,
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		})

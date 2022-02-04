@@ -14,11 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_cognito as cognito, aws_lambda as lambda, aws_apigateway as apigw } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
-import * as apiG from '@aws-cdk/aws-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface APIGatewayResourceStackProps {
@@ -34,8 +32,8 @@ export interface APIGatewayResourceStackProps {
 	readonly simulatorRestApi: api.RestApi
 }
 
-export class APIGatewayResourceStack extends cdk.Construct {
-	constructor (scope: cdk.Construct, id: string, props: APIGatewayResourceStackProps) {
+export class APIGatewayResourceStack extends Construct {
+	constructor (scope: Construct, id: string, props: APIGatewayResourceStackProps) {
 		super(scope, id)
 
 		const {
@@ -51,7 +49,7 @@ export class APIGatewayResourceStack extends cdk.Construct {
 			userPool,
 		} = props
 
-		const cognitoAuth = new apiG.CognitoUserPoolsAuthorizer(this, 'SimulatorCognitoAuthorizer', {
+		const cognitoAuth = new apigw.CognitoUserPoolsAuthorizer(this, 'SimulatorCognitoAuthorizer', {
 			authorizerName: namespaced(this, 'CognitoAuthorizer'),
 			identitySource: 'method.request.header.Authorization',
 			cognitoUserPools: [userPool],

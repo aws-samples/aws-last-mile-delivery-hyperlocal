@@ -14,11 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as events from '@aws-cdk/aws-events'
-import { AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId } from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { aws_events as events, custom_resources as cr, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { WebhookProviderBase } from '@prototype/provider'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExampleCallbackLambda } from './lambdas/ExampleCallback'
 import { RequestOrderFulfillmentLambda } from './lambdas/RequestOrderFulfillment'
@@ -29,13 +27,13 @@ import { GetOrderStatusLambda } from './lambdas/GetOrderStatus'
 export interface ExampleWebhookProviderProps extends VpcLambdaProps {
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly eventBus: events.IEventBus
-	readonly redisCluster: CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
 }
 
 export class ExampleWebhookProvider extends WebhookProviderBase {
-	constructor (scope: cdk.Construct, id: string, props: ExampleWebhookProviderProps) {
+	constructor (scope: Construct, id: string, props: ExampleWebhookProviderProps) {
 		const {
 			webhookProviderSettings,
 			eventBus,
@@ -121,17 +119,17 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 					},
 				},
 			},
-			physicalResourceId: PhysicalResourceId.fromResponse('FunctionName'),
+			physicalResourceId: cr.PhysicalResourceId.fromResponse('FunctionName'),
 		}
 
 		/// to fix circular dependency: this updates the configuration of the lambda function utilised
 		/// to set the API gateway URL
 		// temporary fix with Date.now() to force resource redeployment
-		new AwsCustomResource(this, `WebhookProviderLambdaConfigurationResource-${Date.now().toString(36)}`, {
+		new cr.AwsCustomResource(this, `WebhookProviderLambdaConfigurationResource-${Date.now().toString(36)}`, {
 			onCreate: action,
 			onUpdate: action,
-			policy: AwsCustomResourcePolicy.fromSdkCalls({
-				resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 	}

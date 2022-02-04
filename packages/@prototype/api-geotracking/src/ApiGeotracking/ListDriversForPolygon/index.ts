@@ -14,14 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_dynamodb as ddb, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
 import { AllowESRead, AllowESWrite, readDDBTablePolicyStatement, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -33,12 +29,12 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
-	readonly geoPolygonTable: ITable
-	readonly esDomain: IDomain
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly geoPolygonTable: ddb.ITable
+	readonly esDomain: elasticsearch.IDomain
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -57,7 +53,7 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'ListDriversForPolygon'),
 			description: 'List Drivers For Polygon function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/list-drivers-polygon.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/list-drivers-polygon.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -75,7 +71,7 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 			],
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

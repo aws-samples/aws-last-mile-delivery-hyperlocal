@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
-import * as s3 from '@aws-cdk/aws-s3'
+import { Construct } from 'constructs'
+import { aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_elasticloadbalancingv2 as elb, aws_s3 as s3 } from 'aws-cdk-lib'
 import { DispatchHosting } from './DispatchHosting'
 import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
@@ -38,14 +34,14 @@ export interface DispatchSetupProps {
 	readonly dispatcherAssignmentsTable: ddb.ITable
 }
 
-export class DispatchSetup extends cdk.Construct {
+export class DispatchSetup extends Construct {
 	// readonly dispatchInstance: ec2.IInstance
 
 	readonly dispatcherEcsCluster: ecs.ICluster
 
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchSetupProps) {
+	constructor (scope: Construct, id: string, props: DispatchSetupProps) {
 		super(scope, id)
 
 		const {

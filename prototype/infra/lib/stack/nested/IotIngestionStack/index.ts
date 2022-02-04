@@ -15,16 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import { Function as LambdaFunction, IFunction } from '@aws-cdk/aws-lambda'
-import { Stream, IStream } from '@aws-cdk/aws-kinesis'
-import { IRole } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_kinesis as kinesis, aws_iam as iam } from 'aws-cdk-lib'
 import { IoTStack } from '@prototype/iot-ingestion'
 
 export interface IotIngestionStackProps extends NestedStackProps {
-	readonly externalIdentityAuthenticatedRole: IRole
-	readonly driverDataIngestStream: IStream
-	readonly lambdaRefs: { [key: string]: IFunction, }
+	readonly externalIdentityAuthenticatedRole: iam.IRole
+	readonly driverDataIngestStream: kinesis.IStream
+	readonly lambdaRefs: { [key: string]: lambda.IFunction, }
 }
 
 /**
@@ -43,8 +41,8 @@ export class IotIngestionStack extends NestedStack {
 		} = props
 
 		const iotSetup = new IoTStack(this, 'IoTSetup', {
-			driverDataIngestStream: Stream.fromStreamArn(this, 'DriverDataIngestStreamIot', driverDataIngestStream.streamArn),
-			driverStatusUpdateLambda: LambdaFunction.fromFunctionArn(this, 'DriverStatusUpdateLambdaRef', lambdaRefs.driverStatusUpdateLambda.functionArn),
+			driverDataIngestStream: kinesis.Stream.fromStreamArn(this, 'DriverDataIngestStreamIot', driverDataIngestStream.streamArn),
+			driverStatusUpdateLambda: lambda.Function.fromFunctionArn(this, 'DriverStatusUpdateLambdaRef', lambdaRefs.driverStatusUpdateLambda.functionArn),
 			cognitoAuthenticatedRole: externalIdentityAuthenticatedRole,
 		})
 

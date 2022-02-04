@@ -14,12 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as ssm from '@aws-cdk/aws-ssm'
-import { ILayerVersion } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Stack, aws_lambda as lambda, aws_ssm as ssm } from 'aws-cdk-lib'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SharedLayerProps extends lambda.LayerVersionProps {
 	readonly layerId: string
 }
@@ -30,7 +27,7 @@ export class SharedLayer extends lambda.LayerVersion {
 		return `/shared-layer-version-proxy/${layerId}/layerVersionArn`
 	}
 
-	static of (scope: cdk.Construct, layerId: string): ILayerVersion {
+	static of (scope: Construct, layerId: string): lambda.ILayerVersion {
 		const layerVersionArn = ssm.StringParameter.valueForStringParameter(scope, this.parameterName(layerId))
 
 		return lambda.LayerVersion.fromLayerVersionArn(
@@ -40,7 +37,7 @@ export class SharedLayer extends lambda.LayerVersion {
 		)
 	}
 
-	constructor (scope: cdk.Construct, id: string, props: SharedLayerProps) {
+	constructor (scope: Construct, id: string, props: SharedLayerProps) {
 		super(scope, id, props)
 
 		// if (!this.layerIdExists(props.layerId)) {
@@ -56,8 +53,9 @@ export class SharedLayer extends lambda.LayerVersion {
 
 	private layerIdExists (layerId: string): boolean {
 		const layerVersionArn = ssm.StringParameter.valueForStringParameter(
-			cdk.Stack.of(this), SharedLayer.parameterName(layerId))
+			Stack.of(this), SharedLayer.parameterName(layerId))
 
+		// eslint-disable-next-line no-console
 		console.log(layerVersionArn)
 
 		return (layerVersionArn != null)

@@ -15,11 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-template-curly-in-string */
-import * as cdk from '@aws-cdk/core'
-import * as iot from '@aws-cdk/aws-iot'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as kinesis from '@aws-cdk/aws-kinesis'
+import { Construct } from 'constructs'
+import { Stack, CfnOutput, aws_iot as iot, aws_iam as iam, aws_lambda as lambda, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 interface IoTStackProps {
@@ -28,16 +25,16 @@ interface IoTStackProps {
 	cognitoAuthenticatedRole: iam.IRole
 }
 
-export class IoTStack extends cdk.Construct {
+export class IoTStack extends Construct {
 	public readonly iotDriverDataIngestRule: iot.CfnTopicRule
 
 	public readonly iotDriverStatusUpdateRule: iot.CfnTopicRule
 
 	public readonly iotDriverPolicy: iot.CfnPolicy
 
-	constructor (scope: cdk.Construct, id: string, props: IoTStackProps) {
+	constructor (scope: Construct, id: string, props: IoTStackProps) {
 		super(scope, id)
-		const stack = cdk.Stack.of(this)
+		const stack = Stack.of(this)
 
 		const iotToDriverDataIngestStreamRole = new iam.Role(this, 'IotToDriverDataIngestStream', {
 			roleName: namespaced(this, 'iot-rule-to-driver-data-ingest'),
@@ -177,7 +174,7 @@ export class IoTStack extends cdk.Construct {
 			policyName: namespaced(this, 'RestrictedIoTActionsPolicy'),
 		}))
 
-		new cdk.CfnOutput(this, 'IoTPolicyName', {
+		new CfnOutput(this, 'IoTPolicyName', {
 			exportName: 'IoTGenericPolicyName',
 			value: this.iotDriverPolicy.policyName || '',
 		})

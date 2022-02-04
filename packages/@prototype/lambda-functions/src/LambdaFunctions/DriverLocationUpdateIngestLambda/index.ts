@@ -14,26 +14,21 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IStream } from '@aws-cdk/aws-kinesis'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
 import { AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DriverLocationUpdateIngestLambdaExternalDeps {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
-	readonly esDomain: IDomain
+	readonly esDomain: elasticsearch.IDomain
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -45,7 +40,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly ingestDataStream: IStream
+	readonly ingestDataStream: kinesis.IStream
 	readonly externalDeps: DriverLocationUpdateIngestLambdaExternalDeps
 }
 
@@ -68,7 +63,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'DriverLocationUpdateIngest'),
 			description: 'Driver Location Update ingest function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-location-update-ingest.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-location-update-ingest.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -78,8 +73,8 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 				ES_DOMAIN_ENDPOINT: esDomain.domainEndpoint,
 			},
 			initialPolicy: [
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: [
 						Kinesis.DESCRIBE_STREAM,
 						'kinesis:DescribeStreamSummary',
@@ -96,7 +91,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 			layers: lambdaLayers,
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

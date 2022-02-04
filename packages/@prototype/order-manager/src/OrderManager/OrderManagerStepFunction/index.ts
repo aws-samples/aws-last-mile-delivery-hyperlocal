@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface OrderManagerStepFunctionProps {
@@ -27,10 +24,10 @@ export interface OrderManagerStepFunctionProps {
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
 
-export class OrderManagerStepFunction extends cdk.Construct {
-	public readonly stepFunction: step.StateMachine
+export class OrderManagerStepFunction extends Construct {
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: OrderManagerStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: OrderManagerStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -53,7 +50,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			resultPath: '$.restaurantNotification',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'notifyOrderRejected',
 					payload: {
@@ -66,19 +63,19 @@ export class OrderManagerStepFunction extends cdk.Construct {
 
 		const sendOrderToRestaurant = new tasks.LambdaInvoke(this, 'SendOrderToRestaurant', {
 			comment: 'SendOrderToRestaurant (wait for a callback)',
-			integrationPattern: step.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
+			integrationPattern: stepfunctions.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
 			lambdaFunction: orderManagerHelper,
 			// TODO: change in production
 			// it's the timeout that is used for the restaurant to ack the order
 			// if a reject/accept event doesn't come by then, the order will be rejected
-			heartbeat: cdk.Duration.minutes(orderManagerSettings.restaurantTimeoutInMinutes as number),
+			heartbeat: Duration.minutes(orderManagerSettings.restaurantTimeoutInMinutes as number),
 			resultPath: '$.restaurantCallback',
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'notifyRestaurant',
 					payload: {
-						token: step.JsonPath.taskToken,
+						token: stepfunctions.JsonPath.taskToken,
 						'orderId.$': '$$.Execution.Input.orderId',
 						'restaurantId.$': '$$.Execution.Input.restaurant.id',
 						'customerId.$': '$$.Execution.Input.customer.id',
@@ -96,7 +93,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			payloadResponseOnly: true,
 			lambdaFunction: providerRuleEngine,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'findProvider',
 					'payload.$': '$$.Execution.Input',
@@ -121,7 +118,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			lambdaFunction: providerRuleEngine,
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'sendToProvider',
 					payload: {
@@ -149,7 +146,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			lambdaFunction: providerRuleEngine,
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'cancelOrderFromProvider',
 					payload: {
@@ -177,7 +174,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			resultPath: '$.orderNotification',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'notifyOrderCancelled',
 					payload: {
@@ -189,19 +186,19 @@ export class OrderManagerStepFunction extends cdk.Construct {
 		})
 
 		const waitForOrderStatusCallback = new tasks.LambdaInvoke(this, 'WaitForOrderStatusCallback', {
-			integrationPattern: step.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
+			integrationPattern: stepfunctions.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
 			lambdaFunction: orderManagerHelper,
 			// TODO: to change in production
 			// this is the timeout for the provider feedback
 			// if we don't get an update by then, it will find a new provider
-			heartbeat: cdk.Duration.minutes(orderManagerSettings.providerTimeoutInMinutes as number),
+			heartbeat: Duration.minutes(orderManagerSettings.providerTimeoutInMinutes as number),
 			resultPath: '$.orderCallback',
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'initiateOrderCallback',
 					payload: {
-						token: step.JsonPath.taskToken,
+						token: stepfunctions.JsonPath.taskToken,
 						'orderId.$': '$$.Execution.Input.orderId',
 					},
 				},
@@ -220,7 +217,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			resultPath: '$.orderNotification',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'notifyOrderDelivered',
 					payload: {
@@ -236,7 +233,7 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			resultPath: '$.providerNotification',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'notifyProviderFound',
 					payload: {
@@ -247,45 +244,45 @@ export class OrderManagerStepFunction extends cdk.Construct {
 			},
 		})
 
-		const orderStatusChoice = new step.Choice(this, 'CheckOrderStatus')
+		const orderStatusChoice = new stepfunctions.Choice(this, 'CheckOrderStatus')
 		.when(
-			step.Condition.stringEquals('$.orderCallback.orderStatus', 'DELIVERED'),
+			stepfunctions.Condition.stringEquals('$.orderCallback.orderStatus', 'DELIVERED'),
 			orderDelivered,
 		)
 		.when(
-			step.Condition.stringEquals('$.orderCallback.orderStatus', 'CANCELLED'),
+			stepfunctions.Condition.stringEquals('$.orderCallback.orderStatus', 'CANCELLED'),
 			orderCancelled.next(findProvider),
 		)
 		.when(
-			step.Condition.stringEquals('$.orderCallback.orderStatus', 'REJECTED'),
+			stepfunctions.Condition.stringEquals('$.orderCallback.orderStatus', 'REJECTED'),
 			notifyOrderRejected,
 		).otherwise(waitForOrderStatusCallback)
 
-		const providerOutputChoice = new step.Choice(this, 'CheckProviderRuleEngineOutput')
+		const providerOutputChoice = new stepfunctions.Choice(this, 'CheckProviderRuleEngineOutput')
 		.when(
-			step.Condition.isNotNull('$.providerRuleEngine.provider'),
+			stepfunctions.Condition.isNotNull('$.providerRuleEngine.provider'),
 			notifyProviderFound
 			.next(sendOrderToProvider)
 			.next(waitForOrderStatusCallback)
 			.next(orderStatusChoice),
 		)
 		.when(
-			step.Condition.isNull('$.providerRuleEngine.provider'),
+			stepfunctions.Condition.isNull('$.providerRuleEngine.provider'),
 			findProvider,
 		)
 
 		const definition = sendOrderToRestaurant
 		.next(
-			new step.Choice(this, 'IsOrderAcceptedByRestaurant')
+			new stepfunctions.Choice(this, 'IsOrderAcceptedByRestaurant')
 			.when(
-				step.Condition.stringEquals('$.restaurantCallback.restaurantStatus', 'ACCEPTED'),
+				stepfunctions.Condition.stringEquals('$.restaurantCallback.restaurantStatus', 'ACCEPTED'),
 				findProvider
 				.next(providerOutputChoice),
 			)
 			.otherwise(notifyOrderRejected),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'OrderManagerStepFunction', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'OrderManagerStepFunction', {
 			stateMachineName: namespaced(this, 'OrderManagerStepFunction'),
 			definition,
 			role: stepFunctionRole,

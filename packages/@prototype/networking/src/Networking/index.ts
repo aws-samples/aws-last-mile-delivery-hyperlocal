@@ -14,22 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import {
-	IVpc,
-	ISecurityGroup, IInstance,
-} from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { IngressRule } from './IngressRule'
 import { SecurityGroupSetup } from './SecurityGroupSetup'
 // import { BastionHostSetup } from './BastionHostSetup'
 
 export interface NetworkingProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly ingressRules: { [key: string]: IngressRule[], }
 }
 
 export class Networking extends Construct {
-	readonly securityGroups: { [key: string]: ISecurityGroup, }
+	readonly securityGroups: { [key: string]: ec2.ISecurityGroup, }
 
 	// readonly bastionInstance: IInstance
 

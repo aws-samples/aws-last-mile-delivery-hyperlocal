@@ -16,7 +16,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import 'source-map-support/register'
-import * as cdk from '@aws-cdk/core'
+import { App } from 'aws-cdk-lib'
 import config from '../config'
 import { BackendStack } from '../lib/stack/root/BackendStack'
 import { PersistentBackendStack } from '../lib/stack/root/PersistentBackendStack'
@@ -25,7 +25,7 @@ import { SimulatorPersistentStack } from '../lib/stack/root/SimulatorPersistentS
 import { DebugStack } from '../lib/stack/root/DebugStack'
 import { ExternalProviderStack } from '../lib/stack/root/ExternalProviderStack'
 
-const app = new cdk.App()
+const app = new App()
 
 const persistentBackendStack = new PersistentBackendStack(app, 'Dev-PersistentBackend', {
 	stackName: 'Dev-PersistentBackend',

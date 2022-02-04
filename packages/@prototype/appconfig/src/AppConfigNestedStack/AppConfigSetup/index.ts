@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { CfnApplication, CfnEnvironment, CfnConfigurationProfile, CfnHostedConfigurationVersion, CfnDeploymentStrategy, CfnDeployment } from '@aws-cdk/aws-appconfig'
+import { Construct } from 'constructs'
+import { aws_appconfig as appconfig } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface AppConfigSetupProps {
@@ -23,13 +23,13 @@ export interface AppConfigSetupProps {
 }
 
 export class AppConfigSetup extends Construct {
-	readonly deploymentStrategy: CfnDeploymentStrategy
+	readonly deploymentStrategy: appconfig.CfnDeploymentStrategy
 
-	readonly driverApp: CfnApplication
+	readonly driverApp: appconfig.CfnApplication
 
-	readonly driverAppEnvironment: CfnEnvironment
+	readonly driverAppEnvironment: appconfig.CfnEnvironment
 
-	readonly customerApp: CfnApplication
+	readonly customerApp: appconfig.CfnApplication
 
 	constructor (scope: Construct, id: string, props: AppConfigSetupProps) {
 		super(scope, id)
@@ -37,44 +37,44 @@ export class AppConfigSetup extends Construct {
 		const { driverAppConfig } = props
 
 		// 1. create an application
-		const driverApp = new CfnApplication(this, 'DriverAppConfig', {
+		const driverApp = new appconfig.CfnApplication(this, 'DriverAppConfig', {
 			name: namespaced(this, 'DeliveryApp'),
 			description: 'Delivery App configuration environment',
 		})
 
-		const customerApp = new CfnApplication(this, 'CustomerAppConfig', {
+		const customerApp = new appconfig.CfnApplication(this, 'CustomerAppConfig', {
 			name: namespaced(this, 'CustomerApp'),
 			description: 'Customer App configuration environment',
 		})
 
 		// 2. create an environments
-		const driverAppDevEnv = new CfnEnvironment(this, 'DriverAppDevEnv', {
+		const driverAppDevEnv = new appconfig.CfnEnvironment(this, 'DriverAppDevEnv', {
 			applicationId: driverApp.ref,
 			name: namespaced(this, 'DriverAppDev'),
 			description: 'DriverApp Dev Environment',
 		})
 
-		const driverAppProdEnv = new CfnEnvironment(this, 'DriverAppProdEnv', {
+		const driverAppProdEnv = new appconfig.CfnEnvironment(this, 'DriverAppProdEnv', {
 			applicationId: driverApp.ref,
 			name: namespaced(this, 'DriverAppProd'),
 			description: 'DriverApp Prod Environment',
 		})
 
-		const customerAppDevEnv = new CfnEnvironment(this, 'CustomerAppDevEnv', {
+		const customerAppDevEnv = new appconfig.CfnEnvironment(this, 'CustomerAppDevEnv', {
 			applicationId: customerApp.ref,
 			name: namespaced(this, 'CustomerAppDev'),
 			description: 'Customer App Dev Environment',
 		})
 
 		// 3. create configuration profile
-		const driverAppHostedConfigProfile = new CfnConfigurationProfile(this, 'DriverAppHostedConfigProfile', {
+		const driverAppHostedConfigProfile = new appconfig.CfnConfigurationProfile(this, 'DriverAppHostedConfigProfile', {
 			applicationId: driverApp.ref,
 			name: namespaced(this, 'DriverAppHostedConfigProfile'),
 			description: 'Driver App Hosted Configuration Profile',
 			locationUri: 'hosted',
 		})
 
-		const driverAppConfigVersion = new CfnHostedConfigurationVersion(this, 'DriverAppConfigContent', {
+		const driverAppConfigVersion = new appconfig.CfnHostedConfigurationVersion(this, 'DriverAppConfigContent', {
 			applicationId: driverApp.ref,
 			configurationProfileId: driverAppHostedConfigProfile.ref,
 			contentType: 'JSON',
@@ -83,7 +83,7 @@ export class AppConfigSetup extends Construct {
 		})
 
 		// 4. create deployment strategy
-		const deploymentStrategy = new CfnDeploymentStrategy(this, 'DeliveryAppDeploymentStrategy', {
+		const deploymentStrategy = new appconfig.CfnDeploymentStrategy(this, 'DeliveryAppDeploymentStrategy', {
 			deploymentDurationInMinutes: 0,
 			growthFactor: 100,
 			growthType: 'LINEAR',
@@ -93,7 +93,7 @@ export class AppConfigSetup extends Construct {
 		})
 
 		// 5. deploy config
-		const deployment = 	new CfnDeployment(this, 'DriverAppDeployment', {
+		const deployment = 	new appconfig.CfnDeployment(this, 'DriverAppDeployment', {
 			applicationId: driverApp.ref,
 			configurationProfileId: driverAppHostedConfigProfile.ref,
 			configurationVersion: driverAppConfigVersion.ref,

@@ -14,14 +14,11 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Stack } from '@aws-cdk/core'
-import { Artifact, Pipeline } from '@aws-cdk/aws-codepipeline'
-import { CodeBuildAction, CodeCommitSourceAction } from '@aws-cdk/aws-codepipeline-actions'
+import { Construct } from 'constructs'
+import { Stack, aws_codepipeline as codepipeline, aws_codepipeline_actions as codepipeline_actions, aws_iam as iam, aws_codecommit as codecommit } from 'aws-cdk-lib'
 import { CodeArtifactPublisher, CodeArtifactPublisherProps } from './CodeArtifactPublisher'
-import { AccountPrincipal, ManagedPolicy, Role } from '@aws-cdk/aws-iam'
-import { IRepository, Repository, RepositoryProps } from '@aws-cdk/aws-codecommit'
 
-export interface LernaCodeArtifactPipelineRepositoryProps extends RepositoryProps {
+export interface LernaCodeArtifactPipelineRepositoryProps extends codecommit.RepositoryProps {
 	/**
 	 * Indicates if repository is already existing. If undefined, will attempt to detect if already exists.
 	 */
@@ -36,9 +33,9 @@ export interface LernaCodeArtifactPipelineProps {
 }
 
 export class LernaCodeArtifactPipeline extends Construct {
-	readonly pipeline: Pipeline
+	readonly pipeline: codepipeline.Pipeline
 
-	readonly repository: IRepository
+	readonly repository: codecommit.IRepository
 
 	constructor (scope: Construct, id: string, props: LernaCodeArtifactPipelineProps) {
 		super(scope, id)
@@ -51,15 +48,15 @@ export class LernaCodeArtifactPipeline extends Construct {
 		} = props
 
 		if (codeCommitProps.existing) {
-			this.repository = Repository.fromRepositoryName(this, 'CodeRepository-Existing', codeCommitProps.repositoryName)
+			this.repository = codecommit.Repository.fromRepositoryName(this, 'CodeRepository-Existing', codeCommitProps.repositoryName)
 		} else {
-			this.repository = new Repository(this, 'CodeRepository', codeCommitProps)
+			this.repository = new codecommit.Repository(this, 'CodeRepository', codeCommitProps)
 		}
 
 		// Configure the CodePipeline source - where your CDK App's source code is hosted
-		const sourceArtifact = new Artifact()
+		const sourceArtifact = new codepipeline.Artifact()
 
-		this.pipeline = new Pipeline(this, 'Pipeline', {
+		this.pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
 			pipelineName: pipelineName || `${codeCommitProps.repositoryName}-${branch}`,
 			// Mutating a CodePipeline can cause the currently propagating state to be
 			// "lost". Ensure we re-run the latest change through the pipeline after it's
@@ -71,15 +68,15 @@ export class LernaCodeArtifactPipeline extends Construct {
 		this.pipeline.addStage({
 			stageName: 'Source',
 			actions: [
-				new CodeCommitSourceAction({
+				new codepipeline_actions.CodeCommitSourceAction({
 					actionName: 'CodeCommitSource',
 					repository: this.repository,
 					branch,
 					output: sourceArtifact,
 					// TODO: make singleton
-					role: new Role(this, 'CodeCommitSourceActionRole', {
-						assumedBy: new AccountPrincipal(Stack.of(this).account),
-						managedPolicies: [ManagedPolicy.fromAwsManagedPolicyName('AWSCodeCommitReadOnly')],
+					role: new iam.Role(this, 'CodeCommitSourceActionRole', {
+						assumedBy: new iam.AccountPrincipal(Stack.of(this).account),
+						managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName('AWSCodeCommitReadOnly')],
 					}),
 				}),
 			],
@@ -90,7 +87,7 @@ export class LernaCodeArtifactPipeline extends Construct {
 		this.pipeline.addStage({
 			stageName: 'Publish',
 			actions: [
-				new CodeBuildAction({
+				new codepipeline_actions.CodeBuildAction({
 					actionName: 'Publish-CodeArtifact',
 					project: codeArtifactPublisher.pipelineProject,
 					input: sourceArtifact,

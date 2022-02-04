@@ -14,20 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, RemovalPolicy, aws_cognito as cognito, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced, globalNamespaced } from '@aws-play/cdk-core'
 import { CognitoFederatedRoleMappingKey } from '../CognitoFederatedRoleMappingKey'
 
 const COGNITO_IDENTITY_PRINCIPLE = 'cognito-identity.amazonaws.com'
 
-export interface InternalIdentityStackPersistentProps extends cdk.NestedStackProps {
+export interface InternalIdentityStackPersistentProps extends NestedStackProps {
 	readonly administratorEmail: string
 	readonly administratorName: string
 }
 
-export class InternalIdentityStackPersistent extends cdk.NestedStack {
+export class InternalIdentityStackPersistent extends NestedStack {
 	public readonly authenticatedRole: iam.IRole
 
 	public readonly userPool: cognito.UserPool
@@ -54,7 +53,7 @@ export class InternalIdentityStackPersistent extends cdk.NestedStack {
 		return this.kibanaClient.userPoolClientId
 	}
 
-	constructor (scope: cdk.Construct, id: string, props: InternalIdentityStackPersistentProps) {
+	constructor (scope: Construct, id: string, props: InternalIdentityStackPersistentProps) {
 		super(scope, id, props)
 
 		const { administratorEmail, administratorName } = props
@@ -89,7 +88,7 @@ export class InternalIdentityStackPersistent extends cdk.NestedStack {
 
 		const userPoolDomain = userPool.addDomain('InteranlCognitoDomain', {
 			cognitoDomain: {
-				domainPrefix: globalNamespaced(this, 'internal-domain'),
+				domainPrefix: globalNamespaced(this, 'internal-domain', { lowerCase: true }),
 			},
 		})
 
@@ -141,7 +140,7 @@ export class InternalIdentityStackPersistent extends cdk.NestedStack {
 			groupName: 'Administrators',
 			precedence: 1,
 		})
-		adminCognitoGroup.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+		adminCognitoGroup.applyRemovalPolicy(RemovalPolicy.RETAIN)
 		this.adminGroup = adminCognitoGroup
 
 		const adminCognitoUser = new cognito.CfnUserPoolUser(this, 'AdminUser', {
@@ -157,6 +156,6 @@ export class InternalIdentityStackPersistent extends cdk.NestedStack {
 			],
 			username: administratorEmail,
 		})
-		adminCognitoUser.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+		adminCognitoUser.applyRemovalPolicy(RemovalPolicy.RETAIN)
 	}
 }

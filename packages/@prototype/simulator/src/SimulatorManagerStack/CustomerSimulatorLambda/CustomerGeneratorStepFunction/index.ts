@@ -14,14 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iot from '@aws-cdk/aws-iot'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks, aws_cognito as cognito, aws_iot as iot } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -37,12 +31,12 @@ export interface CustomerGeneratorStepFunctionProps {
 	readonly customerUserPassword: string
 }
 
-export class CustomerGeneratorStepFunction extends cdk.Construct {
+export class CustomerGeneratorStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: CustomerGeneratorStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: CustomerGeneratorStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -62,7 +56,7 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 			description: 'Lambda used by step function to generate customers',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-generator-helper.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				CUSTOMER_STATS_TABLE_NAME: customerStatsTable.tableName,
 				CUSTOMER_TABLE_NAME: customerTable.tableName,
@@ -116,8 +110,8 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 			}),
 		)
 
-		const waitX = new step.Wait(this, 'Wait few Seconds', {
-			time: step.WaitTime.duration(cdk.Duration.seconds(1)),
+		const waitX = new stepfunctions.Wait(this, 'Wait few Seconds', {
+			time: stepfunctions.WaitTime.duration(Duration.seconds(1)),
 		})
 
 		const iterate = new tasks.LambdaInvoke(
@@ -129,7 +123,7 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 					'iterator.$': '$.Payload',
 				},
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'iterate',
 						payload: {
@@ -147,9 +141,9 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 			'GenerateCustomer',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'generateCustomer',
 						payload: {
@@ -170,9 +164,9 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 				`UpdateStats_${state}`,
 				{
 					lambdaFunction: this.lambda,
-					resultPath: step.JsonPath.DISCARD,
+					resultPath: stepfunctions.JsonPath.DISCARD,
 					payload: {
-						type: step.InputType.OBJECT,
+						type: stepfunctions.InputType.OBJECT,
 						value: {
 							cmd: 'updateStats',
 							payload: {
@@ -184,9 +178,9 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 				},
 			)
 
-		const configureCount = new step.Pass(this, 'ConfigureCount', {
+		const configureCount = new stepfunctions.Pass(this, 'ConfigureCount', {
 			resultPath: '$.iterator',
-			result: step.Result.fromObject({
+			result: stepfunctions.Result.fromObject({
 				index: 0,
 				step: 1,
 			}),
@@ -197,12 +191,12 @@ export class CustomerGeneratorStepFunction extends cdk.Construct {
 		.next(iterate)
 		.next(generateCustomer)
 		.next(
-			new step.Choice(this, 'IsCountReached')
-			.when(step.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
+			new stepfunctions.Choice(this, 'IsCountReached')
+			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
 			.otherwise(updateStats('READY')),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'CustomerGeneratorStepFunctions', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'CustomerGeneratorStepFunctions', {
 			stateMachineName: namespaced(this, 'CustomerGeneratorStepFunctions'),
 			definition,
 			role: stepFunctionRole,

@@ -14,17 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iot from '@aws-cdk/aws-iot'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as elasticache from '@aws-cdk/aws-elasticache'
-import * as events from '@aws-cdk/aws-events'
+import { Construct } from 'constructs'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_elasticache as elasticache, aws_events as events } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -60,20 +51,20 @@ export interface CustomerSimulatorProps {
 	readonly iotEndpointAddress: string
 }
 
-export class CustomerSimulatorLambda extends cdk.Construct {
+export class CustomerSimulatorLambda extends Construct {
 	public readonly lambda: lambda.Function
 
 	public readonly customerStatusUpdateLambda: lambda.Function
 
-	public readonly generatorStepFunction: step.StateMachine
+	public readonly generatorStepFunction: stepfunctions.StateMachine
 
-	public readonly starterStepFunction: step.StateMachine
+	public readonly starterStepFunction: stepfunctions.StateMachine
 
 	public readonly starter: CustomerStarterStepFunction
 
-	public readonly eraserStepFunction: step.StateMachine
+	public readonly eraserStepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: CustomerSimulatorProps) {
+	constructor (scope: Construct, id: string, props: CustomerSimulatorProps) {
 		super(scope, id)
 
 		const {
@@ -138,7 +129,7 @@ export class CustomerSimulatorLambda extends cdk.Construct {
 			description: 'Customer Management functions',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-manager.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				IOT_ENDPOINT: iotEndpointAddress,
 				CUSTOMER_SIMULATIONS_TABLE_NAME: customerSimulationsTable.tableName,

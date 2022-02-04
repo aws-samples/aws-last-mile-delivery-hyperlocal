@@ -14,23 +14,23 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { aws_iam as iam } from 'aws-cdk-lib'
 import { ES } from 'cdk-iam-actions/lib/actions'
 
-const allowStatement = (esDomainArn: string, actions: string[]): PolicyStatement => {
-	return new PolicyStatement({
+const allowStatement = (esDomainArn: string, actions: string[]): iam.PolicyStatement => {
+	return new iam.PolicyStatement({
 		actions,
-		effect: Effect.ALLOW,
+		effect: iam.Effect.ALLOW,
 		resources: [`${esDomainArn}/*`],
 	})
 }
 
-export const AllowESRead = (esDomainArn: string): PolicyStatement => {
+export const AllowESRead = (esDomainArn: string): iam.PolicyStatement => {
 	return allowStatement(esDomainArn, [ES.ES_HTTP_GET])
 }
-export const AllowESWrite = (esDomainArn: string): PolicyStatement => {
+export const AllowESWrite = (esDomainArn: string): iam.PolicyStatement => {
 	return allowStatement(esDomainArn, [ES.ES_HTTP_POST, ES.ES_HTTP_PUT])
 }
-export const AllowESDelete = (esDomainArn: string): PolicyStatement => {
+export const AllowESDelete = (esDomainArn: string): iam.PolicyStatement => {
 	return allowStatement(esDomainArn, [ES.ES_HTTP_DELETE])
 }

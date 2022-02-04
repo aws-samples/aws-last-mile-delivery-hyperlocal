@@ -15,10 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-template-curly-in-string */
-import * as cdk from '@aws-cdk/core'
-import * as iot from '@aws-cdk/aws-iot'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_iot as iot, aws_iam as iam, aws_lambda as lambda } from 'aws-cdk-lib'
 
 interface IoTRuleStackProps {
   restaurantStatusUpdateRuleName: string
@@ -27,12 +25,12 @@ interface IoTRuleStackProps {
 	restaurantStatusUpdateLambda: lambda.IFunction
 }
 
-export class IoTRuleStack extends cdk.Construct {
+export class IoTRuleStack extends Construct {
 	public readonly iotCustomerStatusUpdateRule: iot.CfnTopicRule
 
 	public readonly iotRestaurantStatusUpdateRule: iot.CfnTopicRule
 
-	constructor (scope: cdk.Construct, id: string, props: IoTRuleStackProps) {
+	constructor (scope: Construct, id: string, props: IoTRuleStackProps) {
 		super(scope, id)
 
 		this.iotCustomerStatusUpdateRule = new iot.CfnTopicRule(this, 'IoTCustomerStatusRule', {

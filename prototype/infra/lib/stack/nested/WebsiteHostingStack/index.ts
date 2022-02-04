@@ -14,15 +14,15 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_s3 as s3 } from 'aws-cdk-lib'
 import { HostingDeployment, AppVariables } from '@aws-play/cdk-web'
-import { IBucket } from '@aws-cdk/aws-s3'
 import { sync as findUp } from 'find-up'
 import * as path from 'path'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface WebsiteHostingStackProps extends NestedStackProps {
-	readonly hostingBucket: IBucket
+	readonly hostingBucket: s3.IBucket
 	readonly appVars: { [key: string]: any, }
 }
 

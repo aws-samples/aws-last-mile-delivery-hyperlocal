@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as events from '@aws-cdk/aws-events'
-import * as eventsTarget from '@aws-cdk/aws-events-targets'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda } from 'aws-cdk-lib'
 import { SERVICE_NAME } from '@prototype/common'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -30,7 +26,7 @@ export interface OrderSimulatorProps {
 	readonly geofencing: lambda.IFunction
 }
 
-export class OrderSimulatorLambda extends cdk.Construct {
+export class OrderSimulatorLambda extends Construct {
 	public readonly lambda: lambda.Function
 
 	public readonly externalProviderConsumer: events.Rule
@@ -39,7 +35,7 @@ export class OrderSimulatorLambda extends cdk.Construct {
 
 	public readonly geofencingConsumer: events.Rule
 
-	constructor (scope: cdk.Construct, id: string, props: OrderSimulatorProps) {
+	constructor (scope: Construct, id: string, props: OrderSimulatorProps) {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'OrderSimulatorLambda', {
@@ -48,7 +44,7 @@ export class OrderSimulatorLambda extends cdk.Construct {
 			description: 'Lambda used to simulate the order service',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-simulator-lambda.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				ORDER_TABLE_NAME: props.orderTable.tableName,
 				EVENT_BUS_NAME: props.eventBus.eventBusName,
@@ -95,7 +91,7 @@ export class OrderSimulatorLambda extends cdk.Construct {
 			description: 'Rule used by order service to consume external provider status updates in order',
 			eventBus: props.eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.lambda)],
+			targets: [new events_targets.LambdaFunction(this.lambda)],
 			eventPattern: {
 				source: [
 					SERVICE_NAME.EXAMPLE_POLLING_PROVIDER_SERVICE,
@@ -111,7 +107,7 @@ export class OrderSimulatorLambda extends cdk.Construct {
 			description: 'Rule used by order service to consume order manager provider found events',
 			eventBus: props.eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.lambda)],
+			targets: [new events_targets.LambdaFunction(this.lambda)],
 			eventPattern: {
 				source: [SERVICE_NAME.ORDER_MANAGER],
 				detailType: ['PROVIDER_FOUND', 'ORDER_REJECTED'],
@@ -123,7 +119,7 @@ export class OrderSimulatorLambda extends cdk.Construct {
 			description: 'Rule used by order service to consume geofencing status events',
 			eventBus: props.eventBus,
 			enabled: true,
-			targets: [new eventsTarget.LambdaFunction(this.lambda)],
+			targets: [new events_targets.LambdaFunction(this.lambda)],
 			eventPattern: {
 				source: [SERVICE_NAME.GEOFENCING_SERVICE],
 				detailType: ['GEOFENCE_START', 'GEOFENCE_STOP', 'GEOFENCE_ENTER', 'GEOFENCE_EXIT'],

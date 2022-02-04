@@ -15,12 +15,12 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps, Duration } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, Duration, aws_s3 as s3 } from 'aws-cdk-lib'
 import { KinesisDS, KinesisFirehoseStack } from '@prototype/data-streaming'
-import { IBucket } from '@aws-cdk/aws-s3'
 
 export interface StreamingStackProps extends NestedStackProps {
-	readonly driversTelemetryBucket: IBucket
+	readonly driversTelemetryBucket: s3.IBucket
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
 }
 

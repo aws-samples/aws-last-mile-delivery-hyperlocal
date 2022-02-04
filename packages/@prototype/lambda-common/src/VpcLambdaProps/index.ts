@@ -14,11 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { IVpc, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { ILayerVersion } from '@aws-cdk/aws-lambda'
+import { aws_ec2 as ec2, aws_lambda as lambda } from 'aws-cdk-lib'
 
 export interface VpcLambdaProps {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly layers: { [key: string]: ILayerVersion, }
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly layers: { [key: string]: lambda.ILayerVersion, }
 }

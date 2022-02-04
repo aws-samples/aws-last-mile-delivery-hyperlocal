@@ -14,16 +14,16 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-type ExternalPollingDataStackProps = cdk.NestedStackProps
+type ExternalPollingDataStackProps = NestedStackProps
 
-export class ExternalPollingDataStack extends cdk.NestedStack {
+export class ExternalPollingDataStack extends NestedStack {
 	public readonly externalOrderTable: ddb.Table
 
-	constructor (scope: cdk.Construct, id: string, props: ExternalPollingDataStackProps) {
+	constructor (scope: Construct, id: string, props: ExternalPollingDataStackProps) {
 		super(scope, id)
 
 		this.externalOrderTable = new ddb.Table(this, 'ExamplePollingOrders', {
@@ -34,7 +34,7 @@ export class ExternalPollingDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 	}
 }

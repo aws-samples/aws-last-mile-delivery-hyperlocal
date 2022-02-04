@@ -14,12 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as as from '@aws-cdk/aws-autoscaling'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as iam from '@aws-cdk/aws-iam'
-import * as s3 from '@aws-cdk/aws-s3'
+import { Construct } from 'constructs'
+import { aws_autoscaling as autoscaling, aws_ec2 as ec2, aws_ecs as ecs, aws_iam as iam, aws_s3 as s3 } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 
@@ -29,10 +25,10 @@ export interface DispatchEcsClusterProps {
   readonly dispatchEngineBucket: s3.IBucket
 }
 
-export class DispatchEcsCluster extends cdk.Construct {
+export class DispatchEcsCluster extends Construct {
 	readonly cluster: ecs.ICluster
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchEcsClusterProps) {
+	constructor (scope: Construct, id: string, props: DispatchEcsClusterProps) {
 		super(scope, id)
 
 		const {
@@ -73,7 +69,7 @@ export class DispatchEcsCluster extends cdk.Construct {
 			roleName: regionalNamespaced(this, 'Dispatch-ASG-Instance'),
 		})
 
-		const asg = new as.AutoScalingGroup(this, 'DispatcherEcsAsg', {
+		const asg = new autoscaling.AutoScalingGroup(this, 'DispatcherEcsAsg', {
 			instanceType: ec2.InstanceType.of(ec2.InstanceClass.C6G, ec2.InstanceSize.XLARGE8),
 			machineImage: ecs.EcsOptimizedImage.amazonLinux2(ecs.AmiHardwareType.ARM),
 			vpc,
@@ -81,7 +77,7 @@ export class DispatchEcsCluster extends cdk.Construct {
 			securityGroup: dmzSecurityGroup,
 			blockDevices: [{
 				deviceName: '/dev/xvda',
-				volume: as.BlockDeviceVolume.ebs(64, {
+				volume: autoscaling.BlockDeviceVolume.ebs(64, {
 					deleteOnTermination: true,
 					encrypted: true,
 				}),

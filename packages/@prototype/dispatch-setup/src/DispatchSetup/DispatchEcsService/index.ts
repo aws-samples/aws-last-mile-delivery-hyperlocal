@@ -14,16 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ecr from '@aws-cdk/aws-ecr'
-import * as iam from '@aws-cdk/aws-iam'
-import * as logs from '@aws-cdk/aws-logs'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as secr from '@aws-cdk/aws-secretsmanager'
+import { Construct } from 'constructs'
+import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -39,12 +31,12 @@ export interface DispatchEcsServiceProps {
 	readonly dispatcherAssignmentsTable: ddb.ITable
 }
 
-export class DispatchEcsService extends cdk.Construct {
+export class DispatchEcsService extends Construct {
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
 	readonly dispatcherService: ecs.Ec2Service
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchEcsServiceProps) {
+	constructor (scope: Construct, id: string, props: DispatchEcsServiceProps) {
 		super(scope, id)
 
 		const {
@@ -59,7 +51,7 @@ export class DispatchEcsService extends cdk.Construct {
 		} = props
 
 		const dockerRepo = ecr.Repository.fromRepositoryName(this, 'DispatcherDockerRepo', dockerRepoName)
-		const driverApiKeySecret = secr.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
+		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
 
 		const dispatcherTaskRole = new iam.Role(this, 'DispatcherTaskRole', {
 			assumedBy: new iam.ServicePrincipal(cdkconsts.ServicePrincipals.ECS_TASKS),
@@ -180,8 +172,8 @@ export class DispatchEcsService extends cdk.Construct {
 			healthCheck: {
 				path: '/q/health',
 				port: '8080',
-				interval: cdk.Duration.seconds(45),
-				timeout: cdk.Duration.seconds(15),
+				interval: Duration.seconds(45),
+				timeout: Duration.seconds(15),
 			},
 		})
 

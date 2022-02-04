@@ -15,14 +15,10 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as events from '@aws-cdk/aws-events'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as lambda from '@aws-cdk/aws-lambda'
 import * as net from '@prototype/networking'
-import * as redis from '@aws-cdk/aws-elasticache'
 import { OrderManagerStack } from '@prototype/order-manager'
 
 export interface OrderOrchestrationStackProps extends NestedStackProps {
@@ -34,7 +30,7 @@ export interface OrderOrchestrationStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: net.Networking
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
-	readonly redisCluster: redis.CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
 

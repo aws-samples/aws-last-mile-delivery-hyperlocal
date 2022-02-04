@@ -15,21 +15,17 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import { IBucket } from '@aws-cdk/aws-s3'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_s3 as s3, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_dynamodb as ddb, aws_ecs as ecs } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DispatchSetup, GraphhopperSetup } from '@prototype/dispatch-setup'
-import { IVpc } from '@aws-cdk/aws-ec2'
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as ecs from '@aws-cdk/aws-ecs'
 
 export interface DispatcherStackProps extends NestedStackProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly driverApiUrl: string
 	readonly driverApiKeySecretName: string
-	readonly dispatchEngineBucket: IBucket
+	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
 	readonly dispatcherAppDockerRepoName: string

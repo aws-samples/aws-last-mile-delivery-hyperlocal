@@ -14,14 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as ecr from '@aws-cdk/aws-ecr'
-import * as iam from '@aws-cdk/aws-iam'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as iot from '@aws-cdk/aws-iot'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as cognito from '@aws-cdk/aws-cognito'
+import { Construct } from 'constructs'
+import { Stack, aws_ecs as ecs, aws_ecr as ecr, aws_iam as iam, aws_s3 as s3, aws_iot as iot, aws_ec2 as ec2, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -49,7 +43,7 @@ export interface SimulatorContainerProps {
 	}
 }
 
-export class SimulatorContainer extends cdk.Construct {
+export class SimulatorContainer extends Construct {
 	public readonly taskDefinitionRole: iam.Role
 
 	public readonly taskExecutionRole: iam.Role
@@ -58,11 +52,11 @@ export class SimulatorContainer extends cdk.Construct {
 
 	public readonly containerDefinition: ecs.ContainerDefinition
 
-	constructor (scope: cdk.Construct, id: string, props: SimulatorContainerProps) {
+	constructor (scope: Construct, id: string, props: SimulatorContainerProps) {
 		super(scope, id)
 
 		const { name, cpu, memoryMiB } = props
-		const region = cdk.Stack.of(this).region
+		const region = Stack.of(this).region
 
 		// task DEFINITION role
 		this.taskDefinitionRole = new iam.Role(this, `SimulatorRole-${name}`, {

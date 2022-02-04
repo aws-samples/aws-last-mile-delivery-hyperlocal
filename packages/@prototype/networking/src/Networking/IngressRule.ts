@@ -14,9 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { IPeer, Port } from '@aws-cdk/aws-ec2'
+import { aws_ec2 as ec2 } from 'aws-cdk-lib'
 
 export interface IngressRule {
-	readonly peer: IPeer
-	readonly port: Port
+	readonly peer: ec2.IPeer
+	readonly port: ec2.Port
 }

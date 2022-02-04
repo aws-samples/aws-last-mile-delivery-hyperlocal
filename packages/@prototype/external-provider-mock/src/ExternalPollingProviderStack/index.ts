@@ -14,10 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { aws_apigateway as apigw } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import * as api from '@aws-cdk/aws-apigateway'
 import { ExternalPollingDataStack } from './DataStack'
 import { ExternalPollingServiceLambda } from './ServiceLambda'
 
@@ -25,10 +25,10 @@ export interface ExternalPollingProviderStackProps {
 	readonly none?: string
 }
 
-export class ExternalPollingProviderStack extends cdk.Construct {
-	readonly apiKey: api.IApiKey
+export class ExternalPollingProviderStack extends Construct {
+	readonly apiKey: apigw.IApiKey
 
-	constructor (scope: cdk.Construct, id: string, props: ExternalPollingProviderStackProps) {
+	constructor (scope: Construct, id: string, props: ExternalPollingProviderStackProps) {
 		super(scope, id)
 
 		const dataStack = new ExternalPollingDataStack(this, 'ExternalPollingData', {})
@@ -43,8 +43,8 @@ export class ExternalPollingProviderStack extends cdk.Construct {
 		const externalProviderApi = new RestApi(this, 'ExternalPollingProviderApi', {
 			restApiName: namespaced(this, 'ExternalPollingProviderApi'),
 			defaultCorsPreflightOptions: {
-				allowOrigins: api.Cors.ALL_ORIGINS,
-				allowMethods: api.Cors.ALL_METHODS,
+				allowOrigins: apigw.Cors.ALL_ORIGINS,
+				allowMethods: apigw.Cors.ALL_METHODS,
 			},
 		})
 

@@ -14,10 +14,11 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+import { Construct } from 'constructs'
+import * as core from 'aws-cdk-lib'
+import { aws_lambda as lambda } from 'aws-cdk-lib'
 import * as path from 'path'
 import { sync as findup } from 'find-up'
-import { Duration, Construct } from '@aws-cdk/core'
-import { Runtime, Function, FunctionProps, IFunction, AssetCode, Code } from '@aws-cdk/aws-lambda'
 
 export interface DeclaredLambdaEnvironment {
 	[key: string]: string
@@ -39,15 +40,43 @@ export interface ExposedDeclaredLambdaProps<TDependencies> {
 
 export interface DeclaredLambdaProps<
 	TEnvironment extends DeclaredLambdaEnvironment,
-	TDependencies extends DeclaredLambdaDependencies
-> extends Omit<FunctionProps,
-	'environment' | 'runtime' | 'handler' | 'code'
-> {
+	TDependencies extends DeclaredLambdaDependencies,
+> extends Omit<
+		lambda.FunctionProps,
+		'environment' | 'runtime' | 'handler' | 'code'
+	> {
 	readonly environment: TEnvironment
 	readonly dependencies: TDependencies
-	code?: FunctionProps['code']
-	handler?: FunctionProps['handler']
-	runtime?: FunctionProps['runtime']
+	code?: lambda.FunctionProps['code']
+	handler?: lambda.FunctionProps['handler']
+	runtime?: lambda.FunctionProps['runtime']
+}
+
+/**
+ * Helper method for getting path to lambda output in dist. This will allow
+ * referencing lambda definition in both the src and dist; assuming the lambda has
+ * been built to the dist prior.
+ * @param fromDir The base directory were lambda dist is output to. Both source and dist must
+ * live in same root dir.
+ * @param lambdaPathInDist The relative path of lambda within the dist output.
+ */
+export function getLambdaDistPath (
+	fromDir: string,
+	lambdaPathInDist: string,
+): string {
+	if (!path.isAbsolute(fromDir)) {
+		throw new Error(`Param "fromDir" must be absolute: ${fromDir}`)
+	}
+
+	const dist = findup('dist', { cwd: fromDir, type: 'directory' })
+
+	if (dist == null) {
+		throw new Error(
+			`Failed to find "dist" folder for "${lambdaPathInDist}" from "${fromDir}"`,
+		)
+	}
+
+	return path.join(dist, lambdaPathInDist)
 }
 
 /**
@@ -66,8 +95,8 @@ export interface DeclaredLambdaProps<
  * }
  *
  * interface Dependencies {
- *	readonly settingTable: ITable
- *	readonly deviceTable: ITable
+ *	readonly settingTable: ddb.ITable
+ *	readonly deviceTable: ddb.ITable
  * 	...
  * }
  *
@@ -85,7 +114,7 @@ export interface DeclaredLambdaProps<
  *		const declaredProps: TDeclaredProps = {
  *			functionName: namespaced(scope, 'DevicesServices'),
  *			description: 'Sputnik Devices microservice',
- *			// code: Code.fromAsset(lambdaPath('devices-service')), // Optional instead of `codeDirectory`
+ *			// code: lambda.Code.fromAsset(lambdaPath('devices-service')), // Optional instead of `codeDirectory`
  *			environment: {
  *				TABLE_DEVICES: deviceTable.tableName,
  *				TABLE_SETTINGS: settingTable.tableName,
@@ -93,8 +122,8 @@ export interface DeclaredLambdaProps<
  *			},
  *			dependencies: props.dependencies,
  *			initialPolicy: [
- *				new PolicyStatement({
- *					effect: Effect.ALLOW,
+ *				new iam.PolicyStatement({
+ *					effect: iam.Effect.ALLOW,
  *					actions: [
  *						DynamoDBActions.GET_ITEM,
  *						DynamoDBActions.PUT_ITEM,
@@ -125,33 +154,23 @@ export interface DeclaredLambdaProps<
  *		})
  */
 export class DeclaredLambdaFunction<
-	TEnvironment extends DeclaredLambdaEnvironment,
-	TDependencies extends DeclaredLambdaDependencies
->
-	extends Function
-	implements IFunction {
-	readonly dependencies: TDependencies
+		TEnvironment extends DeclaredLambdaEnvironment,
+		TDependencies extends DeclaredLambdaDependencies,
+	>
+	extends lambda.Function
+	implements lambda.IFunction {
+	readonly dependencies: TDependencies;
 
 	/**
 	 * Helper method for getting path to lambda output in dist. This will allow
 	 * referencing lambda definition in both the src and dist; assuming the lambda has
 	 * been built to the dist prior.
-	 * @param fromDir The base directory were lambda dist is output to. Both source and sist must
+	 * @param fromDir The base directory were lambda dist is output to. Both source and dist must
 	 * live in same root dir.
 	 * @param lambdaPathInDist The relative path of lambda within the dist output.
 	 */
 	static getLambdaDistPath (fromDir: string, lambdaPathInDist: string): string {
-		if (!path.isAbsolute(fromDir)) {
-			throw new Error(`Param "fromDir" must be absolute: ${fromDir}`)
-		}
-
-		const dist = findup('dist', { cwd: fromDir, type: 'directory' })
-
-		if (dist == null) {
-			throw new Error(`Failed to find "dist" folder for "${lambdaPathInDist}" from "${fromDir}"`)
-		}
-
-		return path.join(dist, lambdaPathInDist)
+		return getLambdaDistPath(fromDir, lambdaPathInDist)
 	}
 
 	/**
@@ -169,24 +188,31 @@ export class DeclaredLambdaFunction<
 	 * @throws `XXXDeclaredLambdaFunction.codeDirectory does not exist` if lambda declaration does
 	 * not define the `codeDirectory` static method.
 	 */
-	static get assetCode (): AssetCode {
-		return Code.fromAsset(this.codeDirectory)
+	static get assetCode (): lambda.AssetCode {
+		return lambda.Code.fromAsset(this.codeDirectory)
 	}
 
-	protected constructor (scope: Construct, id: string, props: DeclaredLambdaProps<TEnvironment, TDependencies>) {
+	protected constructor (
+		scope: Construct,
+		id: string,
+		props: DeclaredLambdaProps<TEnvironment, TDependencies>,
+	) {
 		// Set defaults
-		props = Object.assign({
-			timeout: Duration.seconds(10),
-			memorySize: 256,
-			handler: 'index.handler',
-			runtime: Runtime.NODEJS_12_X,
-		}, props)
+		props = Object.assign(
+			{
+				timeout: core.Duration.seconds(10),
+				memorySize: 256,
+				handler: 'index.handler',
+				runtime: lambda.Runtime.NODEJS_12_X,
+			},
+			props,
+		)
 
 		if (props.code == null) {
 			props.code = DeclaredLambdaFunction.assetCode
 		}
 
-		super(scope, id, props as unknown as FunctionProps)
+		super(scope, id, props as unknown as lambda.FunctionProps)
 
 		this.dependencies = props.dependencies
 	}

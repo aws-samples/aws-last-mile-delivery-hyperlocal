@@ -15,16 +15,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-template-curly-in-string */
-import * as cdk from '@aws-cdk/core'
-import * as iot from '@aws-cdk/aws-iot'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Stack, aws_iot as iot, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 interface IoTPolicyStackProps {
 	cognitoAuthenticatedRole: iam.IRole
 }
 
-export class IoTPolicyStack extends cdk.Construct {
+export class IoTPolicyStack extends Construct {
 	public readonly customerStatusUpdateRuleName: string
 
 	public readonly restaurantStatusUpdateRuleName: string
@@ -33,9 +32,9 @@ export class IoTPolicyStack extends cdk.Construct {
 
 	public readonly iotRestaurantPolicy: iot.CfnPolicy
 
-	constructor (scope: cdk.Construct, id: string, props: IoTPolicyStackProps) {
+	constructor (scope: Construct, id: string, props: IoTPolicyStackProps) {
 		super(scope, id)
-		const stack = cdk.Stack.of(this)
+		const stack = Stack.of(this)
 
 		this.customerStatusUpdateRuleName = namespaced(this, 'customer_status_update', { delimiter: '_' })
 

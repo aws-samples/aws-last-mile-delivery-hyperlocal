@@ -14,16 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as events from '@aws-cdk/aws-events'
-import * as ddb from '@aws-cdk/aws-dynamodb'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iot from '@aws-cdk/aws-iot'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as elasticache from '@aws-cdk/aws-elasticache'
 import { Networking } from '@prototype/networking'
 import { SimulatorManagerLambda } from './SimulatorManagerLambda'
 import { OrderSimulatorLambda } from './OrderSimulatorLambda'
@@ -85,12 +78,12 @@ export interface SimulatorManagerStackProps {
 	readonly iotEndpointAddress: string
 }
 
-export class SimulatorManagerStack extends cdk.Construct {
+export class SimulatorManagerStack extends Construct {
 	readonly customerSimulator: CustomerSimulatorLambda
 
 	readonly restaurantSimulator: RestaurantSimulatorLambda
 
-	constructor (scope: cdk.Construct, id: string, props: SimulatorManagerStackProps) {
+	constructor (scope: Construct, id: string, props: SimulatorManagerStackProps) {
 		super(scope, id)
 
 		const {

@@ -14,8 +14,22 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const handler = (event) => {
-	console.log(event)
-}
+import { BackendStackProps } from '../lib/stack/root/BackendStack'
+import { DebugStackProps } from '../lib/stack/root/DebugStack'
+import { PersistentBackendStackProps } from '../lib/stack/root/PersistentBackendStack'
+import { SimulatorMainStackProps } from '../lib/stack/root/SimulatorMainStack'
+import { SimulatorPersistentStackProps } from '../lib/stack/root/SimulatorPersistentStack'
+import { ExternalProviderStackProps } from '../lib/stack/root/ExternalProviderStack'
 
-module.exports = handler
+export type RootConfig =
+Omit<
+    PersistentBackendStackProps
+    & BackendStackProps
+    & DebugStackProps
+    & SimulatorMainStackProps
+    & SimulatorPersistentStackProps
+    & ExternalProviderStackProps
+    , 'persistent' | 'backend'
+>
+
+export default RootConfig

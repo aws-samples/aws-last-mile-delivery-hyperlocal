@@ -14,12 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { aws_iam as iam } from 'aws-cdk-lib'
 import { DynamoDB } from 'cdk-iam-actions/lib/actions'
 
-const tablePolicyStatement = (actions: string[], tableArn: string): PolicyStatement => {
-	const policyStatement = new PolicyStatement({
-		effect: Effect.ALLOW,
+const tablePolicyStatement = (actions: string[], tableArn: string): iam.PolicyStatement => {
+	const policyStatement = new iam.PolicyStatement({
+		effect: iam.Effect.ALLOW,
 		actions,
 		resources: [tableArn],
 	})
@@ -27,7 +27,7 @@ const tablePolicyStatement = (actions: string[], tableArn: string): PolicyStatem
 	return policyStatement
 }
 
-export const readDDBTablePolicyStatement = (tableArn: string): PolicyStatement => {
+export const readDDBTablePolicyStatement = (tableArn: string): iam.PolicyStatement => {
 	return tablePolicyStatement(
 		[
 			DynamoDB.GET_ITEM,
@@ -41,7 +41,7 @@ export const readDDBTablePolicyStatement = (tableArn: string): PolicyStatement =
 	)
 }
 
-export const updateDDBTablePolicyStatement = (tableArn: string): PolicyStatement => {
+export const updateDDBTablePolicyStatement = (tableArn: string): iam.PolicyStatement => {
 	return tablePolicyStatement(
 		[
 			DynamoDB.UPDATE_ITEM,
@@ -51,7 +51,7 @@ export const updateDDBTablePolicyStatement = (tableArn: string): PolicyStatement
 	)
 }
 
-export const deleteFromDDBTablePolicyStatement = (tableArn: string): PolicyStatement => {
+export const deleteFromDDBTablePolicyStatement = (tableArn: string): iam.PolicyStatement => {
 	return tablePolicyStatement(
 		[DynamoDB.DELETE_ITEM],
 		tableArn,

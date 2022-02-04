@@ -14,20 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as cognito from '@aws-cdk/aws-cognito'
-import * as iam from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, RemovalPolicy, CfnOutput, aws_cognito as cognito, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced, globalNamespaced } from '@aws-play/cdk-core'
 import { CognitoFederatedRoleMappingKey } from '../CognitoFederatedRoleMappingKey'
 
 const COGNITO_IDENTITY_PRINCIPLE = 'cognito-identity.amazonaws.com'
 
-export interface IdentityStackPersistentProps extends cdk.NestedStackProps {
+export interface IdentityStackPersistentProps extends NestedStackProps {
 	readonly administratorEmail: string
 	readonly administratorName: string
 }
 
-export class IdentityStackPersistent extends cdk.NestedStack {
+export class IdentityStackPersistent extends NestedStack {
 	public readonly authenticatedRole: iam.IRole
 
 	public readonly userPool: cognito.UserPool
@@ -58,7 +57,7 @@ export class IdentityStackPersistent extends cdk.NestedStack {
 		return this.nativeAppClient.userPoolClientId
 	}
 
-	constructor (scope: cdk.Construct, id: string, props: IdentityStackPersistentProps) {
+	constructor (scope: Construct, id: string, props: IdentityStackPersistentProps) {
 		super(scope, id, props)
 
 		const { administratorEmail, administratorName } = props
@@ -100,7 +99,7 @@ export class IdentityStackPersistent extends cdk.NestedStack {
 
 		const userPoolDomain = userPool.addDomain('CognitoDomain', {
 			cognitoDomain: {
-				domainPrefix: globalNamespaced(this, 'domain'),
+				domainPrefix: globalNamespaced(this, 'domain', { lowerCase: true }),
 			},
 		})
 
@@ -194,7 +193,7 @@ export class IdentityStackPersistent extends cdk.NestedStack {
 			groupName: 'Administrators',
 			precedence: 1,
 		})
-		adminCognitoGroup.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+		adminCognitoGroup.applyRemovalPolicy(RemovalPolicy.RETAIN)
 
 		const adminCognitoUser = new cognito.CfnUserPoolUser(this, 'AdminUser', {
 			userPoolId: userPool.userPoolId,
@@ -209,7 +208,7 @@ export class IdentityStackPersistent extends cdk.NestedStack {
 			],
 			username: administratorEmail,
 		})
-		adminCognitoUser.applyRemovalPolicy(cdk.RemovalPolicy.RETAIN)
+		adminCognitoUser.applyRemovalPolicy(RemovalPolicy.RETAIN)
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const adminGroupAssignment = new cognito.CfnUserPoolUserToGroupAttachment(this, 'AdminGroupAssignment', {
@@ -218,22 +217,22 @@ export class IdentityStackPersistent extends cdk.NestedStack {
 			username: adminCognitoUser.ref,
 		})
 
-		new cdk.CfnOutput(this, 'UserPoolIdOutput', {
+		new CfnOutput(this, 'UserPoolIdOutput', {
 			exportName: 'UserPoolId',
 			value: this.userPoolId,
 		})
 
-		new cdk.CfnOutput(this, 'IdentityPoolIdOutput', {
+		new CfnOutput(this, 'IdentityPoolIdOutput', {
 			exportName: 'IdentityPoolId',
 			value: this.identityPoolId,
 		})
 
-		new cdk.CfnOutput(this, 'WebAppClientIdOutput', {
+		new CfnOutput(this, 'WebAppClientIdOutput', {
 			exportName: 'WebAppClientId',
 			value: this.webAppClientId,
 		})
 
-		new cdk.CfnOutput(this, 'NativeAppClientIdOutput', {
+		new CfnOutput(this, 'NativeAppClientIdOutput', {
 			exportName: 'NativeAppClientId',
 			value: this.nativeAppClientId,
 		})

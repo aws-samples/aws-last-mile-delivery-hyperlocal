@@ -27,11 +27,9 @@
     "@aws-play/cdk-lambda": "^0.0.0-alpha.1",
     "@prototype/lambda-common": "0.0.0-alpha.0"
   },
-   "peerDependencies": {
-    "@aws-cdk/aws-ec2": "1.105.0",
-    "@aws-cdk/aws-elasticache": "1.105.0",
-    "@aws-cdk/aws-elasticsearch": "1.105.0",
-    "@aws-cdk/aws-lambda": "1.105.0",
-    "@aws-cdk/core": "1.105.0"
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.10.0",
+    "constructs": "^10.0.0",
+    "typescript": "^4.5.5"
   }
 }

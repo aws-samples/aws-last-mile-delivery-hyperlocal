@@ -16,7 +16,8 @@
  *********************************************************************************************************************/
 import * as fs from 'fs'
 import * as path from 'path'
-import { Stack, Construct } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Stack } from 'aws-cdk-lib'
 
 export function getRootStack (scope: Construct): Stack {
 	let rootStack = Stack.of(scope)

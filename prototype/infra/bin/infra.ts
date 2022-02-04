@@ -16,13 +16,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import 'source-map-support/register'
-import * as cdk from '@aws-cdk/core'
-import { PipelineStack } from '../lib/stack/root/PipelineStack'
+import { App } from 'aws-cdk-lib'
 import config from '../config'
+// import { PipelineStack } from '../lib/stack/root/PipelineStack'
 
-const app = new cdk.App()
+const app = new App()
 
-new PipelineStack(app, 'PrototypeCode-Pipeline', {
-	stackName: 'PrototypeCode-Pipeline',
-	...config,
-})
+// TODO: implement CDKv2 pipeline stack
+// See https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal/issues/32
+// new PipelineStack(app, 'PrototypeCode-Pipeline', {
+// 	stackName: 'PrototypeCode-Pipeline',
+// 	...config,
+// })

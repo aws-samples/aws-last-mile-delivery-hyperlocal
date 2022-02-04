@@ -14,33 +14,27 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
-import { IBucket } from '@aws-cdk/aws-s3'
-import { AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId } from '@aws-cdk/custom-resources'
-import { IRole, Policy, PolicyDocument, PolicyStatement, Effect } from '@aws-cdk/aws-iam'
-import { Rule } from '@aws-cdk/aws-events'
-import { LambdaFunction } from '@aws-cdk/aws-events-targets'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_s3 as s3, custom_resources, aws_iam as iam, aws_events as events, aws_events_targets as event_targets, aws_appconfig as appconfig } from 'aws-cdk-lib'
 import { AppConfigSetup } from './AppConfigSetup'
 import { ConfigStorage } from './ConfigStorage'
 import { DeploymentHandlerLambda } from './DeploymentHandlerLambda'
 import { namespaced } from '@aws-play/cdk-core'
-import { CfnApplication, CfnEnvironment } from '@aws-cdk/aws-appconfig'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AppConfigNestedStackProps extends NestedStackProps {
 	readonly deliveryAppConfig: any
-	readonly cognitoAuthenticatedRole: IRole
+	readonly cognitoAuthenticatedRole: iam.IRole
 	readonly iotEndpointAddress: string
 }
 
 export class AppConfigNestedStack extends NestedStack {
-	readonly configBucket: IBucket
+	readonly configBucket: s3.IBucket
 
 	readonly configBucketKey: string
 
-	readonly driverApp: CfnApplication
+	readonly driverApp: appconfig.CfnApplication
 
-	readonly driverAppEnvironment: CfnEnvironment
+	readonly driverAppEnvironment: appconfig.CfnEnvironment
 
 	constructor (scope: Construct, id: string, props: AppConfigNestedStackProps) {
 		super(scope, id)
@@ -55,11 +49,11 @@ export class AppConfigNestedStack extends NestedStack {
 		this.configBucket = configStorage.configBucket
 
 		// attach policy to access S3 through cognito identity
-		cognitoAuthenticatedRole.attachInlinePolicy(new Policy(this, 'ConfigS3AccessPolicy', {
-			document: new PolicyDocument({
+		cognitoAuthenticatedRole.attachInlinePolicy(new iam.Policy(this, 'ConfigS3AccessPolicy', {
+			document: new iam.PolicyDocument({
 				statements: [
-					new PolicyStatement({
-						effect: Effect.ALLOW,
+					new iam.PolicyStatement({
+						effect: iam.Effect.ALLOW,
 						actions: [
 							's3:GetObject',
 						],
@@ -81,11 +75,11 @@ export class AppConfigNestedStack extends NestedStack {
 			},
 		})
 
-		const deploymentHandlerTarget = new LambdaFunction(deploymentHandlerLambda)
+		const deploymentHandlerTarget = new event_targets.LambdaFunction(deploymentHandlerLambda)
 
 		// setup event bridge rule
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const appConfigDeploymentRule = new Rule(this, 'AppConfigDeploymentRule', {
+		const appConfigDeploymentRule = new events.Rule(this, 'AppConfigDeploymentRule', {
 			description: 'AppConfig Deployment Rule',
 			ruleName: namespaced(this, 'AppConfigDeploymentRule'),
 			targets: [deploymentHandlerTarget],
@@ -101,16 +95,16 @@ export class AppConfigNestedStack extends NestedStack {
 
 		const destinationKey = `app/${appConfigSetup.driverApp.ref}/env/${appConfigSetup.driverAppEnvironment.name}/config.json`
 
-		const customResourcePolicy = AwsCustomResourcePolicy.fromSdkCalls({
-			resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+		const customResourcePolicy = custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
+			resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
 		})
 
 		customResourcePolicy.statements.push(
-			new PolicyStatement({
+			new iam.PolicyStatement({
 				actions: [
 					's3:putObject*',
 				],
-				effect: Effect.ALLOW,
+				effect: iam.Effect.ALLOW,
 				resources: [
 					this.configBucket.bucketArn,
 					`${this.configBucket.bucketArn}/*`,
@@ -126,12 +120,12 @@ export class AppConfigNestedStack extends NestedStack {
 				Key: destinationKey,
 				Body: JSON.stringify(deliveryAppConfig.driverAppConfig),
 			},
-			physicalResourceId: PhysicalResourceId.of('onPLAYAppConfigDeployment'),
+			physicalResourceId: custom_resources.PhysicalResourceId.of(namespaced(this, 'onPLAYAppConfigDeployment')),
 		// ignoreErrorCodesMatching: 'AccessDenied',
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const appVariablesResource = new AwsCustomResource(this, 'InitialDeliveryAppConfigResource', {
+		const appVariablesResource = new custom_resources.AwsCustomResource(this, 'InitialDeliveryAppConfigResource', {
 			onCreate: resourceParams,
 			onUpdate: resourceParams,
 			policy: customResourcePolicy,

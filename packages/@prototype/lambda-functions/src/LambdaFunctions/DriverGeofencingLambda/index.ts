@@ -14,28 +14,22 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Duration, Construct } from '@aws-cdk/core'
-import { IStream } from '@aws-cdk/aws-kinesis'
-import { IVpc, SubnetType, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { Code, ILayerVersion } from '@aws-cdk/aws-lambda'
-import { EventBus } from '@aws-cdk/aws-events'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
+import { Construct } from 'constructs'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IDomain } from '@aws-cdk/aws-elasticsearch'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DriverGeofencingtLambdaExternalDeps {
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
-	readonly lambdaLayers: ILayerVersion[]
-	readonly esDomain: IDomain
-	readonly eventBus: EventBus
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly esDomain: elasticsearch.IDomain
+	readonly eventBus: events.EventBus
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -45,7 +39,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly ingestDataStream: IStream
+	readonly ingestDataStream: kinesis.IStream
 	readonly externalDeps: DriverGeofencingtLambdaExternalDeps
 }
 
@@ -67,7 +61,7 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'DriverGeofencing'),
 			description: 'Driver Geofencing handler lambda function',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-geofencing.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/driver-geofencing.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
@@ -77,15 +71,15 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 				SERVICE_NAME: SERVICE_NAME.GEOFENCING_SERVICE,
 			},
 			initialPolicy: [
-				new PolicyStatement({
+				new iam.PolicyStatement({
 					actions: [
 						'events:PutEvents',
 					],
-					effect: Effect.ALLOW,
+					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				new PolicyStatement({
-					effect: Effect.ALLOW,
+				new iam.PolicyStatement({
+					effect: iam.Effect.ALLOW,
 					actions: [
 						Kinesis.DESCRIBE_STREAM,
 						'kinesis:DescribeStreamSummary',
@@ -101,7 +95,7 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 			layers: lambdaLayers,
 			vpc,
 			vpcSubnets: {
-				subnetType: SubnetType.PRIVATE,
+				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 			},
 			securityGroups: lambdaSecurityGroups,
 		}

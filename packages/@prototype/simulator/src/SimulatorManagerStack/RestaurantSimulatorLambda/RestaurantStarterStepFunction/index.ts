@@ -14,14 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -37,12 +31,12 @@ export interface RestaurantStarterStepFunctionProps {
 	readonly cluster: ecs.Cluster
 }
 
-export class RestaurantStarterStepFunction extends cdk.Construct {
+export class RestaurantStarterStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly stepFunction: step.StateMachine
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: RestaurantStarterStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: RestaurantStarterStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -60,14 +54,14 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 			description: 'Lambda used by step function to start restaurant simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-starter-helper.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				RESTAURANT_TABLE_NAME: restaurantTable.tableName,
 				RESTAURANT_SIMULATION_TABLE_NAME: restaurantSimulationsTable.tableName,
 				CLUSTER_NAME: cluster.clusterName,
 				TASK_DEFINITION_NAME: restaurantSimulatorContainer.taskDefinition.taskDefinitionArn,
 				SUBNETS: vpc.publicSubnets.map(q => q.subnetId).join(','),
-				SECURITY_GROUP: securityGroup.securityGroupName,
+				SECURITY_GROUP: securityGroup.securityGroupId, // TODO: CDKv2 make sure Id is ok to use // .securityGroupName,
 				CONTAINER_NAME: restaurantSimulatorContainer.containerDefinition.containerName,
 			},
 			initialPolicy: [
@@ -112,8 +106,8 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 			}),
 		)
 
-		const waitX = new step.Wait(this, 'Wait one Seconds', {
-			time: step.WaitTime.duration(cdk.Duration.seconds(1)),
+		const waitX = new stepfunctions.Wait(this, 'Wait one Seconds', {
+			time: stepfunctions.WaitTime.duration(Duration.seconds(1)),
 		})
 
 		const iterate = new tasks.LambdaInvoke(
@@ -125,7 +119,7 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 					'iterator.$': '$.Payload',
 				},
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'iterate',
 						payload: {
@@ -142,9 +136,9 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 			'StartSimulator',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'startSimulator',
 						payload: {
@@ -161,9 +155,9 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 			'UpdateSimulationState',
 			{
 				lambdaFunction: this.lambda,
-				resultPath: step.JsonPath.DISCARD,
+				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
-					type: step.InputType.OBJECT,
+					type: stepfunctions.InputType.OBJECT,
 					value: {
 						cmd: 'updateSimulation',
 						payload: {
@@ -174,9 +168,9 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 			},
 		)
 
-		const configureIterator = new step.Pass(this, 'ConfigureIterator', {
+		const configureIterator = new stepfunctions.Pass(this, 'ConfigureIterator', {
 			resultPath: '$.iterator',
-			result: step.Result.fromObject({
+			result: stepfunctions.Result.fromObject({
 				lastEvaluatedKey: '',
 			}),
 		})
@@ -185,12 +179,12 @@ export class RestaurantStarterStepFunction extends cdk.Construct {
 		.next(iterate)
 		.next(startSimulator)
 		.next(
-			new step.Choice(this, 'IsNextPage')
-			.when(step.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
+			new stepfunctions.Choice(this, 'IsNextPage')
+			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
 			.otherwise(updateSimulationState),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'RestaurantStarterStepFunctions', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'RestaurantStarterStepFunctions', {
 			stateMachineName: namespaced(this, 'RestaurantStarterStepFunctions'),
 			definition,
 			role: stepFunctionRole,

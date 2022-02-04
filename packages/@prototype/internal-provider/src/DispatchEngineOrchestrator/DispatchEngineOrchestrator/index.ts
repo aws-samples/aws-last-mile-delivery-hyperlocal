@@ -14,21 +14,18 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface DispatchEngineOrchestratorManagerProps {
   readonly ochestratorHelper: lambda.IFunction
 }
 
-export class DispatchEngineOrchestratorManager extends cdk.Construct {
-	public readonly stepFunction: step.StateMachine
+export class DispatchEngineOrchestratorManager extends Construct {
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: DispatchEngineOrchestratorManagerProps) {
+	constructor (scope: Construct, id: string, props: DispatchEngineOrchestratorManagerProps) {
 		super(scope, id)
 
 		const {
@@ -48,7 +45,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.dispatchEngineInvoke',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'invokeDispatch',
 					payload: {
@@ -65,7 +62,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.dispatchEngine',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'queryDispatch',
 					payload: {
@@ -84,7 +81,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			lambdaFunction: ochestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'sendToKinesis',
 					payload: {
@@ -98,7 +95,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			lambdaFunction: ochestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'sendToKinesis',
 					payload: {
@@ -115,7 +112,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			lambdaFunction: ochestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'sendToDriver',
 					payload: {
@@ -133,7 +130,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.orderUpdated',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'updateOrdersStatus',
 					payload: {
@@ -149,7 +146,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.driverStatus',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'lockDriver',
 					payload: {
@@ -165,7 +162,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.releaseDriverLock',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'releaseDriverLock',
 					payload: {
@@ -180,7 +177,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			resultPath: '$.releaseOrdersLock',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'releaseOrdersLock',
 					payload: {
@@ -193,7 +190,7 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			},
 		})
 
-		const setOptionalParametersToNull = new step.Pass(this, 'SetOptionalParametersToNull', {
+		const setOptionalParametersToNull = new stepfunctions.Pass(this, 'SetOptionalParametersToNull', {
 			resultPath: '$.releaseOrdersLock',
 			result: {
 				value: {
@@ -202,40 +199,40 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			},
 		})
 
-		const batchOrderStatusChoice = new step.Choice(this, 'BatchOrderStatusChoice')
+		const batchOrderStatusChoice = new stepfunctions.Choice(this, 'BatchOrderStatusChoice')
 		.when(
-			step.Condition.stringEquals('$.orderUpdated.status', 'ALL_ASSIGNED'),
+			stepfunctions.Condition.stringEquals('$.orderUpdated.status', 'ALL_ASSIGNED'),
 			sendAssignedOrderToDriver,
 		)
 		.when(
-			step.Condition.stringEquals('$.orderUpdated.status', 'ANY_CONFLICT'),
+			stepfunctions.Condition.stringEquals('$.orderUpdated.status', 'ANY_CONFLICT'),
 			releaseDriverLock
 			.next(releaseOrdersLock)
 			.next(sendConflictOrdersToKinesis),
 		)
 
-		const driverStatusChoice = new step.Choice(this, 'DriverStatusChoice')
+		const driverStatusChoice = new stepfunctions.Choice(this, 'DriverStatusChoice')
 		.when(
-			step.Condition.booleanEquals('$.driverStatus.locked', true),
+			stepfunctions.Condition.booleanEquals('$.driverStatus.locked', true),
 			updateOrdersStatus
 			.next(batchOrderStatusChoice),
 		).otherwise(
 			setOptionalParametersToNull.next(sendConflictOrdersToKinesis),
 		)
 
-		const waitXSeconds = new step.Wait(this, 'WaitXSeconds', {
-			time: step.WaitTime.duration(cdk.Duration.seconds(5)),
+		const waitXSeconds = new stepfunctions.Wait(this, 'WaitXSeconds', {
+			time: stepfunctions.WaitTime.duration(Duration.seconds(5)),
 		})
 
-		const unassignedOrdersIterator = new step.Map(this, 'UnassignedOrdersIterator', {
+		const unassignedOrdersIterator = new stepfunctions.Map(this, 'UnassignedOrdersIterator', {
 			itemsPath: '$.unassigned',
 		})
 
-		const assignedOrdersIterator = new step.Map(this, 'AssignedOrdersIterator', {
+		const assignedOrdersIterator = new stepfunctions.Map(this, 'AssignedOrdersIterator', {
 			itemsPath: '$.assigned',
 		})
 
-		const unassignedAndAssignedOrders = new step.Parallel(this, 'ExecuteUnassignedAndAssignedOrders', {
+		const unassignedAndAssignedOrders = new stepfunctions.Parallel(this, 'ExecuteUnassignedAndAssignedOrders', {
 			inputPath: '$.dispatchEngine',
 			resultPath: '$.parallel',
 		})
@@ -259,16 +256,16 @@ export class DispatchEngineOrchestratorManager extends cdk.Construct {
 			waitXSeconds.next(dispachEngineQuery),
 		)
 		.next(
-			new step.Choice(this, 'HasProblemBeenSolved?')
+			new stepfunctions.Choice(this, 'HasProblemBeenSolved?')
 			.when(
-				step.Condition.booleanEquals('$.dispatchEngine.inProgress', true),
+				stepfunctions.Condition.booleanEquals('$.dispatchEngine.inProgress', true),
 				waitXSeconds,
 			).otherwise(
 				unassignedAndAssignedOrders,
 			),
 		)
 
-		this.stepFunction = new step.StateMachine(this, 'DispatchEngineOrchestratorStepFunction', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'DispatchEngineOrchestratorStepFunction', {
 			stateMachineName: namespaced(this, 'DispatchEngineOrchestratorStepFunction'),
 			definition,
 			role: stepFunctionRole,

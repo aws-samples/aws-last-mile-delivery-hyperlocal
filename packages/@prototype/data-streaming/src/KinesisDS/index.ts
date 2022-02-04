@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Duration } from '@aws-cdk/core'
-import { Stream, IStream } from '@aws-cdk/aws-kinesis'
+import { Construct } from 'constructs'
+import { Duration, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -25,14 +25,14 @@ export interface KinesisDSProps {
 }
 
 export class KinesisDS extends Construct {
-	readonly driverDataIngestStream: IStream
+	readonly driverDataIngestStream: kinesis.IStream
 
 	constructor (scope: Construct, id: string, props: KinesisDSProps) {
 		super(scope, id)
 
 		const { dataStreamRetention, shardCount } = props
 
-		const ingestDataStream = new Stream(this, 'DriverDataIngestStreamId', {
+		const ingestDataStream = new kinesis.Stream(this, 'DriverDataIngestStreamId', {
 			retentionPeriod: dataStreamRetention,
 			streamName: namespaced(this, 'DriverDataIngestStream'),
 			shardCount,

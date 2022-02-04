@@ -14,10 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as events from '@aws-cdk/aws-events'
-import { ITable } from '@aws-cdk/aws-dynamodb'
-import { Stream, IStream } from '@aws-cdk/aws-kinesis'
+import { Construct } from 'constructs'
+import { Duration, aws_events as events, aws_dynamodb as ddb, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { WebhookProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { InternalProviderCallbackLambda } from './lambdas/InternalProviderCallback'
@@ -30,13 +28,13 @@ import { namespaced } from '@aws-play/cdk-core'
 export interface InternalWebhookProviderProps extends VpcLambdaProps {
 	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
 	readonly eventBus: events.IEventBus
-	readonly internalProviderOrders: ITable
+	readonly internalProviderOrders: ddb.ITable
 }
 
 export class InternalWebhookProvider extends WebhookProviderBase {
-	public readonly orderBatchStream: IStream
+	public readonly orderBatchStream: kinesis.IStream
 
-	constructor (scope: cdk.Construct, id: string, props: InternalWebhookProviderProps) {
+	constructor (scope: Construct, id: string, props: InternalWebhookProviderProps) {
 		const {
 			internalWebhookProviderSettings,
 			eventBus,
@@ -47,9 +45,9 @@ export class InternalWebhookProvider extends WebhookProviderBase {
 		} = props
 
 		// create kinesis DS
-		const orderBatchStream = new Stream(scope, 'DriverDataIngestStreamId', {
+		const orderBatchStream = new kinesis.Stream(scope, 'DriverDataIngestStreamId', {
 			streamName: namespaced(scope, 'OrderBatchStream'),
-			retentionPeriod: cdk.Duration.hours(internalWebhookProviderSettings.dataStreamRetentionHrs as number),
+			retentionPeriod: Duration.hours(internalWebhookProviderSettings.dataStreamRetentionHrs as number),
 			shardCount: internalWebhookProviderSettings.shardCount as number,
 		})
 

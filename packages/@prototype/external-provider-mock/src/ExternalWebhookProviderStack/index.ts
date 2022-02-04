@@ -14,10 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { aws_apigateway as apigw } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import * as api from '@aws-cdk/aws-apigateway'
 import { ExternalWebhookDataStack } from './DataStack'
 import { ExternalWebhookServiceLambda } from './ServiceLambda'
 import { ExternalWebhookInvokerStack } from './WebhookInvoker'
@@ -26,10 +26,10 @@ export interface ExternalWebhookProviderStackProps {
 	readonly exampleWebhookApiSecretName: string
 }
 
-export class ExternalWebhookProviderStack extends cdk.Construct {
-	readonly apiKey: api.IApiKey
+export class ExternalWebhookProviderStack extends Construct {
+	readonly apiKey: apigw.IApiKey
 
-	constructor (scope: cdk.Construct, id: string, props: ExternalWebhookProviderStackProps) {
+	constructor (scope: Construct, id: string, props: ExternalWebhookProviderStackProps) {
 		super(scope, id)
 
 		const {
@@ -54,8 +54,8 @@ export class ExternalWebhookProviderStack extends cdk.Construct {
 		const externalProviderApi = new RestApi(this, 'ExternalWebhookProviderApi', {
 			restApiName: namespaced(this, 'ExternalWebhookProviderApi'),
 			defaultCorsPreflightOptions: {
-				allowOrigins: api.Cors.ALL_ORIGINS,
-				allowMethods: api.Cors.ALL_METHODS,
+				allowOrigins: apigw.Cors.ALL_ORIGINS,
+				allowMethods: apigw.Cors.ALL_METHODS,
 			},
 		})
 

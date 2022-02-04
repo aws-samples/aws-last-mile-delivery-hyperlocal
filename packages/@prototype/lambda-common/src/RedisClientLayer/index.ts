@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { Runtime, Code, ILayerVersion } from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_lambda as lambda } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { SharedLayer } from '../SharedLayer'
@@ -24,10 +24,10 @@ export class RedisClientLayer extends SharedLayer {
 	constructor (scope: Construct, id: string) {
 		super(scope, id, {
 			layerId: 'RedisClientLayer',
-			compatibleRuntimes: [Runtime.NODEJS_12_X],
+			compatibleRuntimes: [lambda.Runtime.NODEJS_12_X],
 			description: 'Redis Client Layer',
 			layerVersionName: namespaced(scope, 'RedisClient'),
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/redis-client.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/redis-client.zip')),
 		})
 	}
 }

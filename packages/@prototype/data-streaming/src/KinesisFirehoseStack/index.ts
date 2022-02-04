@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as s3 from '@aws-cdk/aws-s3'
-import * as kinesis from '@aws-cdk/aws-kinesis'
-import * as firehose from '@aws-cdk/aws-kinesisfirehose'
+import { Construct } from 'constructs'
+import { aws_iam as iam, aws_s3 as s3, aws_kinesis as kinesis, aws_kinesisfirehose as firehose } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 interface KinesisFirehoseStackProps {
@@ -26,10 +23,10 @@ interface KinesisFirehoseStackProps {
 	driverDataIngestStream: kinesis.IStream
 }
 
-export class KinesisFirehoseStack extends cdk.Construct {
+export class KinesisFirehoseStack extends Construct {
 	public readonly driverFirehoseDeliveryStream: firehose.CfnDeliveryStream
 
-	constructor (scope: cdk.Construct, id: string, props: KinesisFirehoseStackProps) {
+	constructor (scope: Construct, id: string, props: KinesisFirehoseStackProps) {
 		super(scope, id)
 
 		const driverFirehoseRole = new iam.Role(this, 'DriverFirehoseRole', {

@@ -14,10 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, NestedStack, NestedStackProps } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3 } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
-import * as s3 from '@aws-cdk/aws-s3'
 import { DatabaseSeeder } from './DatabaseSeeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -80,7 +79,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 			readCapacity: 5,
 			writeCapacity: 5,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.orderTable = new ddb.Table(this, 'OrderTable', {
@@ -91,7 +90,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		const internalProviderOrders = new ddb.Table(this, 'InternalProviderOrders', {
@@ -102,7 +101,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		const internalProviderOrdersStatusIndex = 'idx-internal-provider-orders-status'
@@ -129,7 +128,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.demographicAreaProviderEngineSettings = new ddb.Table(this, 'DemographicAreaProviderEngineSettings', {
@@ -140,7 +139,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.internalProviderLocks = new ddb.Table(this, 'InternalProviderLocks', {
@@ -151,7 +150,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		new DatabaseSeeder(this, 'DatabaseSeeder', {
@@ -172,7 +171,7 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.NUMBER,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 	}
 }

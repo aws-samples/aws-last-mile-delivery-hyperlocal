@@ -14,14 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { CognitoUserPoolsAuthorizer } from '@aws-cdk/aws-apigateway'
-import { IUserPool } from '@aws-cdk/aws-cognito'
-import * as events from '@aws-cdk/aws-events'
+import { Construct } from 'constructs'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_events as events, aws_ec2 as ec2, aws_elasticache as elasticache, aws_lambda as lambda } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { IVpc, ISecurityGroup } from '@aws-cdk/aws-ec2'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
-import { IFunction, ILayerVersion } from '@aws-cdk/aws-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
 import { GeofencingServiceLambda } from './GeofencingService'
@@ -30,16 +25,16 @@ import { GeofencingServiceLambda } from './GeofencingService'
 export interface ApiGeofencingProps {
 	readonly restApi: RestApi
 	readonly apiPrefix?: string
-	readonly userPool: IUserPool
+	readonly userPool: cognito.IUserPool
 	readonly eventBus: events.EventBus
-	readonly lambdaLayers: { [key: string]: ILayerVersion, }
-	readonly vpc: IVpc
-	readonly lambdaSecurityGroups: ISecurityGroup[]
-	readonly redisCluster: CfnCacheCluster
+	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
+	readonly vpc: ec2.IVpc
+	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
+	readonly redisCluster: elasticache.CfnCacheCluster
 }
 
 export class ApiGeofencing extends Construct {
-	public readonly geofencingLambda: IFunction
+	public readonly geofencingLambda: lambda.IFunction
 
 	constructor (scope: Construct, id: string, props: ApiGeofencingProps) {
 		super(scope, id)
@@ -55,7 +50,7 @@ export class ApiGeofencing extends Construct {
 			lambdaSecurityGroups,
 		} = props
 
-		const cognitoAuthorizer = new CognitoUserPoolsAuthorizer(this, 'GeofencingApiCognitoAuthorizer', {
+		const cognitoAuthorizer = new apigw.CognitoUserPoolsAuthorizer(this, 'GeofencingApiCognitoAuthorizer', {
 			authorizerName: namespaced(this, 'GeofencingApiCognitoAuthorizer'),
 			cognitoUserPools: [userPool],
 		})

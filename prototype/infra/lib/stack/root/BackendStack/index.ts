@@ -15,8 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
-import { AwsCustomResource, PhysicalResourceId, AwsCustomResourcePolicy } from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { Stack, StackProps, custom_resources as cr } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { StreamingStack } from '../../nested/StreamingStack'
@@ -113,17 +113,17 @@ export class BackendStack extends Stack {
 
 		setNamespace(this, namespace)
 
-		const getIoTEndpoint = new AwsCustomResource(this, 'IoTEndpointBackendStack', {
+		const getIoTEndpoint = new cr.AwsCustomResource(this, 'IoTEndpointBackendStack', {
 			onCreate: {
 				service: 'Iot',
 				action: 'describeEndpoint',
-				physicalResourceId: PhysicalResourceId.fromResponse('endpointAddress'),
+				physicalResourceId: cr.PhysicalResourceId.fromResponse('endpointAddress'),
 				parameters: {
 					endpointType: 'iot:Data-ATS',
 				},
 			},
-			policy: AwsCustomResourcePolicy.fromSdkCalls({
-				resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 		const iotEndpointAddress = getIoTEndpoint.getResponseField('endpointAddress')

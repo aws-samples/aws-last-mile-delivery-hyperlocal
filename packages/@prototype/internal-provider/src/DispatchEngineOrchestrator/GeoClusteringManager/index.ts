@@ -14,22 +14,19 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as iam from '@aws-cdk/aws-iam'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface GeoClusteringManagerProps {
   readonly ochestratorHelper: lambda.IFunction
-  readonly dispatchEngineStepFunction: step.StateMachine
+  readonly dispatchEngineStepFunction: stepfunctions.StateMachine
 }
 
-export class GeoClusteringManager extends cdk.Construct {
-	public readonly stepFunction: step.StateMachine
+export class GeoClusteringManager extends Construct {
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: GeoClusteringManagerProps) {
+	constructor (scope: Construct, id: string, props: GeoClusteringManagerProps) {
 		super(scope, id)
 
 		const {
@@ -50,7 +47,7 @@ export class GeoClusteringManager extends cdk.Construct {
 			resultPath: '$.geoClustering',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'geoClustering',
 					payload: {
@@ -65,7 +62,7 @@ export class GeoClusteringManager extends cdk.Construct {
 			resultPath: '$.cancelled',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'cancelOrders',
 					payload: {
@@ -80,7 +77,7 @@ export class GeoClusteringManager extends cdk.Construct {
 			resultPath: '$.filterExpiredOrders',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'filterExpiredOrders',
 					payload: {
@@ -93,7 +90,7 @@ export class GeoClusteringManager extends cdk.Construct {
 		const executeDispachEngineOrchestrator = new tasks.StepFunctionsStartExecution(this, 'ExecuteDispachEngineOrchestrator', {
 			stateMachine: dispatchEngineStepFunction,
 			input: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					'parentExecutionId.$': '$$.Execution.Id',
 					'centroid.$': '$.centroid',
@@ -102,14 +99,14 @@ export class GeoClusteringManager extends cdk.Construct {
 			},
 		})
 
-		const clusterIterator = new step.Map(this, 'ClusterIterator', {
+		const clusterIterator = new stepfunctions.Map(this, 'ClusterIterator', {
 			inputPath: '$.geoClustering',
 			itemsPath: '$.clusters',
 		})
 
 		clusterIterator.iterator(executeDispachEngineOrchestrator)
 
-		const expiredAndValidOrders = new step.Parallel(this, 'ExecuteExpiredAndValidOrders', {
+		const expiredAndValidOrders = new stepfunctions.Parallel(this, 'ExecuteExpiredAndValidOrders', {
 			inputPath: '$.filterExpiredOrders',
 			resultPath: '$.expiredOrValidOrders',
 		})
@@ -124,7 +121,7 @@ export class GeoClusteringManager extends cdk.Construct {
 
 		const definition = filterExpiredOrders.next(expiredAndValidOrders)
 
-		this.stepFunction = new step.StateMachine(this, 'GeoClusteringManagerStepFunction', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'GeoClusteringManagerStepFunction', {
 			stateMachineName: namespaced(this, 'GeoClusteringManagerStepFunction'),
 			definition,
 			role: stepFunctionRole,

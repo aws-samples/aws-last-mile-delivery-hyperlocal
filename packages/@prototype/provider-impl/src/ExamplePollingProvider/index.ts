@@ -14,10 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as events from '@aws-cdk/aws-events'
-import * as sqs from '@aws-cdk/aws-sqs'
-import { CfnCacheCluster } from '@aws-cdk/aws-elasticache'
+import { Construct } from 'constructs'
+import { aws_events as events, aws_sqs as sqs, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { PollingProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExamplePollingLambda } from './lambdas/ExamplePolling'
@@ -31,11 +29,11 @@ export interface ExamplePollingProviderProps extends VpcLambdaProps {
 	readonly eventBus: events.IEventBus
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
-	readonly redisCluster: CfnCacheCluster
+	readonly redisCluster: elasticache.CfnCacheCluster
 }
 
 export class ExamplePollingProvider extends PollingProviderBase {
-	constructor (scope: cdk.Construct, id: string, props: ExamplePollingProviderProps) {
+	constructor (scope: Construct, id: string, props: ExamplePollingProviderProps) {
 		const {
 			pollingProviderSettings,
 			eventBus,

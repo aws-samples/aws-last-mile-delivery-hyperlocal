@@ -15,15 +15,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Construct, Stack, StackProps } from '@aws-cdk/core'
-import { AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId } from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { Stack, StackProps, custom_resources as cr, aws_apigateway as apigw, aws_s3 as s3 } from 'aws-cdk-lib'
 import { namespaced, setNamespace } from '@aws-play/cdk-core'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { SimulatorManagerStack, IoTPolicyStack, IoTRuleStack } from '@prototype/simulator'
 import { SharedLayer } from '@prototype/lambda-common'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { Cors } from '@aws-cdk/aws-apigateway'
-import * as s3 from '@aws-cdk/aws-s3'
 import { WebsiteHostingStack } from '../../nested/WebsiteHostingStack'
 import { SimulatorPersistentStack } from '../SimulatorPersistentStack'
 import { BackendStack } from '../BackendStack'
@@ -95,17 +93,17 @@ export class SimulatorMainStack extends Stack {
 
 		setNamespace(this, namespace)
 
-		const getIoTEndpoint = new AwsCustomResource(this, 'IoTEndpointSimulatorStack', {
+		const getIoTEndpoint = new cr.AwsCustomResource(this, 'IoTEndpointSimulatorStack', {
 			onCreate: {
 				service: 'Iot',
 				action: 'describeEndpoint',
-				physicalResourceId: PhysicalResourceId.fromResponse('endpointAddress'),
+				physicalResourceId: cr.PhysicalResourceId.fromResponse('endpointAddress'),
 				parameters: {
 					endpointType: 'iot:Data-ATS',
 				},
 			},
-			policy: AwsCustomResourcePolicy.fromSdkCalls({
-				resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 		const iotEndpointAddress = getIoTEndpoint.getResponseField('endpointAddress')
@@ -115,8 +113,8 @@ export class SimulatorMainStack extends Stack {
 		const simulatorRestApi = new RestApi(this, 'SimulatorRestApi', {
 			restApiName: namespaced(this, 'SimulatorRestApi'),
 			defaultCorsPreflightOptions: {
-				allowOrigins: Cors.ALL_ORIGINS,
-				allowMethods: Cors.ALL_METHODS,
+				allowOrigins: apigw.Cors.ALL_ORIGINS,
+				allowMethods: apigw.Cors.ALL_METHODS,
 			},
 		})
 
@@ -216,14 +214,14 @@ export class SimulatorMainStack extends Stack {
 					},
 				},
 			},
-			physicalResourceId: PhysicalResourceId.fromResponse('FunctionName'),
+			physicalResourceId: cr.PhysicalResourceId.fromResponse('FunctionName'),
 		}
 		// temporary fix with Date.now() to force resource redeployment
-		new AwsCustomResource(this, `UpdateLambdaConfiguration-${Date.now().toString(36)}`, {
+		new cr.AwsCustomResource(this, `UpdateLambdaConfiguration-${Date.now().toString(36)}`, {
 			onCreate: resourceParams,
 			onUpdate: resourceParams,
-			policy: AwsCustomResourcePolicy.fromSdkCalls({
-				resources: AwsCustomResourcePolicy.ANY_RESOURCE,
+			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
+				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
 		})
 	}

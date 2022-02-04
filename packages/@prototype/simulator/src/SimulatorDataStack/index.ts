@@ -14,13 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ddb from '@aws-cdk/aws-dynamodb'
+import { Construct } from 'constructs'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-type SimulatorDataStackProps = cdk.NestedStackProps
+type SimulatorDataStackProps = NestedStackProps
 
-export class SimulatorDataStack extends cdk.NestedStack {
+export class SimulatorDataStack extends NestedStack {
 	public readonly simulatorTable: ddb.Table
 
 	public readonly restaurantTable: ddb.Table
@@ -47,7 +47,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 
 	public readonly customerSimulationsTable: ddb.Table
 
-	constructor (scope: cdk.Construct, id: string, props: SimulatorDataStackProps) {
+	constructor (scope: Construct, id: string, props: SimulatorDataStackProps) {
 		super(scope, id)
 
 		this.simulatorTable = new ddb.Table(this, 'SimulatorTable', {
@@ -58,7 +58,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.eventTable = new ddb.Table(this, 'EventTable', {
@@ -69,7 +69,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 			timeToLiveAttribute: 'ttl',
 		})
 
@@ -94,7 +94,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.restaurantAreaIndex = namespaced(this, 'idx-restaurant-area')
@@ -123,7 +123,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.restaurantSimulationsTable = new ddb.Table(this, 'RestaurantSimulationsTable', {
@@ -134,7 +134,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.customerTable = new ddb.Table(this, 'CustomerTable', {
@@ -145,7 +145,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.customerAreaIndex = namespaced(this, 'idx-customer-area')
@@ -174,7 +174,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.customerSimulationsTable = new ddb.Table(this, 'CustomerSimulationsTable', {
@@ -185,7 +185,7 @@ export class SimulatorDataStack extends cdk.NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			serverSideEncryption: true,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 	}
 }

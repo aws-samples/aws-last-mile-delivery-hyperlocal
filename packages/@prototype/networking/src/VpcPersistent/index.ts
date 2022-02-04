@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Tags } from '@aws-cdk/core'
-import {
-	Vpc, IVpc,
-	SubnetType, NatProvider,
-} from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { Tags, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced, retainResource } from '@aws-play/cdk-core'
 
 export interface VpcPersistentProps {
@@ -27,7 +24,7 @@ export interface VpcPersistentProps {
 }
 
 export class VpcPersistent extends Construct {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 
 	constructor (scope: Construct, id: string, props: VpcPersistentProps) {
 		super(scope, id)
@@ -35,30 +32,30 @@ export class VpcPersistent extends Construct {
 		const { vpcCidr, vpcName } = props
 
 		// create a VPC
-		const vpc = new Vpc(this, 'Vpc', {
+		const vpc = new ec2.Vpc(this, 'Vpc', {
 			cidr: vpcCidr,
 
 			maxAzs: 3,
 
 			subnetConfiguration: [
 				{
-					subnetType: SubnetType.PUBLIC,
+					subnetType: ec2.SubnetType.PUBLIC,
 					name: namespaced(this, 'public'),
 					cidrMask: 24,
 				},
 				{
-					subnetType: SubnetType.PRIVATE,
+					subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
 					cidrMask: 24,
 					name: namespaced(this, 'private'),
 				},
 				{
-					subnetType: SubnetType.ISOLATED,
+					subnetType: ec2.SubnetType.ISOLATED,
 					cidrMask: 24,
 					name: namespaced(this, 'isolated'),
 				},
 			],
 			natGateways: 1, // TODO: review for PROD
-			natGatewayProvider: NatProvider.gateway(),
+			natGatewayProvider: ec2.NatProvider.gateway(),
 		})
 
 		Tags.of(vpc).add('Name', namespaced(this, vpcName))

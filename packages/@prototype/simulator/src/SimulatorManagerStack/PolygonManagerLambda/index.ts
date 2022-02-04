@@ -14,11 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Duration } from '@aws-cdk/core'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { Code } from '@aws-cdk/aws-lambda'
 import { namespaced } from '@aws-play/cdk-core'
-import { ITable } from '@aws-cdk/aws-dynamodb'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -26,7 +25,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
-	readonly geoPolygonTable: ITable
+	readonly geoPolygonTable: ddb.ITable
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -40,7 +39,7 @@ export class PolygonManagerLambda extends DeclaredLambdaFunction<Environment, De
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'PolygonManager'),
 			description: 'Geo Polygon Management functions',
-			code: Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/polygon-manager.zip')),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/polygon-manager.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {

@@ -14,11 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as ec2 from '@aws-cdk/aws-ec2'
-import * as iam from '@aws-cdk/aws-iam'
-import * as ecs from '@aws-cdk/aws-ecs'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { Duration, aws_ec2 as ec2, aws_iam as iam, aws_ecs as ecs, aws_lambda as lambda } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
@@ -32,10 +29,10 @@ export interface GraphhopperManagerProps {
 	readonly taskDefinitionRole: iam.Role
 }
 
-export class GraphhopperManager extends cdk.Construct {
+export class GraphhopperManager extends Construct {
 	public readonly lambda: lambda.Function
 
-	constructor (scope: cdk.Construct, id: string, props: GraphhopperManagerProps) {
+	constructor (scope: Construct, id: string, props: GraphhopperManagerProps) {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'GraphhopperEcsManager', {
@@ -44,12 +41,12 @@ export class GraphhopperManager extends cdk.Construct {
 			description: 'Lambda used to start ECS Graphhopper Task',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/graphhopper-task-runner.zip')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(120),
+			timeout: Duration.seconds(120),
 			environment: {
 				CLUSTER_NAME: props.cluster.clusterName,
 				TASK_DEFINITION_NAME: props.taskDefinition.taskDefinitionArn,
 				SUBNETS: props.vpc.publicSubnets.map(q => q.subnetId).join(','),
-				SECURITY_GROUP: props.securityGroup.securityGroupName,
+				SECURITY_GROUP: props.securityGroup.securityGroupId, // TODO CDKv2 make sure that this parameter will be used properly .securityGroupName,
 				CONTAINER_NAME: props.containerDefinition.containerName,
 			},
 			initialPolicy: [

@@ -14,8 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import * as cdk from '@aws-cdk/core'
-import * as lambda from '@aws-cdk/aws-lambda'
+import { Construct } from 'constructs'
+import { aws_lambda as lambda } from 'aws-cdk-lib'
 import { ProviderBase, ProviderBaseProps } from '../ProviderBase'
 
 export interface CallbackProps {
@@ -30,7 +30,7 @@ export interface WebhookProviderBaseProps extends ProviderBaseProps {
 }
 
 export class WebhookProviderBase extends ProviderBase {
-	constructor (scope: cdk.Construct, id: string, props: WebhookProviderBaseProps) {
+	constructor (scope: Construct, id: string, props: WebhookProviderBaseProps) {
 		super(scope, id, props)
 
 		const {

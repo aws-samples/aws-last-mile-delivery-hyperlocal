@@ -15,10 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import * as path from 'path'
-import * as cdk from '@aws-cdk/core'
-import * as lambda from '@aws-cdk/aws-lambda'
-import * as step from '@aws-cdk/aws-stepfunctions'
-import * as tasks from '@aws-cdk/aws-stepfunctions-tasks'
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface SubMinuteExecutionStepFunctionProps {
@@ -27,10 +25,10 @@ export interface SubMinuteExecutionStepFunctionProps {
   readonly targetLambda: lambda.IFunction
 }
 
-export class SubMinuteExecutionStepFunction extends cdk.Construct {
-	public readonly stepFunction: step.StateMachine
+export class SubMinuteExecutionStepFunction extends Construct {
+	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: cdk.Construct, id: string, props: SubMinuteExecutionStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: SubMinuteExecutionStepFunctionProps) {
 		super(scope, id)
 
 		const {
@@ -45,7 +43,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			description: 'Lambda helper invoked by SubMinuteExecution step function to perform some tasks',
 			code: lambda.Code.fromAsset(path.join(__dirname, './lambdaCode')),
 			handler: 'index.handler',
-			timeout: cdk.Duration.seconds(59),
+			timeout: Duration.seconds(59),
 		})
 
 		const configureIterations = new tasks.LambdaInvoke(this, 'configureIterations', {
@@ -53,7 +51,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			resultPath: '$.configureIterations',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'configureIterations',
 					payload: {
@@ -69,7 +67,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			payloadResponseOnly: true,
 			resultPath: '$.waitForXSeconds',
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'waitForXSeconds',
 					payload: {
@@ -84,7 +82,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			resultPath: '$.currentCounter',
 			payloadResponseOnly: true,
 			payload: {
-				type: step.InputType.OBJECT,
+				type: stepfunctions.InputType.OBJECT,
 				value: {
 					cmd: 'incrementCurrentCounter',
 					payload: {
@@ -94,11 +92,11 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			},
 		})
 
-		const end = new step.Pass(this, 'End')
+		const end = new stepfunctions.Pass(this, 'End')
 
-		const isCompleted = new step.Choice(this, 'IsMaxIterationReached')
+		const isCompleted = new stepfunctions.Choice(this, 'IsMaxIterationReached')
 		.when(
-			step.Condition.numberEqualsJsonPath('$.configureIterations.maxIterations', '$.currentCounter.iteration'),
+			stepfunctions.Condition.numberEqualsJsonPath('$.configureIterations.maxIterations', '$.currentCounter.iteration'),
 			end,
 		).otherwise(
 			waitForXSeconds,
@@ -109,7 +107,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 			invocationType: tasks.LambdaInvocationType.EVENT,
 			resultPath: '$.targetLambda',
 			payload: {
-				type: step.InputType.TEXT,
+				type: stepfunctions.InputType.TEXT,
 				value: '',
 			},
 		})
@@ -120,7 +118,7 @@ export class SubMinuteExecutionStepFunction extends cdk.Construct {
 		.next(incrementCurrentCounter)
 		.next(isCompleted)
 
-		this.stepFunction = new step.StateMachine(this, 'SubminuteLambdaExecution', {
+		this.stepFunction = new stepfunctions.StateMachine(this, 'SubminuteLambdaExecution', {
 			stateMachineName: namespaced(this, 'SubminuteLambdaExecution'),
 			definition,
 		})

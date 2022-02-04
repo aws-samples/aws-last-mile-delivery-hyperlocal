@@ -14,18 +14,18 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from '@aws-cdk/core'
-import { IVpc, ISecurityGroup, SecurityGroup, Port } from '@aws-cdk/aws-ec2'
+import { Construct } from 'constructs'
+import { aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { IngressRule } from '../IngressRule'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface SecurityGroupSetupProps {
-	readonly vpc: IVpc
+	readonly vpc: ec2.IVpc
 	readonly ingressRules: { [key: string]: IngressRule[], }
 }
 
 export class SecurityGroupSetup extends Construct {
-	readonly securityGroups: { [key: string]: ISecurityGroup, }
+	readonly securityGroups: { [key: string]: ec2.ISecurityGroup, }
 
 	constructor (scope: Construct, id: string, props: SecurityGroupSetupProps) {
 		super(scope, id)
@@ -34,14 +34,14 @@ export class SecurityGroupSetup extends Construct {
 		this.securityGroups = {}
 
 		// DMZ security group
-		const dmzSecurityGroup = new SecurityGroup(this, 'DmzSecurityGroup', {
+		const dmzSecurityGroup = new ec2.SecurityGroup(this, 'DmzSecurityGroup', {
 			vpc,
 			allowAllOutbound: true,
 			description: 'DMZ to allow SSH connections to EC2 instances',
 			securityGroupName: namespaced(this, 'DMZ'),
 		})
 
-		dmzSecurityGroup.addIngressRule(dmzSecurityGroup, Port.allTraffic(), 'Access from DMZ')
+		dmzSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.allTraffic(), 'Access from DMZ')
 
 		if (ingressRules.dmz !== undefined) {
 			for (const ingressRule of ingressRules.dmz) {
@@ -50,7 +50,7 @@ export class SecurityGroupSetup extends Construct {
 		}
 
 		// Lambda securityGroup
-		const lambdaSecurityGroup = new SecurityGroup(this, 'LambdaSecurityGroup', {
+		const lambdaSecurityGroup = new ec2.SecurityGroup(this, 'LambdaSecurityGroup', {
 			vpc,
 			allowAllOutbound: true,
 			description: 'Security group for Lambdas in VPC',
@@ -58,19 +58,19 @@ export class SecurityGroupSetup extends Construct {
 		})
 
 		// access dmz items from lambda
-		dmzSecurityGroup.addIngressRule(lambdaSecurityGroup, Port.allTraffic(), 'Access from lambdas')
+		dmzSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic(), 'Access from lambdas')
 
 		// Redis securityGroup
-		const redisSecurityGroup = new SecurityGroup(this, 'RedisSecurityGroup', {
+		const redisSecurityGroup = new ec2.SecurityGroup(this, 'RedisSecurityGroup', {
 			vpc,
 			allowAllOutbound: true,
 			description: 'Security group for Redis cluster in VPC',
 			securityGroupName: namespaced(this, 'Redis'),
 		})
 
-		redisSecurityGroup.addIngressRule(dmzSecurityGroup, Port.tcp(6379)) // redis
-		redisSecurityGroup.addIngressRule(dmzSecurityGroup, Port.tcp(443)) // kibana
-		redisSecurityGroup.addIngressRule(lambdaSecurityGroup, Port.allTraffic())
+		redisSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(6379)) // redis
+		redisSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(443)) // kibana
+		redisSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic())
 
 		this.securityGroups.lambda = lambdaSecurityGroup
 		this.securityGroups.dmz = dmzSecurityGroup

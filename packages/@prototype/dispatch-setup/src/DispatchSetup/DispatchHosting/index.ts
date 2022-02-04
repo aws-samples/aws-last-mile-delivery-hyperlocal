@@ -14,17 +14,15 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct, Stack } from '@aws-cdk/core'
-import { IBucket } from '@aws-cdk/aws-s3'
-import { PolicyStatement, Effect } from '@aws-cdk/aws-iam'
-import { AwsCustomResource, AwsCustomResourcePolicy, PhysicalResourceId } from '@aws-cdk/custom-resources'
+import { Construct } from 'constructs'
+import { Stack, aws_s3 as s3, aws_iam as iam, custom_resources as cr } from 'aws-cdk-lib'
 import { render } from 'mustache'
 import * as fs from 'fs'
 import * as path from 'path'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface DispatchHostingProps {
-	readonly dispatchEngineBucket: IBucket
+	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiUrl: string
 	readonly driverApiKeySecretName: string
 	readonly dispatcherConfigPath: string
@@ -60,15 +58,15 @@ export class DispatchHosting extends Construct {
 			region: Stack.of(this).region,
 		})
 
-		const customResourcePolicy = AwsCustomResourcePolicy
-		.fromSdkCalls({ resources: AwsCustomResourcePolicy.ANY_RESOURCE })
+		const customResourcePolicy = cr.AwsCustomResourcePolicy
+		.fromSdkCalls({ resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE })
 
 		customResourcePolicy.statements.push(
-			new PolicyStatement({
+			new iam.PolicyStatement({
 				actions: [
 					's3:putObject*',
 				],
-				effect: Effect.ALLOW,
+				effect: iam.Effect.ALLOW,
 				resources: [
 					dispatchEngineBucket.bucketArn,
 					`${dispatchEngineBucket.bucketArn}/*`,
@@ -84,12 +82,12 @@ export class DispatchHosting extends Construct {
 				Key: 'dispatcher-app/config/application.properties',
 				Body: renderedContent,
 			},
-			physicalResourceId: PhysicalResourceId.of('onAppDataDeploymentAppProps'),
+			physicalResourceId: cr.PhysicalResourceId.of(namespaced(this, 'onAppDataDeploymentAppProps')),
 			ignoreErrorCodesMatching: 'AccessDenied',
 		}
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const appVariablesResource = new AwsCustomResource(this, 'applicationPropsResource', {
+		const appVariablesResource = new cr.AwsCustomResource(this, 'applicationPropsResource', {
 			onCreate: applicationPropsParams,
 			onUpdate: applicationPropsParams,
 			policy: customResourcePolicy,
