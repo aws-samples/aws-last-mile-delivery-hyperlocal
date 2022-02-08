@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css"
+        integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
 
     <title>Yarn Audit Report</title>
-    <meta name="description" content="51 known vulnerabilities found.">
+    <meta name="description" content="44 known vulnerabilities found.">
 
     <style>
         html {
@@ -44,7 +45,7 @@
             visibility: hidden;
         }
 
-        input[type=checkbox]:checked ~ h3 label:before {
+        input[type=checkbox]:checked~h3 label:before {
             border-left: 8px solid transparent;
             border-top: 8px solid black;
             border-right: 8px solid transparent;
@@ -61,7 +62,7 @@
             transition: max-height 0.15s ease;
         }
 
-        input[type=checkbox]:checked ~ h3 ~ .collapsible-wrapper {
+        input[type=checkbox]:checked~h3~.collapsible-wrapper {
             max-height: 500px;
         }
 
@@ -74,20 +75,20 @@
 </head>
 
 <body>
-<div class="container">
-    <div class="row mb-3">
-        <div class="col-md text-center">
-            <h1>Yarn Audit Report</h1>
+    <div class="container">
+        <div class="row mb-3">
+            <div class="col-md text-center">
+                <h1>Yarn Audit Report</h1>
 
-            <h3>
-                13 unique from
-                51 known vulnerabilities |
-                3728 dependencies
-            </h3>
+                <h3>
+                    13 unique from
+                    44 known vulnerabilities |
+                    5936 dependencies
+                </h3>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        
+        <div class="row">
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -101,62 +102,82 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/immer" target="_blank">immer</a>
                                     </li>
-                                    
-                                        <li>Installed version: 8.0.1</li>
-                                    
+
+                                    <li>Installed version: 8.0.1</li>
+
                                     <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
+
                                     <li>CWE-843</li>
-                                    
-                                        <li>CVE-2021-23436</li>
-                                    
+
+                                    <li>CVE-2021-23436</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;9.0.6</li>
                                     <li>Patched: &gt;=9.0.6</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>This affects the package immer before 9.0.6. A type confusion vulnerability can lead to a bypass of CVE-2020-28477 when the user-provided keys used in the path parameter are arrays. In particular, this bypass is possible because the condition (p === &quot;<strong>proto</strong>&quot; || p === &quot;constructor&quot;) in applyPatches_ returns false if p is [&#39;<strong>proto</strong>&#39;] (or [&#39;constructor&#39;]). The === operator (strict equality operator) returns false if the operands have different type.</p>
-</div>
+                        <div class="card-text">
+                            <p>This affects the package immer before 9.0.6. A type confusion vulnerability can lead to a
+                                bypass of CVE-2020-28477 when the user-provided keys used in the path parameter are
+                                arrays. In particular, this bypass is possible because the condition (p ===
+                                &quot;<strong>proto</strong>&quot; || p === &quot;constructor&quot;) in applyPatches_
+                                returns false if p is [&#39;<strong>proto</strong>&#39;] (or [&#39;constructor&#39;]).
+                                The === operator (strict equality operator) returns false if the operands have different
+                                type.</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 9.0.6 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23436">https://nvd.nist.gov/vuln/detail/CVE-2021-23436</a></li>
-<li><a href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-IMMER-1540542">https://snyk.io/vuln/SNYK-JS-IMMER-1540542</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1579266">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1579266</a></li>
-<li><a href="https://github.com/advisories/GHSA-33f9-j839-rf8h">https://github.com/advisories/GHSA-33f9-j839-rf8h</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-0" type="checkbox">
-                            <h3><label for="vulnerability-reasons-0">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 9.0.6 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-23436">https://nvd.nist.gov/vuln/detail/CVE-2021-23436</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JS-IMMER-1540542">https://snyk.io/vuln/SNYK-JS-IMMER-1540542</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1579266">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1579266</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-33f9-j839-rf8h">https://github.com/advisories/GHSA-33f9-j839-rf8h</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-0" type="checkbox">
+                        <h3><label for="vulnerability-reasons-0">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-33f9-j839-rf8h" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-33f9-j839-rf8h" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -168,75 +189,77 @@
                             <div class="col-md-6">
                                 <ul>
                                     <li>Module:
-                                        <a href="https://npmjs.com/package/follow-redirects" target="_blank">follow-redirects</a>
+                                        <a href="https://npmjs.com/package/follow-redirects"
+                                            target="_blank">follow-redirects</a>
                                     </li>
-                                    
-                                        <li>Installed version: 1.14.1</li>
-                                    
+
+                                    <li>Installed version: 1.14.1</li>
+
                                     <li>Published: 1/13/2022, 7:00:43 AM</li>
-                                    
+
                                     <li>CWE-359</li>
-                                    
-                                        <li>CVE-2022-0155</li>
-                                    
+
+                                    <li>CVE-2022-0155</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;1.14.7</li>
                                     <li>Patched: &gt;=1.14.7</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>follow-redirects is vulnerable to Exposure of Private Personal Information to an Unauthorized Actor</p>
-</div>
+                        <div class="card-text">
+                            <p>follow-redirects is vulnerable to Exposure of Private Personal Information to an
+                                Unauthorized Actor</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 1.14.7 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0155">https://nvd.nist.gov/vuln/detail/CVE-2022-0155</a></li>
-<li><a href="https://github.com/follow-redirects/follow-redirects/commit/8b347cbcef7c7b72a6e9be20f5710c17d6163c22">https://github.com/follow-redirects/follow-redirects/commit/8b347cbcef7c7b72a6e9be20f5710c17d6163c22</a></li>
-<li><a href="https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406">https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406</a></li>
-<li><a href="https://github.com/advisories/GHSA-74fj-2j2h-c42q">https://github.com/advisories/GHSA-74fj-2j2h-c42q</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-1" type="checkbox">
-                            <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/customer-generator-helper&gt;aws-amplify&gt;@aws-amplify/storage&gt;axios</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/customer-generator-helper&gt;aws-amplify&gt;@aws-amplify/api&gt;@aws-amplify/api-rest&gt;axios</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/customer-generator-helper&gt;aws-amplify&gt;@aws-amplify/api&gt;@aws-amplify/api-graphql&gt;@aws-amplify/api-rest&gt;axios</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/customer-generator-helper&gt;aws-amplify&gt;@aws-amplify/datastore&gt;@aws-amplify/api&gt;@aws-amplify/api-graphql&gt;@aws-amplify/api-rest&gt;axios</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 1.14.7 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2022-0155">https://nvd.nist.gov/vuln/detail/CVE-2022-0155</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/follow-redirects/follow-redirects/commit/8b347cbcef7c7b72a6e9be20f5710c17d6163c22">https://github.com/follow-redirects/follow-redirects/commit/8b347cbcef7c7b72a6e9be20f5710c17d6163c22</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406">https://huntr.dev/bounties/fc524e4b-ebb6-427d-ab67-a64181020406</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-74fj-2j2h-c42q">https://github.com/advisories/GHSA-74fj-2j2h-c42q</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-1" type="checkbox">
+                        <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;webpack-dev-server&gt;http-proxy-middleware&gt;http-proxy&gt;follow-redirects</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-74fj-2j2h-c42q" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-74fj-2j2h-c42q" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -250,90 +273,105 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/node-fetch" target="_blank">node-fetch</a>
                                     </li>
-                                    
-                                        <li>Installed version: 2.6.1</li>
-                                    
+
+                                    <li>Installed version: 2.6.1</li>
+
                                     <li>Published: 1/23/2022, 10:00:40 AM</li>
-                                    
+
                                     <li>CWE-173</li>
-                                    
-                                        <li>CVE-2022-0235</li>
-                                    
+
+                                    <li>CVE-2022-0235</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;2.6.7</li>
                                     <li>Patched: &gt;=2.6.7</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>node-fetch is vulnerable to Exposure of Sensitive Information to an Unauthorized Actor</p>
-</div>
+                        <div class="card-text">
+                            <p>node-fetch is vulnerable to Exposure of Sensitive Information to an Unauthorized Actor
+                            </p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 2.6.7 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0235">https://nvd.nist.gov/vuln/detail/CVE-2022-0235</a></li>
-<li><a href="https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10">https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10</a></li>
-<li><a href="https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7">https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7</a></li>
-<li><a href="https://github.com/node-fetch/node-fetch/pull/1453">https://github.com/node-fetch/node-fetch/pull/1453</a></li>
-<li><a href="https://github.com/advisories/GHSA-r683-j2x4-v87g">https://github.com/advisories/GHSA-r683-j2x4-v87g</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-2" type="checkbox">
-                            <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@octokit/core&gt;@octokit/request&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/version&gt;@lerna/gitlab-client&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;aws-amplify&gt;@aws-amplify/auth&gt;amazon-cognito-identity-js&gt;isomorphic-unfetch&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/request&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;aws-amplify&gt;@aws-amplify/datastore&gt;@aws-amplify/api&gt;@aws-amplify/api-graphql&gt;@aws-amplify/pubsub&gt;@aws-amplify/auth&gt;amazon-cognito-identity-js&gt;isomorphic-unfetch&gt;node-fetch</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 2.6.7 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2022-0235">https://nvd.nist.gov/vuln/detail/CVE-2022-0235</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10">https://github.com/node-fetch/node-fetch/commit/36e47e8a6406185921e4985dcbeff140d73eaa10</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7">https://huntr.dev/bounties/d26ab655-38d6-48b3-be15-f9ad6b6ae6f7</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/node-fetch/node-fetch/pull/1453">https://github.com/node-fetch/node-fetch/pull/1453</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-r683-j2x4-v87g">https://github.com/advisories/GHSA-r683-j2x4-v87g</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-2" type="checkbox">
+                        <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>@octokit/core&gt;@octokit/request&gt;node-fetch</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-r683-j2x4-v87g" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                            <div class="card-text">
+                                <code>@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>lerna&gt;@lerna/publish&gt;@lerna/version&gt;@lerna/gitlab-client&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;aws-amplify&gt;@aws-amplify/auth&gt;amazon-cognito-identity-js&gt;isomorphic-unfetch&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>lerna&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/request&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>lerna&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>lerna&gt;@lerna/publish&gt;@lerna/version&gt;@lerna/github-client&gt;@octokit/rest&gt;@octokit/core&gt;@octokit/graphql&gt;@octokit/request&gt;node-fetch</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;aws-amplify&gt;@aws-amplify/datastore&gt;@aws-amplify/api&gt;@aws-amplify/api-graphql&gt;@aws-amplify/pubsub&gt;@aws-amplify/auth&gt;amazon-cognito-identity-js&gt;isomorphic-unfetch&gt;node-fetch</code>
+                            </div>
+
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-r683-j2x4-v87g" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -347,61 +385,74 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/immer" target="_blank">immer</a>
                                     </li>
-                                    
-                                        <li>Installed version: 8.0.1</li>
-                                    
+
+                                    <li>Installed version: 8.0.1</li>
+
                                     <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
+
                                     <li>CWE-915</li>
-                                    
-                                        <li>CVE-2021-3757</li>
-                                    
+
+                                    <li>CVE-2021-3757</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;9.0.6</li>
                                     <li>Patched: &gt;=9.0.6</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes (&#39;Prototype Pollution&#39;)</p>
-</div>
+                        <div class="card-text">
+                            <p>immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes
+                                (&#39;Prototype Pollution&#39;)</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 9.0.6 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3757">https://nvd.nist.gov/vuln/detail/CVE-2021-3757</a></li>
-<li><a href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a></li>
-<li><a href="https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa">https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa</a></li>
-<li><a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx">https://github.com/advisories/GHSA-c36v-fmgq-m8hx</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-3" type="checkbox">
-                            <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 9.0.6 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-3757">https://nvd.nist.gov/vuln/detail/CVE-2021-3757</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa">https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx">https://github.com/advisories/GHSA-c36v-fmgq-m8hx</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-3" type="checkbox">
+                        <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -415,229 +466,80 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/ansi-html" target="_blank">ansi-html</a>
                                     </li>
-                                    
-                                        <li>Installed version: 0.0.7</li>
-                                    
+
+                                    <li>Installed version: 0.0.7</li>
+
                                     <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
+
                                     <li>CWE-400</li>
-                                    
-                                        <li>CVE-2021-23424</li>
-                                    
+
+                                    <li>CVE-2021-23424</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;=0.0.7</li>
                                     <li>Patched: &lt;0.0.0</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>This affects all versions of package ansi-html. If an attacker provides a malicious string, it will get stuck processing the input for an extremely long time.</p>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>None</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23424">https://nvd.nist.gov/vuln/detail/CVE-2021-23424</a></li>
-<li><a href="https://github.com/Tjatse/ansi-html/issues/19">https://github.com/Tjatse/ansi-html/issues/19</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1567198">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1567198</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-ANSIHTML-1296849">https://snyk.io/vuln/SNYK-JS-ANSIHTML-1296849</a></li>
-<li><a href="https://github.com/ioet/time-tracker-ui/security/advisories/GHSA-4fjc-8q3h-8r69">https://github.com/ioet/time-tracker-ui/security/advisories/GHSA-4fjc-8q3h-8r69</a></li>
-<li><a href="https://github.com/advisories/GHSA-whgm-jr23-g3j9">https://github.com/advisories/GHSA-whgm-jr23-g3j9</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-4" type="checkbox">
-                            <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;@pmmmwh/react-refresh-webpack-plugin&gt;ansi-html</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-whgm-jr23-g3j9" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                             Inefficient Regular Expression Complexity in chalk/ansi-regex
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/ansi-regex" target="_blank">ansi-regex</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 3.0.0</li>
-                                    
-                                    <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
-                                    <li>CWE-918</li>
-                                    
-                                        <li>CVE-2021-3807</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &gt;2.1.1 &lt;5.0.1</li>
-                                    <li>Patched: &gt;=5.0.1</li>
-                                    
-                                </ul>
-                            </div>
+                        <div class="card-text">
+                            <p>This affects all versions of package ansi-html. If an attacker provides a malicious
+                                string, it will get stuck processing the input for an extremely long time.</p>
                         </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>ansi-regex is vulnerable to Inefficient Regular Expression Complexity</p>
-</div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 5.0.1 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3807">https://nvd.nist.gov/vuln/detail/CVE-2021-3807</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9">https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9</a></li>
-<li><a href="https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994">https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311">https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311</a></li>
-<li><a href="https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908">https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774">https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774</a></li>
-<li><a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw">https://github.com/advisories/GHSA-93q8-gq69-wqmw</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-5" type="checkbox">
-                            <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@aws-play/config-commitlint&gt;commitizen&gt;inquirer&gt;string-width&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/clean&gt;@lerna/prompt&gt;inquirer&gt;string-width&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/otplease&gt;@lerna/prompt&gt;inquirer&gt;string-width&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/npm-dist-tag&gt;@lerna/otplease&gt;@lerna/prompt&gt;inquirer&gt;string-width&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                            </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                             Inefficient Regular Expression Complexity in chalk/ansi-regex
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/ansi-regex" target="_blank">ansi-regex</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 4.1.0</li>
-                                    
-                                    <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
-                                    <li>CWE-918</li>
-                                    
-                                        <li>CVE-2021-3807</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &gt;2.1.1 &lt;5.0.1</li>
-                                    <li>Patched: &gt;=5.0.1</li>
-                                    
-                                </ul>
-                            </div>
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>None</p>
                         </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>ansi-regex is vulnerable to Inefficient Regular Expression Complexity</p>
-</div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 5.0.1 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3807">https://nvd.nist.gov/vuln/detail/CVE-2021-3807</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9">https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9</a></li>
-<li><a href="https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994">https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311">https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311</a></li>
-<li><a href="https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908">https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908</a></li>
-<li><a href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774">https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774</a></li>
-<li><a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw">https://github.com/advisories/GHSA-93q8-gq69-wqmw</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-6" type="checkbox">
-                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@aws-play/config-commitlint&gt;commitizen&gt;inquirer&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/clean&gt;@lerna/prompt&gt;inquirer&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/otplease&gt;@lerna/prompt&gt;inquirer&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/publish&gt;@lerna/npm-dist-tag&gt;@lerna/otplease&gt;@lerna/prompt&gt;inquirer&gt;strip-ansi&gt;ansi-regex</code>
-                                    </div>
-                                
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-23424">https://nvd.nist.gov/vuln/detail/CVE-2021-23424</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/Tjatse/ansi-html/issues/19">https://github.com/Tjatse/ansi-html/issues/19</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1567198">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1567198</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JS-ANSIHTML-1296849">https://snyk.io/vuln/SNYK-JS-ANSIHTML-1296849</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/ioet/time-tracker-ui/security/advisories/GHSA-4fjc-8q3h-8r69">https://github.com/ioet/time-tracker-ui/security/advisories/GHSA-4fjc-8q3h-8r69</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-whgm-jr23-g3j9">https://github.com/advisories/GHSA-whgm-jr23-g3j9</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-4" type="checkbox">
+                        <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;@pmmmwh/react-refresh-webpack-plugin&gt;ansi-html</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-whgm-jr23-g3j9" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -649,66 +551,265 @@
                             <div class="col-md-6">
                                 <ul>
                                     <li>Module:
-                                        <a href="https://npmjs.com/package/yargs-parser" target="_blank">yargs-parser</a>
+                                        <a href="https://npmjs.com/package/yargs-parser"
+                                            target="_blank">yargs-parser</a>
                                     </li>
-                                    
-                                        <li>Installed version: 10.1.0</li>
-                                    
+
+                                    <li>Installed version: 10.1.0</li>
+
                                     <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
+
                                     <li>CWE-915</li>
-                                    
-                                        <li>CVE-2020-7608</li>
-                                    
+
+                                    <li>CVE-2020-7608</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &gt;=6.0.0 &lt;13.1.2</li>
                                     <li>Patched: &gt;=13.1.2</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>Affected versions of <code>yargs-parser</code> are vulnerable to prototype pollution. Arguments are not properly sanitized, allowing an attacker to modify the prototype of <code>Object</code>, causing the addition or modification of an existing property that will exist on all objects.<br>Parsing the argument <code>--foo.__proto__.bar baz&#39;</code> adds a <code>bar</code> property with value <code>baz</code> to all objects. This is only exploitable if attackers have control over the arguments being passed to <code>yargs-parser</code>.</p>
-<h2 id="recommendation">Recommendation</h2>
-<p>Upgrade to versions 13.1.2, 15.0.1, 18.1.1 or later.</p>
-</div>
+                        <div class="card-text">
+                            <p>Affected versions of <code>yargs-parser</code> are vulnerable to prototype pollution.
+                                Arguments are not properly sanitized, allowing an attacker to modify the prototype of
+                                <code>Object</code>, causing the addition or modification of an existing property that
+                                will exist on all objects.<br>Parsing the argument
+                                <code>--foo.__proto__.bar baz&#39;</code> adds a <code>bar</code> property with value
+                                <code>baz</code> to all objects. This is only exploitable if attackers have control over
+                                the arguments being passed to <code>yargs-parser</code>.</p>
+                            <h2 id="recommendation">Recommendation</h2>
+                            <p>Upgrade to versions 13.1.2, 15.0.1, 18.1.1 or later.</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 13.1.2 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://snyk.io/vuln/SNYK-JS-YARGSPARSER-560381">https://snyk.io/vuln/SNYK-JS-YARGSPARSER-560381</a></li>
-<li><a href="https://www.npmjs.com/advisories/1500">https://www.npmjs.com/advisories/1500</a></li>
-<li><a href="https://github.com/yargs/yargs-parser/commit/63810ca1ae1a24b08293a4d971e70e058c7a41e2">https://github.com/yargs/yargs-parser/commit/63810ca1ae1a24b08293a4d971e70e058c7a41e2</a></li>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2020-7608">https://nvd.nist.gov/vuln/detail/CVE-2020-7608</a></li>
-<li><a href="https://github.com/advisories/GHSA-p9pc-299p-vxgp">https://github.com/advisories/GHSA-p9pc-299p-vxgp</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-7" type="checkbox">
-                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>hygen&gt;ts-jest&gt;yargs-parser</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 13.1.2 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JS-YARGSPARSER-560381">https://snyk.io/vuln/SNYK-JS-YARGSPARSER-560381</a>
+                                </li>
+                                <li><a
+                                        href="https://www.npmjs.com/advisories/1500">https://www.npmjs.com/advisories/1500</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/yargs/yargs-parser/commit/63810ca1ae1a24b08293a4d971e70e058c7a41e2">https://github.com/yargs/yargs-parser/commit/63810ca1ae1a24b08293a4d971e70e058c7a41e2</a>
+                                </li>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2020-7608">https://nvd.nist.gov/vuln/detail/CVE-2020-7608</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-p9pc-299p-vxgp">https://github.com/advisories/GHSA-p9pc-299p-vxgp</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-5" type="checkbox">
+                        <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>hygen&gt;ts-jest&gt;yargs-parser</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-p9pc-299p-vxgp" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-p9pc-299p-vxgp" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-secondary">moderate</span>
+                            Inefficient Regular Expression Complexity in chalk/ansi-regex
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/ansi-regex" target="_blank">ansi-regex</a>
+                                    </li>
+
+                                    <li>Installed version: 3.0.0</li>
+
+                                    <li>Published: 11/19/2021, 12:00:48 AM</li>
+
+                                    <li>CWE-918</li>
+
+                                    <li>CVE-2021-3807</li>
+
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;2.1.1 &lt;5.0.1</li>
+                                    <li>Patched: &gt;=5.0.1</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text">
+                            <p>ansi-regex is vulnerable to Inefficient Regular Expression Complexity</p>
+                        </div>
+
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 5.0.1 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-3807">https://nvd.nist.gov/vuln/detail/CVE-2021-3807</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9">https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994">https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311">https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311</a>
+                                </li>
+                                <li><a
+                                        href="https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908">https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774">https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-93q8-gq69-wqmw">https://github.com/advisories/GHSA-93q8-gq69-wqmw</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-6" type="checkbox">
+                        <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>@aws-play/config-commitlint&gt;commitizen&gt;inquirer&gt;string-width&gt;strip-ansi&gt;ansi-regex</code>
+                            </div>
+
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-secondary">moderate</span>
+                            Inefficient Regular Expression Complexity in chalk/ansi-regex
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/ansi-regex" target="_blank">ansi-regex</a>
+                                    </li>
+
+                                    <li>Installed version: 4.1.0</li>
+
+                                    <li>Published: 11/19/2021, 12:00:48 AM</li>
+
+                                    <li>CWE-918</li>
+
+                                    <li>CVE-2021-3807</li>
+
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;2.1.1 &lt;5.0.1</li>
+                                    <li>Patched: &gt;=5.0.1</li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text">
+                            <p>ansi-regex is vulnerable to Inefficient Regular Expression Complexity</p>
+                        </div>
+
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 5.0.1 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-3807">https://nvd.nist.gov/vuln/detail/CVE-2021-3807</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9">https://github.com/chalk/ansi-regex/commit/8d1d7cdb586269882c4bdc1b7325d0c58c8f76f9</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994">https://huntr.dev/bounties/5b3cf33b-ede0-4398-9974-800876dfd994</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311">https://github.com/chalk/ansi-regex/issues/38#issuecomment-924086311</a>
+                                </li>
+                                <li><a
+                                        href="https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908">https://app.snyk.io/vuln/SNYK-JS-ANSIREGEX-1583908</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774">https://github.com/chalk/ansi-regex/issues/38#issuecomment-925924774</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-93q8-gq69-wqmw">https://github.com/advisories/GHSA-93q8-gq69-wqmw</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-7" type="checkbox">
+                        <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>@aws-play/config-commitlint&gt;commitizen&gt;inquirer&gt;strip-ansi&gt;ansi-regex</code>
+                            </div>
+
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -722,65 +823,77 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/nth-check" target="_blank">nth-check</a>
                                     </li>
-                                    
-                                        <li>Installed version: 1.0.2</li>
-                                    
+
+                                    <li>Installed version: 1.0.2</li>
+
                                     <li>Published: 11/19/2021, 12:00:48 AM</li>
-                                    
+
                                     <li>CWE-1333</li>
-                                    
-                                        <li>CVE-2021-3803</li>
-                                    
+
+                                    <li>CVE-2021-3803</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;2.0.1</li>
                                     <li>Patched: &gt;=2.0.1</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>nth-check is vulnerable to Inefficient Regular Expression Complexity</p>
-</div>
+                        <div class="card-text">
+                            <p>nth-check is vulnerable to Inefficient Regular Expression Complexity</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 2.0.1 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3803">https://nvd.nist.gov/vuln/detail/CVE-2021-3803</a></li>
-<li><a href="https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726">https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726</a></li>
-<li><a href="https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0">https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0</a></li>
-<li><a href="https://github.com/advisories/GHSA-rp65-9cf3-cjxr">https://github.com/advisories/GHSA-rp65-9cf3-cjxr</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-8" type="checkbox">
-                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;@svgr/webpack&gt;@svgr/plugin-svgo&gt;svgo&gt;css-select&gt;nth-check</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;postcss-svgo&gt;svgo&gt;css-select&gt;nth-check</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 2.0.1 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-3803">https://nvd.nist.gov/vuln/detail/CVE-2021-3803</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726">https://github.com/fb55/nth-check/commit/9894c1d2010870c351f66c6f6efcf656e26bb726</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0">https://huntr.dev/bounties/8cf8cc06-d2cf-4b4e-b42c-99fafb0b04d0</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-rp65-9cf3-cjxr">https://github.com/advisories/GHSA-rp65-9cf3-cjxr</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-8" type="checkbox">
+                        <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;@svgr/webpack&gt;@svgr/plugin-svgo&gt;svgo&gt;css-select&gt;nth-check</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-rp65-9cf3-cjxr" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;postcss-svgo&gt;svgo&gt;css-select&gt;nth-check</code>
+                            </div>
+
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-rp65-9cf3-cjxr" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -794,78 +907,94 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/postcss" target="_blank">postcss</a>
                                     </li>
-                                    
-                                        <li>Installed version: 7.0.39</li>
-                                    
+
+                                    <li>Installed version: 7.0.39</li>
+
                                     <li>Published: 1/7/2022, 9:00:41 AM</li>
-                                    
+
                                     <li>CWE-400</li>
-                                    
-                                        <li>CVE-2021-23382</li>
-                                    
+
+                                    <li>CVE-2021-23382</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;8.2.13</li>
                                     <li>Patched: &gt;=8.2.13</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
-</div>
+                        <div class="card-text">
+                            <p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service
+                                (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The
+                                vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 8.2.13 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a></li>
-<li><a href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a></li>
-<li><a href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-9" type="checkbox">
-                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;icss-utils&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss-modules-local-by-default&gt;icss-utils&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;css-declaration-sorter&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;postcss-merge-longhand&gt;stylehacks&gt;postcss</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 8.2.13 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-9" type="checkbox">
+                        <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;icss-utils&gt;postcss</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss-modules-local-by-default&gt;icss-utils&gt;postcss</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;css-declaration-sorter&gt;postcss</code>
+                            </div>
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;postcss-merge-longhand&gt;stylehacks&gt;postcss</code>
+                            </div>
+
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -879,62 +1008,78 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/postcss" target="_blank">postcss</a>
                                     </li>
-                                    
-                                        <li>Installed version: 7.0.36</li>
-                                    
+
+                                    <li>Installed version: 7.0.36</li>
+
                                     <li>Published: 1/7/2022, 9:00:41 AM</li>
-                                    
+
                                     <li>CWE-400</li>
-                                    
-                                        <li>CVE-2021-23382</li>
-                                    
+
+                                    <li>CVE-2021-23382</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;8.2.13</li>
                                     <li>Patched: &gt;=8.2.13</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
-</div>
+                        <div class="card-text">
+                            <p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service
+                                (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The
+                                vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 8.2.13 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a></li>
-<li><a href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a></li>
-<li><a href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-10" type="checkbox">
-                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;postcss</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 8.2.13 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a>
+                                </li>
+                                <li><a
+                                        href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-10" type="checkbox">
+                        <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;postcss</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -948,61 +1093,74 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/node-forge" target="_blank">node-forge</a>
                                     </li>
-                                    
-                                        <li>Installed version: 0.10.0</li>
-                                    
+
+                                    <li>Installed version: 0.10.0</li>
+
                                     <li>Published: 1/22/2022, 8:00:41 AM</li>
-                                    
+
                                     <li>CWE-601</li>
-                                    
-                                        <li>CVE-2022-0122</li>
-                                    
+
+                                    <li>CVE-2022-0122</li>
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;1.0.0</li>
                                     <li>Patched: &gt;=1.0.0</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>parseUrl functionality in node-forge mishandles certain uses of backslash such as https:///\ and interprets the URI as a relative path. </p>
-</div>
+                        <div class="card-text">
+                            <p>parseUrl functionality in node-forge mishandles certain uses of backslash such as
+                                https:///\ and interprets the URI as a relative path. </p>
+                        </div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 1.0.0 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0122">https://nvd.nist.gov/vuln/detail/CVE-2022-0122</a></li>
-<li><a href="https://github.com/digitalbazaar/forge/commit/db8016c805371e72b06d8e2edfe0ace0df934a5e">https://github.com/digitalbazaar/forge/commit/db8016c805371e72b06d8e2edfe0ace0df934a5e</a></li>
-<li><a href="https://huntr.dev/bounties/41852c50-3c6d-4703-8c55-4db27164a4ae">https://huntr.dev/bounties/41852c50-3c6d-4703-8c55-4db27164a4ae</a></li>
-<li><a href="https://github.com/advisories/GHSA-8fr3-hfg3-gpgp">https://github.com/advisories/GHSA-8fr3-hfg3-gpgp</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-11" type="checkbox">
-                            <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;webpack-dev-server&gt;selfsigned&gt;node-forge</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 1.0.0 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://nvd.nist.gov/vuln/detail/CVE-2022-0122">https://nvd.nist.gov/vuln/detail/CVE-2022-0122</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/digitalbazaar/forge/commit/db8016c805371e72b06d8e2edfe0ace0df934a5e">https://github.com/digitalbazaar/forge/commit/db8016c805371e72b06d8e2edfe0ace0df934a5e</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/41852c50-3c6d-4703-8c55-4db27164a4ae">https://huntr.dev/bounties/41852c50-3c6d-4703-8c55-4db27164a4ae</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-8fr3-hfg3-gpgp">https://github.com/advisories/GHSA-8fr3-hfg3-gpgp</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-11" type="checkbox">
+                        <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>simulator-webapp&gt;react-scripts&gt;webpack-dev-server&gt;selfsigned&gt;node-forge</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-8fr3-hfg3-gpgp" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-8fr3-hfg3-gpgp" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
+
             <div class="col-md-12">
                 <div class="card mb-3">
                     <div class="card-body">
@@ -1016,148 +1174,97 @@
                                     <li>Module:
                                         <a href="https://npmjs.com/package/shelljs" target="_blank">shelljs</a>
                                     </li>
-                                    
-                                        <li>Installed version: 0.7.0</li>
-                                    
+
+                                    <li>Installed version: 0.7.0</li>
+
                                     <li>Published: 1/15/2022, 6:00:43 AM</li>
-                                    
+
                                     <li>CWE-269</li>
-                                    
+
                                 </ul>
                             </div>
                             <div class="col-md-6">
                                 <ul>
                                     <li>Vulnerable: &lt;0.8.5</li>
                                     <li>Patched: &gt;=0.8.5</li>
-                                    
+
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><h3 id="impact">Impact</h3>
-<p>Output from the synchronous version of <code>shell.exec()</code> may be visible to other users on the same system. You may be affected if you execute <code>shell.exec()</code> in multi-user Mac, Linux, or WSL environments, or if you execute <code>shell.exec()</code> as the root user.</p>
-<p>Other shelljs functions (including the asynchronous version of <code>shell.exec()</code>) are not impacted.</p>
-<h3 id="patches">Patches</h3>
-<p>Patched in shelljs 0.8.5</p>
-<h3 id="workarounds">Workarounds</h3>
-<p>Recommended action is to upgrade to 0.8.5.</p>
-<h3 id="references">References</h3>
-<p><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></p>
-<h3 id="for-more-information">For more information</h3>
-<p>If you have any questions or comments about this advisory:</p>
-<ul>
-<li>Ask at <a href="https://github.com/shelljs/shelljs/issues/1058">https://github.com/shelljs/shelljs/issues/1058</a></li>
-<li>Open an issue at <a href="https://github.com/shelljs/shelljs/issues/new">https://github.com/shelljs/shelljs/issues/new</a></li>
-</ul>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 0.8.5 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj</a></li>
-<li><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></li>
-<li><a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/advisories/GHSA-64g7-mvw6-v9qj</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-12" type="checkbox">
-                            <h3><label for="vulnerability-reasons-12">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@aws-play/config-commitlint&gt;cz-lerna-changelog&gt;shelljs</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                            Exposure of Sensitive Information to an Unauthorized Actor in nanoid
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/nanoid" target="_blank">nanoid</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 2.1.11</li>
-                                    
-                                    <li>Published: 1/22/2022, 8:00:41 AM</li>
-                                    
-                                    <li>CWE-200</li>
-                                    
-                                        <li>CVE-2021-23566</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;3.1.31</li>
-                                    <li>Patched: &gt;=3.1.31</li>
-                                    
-                                </ul>
-                            </div>
+                        <div class="card-text">
+                            <h3 id="impact">Impact</h3>
+                            <p>Output from the synchronous version of <code>shell.exec()</code> may be visible to other
+                                users on the same system. You may be affected if you execute <code>shell.exec()</code>
+                                in multi-user Mac, Linux, or WSL environments, or if you execute
+                                <code>shell.exec()</code> as the root user.</p>
+                            <p>Other shelljs functions (including the asynchronous version of <code>shell.exec()</code>)
+                                are not impacted.</p>
+                            <h3 id="patches">Patches</h3>
+                            <p>Patched in shelljs 0.8.5</p>
+                            <h3 id="workarounds">Workarounds</h3>
+                            <p>Recommended action is to upgrade to 0.8.5.</p>
+                            <h3 id="references">References</h3>
+                            <p><a
+                                    href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a>
+                            </p>
+                            <h3 id="for-more-information">For more information</h3>
+                            <p>If you have any questions or comments about this advisory:</p>
+                            <ul>
+                                <li>Ask at <a
+                                        href="https://github.com/shelljs/shelljs/issues/1058">https://github.com/shelljs/shelljs/issues/1058</a>
+                                </li>
+                                <li>Open an issue at <a
+                                        href="https://github.com/shelljs/shelljs/issues/new">https://github.com/shelljs/shelljs/issues/new</a>
+                                </li>
+                            </ul>
                         </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>The package nanoid before 3.1.31 are vulnerable to Information Exposure via the valueOf() function which allows to reproduce the last id generated.</p>
-</div>
 
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 3.1.31 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23566">https://nvd.nist.gov/vuln/detail/CVE-2021-23566</a></li>
-<li><a href="https://github.com/ai/nanoid/pull/328">https://github.com/ai/nanoid/pull/328</a></li>
-<li><a href="https://github.com/ai/nanoid/commit/2b7bd9332bc49b6330c7ddb08e5c661833db2575">https://github.com/ai/nanoid/commit/2b7bd9332bc49b6330c7ddb08e5c661833db2575</a></li>
-<li><a href="https://gist.github.com/artalar/bc6d1eb9a3477d15d2772e876169a444">https://gist.github.com/artalar/bc6d1eb9a3477d15d2772e876169a444</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-2332550">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-2332550</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-NANOID-2332193">https://snyk.io/vuln/SNYK-JS-NANOID-2332193</a></li>
-<li><a href="https://github.com/advisories/GHSA-qrpm-p2h7-hrv2">https://github.com/advisories/GHSA-qrpm-p2h7-hrv2</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-13" type="checkbox">
-                            <h3><label for="vulnerability-reasons-13">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/customer-generator-helper&gt;shortid&gt;nanoid</code>
-                                    </div>
-                                
+
+                        <h3>Remediation</h3>
+                        <div class="card-text">
+                            <p>Upgrade to version 0.8.5 or later</p>
+                        </div>
+
+
+                        <h3>References</h3>
+                        <div class="card-text">
+                            <ul>
+                                <li><a
+                                        href="https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj</a>
+                                </li>
+                                <li><a
+                                        href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a>
+                                </li>
+                                <li><a
+                                        href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/advisories/GHSA-64g7-mvw6-v9qj</a>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                        <input id="vulnerability-reasons-12" type="checkbox">
+                        <h3><label for="vulnerability-reasons-12">Reasons this module exists</label></h3>
+                        <div class="mb-3 collapsible-wrapper">
+
+                            <div class="card-text">
+                                <code>@aws-play/config-commitlint&gt;cz-lerna-changelog&gt;shelljs</code>
                             </div>
-                        
 
-                        <a href="https://github.com/advisories/GHSA-qrpm-p2h7-hrv2" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                        </div>
+
+
+                        <a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj" class="btn btn-lg btn-primary"
+                            target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
-        
-        
 
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 2/8/2022, 3:15:54 PM</h6>
+
+
+            <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 2/8/2022, 3:58:01 PM</h6>
+        </div>
     </div>
-</div>
 </body>
 
 </html>
