@@ -123,11 +123,12 @@ export class RestaurantSimulatorLambda extends Construct {
 		this.eraserStepFunction = eraser.stepFunction
 
 		this.lambda = new lambda.Function(this, 'RestaurantSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(scope, 'RestaurantManager'),
 			description: 'Restaurant Management functions',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-manager.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,

@@ -25,6 +25,7 @@ export class RedisClientLayer extends SharedLayer {
 		super(scope, id, {
 			layerId: 'RedisClientLayer',
 			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'Redis Client Layer',
 			layerVersionName: namespaced(scope, 'RedisClient'),
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/redis-client.zip')),

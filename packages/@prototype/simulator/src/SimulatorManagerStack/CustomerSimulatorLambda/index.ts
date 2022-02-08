@@ -124,11 +124,12 @@ export class CustomerSimulatorLambda extends Construct {
 		this.eraserStepFunction = eraser.stepFunction
 
 		this.lambda = new lambda.Function(this, 'CustomerSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(scope, 'CustomerManager'),
 			description: 'Customer Management functions',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-manager.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				IOT_ENDPOINT: iotEndpointAddress,

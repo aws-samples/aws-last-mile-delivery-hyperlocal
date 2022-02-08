@@ -45,11 +45,12 @@ export class StatisticsLambda extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'StatisticsLambda', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'StatisticsLambda'),
 			description: 'Lambda used to consume event bridge events and build up statistics in redis to generate a system wide state',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/statistics-lambda.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,

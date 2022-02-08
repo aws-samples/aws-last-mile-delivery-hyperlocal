@@ -42,6 +42,7 @@ export class ProviderInitialSetup extends Construct {
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/provider-setup-customresource.zip')),
 			handler: 'index.onEvent',
 			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			environment: {
 				APIKEY_SECRETNAME_JSON: JSON.stringify(apiKeySecretNameList.map(item => {
 					return { keyId: item.keyId, secret: item.secret }

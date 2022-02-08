@@ -25,6 +25,7 @@ export class LambdaUtilsLayer extends SharedLayer {
 		super(scope, id, {
 			layerId: 'LambdaUtilsLayer',
 			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'Lambda Utils Layer',
 			layerVersionName: namespaced(scope, 'LambdaUtils'),
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/lambda-utils.zip')),

@@ -51,11 +51,12 @@ export class CustomerGeneratorStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'CustomerGeneratorHelper', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'CustomerGeneratorHelper'),
 			description: 'Lambda used by step function to generate customers',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-generator-helper.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				CUSTOMER_STATS_TABLE_NAME: customerStatsTable.tableName,

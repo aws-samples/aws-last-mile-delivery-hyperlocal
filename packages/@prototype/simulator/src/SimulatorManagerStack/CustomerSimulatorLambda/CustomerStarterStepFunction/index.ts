@@ -60,11 +60,12 @@ export class CustomerStarterStepFunction extends Construct {
 			CONTAINER_NAME: customerSimulatorContainer.containerDefinition.containerName,
 		}
 		this.lambda = new lambda.Function(this, 'CustomerStarterHelper', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'CustomerStarterHelper'),
 			description: 'Lambda used by step function to start customer simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-starter-helper.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				...this.environmentVariables,

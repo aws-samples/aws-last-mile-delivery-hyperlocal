@@ -38,6 +38,7 @@ export class ESInitialSetup extends Construct {
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-setup-customresource.zip')),
 			handler: 'index.onEvent',
 			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			environment: {
 				SETUP_LAMBDA_ARN: setupLambdaArn,
 			},

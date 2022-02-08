@@ -66,11 +66,12 @@ export class SimulatorManagerLambda extends Construct {
 		this.stepFunction = invoker.stepFunction
 
 		this.lambda = new lambda.Function(this, 'SimulatorManagerLambda', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'SimulatorManagerLambda'),
 			description: 'Lambda used to handle ECS Task for Driver Simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/simulator-manager-lambda.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				IOT_ENDPOINT: iotEndpointAddress,

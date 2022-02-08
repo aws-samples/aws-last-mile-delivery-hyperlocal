@@ -40,11 +40,12 @@ export class CustomerEraserStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'CustomerEraserHelper', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'CustomerEraserHelper'),
 			description: 'Lambda used by step function to delete customers',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-eraser-helper.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				CUSTOMER_TABLE_NAME: customerTable.tableName,
