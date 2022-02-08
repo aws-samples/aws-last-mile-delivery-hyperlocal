@@ -52,7 +52,6 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 			description: 'Lambda used to provide geofencing functionalities',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/geofencing.zip')),
 			dependencies: props.dependencies,
-			runtime: lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,

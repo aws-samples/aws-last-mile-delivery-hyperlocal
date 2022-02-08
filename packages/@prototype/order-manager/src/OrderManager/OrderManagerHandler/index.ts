@@ -54,7 +54,6 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 			description: 'Lambda used to handle incoming events from event bridge relative to order lifecycle',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-manager-handler.zip')),
 			dependencies: props.dependencies,
-			runtime: lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,

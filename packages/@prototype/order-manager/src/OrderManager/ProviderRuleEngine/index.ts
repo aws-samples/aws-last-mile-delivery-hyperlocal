@@ -50,7 +50,6 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 			description: 'Lambda implementation of the provider rule engine',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/provider-rule-engine.zip')),
 			dependencies: props.dependencies,
-			runtime: lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.seconds(120),
 			environment: {
 				PROVIDERS: Object.keys(providersConfig).join(','),

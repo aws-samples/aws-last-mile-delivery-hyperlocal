@@ -40,11 +40,12 @@ export class RestaurantEraserStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'RestaurantEraserHelper', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'RestaurantEraserHelper'),
 			description: 'Lambda used by step function to delete restaurants',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-eraser-helper.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				RESTAURANT_TABLE_NAME: restaurantTable.tableName,

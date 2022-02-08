@@ -54,7 +54,6 @@ export class OrderManagerHelperLambda extends DeclaredLambdaFunction<Environment
 			description: 'Lambda used by Order Orchestrator to perform actions on the Step Functions workflow',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-manager-helper.zip')),
 			dependencies: props.dependencies,
-			runtime: lambda.Runtime.NODEJS_14_X,
 			timeout: Duration.seconds(120),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,

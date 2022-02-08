@@ -36,11 +36,12 @@ export class GraphhopperManager extends Construct {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'GraphhopperEcsManager', {
-			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'GraphhopperEcsManager'),
 			description: 'Lambda used to start ECS Graphhopper Task',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/graphhopper-task-runner.zip')),
 			handler: 'index.handler',
+			runtime: lambda.Runtime.NODEJS_14_X,
+			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
 				CLUSTER_NAME: props.cluster.clusterName,

@@ -204,6 +204,7 @@ export class DeclaredLambdaFunction<
 				memorySize: 256,
 				handler: 'index.handler',
 				runtime: lambda.Runtime.NODEJS_14_X,
+				architecture: lambda.Architecture.ARM_64,
 			},
 			props,
 		)

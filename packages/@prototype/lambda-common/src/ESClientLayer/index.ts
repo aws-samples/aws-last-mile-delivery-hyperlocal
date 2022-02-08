@@ -25,6 +25,7 @@ export class ESClientLayer extends SharedLayer {
 		super(scope, id, {
 			layerId: 'ESClientLayer',
 			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'ES Client Layer',
 			layerVersionName: namespaced(scope, 'ESClient'),
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-client.zip')),
