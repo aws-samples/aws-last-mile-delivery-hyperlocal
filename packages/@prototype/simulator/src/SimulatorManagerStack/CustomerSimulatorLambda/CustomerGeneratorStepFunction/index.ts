@@ -51,7 +51,7 @@ export class CustomerGeneratorStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'CustomerGeneratorHelper', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'CustomerGeneratorHelper'),
 			description: 'Lambda used by step function to generate customers',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-generator-helper.zip')),

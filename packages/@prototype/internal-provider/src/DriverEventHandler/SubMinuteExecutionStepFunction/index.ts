@@ -38,7 +38,7 @@ export class SubMinuteExecutionStepFunction extends Construct {
 		} = props
 
 		const lambdaHelper = new lambda.Function(this, 'SubMinuteExecutionHelper', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'SubMinuteExecutionHelper'),
 			description: 'Lambda helper invoked by SubMinuteExecution step function to perform some tasks',
 			code: lambda.Code.fromAsset(path.join(__dirname, './lambdaCode')),

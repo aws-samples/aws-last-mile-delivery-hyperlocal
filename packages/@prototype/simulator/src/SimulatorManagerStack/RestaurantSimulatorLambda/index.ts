@@ -123,7 +123,7 @@ export class RestaurantSimulatorLambda extends Construct {
 		this.eraserStepFunction = eraser.stepFunction
 
 		this.lambda = new lambda.Function(this, 'RestaurantSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(scope, 'RestaurantManager'),
 			description: 'Restaurant Management functions',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-manager.zip')),

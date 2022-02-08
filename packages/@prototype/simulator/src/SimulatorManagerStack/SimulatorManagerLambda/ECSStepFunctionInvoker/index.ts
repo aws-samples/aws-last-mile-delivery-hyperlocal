@@ -39,7 +39,7 @@ export class ECSStepFunctionInvoker extends Construct {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'ECSTaskRunHelper', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'ECSTaskRunHelper'),
 			description: 'Lambda used by step function to start ECS Task',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/ecs-task-runner.zip')),

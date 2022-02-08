@@ -124,7 +124,7 @@ export class CustomerSimulatorLambda extends Construct {
 		this.eraserStepFunction = eraser.stepFunction
 
 		this.lambda = new lambda.Function(this, 'CustomerSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(scope, 'CustomerManager'),
 			description: 'Customer Management functions',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-manager.zip')),

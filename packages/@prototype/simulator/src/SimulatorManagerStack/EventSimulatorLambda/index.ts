@@ -34,7 +34,7 @@ export class EventSimulatorLambda extends Construct {
 		const stack = Stack.of(this)
 
 		this.lambda = new lambda.Function(this, 'EventSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'EventSimulatorLambda'),
 			description: 'Lambda used to expose events coming in the event bridge for debug/simulation purpose',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/event-simulator-lambda.zip')),

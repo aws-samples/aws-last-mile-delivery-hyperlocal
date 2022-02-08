@@ -39,7 +39,7 @@ export class OrderSimulatorLambda extends Construct {
 		super(scope, id)
 
 		this.lambda = new lambda.Function(this, 'OrderSimulatorLambda', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'OrderSimulatorLambda'),
 			description: 'Lambda used to simulate the order service',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-simulator-lambda.zip')),

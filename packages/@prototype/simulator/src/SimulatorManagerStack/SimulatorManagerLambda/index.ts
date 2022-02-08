@@ -66,7 +66,7 @@ export class SimulatorManagerLambda extends Construct {
 		this.stepFunction = invoker.stepFunction
 
 		this.lambda = new lambda.Function(this, 'SimulatorManagerLambda', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'SimulatorManagerLambda'),
 			description: 'Lambda used to handle ECS Task for Driver Simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/simulator-manager-lambda.zip')),

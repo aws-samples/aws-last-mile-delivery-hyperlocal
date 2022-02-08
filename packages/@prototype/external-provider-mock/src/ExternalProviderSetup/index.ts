@@ -39,7 +39,7 @@ export class ExternalProviderSetup extends Construct {
 			description: `Setup provider APIkey secrets - Custom Resource Lambda. Last update: ${Date.now()}`,
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/external-provider-setup.zip')),
 			handler: 'index.onEvent',
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			environment: {
 				APIKEY_SECRETNAME_JSON: JSON.stringify(apiKeySecretNameList.map(item => {
 					return { keyId: item.keyId, secret: item.secret }

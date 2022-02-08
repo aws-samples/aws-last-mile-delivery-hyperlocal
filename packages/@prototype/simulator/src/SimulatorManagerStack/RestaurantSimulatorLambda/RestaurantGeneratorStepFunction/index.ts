@@ -52,7 +52,7 @@ export class RestaurantGeneratorStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'RestaurantGeneratorHelper', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'RestaurantGeneratorHelper'),
 			description: 'Lambda used by step function to generate restaurants',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-generator-helper.zip')),

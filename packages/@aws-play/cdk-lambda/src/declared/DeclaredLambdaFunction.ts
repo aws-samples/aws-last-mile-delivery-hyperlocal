@@ -203,7 +203,7 @@ export class DeclaredLambdaFunction<
 				timeout: core.Duration.seconds(10),
 				memorySize: 256,
 				handler: 'index.handler',
-				runtime: lambda.Runtime.NODEJS_12_X,
+				runtime: lambda.Runtime.NODEJS_14_X,
 			},
 			props,
 		)
