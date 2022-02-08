@@ -14,14 +14,14 @@
   "license": "MIT-0",
   "dependencies": {
     "@mapbox/polyline": "^1.1.1",
-    "aws-amplify": "^3.3.25",
+    "aws-amplify": "^4.3.14",
     "aws-iot-device-sdk": "^2.2.6",
     "aws-sdk": "^2.868.0",
-    "axios": "^0.21.1",
+    "axios": "^0.25.0",
     "commander": "^7.2.0",
     "console-log-level": "^1.4.1",
     "dotenv": "^8.2.0",
     "glob": "^7.1.6",
-    "shortid": "^2.2.16"
+    "nanoid": "^3.2.0"
   }
 }

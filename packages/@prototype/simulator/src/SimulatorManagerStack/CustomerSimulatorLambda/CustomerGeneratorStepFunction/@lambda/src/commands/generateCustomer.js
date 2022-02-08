@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 const { v4: uuidv4 } = require('uuid')
-const shortId = require('shortid')
+const { nanoid } = require('nanoid')
 const amplify = require('../lib/amplify')
 const cognito = require('../lib/cognito')
 const ddb = require('../lib/dynamoDB')
@@ -25,7 +25,7 @@ const helper = require('../helper')
 
 const initialiseUser = async () => {
 	const user = {
-		username: `${config.baseUsername}-${shortId()}@amazon.com`,
+		username: `${config.baseUsername}-${nanoid()}@amazon.com`,
 		password: config.userPassword,
 	}
 

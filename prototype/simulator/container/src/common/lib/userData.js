@@ -14,9 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const shortId = require('shortid')
+const { nanoid } = require('nanoid')
 
 module.exports = (baseUsername) => ({
-	username: `${baseUsername}-${shortId()}@amazon.com`,
-	password: `A3c.${shortId()}`,
+	username: `${baseUsername}-${nanoid()}@amazon.com`,
+	password: `A3c.${nanoid()}`,
 })
