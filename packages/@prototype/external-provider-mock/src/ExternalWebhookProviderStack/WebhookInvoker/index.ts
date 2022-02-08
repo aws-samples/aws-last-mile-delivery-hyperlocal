@@ -38,7 +38,7 @@ export class ExternalWebhookInvokerStack extends Construct {
 		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InternalWebhookSecret', exampleWebhookApiSecretName)
 
 		const webhookInvoker = new lambda.Function(this, 'ExternalWebhookInvoker', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'WebhookInvoker'),
 			description: 'External Webhook Invoker the internal webhook endpoint to update the system on the order status',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/external-webhook-invoker.zip')),

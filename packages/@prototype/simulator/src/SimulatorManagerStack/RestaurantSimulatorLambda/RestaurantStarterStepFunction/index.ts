@@ -49,7 +49,7 @@ export class RestaurantStarterStepFunction extends Construct {
 		} = props
 
 		this.lambda = new lambda.Function(this, 'RestaurantStarterHelper', {
-			runtime: lambda.Runtime.NODEJS_12_X,
+			runtime: lambda.Runtime.NODEJS_14_X,
 			functionName: namespaced(this, 'RestaurantStarterHelper'),
 			description: 'Lambda used by step function to start restaurant simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-starter-helper.zip')),
