@@ -27413,7 +27413,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----
 
-The following software may be included in this product: uuid. A copy of the source code may be downloaded from https://github.com/kelektiv/node-uuid.git. This software contains the following license and notice below:
+The following software may be included in this product: uuid. A copy of the source code may be downloaded from https://github.com/uuidjs/uuid.git. This software contains the following license and notice below:
 
 The MIT License (MIT)
 
@@ -28211,7 +28211,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----
 
-The following software may be included in this product: workspace-aggregator-2d1e1315-dacf-4cf6-8c53-bc04b8857c2a. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-567ec7c4-9f5c-4a69-9112-ba471ed809b7. This software contains the following license and notice below:
 
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
