@@ -56,7 +56,7 @@ export class DestinationStarterStepFunction extends Construct {
 			CLUSTER_NAME: cluster.clusterName,
 			TASK_DEFINITION_NAME: destinationSimulatorContainer.taskDefinition.taskDefinitionArn,
 			SUBNETS: vpc.publicSubnets.map(q => q.subnetId).join(','),
-			SECURITY_GROUP: securityGroup.securityGroupId, // TODO: CDKv2 make sure Id is ok to use instead of securityGroupName,
+			SECURITY_GROUP: securityGroup.securityGroupId,
 			CONTAINER_NAME: destinationSimulatorContainer.containerDefinition.containerName,
 		}
 		this.lambda = new lambda.Function(this, 'DestinationStarterHelper', {

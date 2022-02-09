@@ -50,7 +50,7 @@ export class ECSStepFunctionInvoker extends Construct {
 				CLUSTER_NAME: props.cluster.clusterName,
 				TASK_DEFINITION_NAME: props.taskDefinition.taskDefinitionArn,
 				SUBNETS: props.vpc.publicSubnets.map(q => q.subnetId).join(','),
-				SECURITY_GROUP: props.securityGroup.securityGroupId, // TODO CDKv2 make sure Id is ok to use .securityGroupName,
+				SECURITY_GROUP: props.securityGroup.securityGroupId,
 				CONTAINER_NAME: props.containerDefinition.containerName,
 				SIMULATOR_TABLE_NAME: props.simulatorTable.tableName,
 			},

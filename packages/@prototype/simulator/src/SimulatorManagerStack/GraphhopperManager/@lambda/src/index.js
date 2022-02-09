@@ -32,7 +32,7 @@ const handler = (event, context) => {
 			config.taskDefinitionName,
 			config.containerName,
 			config.subnets,
-			[config.securityGroups],
+			[config.securityGroup],
 		)
 		const { failures, tasks } = res
 
