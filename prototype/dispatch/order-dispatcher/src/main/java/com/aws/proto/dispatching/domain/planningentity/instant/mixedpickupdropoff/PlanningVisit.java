@@ -183,10 +183,10 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
 //        boolean isFirstVisitInChain = this.isFirstVisitInChain();
 //
 //
-//        // first item in the chain cannot be CustomerVisit, since that's a dropoff
+//        // first item in the chain cannot be DestinationVisit, since that's a dropoff
 //        // --> PENALIZE
 //        if(isFirstVisitInChain) {
-//            if (this.location.getLocationType() == LocationType.CUSTOMER) {
+//            if (this.location.getLocationType() == LocationType.DESTINATION) {
 //                return PENALTY;
 //            } else {
 //                return 0L;
@@ -198,39 +198,39 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
 //        }
 
         String orderId = this.getOrder().getOrderId();
-        // current visit is at Customer
-        // --> must find Restaurant visit up the chain -- same orderId
-        // --> must NOT find Restaurant visit down the chain -- same orderId
-        if (this.location.getLocationType() == LocationType.CUSTOMER) {
-            boolean hasRestaurantVisitWithSameOrderIdBefore = this.walkChainToAnchor(
+        // current visit is at Destination
+        // --> must find Origin visit up the chain -- same orderId
+        // --> must NOT find Origin visit down the chain -- same orderId
+        if (this.location.getLocationType() == LocationType.DESTINATION) {
+            boolean hasOriginVisitWithSameOrderIdBefore = this.walkChainToAnchor(
                     visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-                    visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
+                    visit -> visit.getLocation().getLocationType() == LocationType.ORIGIN
             );
 
-            boolean hasRestaurantVisitWithSameOrderIdAfter = this.walkChainToLeaf(
+            boolean hasOriginVisitWithSameOrderIdAfter = this.walkChainToLeaf(
                     visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-                    visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
+                    visit -> visit.getLocation().getLocationType() == LocationType.ORIGIN
             );
 
-            if (!hasRestaurantVisitWithSameOrderIdBefore || hasRestaurantVisitWithSameOrderIdAfter) {
+            if (!hasOriginVisitWithSameOrderIdBefore || hasOriginVisitWithSameOrderIdAfter) {
                 return PENALTY;
             }
         }
-        // current visit is Restaurant
-        // --> must NOT find Customer visit up the chain -- same orderId
-        // --> must find Customer visit down the chain -- same orderId
+        // current visit is Origin
+        // --> must NOT find Destination visit up the chain -- same orderId
+        // --> must find Destination visit down the chain -- same orderId
         else {
-            boolean notHaveCustomerVisitWithSameOrderIdBefore = this.walkChainToAnchor(
+            boolean notHaveDestinationVisitWithSameOrderIdBefore = this.walkChainToAnchor(
                     visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-                    visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
+                    visit -> visit.getLocation().getLocationType() == LocationType.DESTINATION
             );
 
-            boolean notHaveCustomerVisitWithSameOrderIdAfter = this.walkChainToLeaf(
+            boolean notHaveDestinationVisitWithSameOrderIdAfter = this.walkChainToLeaf(
                     visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-                    visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
+                    visit -> visit.getLocation().getLocationType() == LocationType.DESTINATION
             );
 
-            if (!notHaveCustomerVisitWithSameOrderIdBefore || notHaveCustomerVisitWithSameOrderIdAfter) {
+            if (!notHaveDestinationVisitWithSameOrderIdBefore || notHaveDestinationVisitWithSameOrderIdAfter) {
                 return PENALTY;
             }
         }

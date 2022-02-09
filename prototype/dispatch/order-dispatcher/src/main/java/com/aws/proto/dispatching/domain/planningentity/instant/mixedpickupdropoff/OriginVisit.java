@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,33 +23,22 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.location;
+package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
 
-import com.aws.proto.dispatching.routing.Coordinates;
+import com.aws.proto.dispatching.domain.location.OriginLocation;
+import com.aws.proto.dispatching.domain.planningentity.base.Order;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class CustomerLocation extends LocationBase {
-
-    public CustomerLocation(String id, Coordinates coordinates) {
-        this(id, coordinates, ThreadLocalRandom.current().nextLong(0L, 120000L));
+public class OriginVisit extends PlanningVisit {
+    public OriginVisit() {
     }
 
-    public CustomerLocation(String id, Coordinates coordinates, long leaveDelayInMillis) {
-        super(id, coordinates, leaveDelayInMillis, LocationType.CUSTOMER);
-    }
-
-    /**
-     * The time that takes from arriving to customer to delivering the item and be able to leave the location.
-     * @return The delivery time in MILLISECONDS
-     */
-    @Override
-    public long getLeaveDelay() {
-        return super.getLeaveDelay();
+    public OriginVisit(Order order, OriginLocation location) {
+        super(order, location);
     }
 
     @Override
     public String toString() {
-        return "CustomerLocation{" + coordinates().toString() +" | deliveryTime=" + getLeaveDelay() + "}";
+        return String.format("[PICK][order=%8s]",
+                this.getOrder().getShortId());
     }
 }

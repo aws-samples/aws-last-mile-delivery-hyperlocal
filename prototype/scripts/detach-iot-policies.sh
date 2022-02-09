@@ -4,8 +4,8 @@ MAX_ITEMS=100
 
 if [ -z "$1" ]; then
     # POLICY_NAME=devproto_driver_policy
-    # POLICY_NAME=devproto_restaurant_policy
-    POLICY_NAME=devproto_customer_policy
+    # POLICY_NAME=devproto_origin_policy
+    POLICY_NAME=devproto_destination_policy
     echo "No policy name supplied, opting for $POLICY_NAME"
 else
     POLICY_NAME=$1

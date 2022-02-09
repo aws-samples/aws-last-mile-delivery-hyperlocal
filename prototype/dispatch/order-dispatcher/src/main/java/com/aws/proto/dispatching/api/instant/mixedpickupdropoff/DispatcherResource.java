@@ -34,15 +34,15 @@ import com.aws.proto.dispatching.data.DriverQueryManager;
 import com.aws.proto.dispatching.data.ddb.DdbDemographicAreaSettingsService;
 import com.aws.proto.dispatching.data.entity.DemographicAreaSetting;
 import com.aws.proto.dispatching.data.entity.InputDriverData;
-import com.aws.proto.dispatching.domain.location.CustomerLocation;
+import com.aws.proto.dispatching.domain.location.DestinationLocation;
 import com.aws.proto.dispatching.domain.location.LocationBase;
-import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.location.OriginLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.planningentity.base.PlanningDriverBase;
-import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.CustomerVisit;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.DestinationVisit;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.OriginVisit;
 import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningDriver;
 import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningVisit;
-import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.RestaurantVisit;
 import com.aws.proto.dispatching.planner.solution.SolutionState;
 import com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff.DispatchingSolution;
 import com.aws.proto.dispatching.routing.Coordinates;
@@ -108,18 +108,18 @@ public class DispatcherResource {
         List<LocationBase> allLocations = new ArrayList<>();
 
         for (AssignDriversRequest.Order inputOrder : req.orders) {
-            Order order = new Order(inputOrder.orderId, inputOrder.createdAt, inputOrder.state, inputOrder.restaurant.preparationTimeInMins);
-            RestaurantLocation restaurantLocation = new RestaurantLocation(inputOrder.restaurant.id, Coordinates.valueOf(inputOrder.restaurant.lat, inputOrder.restaurant.lon));
-            CustomerLocation customerLocation = new CustomerLocation(inputOrder.customer.id, Coordinates.valueOf(inputOrder.customer.lat, inputOrder.customer.lon));
+            Order order = new Order(inputOrder.orderId, inputOrder.createdAt, inputOrder.state, inputOrder.origin.preparationTimeInMins);
+            OriginLocation originLocation = new OriginLocation(inputOrder.origin.id, Coordinates.valueOf(inputOrder.origin.lat, inputOrder.origin.lon));
+            DestinationLocation destinationLocation = new DestinationLocation(inputOrder.destination.id, Coordinates.valueOf(inputOrder.destination.lat, inputOrder.destination.lon));
 
-            RestaurantVisit restaurantVisit = new RestaurantVisit(order, restaurantLocation);
-            CustomerVisit customerVisit = new CustomerVisit(order, customerLocation);
+            OriginVisit originVisit = new OriginVisit(order, originLocation);
+            DestinationVisit destinationVisit = new DestinationVisit(order, destinationLocation);
 
-            planningVisits.add(restaurantVisit);
-            planningVisits.add(customerVisit);
+            planningVisits.add(originVisit);
+            planningVisits.add(destinationVisit);
 
-            allLocations.add(restaurantLocation);
-            allLocations.add(customerLocation);
+            allLocations.add(originLocation);
+            allLocations.add(destinationLocation);
         }
 
         // save locations to _all_ locations

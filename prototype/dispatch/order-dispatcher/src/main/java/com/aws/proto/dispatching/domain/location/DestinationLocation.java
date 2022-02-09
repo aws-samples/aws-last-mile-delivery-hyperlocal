@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,19 +29,20 @@ import com.aws.proto.dispatching.routing.Coordinates;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RestaurantLocation extends LocationBase {
-    public RestaurantLocation(String id, Coordinates coordinates) {
+public class DestinationLocation extends LocationBase {
+
+    public DestinationLocation(String id, Coordinates coordinates) {
         this(id, coordinates, ThreadLocalRandom.current().nextLong(0L, 120000L));
     }
 
-    public RestaurantLocation(String id, Coordinates coordinates, long leaveDelayInMillis) {
-        super(id, coordinates, leaveDelayInMillis, LocationType.RESTAURANT);
+    public DestinationLocation(String id, Coordinates coordinates, long leaveDelayInMillis) {
+        super(id, coordinates, leaveDelayInMillis, LocationType.DESTINATION);
     }
 
     /**
-     * The time that takes from arriving to the restaurant, parking, picking up the item and be able to leave the location.
-     * Default: Random number between 120k and 420k milliseconds.
-     * @return The waiting time in MILLISECONDS
+     * The time that takes from arriving to destination to delivering the item and be able to leave the location.
+     *
+     * @return The delivery time in MILLISECONDS
      */
     @Override
     public long getLeaveDelay() {
@@ -50,6 +51,6 @@ public class RestaurantLocation extends LocationBase {
 
     @Override
     public String toString() {
-        return "RestaurantLocation[" + coordinates().toString() +" | waitingTime=" + getLeaveDelay() + "}";
+        return "DestinationLocation{" + coordinates().toString() + " | deliveryTime=" + getLeaveDelay() + "}";
     }
 }

@@ -23,22 +23,34 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
+package com.aws.proto.dispatching.domain.location;
 
-import com.aws.proto.dispatching.domain.location.RestaurantLocation;
-import com.aws.proto.dispatching.domain.planningentity.base.Order;
+import com.aws.proto.dispatching.routing.Coordinates;
 
-public class RestaurantVisit extends PlanningVisit {
-    public RestaurantVisit() {
+import java.util.concurrent.ThreadLocalRandom;
+
+public class OriginLocation extends LocationBase {
+    public OriginLocation(String id, Coordinates coordinates) {
+        this(id, coordinates, ThreadLocalRandom.current().nextLong(0L, 120000L));
     }
 
-    public RestaurantVisit(Order order, RestaurantLocation location) {
-        super(order, location);
+    public OriginLocation(String id, Coordinates coordinates, long leaveDelayInMillis) {
+        super(id, coordinates, leaveDelayInMillis, LocationType.ORIGIN);
+    }
+
+    /**
+     * The time that takes from arriving to the origin, parking, picking up the item and be able to leave the location.
+     * Default: Random number between 120k and 420k milliseconds.
+     *
+     * @return The waiting time in MILLISECONDS
+     */
+    @Override
+    public long getLeaveDelay() {
+        return super.getLeaveDelay();
     }
 
     @Override
     public String toString() {
-        return String.format("[PICK][order=%8s]",
-                this.getOrder().getShortId());
+        return "OriginLocation[" + coordinates().toString() + " | waitingTime=" + getLeaveDelay() + "}";
     }
 }

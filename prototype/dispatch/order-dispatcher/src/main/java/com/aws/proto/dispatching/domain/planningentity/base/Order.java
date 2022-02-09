@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,14 +35,14 @@ public class Order {
     private Long timestamp;
     private LocalDateTime dateTime;
     private String state;
-    private int restaurantPreparationTimeInMins;
+    private int originPreparationTimeInMins;
 
-    public Order(String orderId, Long timestamp, String state, int restaurantPreparationTimeInMins) {
+    public Order(String orderId, Long timestamp, String state, int originPreparationTimeInMins) {
         this.orderId = orderId;
         this.timestamp = timestamp;
         this.dateTime = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.state = state;
-        this.restaurantPreparationTimeInMins = restaurantPreparationTimeInMins;
+        this.originPreparationTimeInMins = originPreparationTimeInMins;
     }
 
     public String getOrderId() {
@@ -69,21 +69,21 @@ public class Order {
         this.state = state;
     }
 
-    public int getRestaurantPreparationTimeInMins() {
-        return restaurantPreparationTimeInMins;
+    public int getOriginPreparationTimeInMins() {
+        return originPreparationTimeInMins;
     }
 
     @Override
     public String toString() {
         return "Order{" +
-          "orderId='" + orderId + '\'' +
-          ", dateTime=" + dateTime +
-          ", restaurantPreparationTimeInMins=" + restaurantPreparationTimeInMins +
-          '}';
+                "orderId='" + orderId + '\'' +
+                ", dateTime=" + dateTime +
+                ", originPreparationTimeInMins=" + originPreparationTimeInMins +
+                '}';
     }
 
-    public void setRestaurantPreparationTimeInMins(int restaurantPreparationTimeInMins) {
-        this.restaurantPreparationTimeInMins = restaurantPreparationTimeInMins;
+    public void setOriginPreparationTimeInMins(int originPreparationTimeInMins) {
+        this.originPreparationTimeInMins = originPreparationTimeInMins;
     }
 
     public LocalDateTime getDateTime() {

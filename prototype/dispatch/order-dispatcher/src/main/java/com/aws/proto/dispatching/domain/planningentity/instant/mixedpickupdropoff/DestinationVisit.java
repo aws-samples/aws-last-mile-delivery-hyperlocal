@@ -25,15 +25,15 @@
  */
 package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
 
-import com.aws.proto.dispatching.domain.location.CustomerLocation;
+import com.aws.proto.dispatching.domain.location.DestinationLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
 
-public class CustomerVisit extends PlanningVisit {
-    public CustomerVisit() {
+public class DestinationVisit extends PlanningVisit {
+    public DestinationVisit() {
 
     }
 
-    public CustomerVisit(Order order, CustomerLocation location) {
+    public DestinationVisit(Order order, DestinationLocation location) {
         super(order, location);
     }
 
