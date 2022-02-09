@@ -22,7 +22,7 @@ const execute = async (payload) => {
 	const { simulationId } = payload
 	console.log('Updating simulation state for id: ', simulationId)
 
-	const simulation = await ddb.get(config.customerSimulationTable, simulationId)
+	const simulation = await ddb.get(config.destinationSimulationTable, simulationId)
 	const { Item } = simulation
 
 	if (!Item) {
@@ -41,7 +41,7 @@ const execute = async (payload) => {
 		state = 'ERROR'
 	}
 
-	await ddb.updateItem(config.customerSimulationTable, simulationId, {
+	await ddb.updateItem(config.destinationSimulationTable, simulationId, {
 		state,
 	})
 

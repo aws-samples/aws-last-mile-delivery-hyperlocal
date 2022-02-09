@@ -18,9 +18,9 @@ const ddb = require('../lib/dynamoDB')
 const config = require('../config')
 
 const execute = async (payload) => {
-	const { customerStatsId, state } = payload
+	const { destinationStatsId, state } = payload
 
-	await ddb.updateItem(config.customerStatsTable, customerStatsId, {
+	await ddb.updateItem(config.destinationStatsTable, destinationStatsId, {
 		state,
 	})
 

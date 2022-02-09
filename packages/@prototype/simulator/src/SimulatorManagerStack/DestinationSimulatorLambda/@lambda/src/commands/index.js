@@ -14,22 +14,22 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const generateCustomers = require('./generateCustomers').execute
+const generateDestinations = require('./generateDestinations').execute
 const startSimulator = require('./startSimulator').execute
 const stopSimulator = require('./stopSimulator').execute
 const getSimulation = require('./getSimulation').execute
 const getSimulations = require('./getSimulations').execute
-const getCustomerStat = require('./getCustomerStat').execute
-const getCustomersStats = require('./getCustomersStats').execute
-const deleteCustomers = require('./deleteCustomers').execute
+const getDestinationStat = require('./getDestinationStat').execute
+const getDestinationsStats = require('./getDestinationsStats').execute
+const deleteDestinations = require('./deleteDestinations').execute
 
 module.exports = {
-	generateCustomers,
+	generateDestinations,
 	startSimulator,
 	stopSimulator,
 	getSimulation,
 	getSimulations,
-	getCustomerStat,
-	getCustomersStats,
-	deleteCustomers,
+	getDestinationStat,
+	getDestinationsStats,
+	deleteDestinations,
 }

@@ -6,10 +6,10 @@ This package defines all the resources for the App configuration.
 
 * AppConfig (SSM)
   * DeliveryApp - Application
-  * CustomerApp - Application
+  * DestinationApp - Application
   * DriverAppDev - Environment
   * DriverAppProd - Environment
-  * CustomerAppDev - Environment
+  * DestinationAppDev - Environment
   * DriverApp config - Hosted Config Profile + 1st version
   * DriverApp Immediate Deployment - Deployment Strategy
 

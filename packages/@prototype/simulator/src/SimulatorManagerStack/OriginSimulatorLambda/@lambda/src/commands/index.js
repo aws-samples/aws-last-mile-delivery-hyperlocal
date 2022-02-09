@@ -14,24 +14,24 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const generateRestaurants = require('./generateRestaurants').execute
+const generateOrigins = require('./generateOrigins').execute
 const startSimulator = require('./startSimulator').execute
 const stopSimulator = require('./stopSimulator').execute
 const getSimulation = require('./getSimulation').execute
 const getSimulations = require('./getSimulations').execute
-const getRestaurantStat = require('./getRestaurantStat').execute
-const getRestaurantsStats = require('./getRestaurantsStats').execute
-const deleteRestaurants = require('./deleteRestaurants').execute
-const getRandomRestaurant = require('./getRandomRestaurant').execute
+const getOriginStat = require('./getOriginStat').execute
+const getOriginsStats = require('./getOriginsStats').execute
+const deleteOrigins = require('./deleteOrigins').execute
+const getRandomOrigin = require('./getRandomOrigin').execute
 
 module.exports = {
-	generateRestaurants,
+	generateOrigins,
 	startSimulator,
 	stopSimulator,
 	getSimulation,
 	getSimulations,
-	getRestaurantStat,
-	getRestaurantsStats,
-	deleteRestaurants,
-	getRandomRestaurant,
+	getOriginStat,
+	getOriginsStats,
+	deleteOrigins,
+	getRandomOrigin,
 }

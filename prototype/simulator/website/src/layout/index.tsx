@@ -29,8 +29,8 @@ import NewPolygon from '../pages/NewPolygon'
 import SimulationDetails from '../pages/SimulationDetails'
 import DriverQuery from '../pages/DriverQuery'
 import Orders from '../pages/Orders'
-import Restaurants from '../pages/Restaurants'
-import Customers from '../pages/Customers'
+import Origins from '../pages/Origins'
+import Destinations from '../pages/Destinations'
 import SystemStatus from '../pages/SystemStatus'
 import NotFound from '../pages/404'
 import AuthRoute from '../components/AuthRoute'
@@ -53,8 +53,8 @@ const Layout: React.FC = (): React.ReactElement => {
 					<AuthRoute exact path='/polygons' component={Polygons} />
 					<AuthRoute exact path='/polygons/new' component={NewPolygon} />
 					<AuthRoute exact path='/orders' component={Orders} />
-					<AuthRoute exact path='/restaurants' component={Restaurants} />
-					<AuthRoute exact path='/customers' component={Customers} />
+					<AuthRoute exact path='/origins' component={Origins} />
+					<AuthRoute exact path='/destinations' component={Destinations} />
 					<AuthRoute exact path='/dispatching' component={Dispatching} />
 					<AuthRoute exact path='/system-status' component={SystemStatus} />
 					<AuthRoute component={NotFound} />

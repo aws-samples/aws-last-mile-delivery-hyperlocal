@@ -21,7 +21,7 @@ const commands = require('../commands')
 module.exports.default = (event) => {
 	try {
 		const simulationId = event.pathParameters ? event.pathParameters.simulationId : undefined
-		const customerStatsId = event.pathParameters ? event.pathParameters.customerStatsId : undefined
+		const destinationStatsId = event.pathParameters ? event.pathParameters.destinationStatsId : undefined
 		const isStats = event.path.includes('/stats')
 		const isSimulations = event.path.includes('/simulations')
 
@@ -29,8 +29,8 @@ module.exports.default = (event) => {
 			return commands.getSimulation(simulationId)
 		}
 
-		if (customerStatsId) {
-			return commands.getCustomerStat(customerStatsId)
+		if (destinationStatsId) {
+			return commands.getDestinationStat(destinationStatsId)
 		}
 
 		if (isSimulations) {
@@ -38,14 +38,14 @@ module.exports.default = (event) => {
 		}
 
 		if (isStats) {
-			return commands.getCustomersStats()
+			return commands.getDestinationsStats()
 		}
 
 		return utils.fail({ error: 'Request cannot be served' })
 	} catch (err) {
-		logger.error('Error while retrieving customers information')
+		logger.error('Error while retrieving destinations information')
 		logger.error(err)
 
-		return utils.fail({ error: 'Error while retrieving customers information' })
+		return utils.fail({ error: 'Error while retrieving destinations information' })
 	}
 }

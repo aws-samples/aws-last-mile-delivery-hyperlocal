@@ -16,13 +16,13 @@
  *********************************************************************************************************************/
 module.exports = {
 	iotEndpoint: process.env.IOT_ENDPOINT,
-	restaurantTable: process.env.RESTAURANT_TABLE,
-	restaurantSimulationTable: process.env.RESTAURANT_SIMULATIONS_TABLE_NAME,
-	restaurantStatsTable: process.env.RESTAURANT_STATS_TABLE_NAME,
-	restaurantGeneratorStepFunctions: process.env.RESTAURANT_GENERATOR_STEP_FUNCTIONS_ARN,
-	restaurantStarterStepFunctions: process.env.RESTAURANT_STARTER_STEP_FUNCTIONS_ARN,
-	restaurantEraserStepFunctions: process.env.RESTAURANT_ERASER_STEP_FUNCTIONS_ARN,
-	restaurantContainerBatchSize: Number(process.env.RESTAURANT_CONTAINER_BATCH_SIZE) || 10,
+	originTable: process.env.ORIGIN_TABLE,
+	originSimulationTable: process.env.ORIGIN_SIMULATIONS_TABLE_NAME,
+	originStatsTable: process.env.ORIGIN_STATS_TABLE_NAME,
+	originGeneratorStepFunctions: process.env.ORIGIN_GENERATOR_STEP_FUNCTIONS_ARN,
+	originStarterStepFunctions: process.env.ORIGIN_STARTER_STEP_FUNCTIONS_ARN,
+	originEraserStepFunctions: process.env.ORIGIN_ERASER_STEP_FUNCTIONS_ARN,
+	originContainerBatchSize: Number(process.env.ORIGIN_CONTAINER_BATCH_SIZE) || 10,
 	// 25 is the max value
-	restaurantDeleteBatchSize: Number(process.env.RESTAURANT_DELETE_BATCH_SIZE) || 25,
+	originDeleteBatchSize: Number(process.env.ORIGIN_DELETE_BATCH_SIZE) || 25,
 }

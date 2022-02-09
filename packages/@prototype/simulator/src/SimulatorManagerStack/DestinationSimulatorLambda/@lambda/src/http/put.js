@@ -28,9 +28,9 @@ module.exports.default = (event) => {
 	try {
 		return commands.startSimulator(body)
 	} catch (err) {
-		logger.error('Error while starting customers')
+		logger.error('Error while starting destinations')
 		logger.error(err)
 
-		return utils.fail({ error: 'Error while starting the customers' })
+		return utils.fail({ error: 'Error while starting the destinations' })
 	}
 }

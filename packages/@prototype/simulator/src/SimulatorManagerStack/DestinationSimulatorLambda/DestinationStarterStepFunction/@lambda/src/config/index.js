@@ -15,8 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 module.exports = {
-	customerTable: process.env.CUSTOMER_TABLE_NAME,
-	customerSimulationTable: process.env.CUSTOMER_SIMULATION_TABLE_NAME,
+	destinationTable: process.env.DESTINATION_TABLE_NAME,
+	destinationSimulationTable: process.env.DESTINATION_SIMULATION_TABLE_NAME,
 	region: process.env.AWS_REGION,
 	clusterName: process.env.CLUSTER_NAME,
 	taskDefinitionName: (process.env.TASK_DEFINITION_NAME || '').split('/').pop(),

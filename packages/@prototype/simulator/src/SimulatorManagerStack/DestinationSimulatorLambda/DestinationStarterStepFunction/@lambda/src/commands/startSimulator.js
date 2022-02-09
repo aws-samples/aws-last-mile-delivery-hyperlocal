@@ -51,12 +51,12 @@ const execute = async (payload) => {
 	const { simulationId, executionId } = payload
 	console.log(`Starting ECS Container for the following execution: ${executionId}, for simulation: ${simulationId}`)
 
-	const sim = await ddb.get(config.customerSimulationTable, simulationId)
+	const sim = await ddb.get(config.destinationSimulationTable, simulationId)
 	const { Item } = sim
 
 	if (!Item) {
 		return {
-			error: `customer Simulation with ID ${simulationId} was not found`,
+			error: `Destination Simulation with ID ${simulationId} was not found`,
 		}
 	}
 
@@ -77,7 +77,7 @@ const execute = async (payload) => {
 		taskArnPrefix = parts.join('/')
 	}
 
-	await ddb.updateItem(config.customerSimulationTable, simulationId, {
+	await ddb.updateItem(config.destinationSimulationTable, simulationId, {
 		taskArnPrefix,
 		tasks: [
 			...(Item.tasks || []),

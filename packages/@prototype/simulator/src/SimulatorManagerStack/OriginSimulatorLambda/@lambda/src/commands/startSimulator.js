@@ -26,10 +26,10 @@ const execute = async (input) => {
 
 	try {
 		const { rejectionRate } = input
-		const data = await ddb.scan(config.restaurantStatsTable)
+		const data = await ddb.scan(config.originStatsTable)
 		const stats = data.Items
 		const simulationId = uuidv4()
-		const isRunning = await ddb.scan(config.restaurantSimulationTable, {
+		const isRunning = await ddb.scan(config.originSimulationTable, {
 			state: 'RUNNING',
 		})
 
@@ -41,30 +41,30 @@ const execute = async (input) => {
 
 		if (stats.filter(q => q.state !== 'READY').length > 0) {
 			return utils.fail({
-				error: 'Restaurants are still generating, wait the operation to complete before starting the simulator',
+				error: 'Origins are still generating, wait the operation to complete before starting the simulator',
 			}, 400)
 		}
 
 		if (stats.length === 0) {
 			return utils.fail({
-				error: 'There are not restaurants in the system, please start by generating them',
+				error: 'There are not origins in the system, please start by generating them',
 			}, 400)
 		}
 
-		await ddb.putItem(config.restaurantSimulationTable, {
+		await ddb.putItem(config.originSimulationTable, {
 			ID: simulationId,
 			stats,
 			state: 'STARTING',
 			rejectionRate,
-			containerBatchSize: Number(config.restaurantContainerBatchSize),
+			containerBatchSize: Number(config.originContainerBatchSize),
 		})
 
 		const res = await step.startExecution({
 			simulationId,
-			batchSize: Number(config.restaurantContainerBatchSize),
-		}, config.restaurantStarterStepFunctions)
+			batchSize: Number(config.originContainerBatchSize),
+		}, config.originStarterStepFunctions)
 
-		await ddb.updateItem(config.restaurantSimulationTable, simulationId, {
+		await ddb.updateItem(config.originSimulationTable, simulationId, {
 			stepFunctionExecution: res.executionArn,
 		})
 

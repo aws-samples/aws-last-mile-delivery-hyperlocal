@@ -15,11 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const iterate = require('./iterate').execute
-const deleteCustomers = require('./deleteCustomers').execute
-const deleteCustomerStats = require('./deleteCustomerStats').execute
+const deleteDestinations = require('./deleteDestinations').execute
+const deleteDestinationStats = require('./deleteDestinationStats').execute
 
 module.exports = {
 	iterate,
-	deleteCustomers,
-	deleteCustomerStats,
+	deleteDestinations,
+	deleteDestinationStats,
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 if [ -z "$CONTAINER_TYPE" ]; then
-    echo "CONTAINER_TYPE variable is not set. You must set its value to 'driver', 'customer' or 'restaurant'"
+    echo "CONTAINER_TYPE variable is not set. You must set its value to 'driver', 'origin' or 'destination'"
     exit 1
 fi
 

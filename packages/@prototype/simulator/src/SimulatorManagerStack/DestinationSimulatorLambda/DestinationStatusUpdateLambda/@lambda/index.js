@@ -20,7 +20,7 @@ const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH, hashCode } = require('/opt/lambda-utils')
 
-const { CUSTOMER_STATUS, CUSTOMER_BY_AREA } = REDIS_HASH
+const { DESTINATION_STATUS, DESTINATION_BY_AREA } = REDIS_HASH
 
 const client = getRedisClient()
 const eventBridge = new aws.EventBridge()
@@ -38,12 +38,12 @@ const handler = async (event, context) => {
 			Entries: [{
 				EventBusName: process.env.EVENT_BUS_NAME,
 				Source: process.env.SERVICE_NAME,
-				DetailType: `CUSTOMER_${event.type}`,
+				DetailType: `DESTINATION_${event.type}`,
 				Detail: JSON.stringify(event),
 			}],
 		}).promise()
 
-		console.debug(`STATUS_CHANGE :: ${event.customerId} :: Successfully sent to Event Bridge`)
+		console.debug(`STATUS_CHANGE :: ${event.destinationId} :: Successfully sent to Event Bridge`)
 	} catch (err) {
 		console.error(`Error sending message to Event Bridge :: ${event.type} :: ${JSON.stringify(err)}`)
 	}
@@ -60,10 +60,10 @@ const handler = async (event, context) => {
 		return
 	}
 
-	const { customerId, status, area, timestamp } = event
+	const { destinationId, status, area, timestamp } = event
 	const areaCode = hashCode(area)
 	try {
-		let statusList = await client.keys(`${CUSTOMER_STATUS}:*`)
+		let statusList = await client.keys(`${DESTINATION_STATUS}:*`)
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -75,20 +75,20 @@ const handler = async (event, context) => {
 		}
 
 		// update id by area in REDIS
-		await client.sadd(`${CUSTOMER_BY_AREA}:${areaCode}`, customerId)
+		await client.sadd(`${DESTINATION_BY_AREA}:${areaCode}`, destinationId)
 
 		// update id by area in REDIS
 		const promises = statusList.map(s => {
 			if (s === status) {
-				return client.hset(`${CUSTOMER_STATUS}:${s}`, customerId, timestamp)
+				return client.hset(`${DESTINATION_STATUS}:${s}`, destinationId, timestamp)
 			}
 
-			return client.hdel(`${CUSTOMER_STATUS}:${s}`, customerId)
+			return client.hdel(`${DESTINATION_STATUS}:${s}`, destinationId)
 		})
 
 		await Promise.all(promises)
 
-		console.debug(`STATUS_CHANGE :: ${customerId} :: Successfully updated Redis`)
+		console.debug(`STATUS_CHANGE :: ${destinationId} :: Successfully updated Redis`)
 	} catch (err) {
 		console.error(`Error updating Redis :: ${event.type} :: ${JSON.stringify(err)}`)
 		console.error(err)
@@ -96,6 +96,6 @@ const handler = async (event, context) => {
 }
 
 const recordValid = (record) => {
-	return !(record.customerId == null || record.status == null || record.timestamp == null)
+	return !(record.destinationId == null || record.status == null || record.timestamp == null)
 }
 exports.handler = handler

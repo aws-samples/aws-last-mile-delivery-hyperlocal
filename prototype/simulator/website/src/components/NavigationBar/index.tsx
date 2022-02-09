@@ -33,13 +33,13 @@ const navigationItems = [
 	},
 	{
 		type: SideNavigationItemType.LINK,
-		text: 'Customer simulator',
-		href: '/customers',
+		text: 'Destination simulator (eg. customer)',
+		href: '/destinations',
 	},
 	{
 		type: SideNavigationItemType.LINK,
-		text: 'Restaurant simulator',
-		href: '/restaurants',
+		text: 'Origin simulator (eg. restaurant)',
+		href: '/origins',
 	},
 	{
 		type: SideNavigationItemType.LINK,

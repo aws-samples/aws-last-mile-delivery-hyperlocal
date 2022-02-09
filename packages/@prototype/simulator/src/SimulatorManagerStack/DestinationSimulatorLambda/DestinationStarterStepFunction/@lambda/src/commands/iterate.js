@@ -23,13 +23,13 @@ const execute = async (payload) => {
 	const executionId = uuidv4()
 	const count = Number(payload.count)
 	const lastEvaluatedKey = payload.lastEvaluatedKey
-	const items = await ddb.scan(config.customerTable, lastEvaluatedKey, count)
+	const items = await ddb.scan(config.destinationTable, lastEvaluatedKey, count)
 
 	console.log(`Items retrieved with following params: lastEvaluatedKey=${lastEvaluatedKey},count=${count}`)
 	console.warn(items.Count, items.LastEvaluatedKey, items.ScannedCount, items.ConsumedCapacity)
 
 	console.log('Updating items with executionId')
-	const promises = (items.Items || []).map(i => ddb.updateItem(config.customerTable, i.ID, { executionId }))
+	const promises = (items.Items || []).map(i => ddb.updateItem(config.destinationTable, i.ID, { executionId }))
 
 	await Promise.all(promises)
 

@@ -137,18 +137,18 @@ export class DestinationGeneratorStepFunction extends Construct {
 			},
 		)
 
-		const generateCustomer = new tasks.LambdaInvoke(
+		const generateDestination = new tasks.LambdaInvoke(
 			this,
-			'GenerateCustomer',
+			'GenerateDestination',
 			{
 				lambdaFunction: this.lambda,
 				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
 					type: stepfunctions.InputType.OBJECT,
 					value: {
-						cmd: 'generateCustomer',
+						cmd: 'generateDestination',
 						payload: {
-							'customerStatsId.$': '$$.Execution.Input.customerStatsId',
+							'destinationStatsId.$': '$$.Execution.Input.destinationStatsId',
 							'lat.$': '$$.Execution.Input.lat',
 							'long.$': '$$.Execution.Input.long',
 							'area.$': '$$.Execution.Input.area',
@@ -171,7 +171,7 @@ export class DestinationGeneratorStepFunction extends Construct {
 						value: {
 							cmd: 'updateStats',
 							payload: {
-								'customerStatsId.$': '$$.Execution.Input.customerStatsId',
+								'destinationStatsId.$': '$$.Execution.Input.destinationStatsId',
 								state,
 							},
 						},
@@ -190,15 +190,15 @@ export class DestinationGeneratorStepFunction extends Construct {
 		const definition = configureCount
 		.next(updateStats('IN_PROGRESS'))
 		.next(iterate)
-		.next(generateCustomer)
+		.next(generateDestination)
 		.next(
 			new stepfunctions.Choice(this, 'IsCountReached')
 			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), waitX.next(iterate))
 			.otherwise(updateStats('READY')),
 		)
 
-		this.stepFunction = new stepfunctions.StateMachine(this, 'CustomerGeneratorStepFunctions', {
-			stateMachineName: namespaced(this, 'CustomerGeneratorStepFunctions'),
+		this.stepFunction = new stepfunctions.StateMachine(this, 'DestinationGeneratorStepFunctions', {
+			stateMachineName: namespaced(this, 'DestinationGeneratorStepFunctions'),
 			definition,
 			role: stepFunctionRole,
 		})

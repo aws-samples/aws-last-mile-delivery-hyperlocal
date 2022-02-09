@@ -54,8 +54,8 @@ const Simulations: React.FC = () => {
 	const [loading, setLoading] = useState<boolean>(false)
 	const [refresh, setRefresh] = useState<number>(0)
 	const [status, setStatus] = useState<any>({
-		restaurants: {},
-		customers: {},
+		origins: {},
+		destinations: {},
 		orders: {},
 		ordersToProvider: {},
 		drivers: {},
@@ -109,24 +109,24 @@ const Simulations: React.FC = () => {
 				<Column key="c1">
 					<Container
 						headingVariant='h2'
-						title='Customers status'
+						title='Destinations status (eg. end customers)'
 						style={{ marginTop: '25px', width: '100%' }}
 					>
 						<Inline>
-							<KeyValuePair label='Offline' value={status.customers.offline} />
-							<KeyValuePair label='Online' value={status.customers.online} />
+							<KeyValuePair label='Offline' value={status.destinations.offline} />
+							<KeyValuePair label='Online' value={status.destinations.online} />
 						</Inline>
 					</Container>
 				</Column>
 				<Column key="c2">
 					<Container
 						headingVariant='h2'
-						title='Restaurants status'
+						title='Origins status (eg. restaurants)'
 						style={{ marginTop: '25px', width: '100%' }}
 					>
 						<Inline>
-							<KeyValuePair label='Offline' value={status.restaurants.offline} />
-							<KeyValuePair label='Online' value={status.restaurants.online} />
+							<KeyValuePair label='Offline' value={status.origins.offline} />
+							<KeyValuePair label='Online' value={status.origins.online} />
 						</Inline>
 					</Container>
 				</Column>

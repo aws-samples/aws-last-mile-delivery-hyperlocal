@@ -15,8 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 module.exports = {
-	customerStatsTable: process.env.CUSTOMER_STATS_TABLE_NAME,
-	customerTable: process.env.CUSTOMER_TABLE_NAME,
+	destinationStatsTable: process.env.DESTINATION_STATS_TABLE_NAME,
+	destinationTable: process.env.DESTINATION_TABLE_NAME,
 	region: process.env.AWS_REGION,
 	iotPolicyName: process.env.IOT_POLICY_NAME,
 	identityPoolId: process.env.IDENTITY_POOL_ID,

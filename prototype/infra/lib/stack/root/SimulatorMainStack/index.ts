@@ -131,20 +131,20 @@ export class SimulatorMainStack extends Stack {
 			cluster: ecsContainerStack.cluster,
 
 			driverSimulatorContainer: ecsContainerStack.driverSimulator,
-			customerSimulatorContainer: ecsContainerStack.customerSimulator,
-			restaurantSimulatorContainer: ecsContainerStack.originSimulator,
+			originSimulatorContainer: ecsContainerStack.destinationSimulator,
+			destinationSimulatorContainer: ecsContainerStack.originSimulator,
 
-			restaurantTable: dataStack.originTable,
-			restaurantAreaIndex: dataStack.originAreaIndex,
-			restaurantExecutionIdIndex: dataStack.originExecutionIdIndex,
-			restaurantSimulationsTable: dataStack.originSimulationsTable,
-			restaurantStatsTable: dataStack.originStatsTable,
+			originTable: dataStack.originTable,
+			originAreaIndex: dataStack.originAreaIndex,
+			originExecutionIdIndex: dataStack.originExecutionIdIndex,
+			originSimulationsTable: dataStack.originSimulationsTable,
+			originStatsTable: dataStack.originStatsTable,
 
-			customerTable: dataStack.destinationTable,
-			customerAreaIndex: dataStack.destinationAreaIndex,
-			customerExecutionIdIndex: dataStack.destinationExecutionIdIndex,
-			customerSimulationsTable: dataStack.destinationSimulationsTable,
-			customerStatsTable: dataStack.destinationStatsTable,
+			destinationTable: dataStack.destinationTable,
+			destinationAreaIndex: dataStack.destinationAreaIndex,
+			destinationExecutionIdIndex: dataStack.destinationExecutionIdIndex,
+			destinationSimulationsTable: dataStack.destinationSimulationsTable,
+			destinationStatsTable: dataStack.destinationStatsTable,
 
 			simulatorTable: dataStack.simulatorTable,
 			eventTable: dataStack.eventTable,
@@ -157,11 +157,11 @@ export class SimulatorMainStack extends Stack {
 			identityPool,
 			userPoolClient: simulatorAppClient,
 			iotDriverPolicy,
-			iotCustomerPolicy: iotPolicies.iotDestinationPolicy,
-			iotRestaurantPolicy: iotPolicies.iotOriginPolicy,
+			iotDestinationPolicy: iotPolicies.iotDestinationPolicy,
+			iotOriginPolicy: iotPolicies.iotOriginPolicy,
 			simulatorConfig,
-			restaurantUserPassword: (env as Env).originUserPassword,
-			customerUserPassword: (env as Env).destinationUserPassword,
+			originUserPassword: (env as Env).originUserPassword,
+			destinationUserPassword: (env as Env).destinationUserPassword,
 
 			lambdaLayers: lambdaLayerRefs,
 			privateVpc: vpc,
@@ -176,9 +176,9 @@ export class SimulatorMainStack extends Stack {
 		})
 
 		const iotRules = new IoTRuleStack(this, 'IoTSimulatorRule', {
-			destinationStatusUpdateLambda: manager.customerSimulator.customerStatusUpdateLambda,
+			destinationStatusUpdateLambda: manager.destinationSimulator.destinationStatusUpdateLambda,
 			destinationStatusUpdateRuleName: iotPolicies.destinationStatusUpdateRuleName,
-			originStatusUpdateLambda: manager.restaurantSimulator.restaurantStatusUpdateLambda,
+			originStatusUpdateLambda: manager.originSimulator.originStatusUpdateLambda,
 			originStatusUpdateRuleName: iotPolicies.originStatusUpdateRuleName,
 		})
 
@@ -205,11 +205,11 @@ export class SimulatorMainStack extends Stack {
 			service: 'Lambda',
 			action: 'updateFunctionConfiguration',
 			parameters: {
-				FunctionName: manager.customerSimulator.starter.lambda.functionArn,
+				FunctionName: manager.destinationSimulator.starter.lambda.functionArn,
 				Environment: {
 					Variables: {
 						/// needed to avoid that env will get fully replaced with only the additional one
-						...manager.customerSimulator.starter.environmentVariables,
+						...manager.destinationSimulator.starter.environmentVariables,
 						SIMULATOR_API: simulatorRestApi.url,
 					},
 				},

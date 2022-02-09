@@ -51,7 +51,7 @@ export class ECSContainerStack extends Construct {
 
 	public readonly driverSimulator: SimulatorContainer
 
-	public readonly customerSimulator: SimulatorContainer
+	public readonly destinationSimulator: SimulatorContainer
 
 	public readonly originSimulator: SimulatorContainer
 
@@ -96,12 +96,12 @@ export class ECSContainerStack extends Construct {
 			...props,
 		})
 
-		this.customerSimulator = new SimulatorContainer(this, 'CustomerSimulatorContainer', {
-			name: 'customer',
+		this.destinationSimulator = new SimulatorContainer(this, 'DestinationSimulatorContainer', {
+			name: 'destination',
 			cpu: 256,
 			memoryMiB: 512,
 			repository: this.repository,
-			baseUsername: props.simulatorConfig.customerBaseUsername as string,
+			baseUsername: props.simulatorConfig.destinationBaseUsername as string,
 			iotEndpointAddress,
 			...props,
 			additionalENVs: {
@@ -112,7 +112,7 @@ export class ECSContainerStack extends Construct {
 				DESTINATION_STATUS_UPDATE_RULE_NAME: props.iotDestinationStatusRuleName,
 			},
 		})
-		this.customerSimulator.taskDefinitionRole.addToPolicy(
+		this.destinationSimulator.taskDefinitionRole.addToPolicy(
 			new iam.PolicyStatement({
 				actions: [
 					'dynamodb:UpdateItem',

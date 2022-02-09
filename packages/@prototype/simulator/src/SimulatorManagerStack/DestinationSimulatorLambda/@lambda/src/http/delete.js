@@ -21,7 +21,7 @@ const commands = require('../commands')
 module.exports.default = (event) => {
 	try {
 		const simulationId = event.pathParameters ? event.pathParameters.simulationId : undefined
-		const customerStatsId = event.pathParameters ? event.pathParameters.customerStatsId : undefined
+		const destinationStatsId = event.pathParameters ? event.pathParameters.destinationStatsId : undefined
 		const isStats = event.path.includes('/stats')
 		const isSimulations = event.path.includes('/simulations')
 
@@ -34,11 +34,11 @@ module.exports.default = (event) => {
 		}
 
 		if (isStats) {
-			if (!customerStatsId) {
-				return utils.fail({ error: 'Missing customerStatsId id, cannot delete the customers' })
+			if (!destinationStatsId) {
+				return utils.fail({ error: 'Missing destinationStatsId id, cannot delete the destinations' })
 			}
 
-			return commands.deleteCustomers(customerStatsId)
+			return commands.deleteDestinations(destinationStatsId)
 		}
 
 		return utils.fail({ error: 'Error cannot perform the required operation' })

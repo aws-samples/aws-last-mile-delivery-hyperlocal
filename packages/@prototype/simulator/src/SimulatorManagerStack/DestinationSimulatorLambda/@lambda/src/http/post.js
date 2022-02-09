@@ -26,11 +26,11 @@ module.exports.default = (event) => {
 	}
 
 	try {
-		return commands.generateCustomers(body)
+		return commands.generateDestinations(body)
 	} catch (err) {
-		logger.error('Error while generating customers')
+		logger.error('Error while generating destinations')
 		logger.error(err)
 
-		return utils.fail({ error: 'Error while generating the customers' })
+		return utils.fail({ error: 'Error while generating the destinations' })
 	}
 }

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 module.exports = {
-	customerTable: process.env.CUSTOMER_TABLE_NAME,
-	customerStatsTable: process.env.CUSTOMER_STATS_TABLE_NAME,
-	customerAreaIndex: process.env.CUSTOMER_AREA_INDEX,
+	destinationTable: process.env.DESTINATION_TABLE_NAME,
+	destinationStatsTable: process.env.DESTINATION_STATS_TABLE_NAME,
+	destinationAreaIndex: process.env.DESTINATION_AREA_INDEX,
 }

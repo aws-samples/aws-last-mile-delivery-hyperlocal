@@ -26,10 +26,10 @@ const execute = async (input) => {
 
 	try {
 		const { orderRate, orderInterval, rejectionRate } = input
-		const data = await ddb.scan(config.customerStatsTable)
+		const data = await ddb.scan(config.destinationStatsTable)
 		const stats = data.Items
 		const simulationId = uuidv4()
-		const isRunning = await ddb.scan(config.customerSimulationTable, {
+		const isRunning = await ddb.scan(config.destinationSimulationTable, {
 			state: 'RUNNING',
 		})
 
@@ -41,21 +41,21 @@ const execute = async (input) => {
 
 		if (stats.filter(q => q.state !== 'READY').length > 0) {
 			return utils.fail({
-				error: 'customers are still generating, wait the operation to complete before starting the simulator',
+				error: 'Destinations are still generating, wait the operation to complete before starting the simulator',
 			}, 400)
 		}
 
 		if (stats.length === 0) {
 			return utils.fail({
-				error: 'There are not customers in the system, please start by generating them',
+				error: 'There are not destinations in the system, please start by generating them',
 			}, 400)
 		}
 
-		await ddb.putItem(config.customerSimulationTable, {
+		await ddb.putItem(config.destinationSimulationTable, {
 			ID: simulationId,
 			stats,
 			state: 'STARTING',
-			containerBatchSize: Number(config.customerContainerBatchSize),
+			containerBatchSize: Number(config.destinationContainerBatchSize),
 			orderRate,
 			orderInterval,
 			rejectionRate,
@@ -63,10 +63,10 @@ const execute = async (input) => {
 
 		const res = await step.startExecution({
 			simulationId,
-			batchSize: Number(config.customerContainerBatchSize),
-		}, config.customerStarterStepFunctions)
+			batchSize: Number(config.destinationContainerBatchSize),
+		}, config.destinationStarterStepFunctions)
 
-		await ddb.updateItem(config.customerSimulationTable, simulationId, {
+		await ddb.updateItem(config.destinationSimulationTable, simulationId, {
 			stepFunctionExecution: res.executionArn,
 		})
 

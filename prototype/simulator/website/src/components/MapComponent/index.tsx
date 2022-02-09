@@ -164,10 +164,10 @@ const MapComponent: React.FC<MapInputProps> = ({ orders, geofences }) => {
 				{drivers && drivers.map((d: any, idx: number) => (
 					<MapPin key={idx} latitude={d.latitude} longitude={d.longitude} data={d} />
 				))}
-				{orders && orders.map((q: any) => q.detail.customer).map((r: any, idx: number) => (
+				{orders && orders.map((q: any) => q.detail.destination).map((r: any, idx: number) => (
 					<MapPin key={idx} latitude={r.lat} longitude={r.long} data={r} iconName='Face' />
 				))}
-				{orders && orders.map((q: any) => q.detail.restaurant).map((r: any, idx: number) => (
+				{orders && orders.map((q: any) => q.detail.origin).map((r: any, idx: number) => (
 					<MapPin key={idx} latitude={r.lat} longitude={r.long} data={r} iconName='Restaurant' />
 				))}
 				{geoJSON && geoJSON.map((g: any, idx: number) => (

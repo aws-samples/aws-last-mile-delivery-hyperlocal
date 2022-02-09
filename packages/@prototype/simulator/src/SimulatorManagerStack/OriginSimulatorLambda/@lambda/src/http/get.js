@@ -21,7 +21,7 @@ const commands = require('../commands')
 module.exports.default = (event) => {
 	try {
 		const simulationId = event.pathParameters ? event.pathParameters.simulationId : undefined
-		const restaurantStatsId = event.pathParameters ? event.pathParameters.restaurantStatsId : undefined
+		const originStatsId = event.pathParameters ? event.pathParameters.originStatsId : undefined
 		const area = event.queryStringParameters ? event.queryStringParameters.area : undefined
 
 		const isStats = event.path.includes('/stats')
@@ -32,8 +32,8 @@ module.exports.default = (event) => {
 			return commands.getSimulation(simulationId)
 		}
 
-		if (restaurantStatsId) {
-			return commands.getRestaurantStat(restaurantStatsId)
+		if (originStatsId) {
+			return commands.getOriginStat(originStatsId)
 		}
 
 		if (isSimulations) {
@@ -41,18 +41,18 @@ module.exports.default = (event) => {
 		}
 
 		if (isStats) {
-			return commands.getRestaurantsStats()
+			return commands.getOriginsStats()
 		}
 
 		if (isRandom) {
-			return commands.getRandomRestaurant(area)
+			return commands.getRandomOrigin(area)
 		}
 
 		return utils.fail({ error: 'Request cannot be served' })
 	} catch (err) {
-		logger.error('Error while retrieving restaurants information')
+		logger.error('Error while retrieving origins information')
 		logger.error(err)
 
-		return utils.fail({ error: 'Error while retrieving restaurants information' })
+		return utils.fail({ error: 'Error while retrieving origins information' })
 	}
 }

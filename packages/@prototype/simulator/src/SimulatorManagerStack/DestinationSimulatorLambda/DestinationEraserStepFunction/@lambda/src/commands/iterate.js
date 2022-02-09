@@ -22,8 +22,8 @@ const execute = async (payload) => {
 	const count = Number(payload.count)
 	const { lastEvaluatedKey, area } = payload
 	const items = await ddb.query(
-		config.customerTable,
-		config.customerAreaIndex,
+		config.destinationTable,
+		config.destinationAreaIndex,
 		{
 			area,
 		},

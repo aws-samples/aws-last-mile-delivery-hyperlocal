@@ -71,9 +71,9 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 		height: 800,
 		...baseLocation,
 	})
-	const [restaurantPins, setRestaurantPins] = useState<any>([])
+	const [originPins, setOriginPins] = useState<any>([])
 	const [orderRoutes, setOrderRoutes] = useState<any>([])
-	const [customerPins, setCustomerPins] = useState<any>([])
+	const [destinationPins, setDestinationPins] = useState<any>([])
 	const [routeLines, setRouteLines] = useState<any>([])
 	const [selectOptions, setSelectOptions] = useState<any>([])
 	const [selectedOption, setSelectedOption] = useState<any>(SELECTALL)
@@ -156,10 +156,10 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 			}
 		})
 
-		const _restaurantPins = routes.filter((q: any) => q.type === 'RESTAURANT' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
-		setRestaurantPins(_restaurantPins)
-		const _customerPins = routes.filter((q: any) => q.type === 'CUSTOMER' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
-		setCustomerPins(_customerPins)
+		const _originPins = routes.filter((q: any) => q.type === 'ORIGIN' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
+		setOriginPins(_originPins)
+		const _destinationPins = routes.filter((q: any) => q.type === 'DESTINATION' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
+		setDestinationPins(_destinationPins)
 		setRouteLines(_routeLines.flat().flat().filter((q: any) => q !== null))
 	}, [assignmentData, orderRoutes, selectedOption])
 
@@ -249,21 +249,21 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 						color={d.color}
 						data={d} />
 				))}
-				{restaurantPins && restaurantPins.map((d: any) => (<MapPin
+				{originPins && originPins.map((d: any) => (<MapPin
 					key={`${d.driverId}-${d.id}`}
 					latitude={d.lat}
 					longitude={d.long}
 					color={d.color}
-					data={{ restaurantId: d.id }}
-					iconName='RestaurantMenuOutlined'
+					data={{ originId: d.id }}
+					iconName='originMenuOutlined'
 				/>))}
-				{customerPins && customerPins.map((d: any) => (
+				{destinationPins && destinationPins.map((d: any) => (
 					<MapPin
 						key={`${d.driverId}-${d.id}`}
 						latitude={d.lat}
 						longitude={d.long}
 						color={d.color}
-						data={{ customerId: d.id }}
+						data={{ destinationId: d.id }}
 						iconName='HomeOutlined'
 					/>
 				))}

@@ -24,7 +24,7 @@ const lambda = require('../lib/lambda')
 const execute = (eventType) => async (event) => {
 	logger.info('Geofence from eventbridge: ', event)
 	const { id, driverId } = event
-	// pattern order::[order-id]::customer|resturant::geofenceId
+	// pattern order::[order-id]::origin|destination::geofenceId
 	const [service, orderId, type, geofenceId] = id.split('::')
 
 	logger.debug('Incoming ID parts', service, orderId, type, geofenceId)
@@ -57,7 +57,7 @@ const execute = (eventType) => async (event) => {
 		driverId,
 		[type]: {
 			...order[type],
-			/// order service could fetch details for driver/restaurant
+			/// order service could fetch details for driver/origin (eg. restaurant)
 			email: 'mock@email.com',
 			phone: '+65 1234 5678',
 		},

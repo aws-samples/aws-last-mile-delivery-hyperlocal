@@ -20,12 +20,12 @@ const ddb = require('../lib/dynamoDB')
 const config = require('../config')
 
 const execute = async (simulationId) => {
-	logger.info('Getting the restaurant simulation for ID: ', simulationId)
+	logger.info('Getting the origin simulation for ID: ', simulationId)
 
-	const result = await ddb.get(config.restaurantSimulationTable, simulationId)
+	const result = await ddb.get(config.originSimulationTable, simulationId)
 
 	if (!result.Item) {
-		return utils.fail({ message: `Restaurant simulation with ID ${simulationId} was not found` }, 400)
+		return utils.fail({ message: `Origin simulation with ID ${simulationId} was not found` }, 400)
 	}
 
 	return utils.success({

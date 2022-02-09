@@ -23,7 +23,7 @@ const events = require('../lib/eventBridge')
 const execute = async (event) => {
 	logger.info('Geofence from eventbridge: ', event)
 	const { id, driverId } = event
-	// pattern order::[order-id]::customer|resturant::geofenceId
+	// pattern order::[order-id]::origin|destination::geofenceId
 	const [service, orderId, type, geofenceId] = id.split('::')
 
 	logger.debug('Incoming ID parts', service, orderId, type, geofenceId)

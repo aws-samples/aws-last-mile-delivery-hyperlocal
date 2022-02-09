@@ -21,7 +21,7 @@ const commands = require('../commands')
 module.exports.default = (event) => {
 	try {
 		const simulationId = event.pathParameters ? event.pathParameters.simulationId : undefined
-		const restaurantStatsId = event.pathParameters ? event.pathParameters.restaurantStatsId : undefined
+		const originStatsId = event.pathParameters ? event.pathParameters.originStatsId : undefined
 		const isStats = event.path.includes('/stats')
 		const isSimulations = event.path.includes('/simulations')
 
@@ -34,11 +34,11 @@ module.exports.default = (event) => {
 		}
 
 		if (isStats) {
-			if (!restaurantStatsId) {
-				return utils.fail({ error: 'Missing restaurantStatsId id, cannot delete the restaurants' })
+			if (!originStatsId) {
+				return utils.fail({ error: 'Missing originStatsId id, cannot delete the origins' })
 			}
 
-			return commands.deleteRestaurants(restaurantStatsId)
+			return commands.deleteOrigins(originStatsId)
 		}
 
 		return utils.fail({ error: 'Error cannot perform the required operation' })

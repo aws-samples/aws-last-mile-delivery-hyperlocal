@@ -15,11 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const iterate = require('./iterate').execute
-const generateCustomer = require('./generateCustomer').execute
+const generateDestination = require('./generateDestination').execute
 const updateStats = require('./updateStats').execute
 
 module.exports = {
 	iterate,
-	generateCustomer,
+	generateDestination,
 	updateStats,
 }

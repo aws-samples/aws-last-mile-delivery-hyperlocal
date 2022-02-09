@@ -23,18 +23,18 @@ const config = require('../config')
 const execute = async (simulationId) => {
 	logger.info('Stopping the simulation')
 
-	const result = await ddb.get(config.customerSimulationTable, simulationId)
+	const result = await ddb.get(config.destinationSimulationTable, simulationId)
 
 	if (!result.Item) {
-		return utils.fail({ message: `customer Simulation with ID ${simulationId} was not found` }, 400)
+		return utils.fail({ message: `destination Simulation with ID ${simulationId} was not found` }, 400)
 	}
 
 	await iot.publishMessage('broadcast', {
-		type: 'STOP_CUSTOMER_SIMULATION',
+		type: 'STOP_DESTINATION_SIMULATION',
 		payload: {},
 	})
 
-	await ddb.updateItem(config.customerSimulationTable, simulationId, {
+	await ddb.updateItem(config.destinationSimulationTable, simulationId, {
 		state: 'STOPPED',
 	})
 

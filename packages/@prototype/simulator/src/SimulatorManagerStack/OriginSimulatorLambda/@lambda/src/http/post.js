@@ -26,11 +26,11 @@ module.exports.default = (event) => {
 	}
 
 	try {
-		return commands.generateRestaurants(body)
+		return commands.generateOrigins(body)
 	} catch (err) {
-		logger.error('Error while generating restaurants')
+		logger.error('Error while generating origins')
 		logger.error(err)
 
-		return utils.fail({ error: 'Error while generating the restaurants' })
+		return utils.fail({ error: 'Error while generating the origins' })
 	}
 }

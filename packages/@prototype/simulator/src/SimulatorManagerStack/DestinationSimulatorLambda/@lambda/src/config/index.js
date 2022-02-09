@@ -16,12 +16,12 @@
  *********************************************************************************************************************/
 module.exports = {
 	iotEndpoint: process.env.IOT_ENDPOINT,
-	customerSimulationTable: process.env.CUSTOMER_SIMULATIONS_TABLE_NAME,
-	customerStatsTable: process.env.CUSTOMER_STATS_TABLE_NAME,
-	customerGeneratorStepFunctions: process.env.CUSTOMER_GENERATOR_STEP_FUNCTIONS_ARN,
-	customerStarterStepFunctions: process.env.CUSTOMER_STARTER_STEP_FUNCTIONS_ARN,
-	customerEraserStepFunctions: process.env.CUSTOMER_ERASER_STEP_FUNCTIONS_ARN,
-	customerContainerBatchSize: Number(process.env.CUSTOMER_CONTAINER_BATCH_SIZE) || 10,
+	destinationSimulationTable: process.env.DESTINATION_SIMULATIONS_TABLE_NAME,
+	destinationStatsTable: process.env.DESTINATION_STATS_TABLE_NAME,
+	destinationGeneratorStepFunctions: process.env.DESTINATION_GENERATOR_STEP_FUNCTIONS_ARN,
+	destinationStarterStepFunctions: process.env.DESTINATION_STARTER_STEP_FUNCTIONS_ARN,
+	destinationEraserStepFunctions: process.env.DESTINATION_ERASER_STEP_FUNCTIONS_ARN,
+	destinationContainerBatchSize: Number(process.env.DESTINATION_CONTAINER_BATCH_SIZE) || 10,
 	// 25 is the max value
-	customerDeleteBatchSize: Number(process.env.CUSTOMER_DELETE_BATCH_SIZE) || 25,
+	destinationDeleteBatchSize: Number(process.env.DESTINATION_DELETE_BATCH_SIZE) || 25,
 }

@@ -20,9 +20,9 @@ const ddb = require('../lib/dynamoDB')
 const config = require('../config')
 
 const execute = async () => {
-	logger.info('Getting all restaurant simulations')
+	logger.info('Getting all origin simulations')
 
-	const result = await ddb.scan(config.restaurantSimulationTable)
+	const result = await ddb.scan(config.originSimulationTable)
 
 	return utils.success({
 		data: result.Items,
