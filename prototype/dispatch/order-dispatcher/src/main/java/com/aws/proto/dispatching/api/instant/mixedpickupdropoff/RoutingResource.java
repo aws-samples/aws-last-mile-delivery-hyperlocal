@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.api.v2;
+package com.aws.proto.dispatching.api.instant.mixedpickupdropoff;
 
 import com.aws.proto.dispatching.api.request.DistanceBetweenLocationsRequest;
 import com.aws.proto.dispatching.config.RoutingConfig;
@@ -42,7 +42,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Singleton
-@Path("/v2/test/routing")
+@Path("/instant/mixedpickupdropoff/routing")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class RoutingResource {
@@ -64,7 +64,7 @@ public class RoutingResource {
     public Distance distanceBetweenLocations(DistanceBetweenLocationsRequest req) {
         Distance dist = this.graphhopperRouter.travelDistance(Coordinates.valueOf(req.origin.lat, req.origin.lon), Coordinates.valueOf(req.destination.lat, req.destination.lon));
 
-        if(this.graphhopperRouter.errors().size() > 0) {
+        if (this.graphhopperRouter.errors().size() > 0) {
             this.graphhopperRouter.errors().forEach(logger::warn);
             this.graphhopperRouter.clearErrors();
         }

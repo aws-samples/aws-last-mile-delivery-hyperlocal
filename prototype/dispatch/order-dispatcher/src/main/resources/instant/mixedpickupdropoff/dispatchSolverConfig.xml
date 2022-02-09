@@ -30,12 +30,15 @@
     <!--    To solve faster by saturating multiple CPU cores-->
     <moveThreadCount>AUTO</moveThreadCount>
 
-    <solutionClass>com.aws.proto.dispatching.planner.solution.v1.DispatchingSolution</solutionClass>
-    <entityClass>com.aws.proto.dispatching.domain.planningentity.v1.VisitOrDriver</entityClass>
-    <entityClass>com.aws.proto.dispatching.domain.planningentity.v1.PlanningVisit</entityClass>
+    <solutionClass>com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff.DispatchingSolution
+    </solutionClass>
+    <entityClass>com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.VisitOrDriver</entityClass>
+    <entityClass>com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningVisit</entityClass>
 
     <scoreDirectorFactory>
-        <constraintProviderClass>com.aws.proto.dispatching.planner.solution.v1.DispatchingConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>
+            com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff.DispatchingConstraintProvider
+        </constraintProviderClass>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     </scoreDirectorFactory>

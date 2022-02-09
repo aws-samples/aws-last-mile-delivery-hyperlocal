@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,10 +23,10 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.planner.solution.v2;
+package com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff;
 
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDriver;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDelivery;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningDriver;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningVisit;
 import com.aws.proto.dispatching.util.Constants;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -36,8 +36,6 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,26 +47,22 @@ public class DispatchingSolution {
 
     private String name;
 
-    private Long createdAt;
-    private String executionId;
-
     private List<PlanningDriver> planningDrivers;
-    private List<PlanningDelivery> planningDeliveries;
+    private List<PlanningVisit> planningVisits;
 
     private HardMediumSoftLongScore score;
 
-    public DispatchingSolution() {}
-
-    public DispatchingSolution(UUID id, String name, long createdAt, String executionId, List<PlanningDriver> planningDrivers, List<PlanningDelivery> planningDeliveries) {
-        this.id = id;
-        this.name = name;
-        this.createdAt = createdAt;
-        this.executionId = executionId;
-        this.planningDrivers = planningDrivers;
-        this.planningDeliveries = planningDeliveries;
+    public DispatchingSolution() {
     }
 
-//    @PlanningEntityCollectionProperty
+    public DispatchingSolution(UUID id, String name, List<PlanningDriver> planningDrivers, List<PlanningVisit> planningVisits) {
+        this.id = id;
+        this.name = name;
+        this.planningDrivers = planningDrivers;
+        this.planningVisits = planningVisits;
+    }
+
+    //    @PlanningEntityCollectionProperty
 //    protected List<DeliveryPlan> deliveryPlans;
 //    @ProblemFactCollectionProperty
 //    protected List<MultiPDDelivery> multiPDDeliveries;
@@ -89,12 +83,6 @@ public class DispatchingSolution {
         this.name = name;
     }
 
-    public Long getCreatedAt() {
-        return createdAt;
-    }
-
-    public String getExecutionId() { return executionId; }
-
     @ProblemFactCollectionProperty
     @ValueRangeProvider(id = Constants.PlanningDriverRange)
     public List<PlanningDriver> getPlanningDrivers() {
@@ -106,13 +94,13 @@ public class DispatchingSolution {
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = Constants.PlanningDeliveryRange)
-    public List<PlanningDelivery> getPlanningDeliveries() {
-        return planningDeliveries;
+    @ValueRangeProvider(id = Constants.PlanningVisitRange)
+    public List<PlanningVisit> getPlanningVisits() {
+        return planningVisits;
     }
 
-    public void setPlanningDeliveries(List<PlanningDelivery> planningDeliveries) {
-        this.planningDeliveries = planningDeliveries;
+    public void setPlanningVisits(List<PlanningVisit> planningVisits) {
+        this.planningVisits = planningVisits;
     }
 
     @PlanningScore

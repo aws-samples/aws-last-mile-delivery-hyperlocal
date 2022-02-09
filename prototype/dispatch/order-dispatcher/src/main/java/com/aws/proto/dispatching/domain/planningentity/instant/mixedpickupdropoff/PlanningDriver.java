@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,17 +23,16 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.planningentity.v2;
+package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
 
 import com.aws.proto.dispatching.domain.location.DriverLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.PlanningDriverBase;
-import com.aws.proto.dispatching.routing.Distance;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-public class PlanningDriver extends PlanningDriverBase implements DeliveryOrDriver {
+public class PlanningDriver extends PlanningDriverBase implements VisitOrDriver {
 
     // Shadow variable
-    private PlanningDelivery nextPlanningDelivery;
+    private PlanningVisit nextPlanningVisit;
 
     public PlanningDriver() {
         super();
@@ -58,13 +57,13 @@ public class PlanningDriver extends PlanningDriverBase implements DeliveryOrDriv
     }
 
     @Override
-    public PlanningDelivery getNextPlanningDelivery() {
-        return nextPlanningDelivery;
+    public PlanningVisit getNextPlanningVisit() {
+        return this.nextPlanningVisit;
     }
 
     @Override
-    public void setNextPlanningDelivery(PlanningDelivery nextPlanningDelivery) {
-        this.nextPlanningDelivery = nextPlanningDelivery;
+    public void setNextPlanningVisit(PlanningVisit nextPlanningVisit) {
+        this.nextPlanningVisit = nextPlanningVisit;
     }
 
     @Override
@@ -72,24 +71,29 @@ public class PlanningDriver extends PlanningDriverBase implements DeliveryOrDriv
         return true;
     }
 
-    public Distance getDistanceFromPickup(PlanningDelivery delivery) {
-        return this.getLocation().distanceTo(delivery.getPickup());
+    public long getAssignedVisitCount() {
+        return this.chainLength();
     }
 
-    public long chainLength() {
-        DeliveryOrDriver current = this;
+    private long chainLength() {
+        VisitOrDriver current = this;
         long chainLen = 0;
-        while(current.getNextPlanningDelivery() != null) {
-            current = current.getNextPlanningDelivery();
+        while (current.getNextPlanningVisit() != null) {
+            current = current.getNextPlanningVisit();
             chainLen++;
         }
         return chainLen;
     }
 
-    public long scoreForOccupancy() {
-        if(this.getNextPlanningDelivery() == null) {
+    public long getAssignedVisitCountPenalty() {
+        long chainLength = this.chainLength();
+        int maxOrderPerDriver = 2;
+
+        if (chainLength > 2 * maxOrderPerDriver) {
             return 1L;
         }
         return 0L;
     }
+
+
 }

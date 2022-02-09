@@ -34,11 +34,11 @@ public class Constants {
     // base
     public static final String PlanningDriverRange = "PlanningDriverRange";
 
-    // v1
+    // instant/mixedpickupdropoff
     public static final String PlanningVisitRange = "PlanningVisitRange";
     public static final String PreviousVisitOrDriver = "previousVisitOrDriver";
 
-    // v2
+    // instant/sequential
     public static final String PlanningDeliveryRange = "PlanningDeliveryRange";
     public static final String PreviousDeliveryOrDriver = "previousDeliveryOrDriver";
 

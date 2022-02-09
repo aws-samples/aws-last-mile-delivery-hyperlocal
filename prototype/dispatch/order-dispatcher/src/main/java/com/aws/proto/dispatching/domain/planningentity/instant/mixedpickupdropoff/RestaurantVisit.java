@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,10 +23,10 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.planningentity.v1;
+package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
 
-import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.planningentity.base.Order;
 
 public class RestaurantVisit extends PlanningVisit {
     public RestaurantVisit() {
@@ -39,6 +39,6 @@ public class RestaurantVisit extends PlanningVisit {
     @Override
     public String toString() {
         return String.format("[PICK][order=%8s]",
-          this.getOrder().getShortId());
+                this.getOrder().getShortId());
     }
 }

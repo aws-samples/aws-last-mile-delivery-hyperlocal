@@ -70,10 +70,10 @@ The constraints implemented in the prototype are the following:
 
 ## Order Dispatcher API
 
-The Order Dispatcher module exposes the following REST endpoints (see `api/v2/DispatcherResource.java`):
+The Order Dispatcher module exposes the following REST endpoints (see `api/instant/sequential/DispatcherResource.java`):
 
-* `POST` `/v2/dispatch/assign-drivers` - trigger a driver-order assignment process
-* `GET` `/v2/dispatch/status/{problemId}` - retrieve the status of a previously submitted problem
+* `POST` `/instant/sequential/dispatch/assign-drivers` - trigger a driver-order assignment process
+* `GET` `/instant/sequential/dispatch/status/{problemId}` - retrieve the status of a previously submitted problem
 
 Due to heavy resource usage (see Distance Matrix calculation section), we are using **JobRunr**, a Distributed Java Background Job Scheduler. This enables the system to immediately respond to every request without causing unnecessary waiting times, resulting in increased lambda usage cost, optional timeouts that could cascade to reaching lambda concurrency limits while the system is under heavy load.
 
