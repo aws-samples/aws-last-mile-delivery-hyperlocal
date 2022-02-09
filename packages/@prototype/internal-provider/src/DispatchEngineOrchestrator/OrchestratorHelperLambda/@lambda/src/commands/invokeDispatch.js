@@ -22,7 +22,7 @@ const execute = async (payload) => {
 	logger.info('Executing invoke dispatch for payload')
 	logger.info(payload)
 	const { centroid, orders, executionId } = payload
-	const url = `http://${config.dispatchEngineElbDNS}/v2/dispatch/assign-drivers`
+	const url = `http://${config.dispatchEngineElbDNS}/instant/sequential/dispatch/assign-drivers`
 
 	try {
 		const results = await axios.post(url, JSON.stringify({
