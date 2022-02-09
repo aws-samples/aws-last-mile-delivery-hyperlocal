@@ -21,48 +21,48 @@ import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement } from '@prototype/lambda-common'
 import { SimulatorContainer } from '../../../ECSContainerStack/SimulatorContainer'
 
-export interface CustomerStarterStepFunctionProps {
-	readonly customerTable: ddb.ITable
-	readonly customerSimulationsTable: ddb.ITable
+export interface DestinationStarterStepFunctionProps {
+	readonly destinationTable: ddb.ITable
+	readonly destinationSimulationsTable: ddb.ITable
 	readonly simulatorConfig: { [key: string]: string | number, }
-	readonly customerSimulatorContainer: SimulatorContainer
+	readonly destinationSimulatorContainer: SimulatorContainer
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
 }
 
-export class CustomerStarterStepFunction extends Construct {
+export class DestinationStarterStepFunction extends Construct {
 	public readonly lambda: lambda.IFunction
 
 	public readonly stepFunction: stepfunctions.StateMachine
 
 	public readonly environmentVariables: { [key: string]: string, }
 
-	constructor (scope: Construct, id: string, props: CustomerStarterStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: DestinationStarterStepFunctionProps) {
 		super(scope, id)
 
 		const {
-			customerTable,
-			customerSimulationsTable,
-			customerSimulatorContainer,
+			destinationTable,
+			destinationSimulationsTable,
+			destinationSimulatorContainer,
 			cluster,
 			vpc,
 			securityGroup,
 		} = props
 
 		this.environmentVariables = {
-			CUSTOMER_TABLE_NAME: customerTable.tableName,
-			CUSTOMER_SIMULATION_TABLE_NAME: customerSimulationsTable.tableName,
+			DESTINATION_TABLE_NAME: destinationTable.tableName,
+			DESTINATION_SIMULATION_TABLE_NAME: destinationSimulationsTable.tableName,
 			CLUSTER_NAME: cluster.clusterName,
-			TASK_DEFINITION_NAME: customerSimulatorContainer.taskDefinition.taskDefinitionArn,
+			TASK_DEFINITION_NAME: destinationSimulatorContainer.taskDefinition.taskDefinitionArn,
 			SUBNETS: vpc.publicSubnets.map(q => q.subnetId).join(','),
 			SECURITY_GROUP: securityGroup.securityGroupId, // TODO: CDKv2 make sure Id is ok to use instead of securityGroupName,
-			CONTAINER_NAME: customerSimulatorContainer.containerDefinition.containerName,
+			CONTAINER_NAME: destinationSimulatorContainer.containerDefinition.containerName,
 		}
-		this.lambda = new lambda.Function(this, 'CustomerStarterHelper', {
-			functionName: namespaced(this, 'CustomerStarterHelper'),
-			description: 'Lambda used by step function to start customer simulator',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-starter-helper.zip')),
+		this.lambda = new lambda.Function(this, 'DestinationStarterHelper', {
+			functionName: namespaced(this, 'DestinationStarterHelper'),
+			description: 'Lambda used by step function to start destination simulator',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-starter-helper.zip')),
 			handler: 'index.handler',
 			runtime: lambda.Runtime.NODEJS_14_X,
 			architecture: lambda.Architecture.ARM_64,
@@ -71,17 +71,17 @@ export class CustomerStarterStepFunction extends Construct {
 				...this.environmentVariables,
 			},
 			initialPolicy: [
-				readDDBTablePolicyStatement(customerTable.tableArn),
-				updateDDBTablePolicyStatement(customerTable.tableArn),
-				readDDBTablePolicyStatement(customerSimulationsTable.tableArn),
-				updateDDBTablePolicyStatement(customerSimulationsTable.tableArn),
+				readDDBTablePolicyStatement(destinationTable.tableArn),
+				updateDDBTablePolicyStatement(destinationTable.tableArn),
+				readDDBTablePolicyStatement(destinationSimulationsTable.tableArn),
+				updateDDBTablePolicyStatement(destinationSimulationsTable.tableArn),
 				new iam.PolicyStatement({
 					actions: [
 						'ecs:RunTask',
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [
-						customerSimulatorContainer.taskDefinition.taskDefinitionArn,
+						destinationSimulatorContainer.taskDefinition.taskDefinitionArn,
 					],
 				}),
 				new iam.PolicyStatement({
@@ -90,8 +90,8 @@ export class CustomerStarterStepFunction extends Construct {
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [
-						customerSimulatorContainer.taskExecutionRole.roleArn,
-						customerSimulatorContainer.taskDefinitionRole.roleArn,
+						destinationSimulatorContainer.taskExecutionRole.roleArn,
+						destinationSimulatorContainer.taskDefinitionRole.roleArn,
 					],
 				}),
 			],
@@ -190,8 +190,8 @@ export class CustomerStarterStepFunction extends Construct {
 			.otherwise(updateSimulationState),
 		)
 
-		this.stepFunction = new stepfunctions.StateMachine(this, 'CustomerStarterStepFunctions', {
-			stateMachineName: namespaced(this, 'CustomerStarterStepFunctions'),
+		this.stepFunction = new stepfunctions.StateMachine(this, 'DestinationStarterStepFunctions', {
+			stateMachineName: namespaced(this, 'DestinationStarterStepFunctions'),
 			definition,
 			role: stepFunctionRole,
 		})

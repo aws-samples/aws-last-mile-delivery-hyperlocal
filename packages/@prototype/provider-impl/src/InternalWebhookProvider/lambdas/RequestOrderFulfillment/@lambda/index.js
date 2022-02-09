@@ -88,7 +88,7 @@ const handler = async (event, context) => {
 
 const recordValid = (record) => {
 	return !!record.orderId &&
-		!!record.customer &&
-		!!record.restaurant
+		!!record.destination &&
+		!!record.origin
 }
 exports.handler = handler

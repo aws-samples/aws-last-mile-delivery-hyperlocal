@@ -14,53 +14,38 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
-const steps = require('../lib/steps')
+const ddb = require('../lib/dynamoDB')
+const iot = require('../lib/iot')
 const config = require('../config')
-const { getRedisClient } = require('/opt/redis-client')
-const { REDIS_HASH } = require('/opt/lambda-utils')
-
-const {
-	ORDER_MANAGER,
-} = REDIS_HASH
-
-const client = getRedisClient()
-
-client.hget = promisify(client.hget)
-client.hdel = promisify(client.hdel)
 
 const mapper = {
-	RESTAURANT_ORDER_ACK: async (detail) => {
-		const { orderId, status } = detail
+	NOTIFY_ORIGIN: async (detail) => {
+		const { restaurantId, orderId, customerId, token } = detail
 
-		logger.info('Sending task success with the following status:', status)
+		logger.info('Reading resturant information')
 
-		const token = await client.hget(`${ORDER_MANAGER}:token`, orderId)
-		const state = await client.hget(`${ORDER_MANAGER}:state`, orderId)
+		const res = await ddb.get(config.restaurantTable, restaurantId)
 
-		if (!token) {
-			logger.error('CRITICAL! Missing token for orderId: ', orderId)
+		if (!res.Item) {
+			logger.error('Cannot find resturant with ID: ', restaurantId)
 
-			return { success: false }
+			return
 		}
 
-		if (state !== 'NOTIFY_RESTAURANT') {
-			logger.error('Step Function state is not in NOTIFY_RESTAURANT for order: ', orderId)
+		const { identity } = res.Item
 
-			await steps.sendTaskFailure({}, token)
+		logger.info('Sending message to AWS IoT to the driver')
 
-			return { success: false }
-		}
-
-		await steps.sendTaskSuccess({
-			restaurantStatus: status,
-		}, token)
-
-		// no longer required as they have been used
-
-		await client.hdel(`${ORDER_MANAGER}:token`, orderId)
-		await client.hdel(`${ORDER_MANAGER}:state`, orderId)
+		await iot.publishMessage(`${identity}/messages`, {
+			type: 'NEW_ORDER',
+			payload: {
+				restaurantId,
+				orderId,
+				customerId,
+				token,
+			},
+		})
 
 		return { success: true }
 	},
@@ -68,12 +53,12 @@ const mapper = {
 
 const execute = async (detailType, detail) => {
 	if (!mapper[detailType]) {
-		logger.warn(`Mapper not found for builder '${config.orderService}' and detailType '${detailType}'`)
+		logger.warn(`Mapper not found for builder '${config.orderManagerService}' and detailType '${detailType}'`)
 
 		return
 	}
 
-	logger.info(`Executing build '${config.orderService}' for detailType '${detailType}'`)
+	logger.info(`Executing build '${config.orderManagerService}' for detailType '${detailType}'`)
 
 	return mapper[detailType](detail)
 }

@@ -20,61 +20,61 @@ import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
 
-export interface CustomerGeneratorStepFunctionProps {
-	readonly customerTable: ddb.ITable
-	readonly customerStatsTable: ddb.ITable
+export interface DestinationGeneratorStepFunctionProps {
+	readonly destinationTable: ddb.ITable
+	readonly destinationStatsTable: ddb.ITable
 	readonly userPool: cognito.UserPool
 	readonly identityPool: cognito.CfnIdentityPool
 	readonly userPoolClient: cognito.UserPoolClient
 	readonly iotPolicy: iot.CfnPolicy
 	readonly simulatorConfig: { [key: string]: string | number, }
-	readonly customerUserPassword: string
+	readonly destinationUserPassword: string
 }
 
-export class CustomerGeneratorStepFunction extends Construct {
+export class DestinationGeneratorStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
 	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: Construct, id: string, props: CustomerGeneratorStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: DestinationGeneratorStepFunctionProps) {
 		super(scope, id)
 
 		const {
-			customerStatsTable,
-			customerTable,
+			destinationStatsTable,
+			destinationTable,
 			identityPool,
 			userPool,
 			userPoolClient,
 			iotPolicy,
 			simulatorConfig,
-			customerUserPassword,
+			destinationUserPassword,
 		} = props
 
-		this.lambda = new lambda.Function(this, 'CustomerGeneratorHelper', {
-			functionName: namespaced(this, 'CustomerGeneratorHelper'),
-			description: 'Lambda used by step function to generate customers',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-generator-helper.zip')),
+		this.lambda = new lambda.Function(this, 'DestinationGeneratorHelper', {
+			functionName: namespaced(this, 'DestinationGeneratorHelper'),
+			description: 'Lambda used by step function to generate destinations',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-generator-helper.zip')),
 			handler: 'index.handler',
 			runtime: lambda.Runtime.NODEJS_14_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				CUSTOMER_STATS_TABLE_NAME: customerStatsTable.tableName,
-				CUSTOMER_TABLE_NAME: customerTable.tableName,
+				DESTINATION_STATS_TABLE_NAME: destinationStatsTable.tableName,
+				DESTINATION_TABLE_NAME: destinationTable.tableName,
 				IDENTITY_POOL_ID: identityPool.ref,
 				USER_POOL_ID: userPool.userPoolId,
 				USER_POOL_CLIENT_ID: userPoolClient.userPoolClientId,
 				IOT_POLICY_NAME: iotPolicy.policyName || '',
-				BASE_USERNAME: simulatorConfig.customerBaseUsername as string,
-				USER_PASSWORD: customerUserPassword,
+				BASE_USERNAME: simulatorConfig.destinationBaseUsername as string,
+				USER_PASSWORD: destinationUserPassword,
 			},
 			initialPolicy: [
-				readDDBTablePolicyStatement(customerTable.tableArn),
-				updateDDBTablePolicyStatement(customerTable.tableArn),
-				deleteFromDDBTablePolicyStatement(customerTable.tableArn),
-				readDDBTablePolicyStatement(customerStatsTable.tableArn),
-				updateDDBTablePolicyStatement(customerStatsTable.tableArn),
-				deleteFromDDBTablePolicyStatement(customerStatsTable.tableArn),
+				readDDBTablePolicyStatement(destinationTable.tableArn),
+				updateDDBTablePolicyStatement(destinationTable.tableArn),
+				deleteFromDDBTablePolicyStatement(destinationTable.tableArn),
+				readDDBTablePolicyStatement(destinationStatsTable.tableArn),
+				updateDDBTablePolicyStatement(destinationStatsTable.tableArn),
+				deleteFromDDBTablePolicyStatement(destinationStatsTable.tableArn),
 				new iam.PolicyStatement({
 					effect: iam.Effect.ALLOW,
 					actions: [

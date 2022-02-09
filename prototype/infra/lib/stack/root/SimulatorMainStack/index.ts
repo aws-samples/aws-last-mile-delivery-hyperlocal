@@ -28,8 +28,8 @@ import { BackendStack } from '../BackendStack'
 
 export interface Env {
 	readonly mapBoxToken: string
-	readonly restaurantUserPassword: string
-	readonly customerUserPassword: string
+	readonly originUserPassword: string
+	readonly destinationUserPassword: string
 }
 
 export interface SimulatorMainStackProps extends StackProps {
@@ -132,19 +132,19 @@ export class SimulatorMainStack extends Stack {
 
 			driverSimulatorContainer: ecsContainerStack.driverSimulator,
 			customerSimulatorContainer: ecsContainerStack.customerSimulator,
-			restaurantSimulatorContainer: ecsContainerStack.restaurantSimulator,
+			restaurantSimulatorContainer: ecsContainerStack.originSimulator,
 
-			restaurantTable: dataStack.restaurantTable,
-			restaurantAreaIndex: dataStack.restaurantAreaIndex,
-			restaurantExecutionIdIndex: dataStack.restaurantExecutionIdIndex,
-			restaurantSimulationsTable: dataStack.restaurantSimulationsTable,
-			restaurantStatsTable: dataStack.restaurantStatsTable,
+			restaurantTable: dataStack.originTable,
+			restaurantAreaIndex: dataStack.originAreaIndex,
+			restaurantExecutionIdIndex: dataStack.originExecutionIdIndex,
+			restaurantSimulationsTable: dataStack.originSimulationsTable,
+			restaurantStatsTable: dataStack.originStatsTable,
 
-			customerTable: dataStack.customerTable,
-			customerAreaIndex: dataStack.customerAreaIndex,
-			customerExecutionIdIndex: dataStack.customerExecutionIdIndex,
-			customerSimulationsTable: dataStack.customerSimulationsTable,
-			customerStatsTable: dataStack.customerStatsTable,
+			customerTable: dataStack.destinationTable,
+			customerAreaIndex: dataStack.destinationAreaIndex,
+			customerExecutionIdIndex: dataStack.destinationExecutionIdIndex,
+			customerSimulationsTable: dataStack.destinationSimulationsTable,
+			customerStatsTable: dataStack.destinationStatsTable,
 
 			simulatorTable: dataStack.simulatorTable,
 			eventTable: dataStack.eventTable,
@@ -157,11 +157,11 @@ export class SimulatorMainStack extends Stack {
 			identityPool,
 			userPoolClient: simulatorAppClient,
 			iotDriverPolicy,
-			iotCustomerPolicy: iotPolicies.iotCustomerPolicy,
-			iotRestaurantPolicy: iotPolicies.iotRestaurantPolicy,
+			iotCustomerPolicy: iotPolicies.iotDestinationPolicy,
+			iotRestaurantPolicy: iotPolicies.iotOriginPolicy,
 			simulatorConfig,
-			restaurantUserPassword: (env as Env).restaurantUserPassword,
-			customerUserPassword: (env as Env).customerUserPassword,
+			restaurantUserPassword: (env as Env).originUserPassword,
+			customerUserPassword: (env as Env).destinationUserPassword,
 
 			lambdaLayers: lambdaLayerRefs,
 			privateVpc: vpc,
@@ -176,10 +176,10 @@ export class SimulatorMainStack extends Stack {
 		})
 
 		const iotRules = new IoTRuleStack(this, 'IoTSimulatorRule', {
-			customerStatusUpdateLambda: manager.customerSimulator.customerStatusUpdateLambda,
-			restaurantStatusUpdateLambda: manager.restaurantSimulator.restaurantStatusUpdateLambda,
-			customerStatusUpdateRuleName: iotPolicies.customerStatusUpdateRuleName,
-			restaurantStatusUpdateRuleName: iotPolicies.restaurantStatusUpdateRuleName,
+			destinationStatusUpdateLambda: manager.customerSimulator.customerStatusUpdateLambda,
+			destinationStatusUpdateRuleName: iotPolicies.destinationStatusUpdateRuleName,
+			originStatusUpdateLambda: manager.restaurantSimulator.restaurantStatusUpdateLambda,
+			originStatusUpdateRuleName: iotPolicies.originStatusUpdateRuleName,
 		})
 
 		// simulatorWeb hosting

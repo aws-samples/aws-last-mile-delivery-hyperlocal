@@ -36,10 +36,10 @@ const execute = async (payload) => {
 		console.debug(JSON.stringify(res.Items))
 	}
 
-	const { tags } = payload.restaurant
+	const { tags } = payload.origin
 
 	if (!tags) {
-		throw new Error('No configuration available for the restaurant. Missing tags')
+		throw new Error('No configuration available for the origin. Missing tags')
 	}
 
 	// TODO: the system assumes that there's only one tag at this point for simplicity

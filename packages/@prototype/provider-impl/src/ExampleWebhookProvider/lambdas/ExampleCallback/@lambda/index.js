@@ -28,7 +28,7 @@ const eventBridge = new aws.EventBridge()
 
 const mapStateToOrderStatus = (state) => {
 	switch (state) {
-		case 'TO_RESTAURANT':
+		case 'TO_ORIGIN':
 			return 'ARRIVED_AT_ORIGIN'
 		default:
 			return state

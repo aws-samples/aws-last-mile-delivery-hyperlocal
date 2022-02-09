@@ -109,15 +109,15 @@ export class OrderManagerStack extends Construct {
 			},
 		})
 
-		new events.Rule(this, 'RestaurantEventConsumer', {
-			ruleName: namespaced(this, 'restaurant-to-order-manager'),
-			description: 'Rule used by order manager to consume restaurant ack events',
+		new events.Rule(this, 'OriginEventConsumer', {
+			ruleName: namespaced(this, 'origin-to-order-manager'),
+			description: 'Rule used by order manager to consume origin ack events',
 			eventBus,
 			enabled: true,
 			targets: [new events_targets.LambdaFunction(this.orderManagerHandler)],
 			eventPattern: {
-				source: [SERVICE_NAME.RESTAURANT_SERVICE],
-				detailType: ['RESTAURANT_ORDER_ACK'],
+				source: [SERVICE_NAME.ORIGIN_SERVICE],
+				detailType: ['ORIGIN_ORDER_ACK'],
 			},
 		})
 

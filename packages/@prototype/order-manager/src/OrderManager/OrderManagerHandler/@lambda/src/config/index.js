@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 const services = {
 	orderService: process.env.ORDER_SERVICE_NAME,
-	restaurantService: process.env.RESTAURANT_SERVICE_NAME,
+	originService: process.env.ORIGIN_SERVICE_NAME,
 	exampleWehookService: process.env.EXAMPLE_WEBHOOK_PROVIDER_SERVICE_NAME,
 	examplePollingService: process.env.EXAMPLE_POLLING_PROVIDER_SERVICE_NAME,
 	internalWebhookService: process.env.INTERNAL_WEBHOOK_PROVIDER_SERVICE_NAME,

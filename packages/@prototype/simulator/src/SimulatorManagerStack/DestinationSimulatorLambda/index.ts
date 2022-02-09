@@ -15,31 +15,29 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_elasticache as elasticache, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_elasticache as elasticache, aws_events as events } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
-import { SERVICE_NAME } from '@prototype/common'
-import { RestaurantGeneratorStepFunction } from './RestaurantGeneratorStepFunction'
-import { RestaurantStarterStepFunction } from './RestaurantStarterStepFunction'
-import { RestaurantEraserStepFunction } from './RestaurantEraserStepFunction'
-import { RestaurantStatusUpdateLambda } from './RestaurantStatusUpdateLambda'
+import { DestinationGeneratorStepFunction } from './DestinationGeneratorStepFunction'
+import { DestinationStarterStepFunction } from './DestinationStarterStepFunction'
+import { DestinationEraserStepFunction } from './DestinationEraserStepFunction'
 import { SimulatorContainer } from '../../ECSContainerStack/SimulatorContainer'
-import { RestaurantEventHandlerLambda } from './RestaurantEventHandler'
+import { DestinationStatusUpdateLambda } from './DestinationStatusUpdateLambda'
 
-export interface RestaurantSimulatorProps {
-	readonly restaurantTable: ddb.ITable
-	readonly restaurantSimulationsTable: ddb.ITable
-	readonly restaurantStatsTable: ddb.ITable
-	readonly restaurantAreaIndex: string
+export interface DestinationSimulatorProps {
+	readonly destinationTable: ddb.ITable
+	readonly destinationSimulationsTable: ddb.ITable
+	readonly destinationStatsTable: ddb.ITable
+	readonly destinationAreaIndex: string
 	readonly userPool: cognito.UserPool
 	readonly identityPool: cognito.CfnIdentityPool
 	readonly userPoolClient: cognito.UserPoolClient
 	readonly iotPolicy: iot.CfnPolicy
 	readonly simulatorConfig: { [key: string]: string | number, }
-	readonly restaurantUserPassword: string
-	readonly restaurantSimulatorContainer: SimulatorContainer
+	readonly destinationUserPassword: string
+	readonly destinationSimulatorContainer: SimulatorContainer
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
@@ -49,35 +47,38 @@ export interface RestaurantSimulatorProps {
 	readonly vpcNetworking: Networking
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
+
 	readonly iotEndpointAddress: string
 }
 
-export class RestaurantSimulatorLambda extends Construct {
+export class DestinationSimulatorLambda extends Construct {
 	public readonly lambda: lambda.Function
 
-	public readonly restaurantStatusUpdateLambda: lambda.Function
+	public readonly destinationStatusUpdateLambda: lambda.Function
 
 	public readonly generatorStepFunction: stepfunctions.StateMachine
 
 	public readonly starterStepFunction: stepfunctions.StateMachine
 
+	public readonly starter: DestinationStarterStepFunction
+
 	public readonly eraserStepFunction: stepfunctions.StateMachine
 
-	constructor (scope: Construct, id: string, props: RestaurantSimulatorProps) {
+	constructor (scope: Construct, id: string, props: DestinationSimulatorProps) {
 		super(scope, id)
 
 		const {
-			restaurantStatsTable,
-			restaurantTable,
-			restaurantAreaIndex,
-			restaurantSimulationsTable,
+			destinationStatsTable,
+			destinationTable,
+			destinationAreaIndex,
+			destinationSimulationsTable,
 			identityPool,
 			userPoolClient,
 			userPool,
 			iotPolicy,
 			simulatorConfig,
-			restaurantUserPassword,
-			restaurantSimulatorContainer,
+			destinationUserPassword,
+			destinationSimulatorContainer,
 			cluster,
 			vpc,
 			securityGroup,
@@ -89,76 +90,63 @@ export class RestaurantSimulatorLambda extends Construct {
 			iotEndpointAddress,
 		} = props
 
-		const generator = new RestaurantGeneratorStepFunction(this, 'RestaurantGeneratorStepFunction', {
-			restaurantStatsTable,
-			restaurantTable,
+		const generator = new DestinationGeneratorStepFunction(this, 'DestinationGeneratorStepFunction', {
+			destinationStatsTable,
+			destinationTable,
 			identityPool,
 			userPool,
 			userPoolClient,
 			iotPolicy,
 			simulatorConfig,
-			restaurantUserPassword,
+			destinationUserPassword,
 		})
 
 		this.generatorStepFunction = generator.stepFunction
 
-		const starter = new RestaurantStarterStepFunction(this, 'RestaurantStarterStepFunction', {
-			restaurantTable,
-			restaurantSimulationsTable,
+		this.starter = new DestinationStarterStepFunction(this, 'DestinationStarterStepFunction', {
+			destinationTable,
+			destinationSimulationsTable,
 			simulatorConfig,
-			restaurantSimulatorContainer,
+			destinationSimulatorContainer,
 			cluster,
 			vpc,
 			securityGroup,
 		})
 
-		this.starterStepFunction = starter.stepFunction
+		this.starterStepFunction = this.starter.stepFunction
 
-		const eraser = new RestaurantEraserStepFunction(this, 'RestaurantEraserStepFunction', {
-			restaurantTable,
-			restaurantStatsTable,
-			restaurantAreaIndex,
+		const eraser = new DestinationEraserStepFunction(this, 'DestinationEraserStepFunction', {
+			destinationTable,
+			destinationStatsTable,
+			destinationAreaIndex,
 		})
 
 		this.eraserStepFunction = eraser.stepFunction
 
-		this.lambda = new lambda.Function(this, 'RestaurantSimulatorLambda', {
-			functionName: namespaced(scope, 'RestaurantManager'),
-			description: 'Restaurant Management functions',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/restaurant-manager.zip')),
+		this.lambda = new lambda.Function(this, 'DestinationSimulatorLambda', {
+			functionName: namespaced(scope, 'DestinationManager'),
+			description: 'Destination Management functions',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-manager.zip')),
 			handler: 'index.handler',
 			runtime: lambda.Runtime.NODEJS_14_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
-				RESTAURANT_TABLE: restaurantTable.tableName,
-				RESTAURANT_SIMULATIONS_TABLE_NAME: restaurantSimulationsTable.tableName,
-				RESTAURANT_STATS_TABLE_NAME: restaurantStatsTable.tableName,
-				RESTAURANT_GENERATOR_STEP_FUNCTIONS_ARN: this.generatorStepFunction.stateMachineArn,
-				RESTAURANT_STARTER_STEP_FUNCTIONS_ARN: this.starterStepFunction.stateMachineArn,
-				RESTAURANT_ERASER_STEP_FUNCTIONS_ARN: this.eraserStepFunction.stateMachineArn,
-				RESTAURANT_CONTAINER_BATCH_SIZE: simulatorConfig.restaurantContainerBatchSize.toString(),
 				IOT_ENDPOINT: iotEndpointAddress,
+				DESTINATION_SIMULATIONS_TABLE_NAME: destinationSimulationsTable.tableName,
+				DESTINATION_STATS_TABLE_NAME: destinationStatsTable.tableName,
+				DESTINATION_GENERATOR_STEP_FUNCTIONS_ARN: this.generatorStepFunction.stateMachineArn,
+				DESTINATION_STARTER_STEP_FUNCTIONS_ARN: this.starterStepFunction.stateMachineArn,
+				DESTINATION_ERASER_STEP_FUNCTIONS_ARN: this.eraserStepFunction.stateMachineArn,
+				DESTINATION_CONTAINER_BATCH_SIZE: simulatorConfig.destinationContainerBatchSize.toString(),
 			},
-			layers: [
-				lambdaLayers.lambdaUtilsLayer,
-				lambdaLayers.redisClientLayer,
-			],
-			vpc: privateVpc,
-			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
-			},
-			securityGroups: [vpcNetworking.securityGroups.lambda],
 			initialPolicy: [
-				readDDBTablePolicyStatement(restaurantTable.tableArn),
-				readDDBTablePolicyStatement(restaurantSimulationsTable.tableArn),
-				updateDDBTablePolicyStatement(restaurantSimulationsTable.tableArn),
-				deleteFromDDBTablePolicyStatement(restaurantSimulationsTable.tableArn),
-				readDDBTablePolicyStatement(restaurantStatsTable.tableArn),
-				updateDDBTablePolicyStatement(restaurantStatsTable.tableArn),
-				deleteFromDDBTablePolicyStatement(restaurantStatsTable.tableArn),
+				readDDBTablePolicyStatement(destinationSimulationsTable.tableArn),
+				updateDDBTablePolicyStatement(destinationSimulationsTable.tableArn),
+				deleteFromDDBTablePolicyStatement(destinationSimulationsTable.tableArn),
+				readDDBTablePolicyStatement(destinationStatsTable.tableArn),
+				updateDDBTablePolicyStatement(destinationStatsTable.tableArn),
+				deleteFromDDBTablePolicyStatement(destinationStatsTable.tableArn),
 				new iam.PolicyStatement({
 					actions: ['states:StartExecution'],
 					resources: [
@@ -179,7 +167,7 @@ export class RestaurantSimulatorLambda extends Construct {
 			],
 		})
 
-		const restaurantStatusUpdateLambda = new RestaurantStatusUpdateLambda(this, 'RestaurantStatusUpdateLambda', {
+		this.destinationStatusUpdateLambda = new DestinationStatusUpdateLambda(this, 'DestinationStatusUpdateLambda', {
 			dependencies: {
 				eventBus,
 				vpc: privateVpc,
@@ -190,28 +178,6 @@ export class RestaurantSimulatorLambda extends Construct {
 					lambdaLayers.redisClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
-			},
-		})
-
-		this.restaurantStatusUpdateLambda = restaurantStatusUpdateLambda
-
-		const restaurantEventHandler = new RestaurantEventHandlerLambda(this, 'RestaurantEventHandler', {
-			dependencies: {
-				eventBus,
-				restaurantTable,
-				iotEndpointAddress,
-			},
-		})
-
-		new events.Rule(this, 'OrderMangerToRestaurant', {
-			ruleName: namespaced(this, 'orders-manager-to-restaurant'),
-			description: 'Rule used by restaurant service to consume events from order manager',
-			eventBus,
-			enabled: true,
-			targets: [new events_targets.LambdaFunction(restaurantEventHandler)],
-			eventPattern: {
-				source: [SERVICE_NAME.ORDER_MANAGER],
-				detailType: ['NOTIFY_RESTAURANT'],
 			},
 		})
 	}

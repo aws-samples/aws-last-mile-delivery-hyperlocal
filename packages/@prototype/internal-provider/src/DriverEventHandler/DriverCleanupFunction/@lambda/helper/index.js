@@ -65,8 +65,8 @@ const tryToReleaseDriver = async (driver, orderId) => {
 const sendOrderBackToKinesis = (order, status) => {
 	return kinesis.putRecord(order.ID, {
 		orderId: order.ID,
-		restaurant: order.restaurant,
-		customer: order.customer,
+		origin: order.origin,
+		destination: order.destination,
 		createdAt: order.createdAt,
 		status: status || constants.STATES.UNASSIGNED,
 	})

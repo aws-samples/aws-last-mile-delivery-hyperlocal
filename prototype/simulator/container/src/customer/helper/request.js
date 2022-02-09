@@ -31,7 +31,7 @@ const getRandomRestaurant = async (area, jwt) => {
 
 		return res.data.data
 	} catch (err) {
-		logger.error('Error on retrieving the random restaurant: ', err.toString())
+		logger.error('Error on retrieving the random origin: ', err.toString())
 
 		if (err.response) {
 			logger.error(err.response.data)

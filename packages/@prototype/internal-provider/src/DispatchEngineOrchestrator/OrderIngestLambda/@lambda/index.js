@@ -72,6 +72,6 @@ const handler = async (event, context) => {
 }
 
 const recordValid = (record) => {
-	return !!record.orderId && record.customer && record.restaurant
+	return !!record.orderId && record.origin && record.destination
 }
 exports.handler = handler

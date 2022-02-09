@@ -47,7 +47,7 @@ export class OrderManagerStepFunction extends Construct {
 		const notifyOrderRejected = new tasks.LambdaInvoke(this, 'NotifyOrderRejected', {
 			comment: 'Send message to event bridge to notify order rejection',
 			lambdaFunction: orderManagerHelper,
-			resultPath: '$.restaurantNotification',
+			resultPath: '$.originNotification',
 			payloadResponseOnly: true,
 			payload: {
 				type: stepfunctions.InputType.OBJECT,
@@ -55,35 +55,35 @@ export class OrderManagerStepFunction extends Construct {
 					cmd: 'notifyOrderRejected',
 					payload: {
 						'orderId.$': '$$.Execution.Input.orderId',
-						reason: 'Rejected by restaurant',
+						reason: 'Rejected by origin',
 					},
 				},
 			},
 		})
 
-		const sendOrderToRestaurant = new tasks.LambdaInvoke(this, 'SendOrderToRestaurant', {
-			comment: 'SendOrderToRestaurant (wait for a callback)',
+		const sendOrderToOrigin = new tasks.LambdaInvoke(this, 'SendOrderToOrigin', {
+			comment: 'SendOrderToOrigin (wait for a callback)',
 			integrationPattern: stepfunctions.IntegrationPattern.WAIT_FOR_TASK_TOKEN,
 			lambdaFunction: orderManagerHelper,
 			// TODO: change in production
-			// it's the timeout that is used for the restaurant to ack the order
+			// it's the timeout that is used for the origin (eg. restaurant) to ack the order
 			// if a reject/accept event doesn't come by then, the order will be rejected
-			heartbeat: Duration.minutes(orderManagerSettings.restaurantTimeoutInMinutes as number),
-			resultPath: '$.restaurantCallback',
+			heartbeat: Duration.minutes(orderManagerSettings.originTimeoutInMinutes as number),
+			resultPath: '$.originCallback',
 			payload: {
 				type: stepfunctions.InputType.OBJECT,
 				value: {
-					cmd: 'notifyRestaurant',
+					cmd: 'notifyOrigin',
 					payload: {
 						token: stepfunctions.JsonPath.taskToken,
 						'orderId.$': '$$.Execution.Input.orderId',
-						'restaurantId.$': '$$.Execution.Input.restaurant.id',
-						'customerId.$': '$$.Execution.Input.customer.id',
+						'originId.$': '$$.Execution.Input.origin.id',
+						'destinationId.$': '$$.Execution.Input.destination.id',
 					},
 				},
 			},
 		}).addCatch(notifyOrderRejected, {
-			resultPath: '$.notifyRestaurantError',
+			resultPath: '$.notifyOriginError',
 			errors: ['States.Timeout'],
 		})
 
@@ -271,11 +271,11 @@ export class OrderManagerStepFunction extends Construct {
 			findProvider,
 		)
 
-		const definition = sendOrderToRestaurant
+		const definition = sendOrderToOrigin
 		.next(
-			new stepfunctions.Choice(this, 'IsOrderAcceptedByRestaurant')
+			new stepfunctions.Choice(this, 'IsOrderAcceptedByOrigin')
 			.when(
-				stepfunctions.Condition.stringEquals('$.restaurantCallback.restaurantStatus', 'ACCEPTED'),
+				stepfunctions.Condition.stringEquals('$.originCallback.status', 'ACCEPTED'),
 				findProvider
 				.next(providerOutputChoice),
 			)

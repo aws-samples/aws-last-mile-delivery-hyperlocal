@@ -19,52 +19,52 @@ import { Construct } from 'constructs'
 import { aws_iot as iot, aws_iam as iam, aws_lambda as lambda } from 'aws-cdk-lib'
 
 interface IoTRuleStackProps {
-  restaurantStatusUpdateRuleName: string
-  customerStatusUpdateRuleName: string
-	customerStatusUpdateLambda: lambda.IFunction
-	restaurantStatusUpdateLambda: lambda.IFunction
+  originStatusUpdateRuleName: string
+  destinationStatusUpdateRuleName: string
+	destinationStatusUpdateLambda: lambda.IFunction
+	originStatusUpdateLambda: lambda.IFunction
 }
 
 export class IoTRuleStack extends Construct {
-	public readonly iotCustomerStatusUpdateRule: iot.CfnTopicRule
+	public readonly iotDestinationStatusUpdateRule: iot.CfnTopicRule
 
-	public readonly iotRestaurantStatusUpdateRule: iot.CfnTopicRule
+	public readonly iotOriginStatusUpdateRule: iot.CfnTopicRule
 
 	constructor (scope: Construct, id: string, props: IoTRuleStackProps) {
 		super(scope, id)
 
-		this.iotCustomerStatusUpdateRule = new iot.CfnTopicRule(this, 'IoTCustomerStatusRule', {
-			ruleName: props.customerStatusUpdateRuleName,
+		this.iotDestinationStatusUpdateRule = new iot.CfnTopicRule(this, 'IoTDestinationStatusRule', {
+			ruleName: props.destinationStatusUpdateRuleName,
 			topicRulePayload: {
 				sql: 'SELECT *',
 				ruleDisabled: false,
 				actions: [{
 					lambda: {
-						functionArn: props.customerStatusUpdateLambda.functionArn,
+						functionArn: props.destinationStatusUpdateLambda.functionArn,
 					},
 				}],
 			},
 		})
-		props.customerStatusUpdateLambda.addPermission('AllowIoTInvoke', {
+		props.destinationStatusUpdateLambda.addPermission('AllowIoTInvoke', {
 			principal: new iam.ServicePrincipal('iot.amazonaws.com'),
-			sourceArn: this.iotCustomerStatusUpdateRule.attrArn,
+			sourceArn: this.iotDestinationStatusUpdateRule.attrArn,
 		})
 
-		this.iotRestaurantStatusUpdateRule = new iot.CfnTopicRule(this, 'IoTRestaurantStatusRule', {
-			ruleName: props.restaurantStatusUpdateRuleName,
+		this.iotOriginStatusUpdateRule = new iot.CfnTopicRule(this, 'IoTOriginStatusRule', {
+			ruleName: props.originStatusUpdateRuleName,
 			topicRulePayload: {
 				sql: 'SELECT *',
 				ruleDisabled: false,
 				actions: [{
 					lambda: {
-						functionArn: props.restaurantStatusUpdateLambda.functionArn,
+						functionArn: props.originStatusUpdateLambda.functionArn,
 					},
 				}],
 			},
 		})
-		props.restaurantStatusUpdateLambda.addPermission('AllowIoTInvoke', {
+		props.originStatusUpdateLambda.addPermission('AllowIoTInvoke', {
 			principal: new iam.ServicePrincipal('iot.amazonaws.com'),
-			sourceArn: this.iotRestaurantStatusUpdateRule.attrArn,
+			sourceArn: this.iotOriginStatusUpdateRule.attrArn,
 		})
 	}
 }

@@ -64,7 +64,7 @@ export class DatabaseSeeder extends Construct {
 							],
 						},
 						{
-							fact: 'restaurant',
+							fact: 'origin',
 							value: ['bfd5d6fe-0fb2-4b7f-bea8-80ceea92c50e'],
 							operator: 'in',
 							path: '$.id',

@@ -39,7 +39,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
 
-export class CustomerStatusUpdateLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
+export class DestinationStatusUpdateLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
 	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
 		const {
 			vpc,
@@ -50,16 +50,16 @@ export class CustomerStatusUpdateLambda extends DeclaredLambdaFunction<Environme
 		} = props.dependencies
 
 		const declaredProps: TDeclaredProps = {
-			functionName: namespaced(scope, 'CustomerStatusUpdate'),
-			description: 'Customer Status Update function',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-status-update.zip')),
+			functionName: namespaced(scope, 'DestinationStatusUpdate'),
+			description: 'Destination Status Update function',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-status-update.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
 				EVENT_BUS_NAME: eventBus.eventBusName,
-				SERVICE_NAME: SERVICE_NAME.CUSTOMER_SERVICE,
+				SERVICE_NAME: SERVICE_NAME.DESTINATION_SERVICE,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({

@@ -20,7 +20,7 @@ const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH, hashCode } = require('/opt/lambda-utils')
 
-const { RESTAURANT_BY_AREA, RESTAURANT_STATUS } = REDIS_HASH
+const { ORIGIN_BY_AREA, ORIGIN_STATUS } = REDIS_HASH
 
 const client = getRedisClient()
 const eventBridge = new aws.EventBridge()
@@ -38,12 +38,12 @@ const handler = async (event, context) => {
 			Entries: [{
 				EventBusName: process.env.EVENT_BUS_NAME,
 				Source: process.env.SERVICE_NAME,
-				DetailType: `RESTAURANT_${event.type}`,
+				DetailType: `ORIGIN_${event.type}`,
 				Detail: JSON.stringify(event),
 			}],
 		}).promise()
 
-		console.debug(`STATUS_CHANGE :: ${event.restaurantId} :: Successfully sent to Event Bridge`)
+		console.debug(`STATUS_CHANGE :: ${event.originId} :: Successfully sent to Event Bridge`)
 	} catch (err) {
 		console.error(`Error sending message to Event Bridge :: ${event.type} :: ${JSON.stringify(err)}`)
 	}
@@ -60,11 +60,11 @@ const handler = async (event, context) => {
 		return
 	}
 
-	const { restaurantId, status, area, timestamp } = event
+	const { originId, status, area, timestamp } = event
 	const areaCode = hashCode(area)
 
 	try {
-		let statusList = await client.keys(`${RESTAURANT_STATUS}:*`)
+		let statusList = await client.keys(`${ORIGIN_STATUS}:*`)
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -76,20 +76,20 @@ const handler = async (event, context) => {
 		}
 
 		// update id by area in REDIS
-		await client.sadd(`${RESTAURANT_BY_AREA}:${areaCode}`, restaurantId)
+		await client.sadd(`${ORIGIN_BY_AREA}:${areaCode}`, originId)
 
 		// update id by area in REDIS
 		const promises = statusList.map(s => {
 			if (s === status) {
-				return client.hset(`${RESTAURANT_STATUS}:${s}`, restaurantId, timestamp)
+				return client.hset(`${ORIGIN_STATUS}:${s}`, originId, timestamp)
 			}
 
-			return client.hdel(`${RESTAURANT_STATUS}:${s}`, restaurantId)
+			return client.hdel(`${ORIGIN_STATUS}:${s}`, originId)
 		})
 
 		await Promise.all(promises)
 
-		console.debug(`STATUS_CHANGE :: ${restaurantId} :: Successfully updated Redis`)
+		console.debug(`STATUS_CHANGE :: ${originId} :: Successfully updated Redis`)
 	} catch (err) {
 		console.error(`Error updating Redis :: ${event.type} :: ${JSON.stringify(err)}`)
 		console.error(err)
@@ -97,6 +97,6 @@ const handler = async (event, context) => {
 }
 
 const recordValid = (record) => {
-	return !(record.restaurantId == null || record.status == null || record.timestamp == null)
+	return !(record.originId == null || record.status == null || record.timestamp == null)
 }
 exports.handler = handler

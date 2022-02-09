@@ -27,9 +27,9 @@ module.exports.default = (event) => {
 	try {
 		return commands.createOrder(body)
 	} catch (err) {
-		console.error('Error while generating restaurants')
+		console.error('Error while creating the order')
 		console.error(err)
 
-		return utils.fail({ error: 'Error while generating the restaurants' })
+		return utils.fail({ error: 'Error while creating the order' })
 	}
 }

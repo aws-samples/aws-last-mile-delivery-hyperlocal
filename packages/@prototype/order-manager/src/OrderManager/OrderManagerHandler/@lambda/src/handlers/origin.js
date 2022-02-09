@@ -14,38 +14,53 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+const { promisify } = require('util')
 const logger = require('../utils/logger')
-const ddb = require('../lib/dynamoDB')
-const iot = require('../lib/iot')
+const steps = require('../lib/steps')
 const config = require('../config')
+const { getRedisClient } = require('/opt/redis-client')
+const { REDIS_HASH } = require('/opt/lambda-utils')
+
+const {
+	ORDER_MANAGER,
+} = REDIS_HASH
+
+const client = getRedisClient()
+
+client.hget = promisify(client.hget)
+client.hdel = promisify(client.hdel)
 
 const mapper = {
-	NOTIFY_RESTAURANT: async (detail) => {
-		const { restaurantId, orderId, customerId, token } = detail
+	ORIGIN_ORDER_ACK: async (detail) => {
+		const { orderId, status } = detail
 
-		logger.info('Reading resturant information')
+		logger.info('Sending task success with the following status:', status)
 
-		const res = await ddb.get(config.restaurantTable, restaurantId)
+		const token = await client.hget(`${ORDER_MANAGER}:token`, orderId)
+		const state = await client.hget(`${ORDER_MANAGER}:state`, orderId)
 
-		if (!res.Item) {
-			logger.error('Cannot find resturant with ID: ', restaurantId)
+		if (!token) {
+			logger.error('CRITICAL! Missing token for orderId: ', orderId)
 
-			return
+			return { success: false }
 		}
 
-		const { identity } = res.Item
+		if (state !== 'NOTIFY_ORIGIN') {
+			logger.error('Step Function state is not in NOTIFY_ORIGIN for order: ', orderId)
 
-		logger.info('Sending message to AWS IoT to the driver')
+			await steps.sendTaskFailure({}, token)
 
-		await iot.publishMessage(`${identity}/messages`, {
-			type: 'NEW_ORDER',
-			payload: {
-				restaurantId,
-				orderId,
-				customerId,
-				token,
-			},
-		})
+			return { success: false }
+		}
+
+		await steps.sendTaskSuccess({
+			status,
+		}, token)
+
+		// no longer required as they have been used
+
+		await client.hdel(`${ORDER_MANAGER}:token`, orderId)
+		await client.hdel(`${ORDER_MANAGER}:state`, orderId)
 
 		return { success: true }
 	},
@@ -53,12 +68,12 @@ const mapper = {
 
 const execute = async (detailType, detail) => {
 	if (!mapper[detailType]) {
-		logger.warn(`Mapper not found for builder '${config.orderManagerService}' and detailType '${detailType}'`)
+		logger.warn(`Mapper not found for builder '${config.orderService}' and detailType '${detailType}'`)
 
 		return
 	}
 
-	logger.info(`Executing build '${config.orderManagerService}' for detailType '${detailType}'`)
+	logger.info(`Executing build '${config.orderService}' for detailType '${detailType}'`)
 
 	return mapper[detailType](detail)
 }

@@ -19,38 +19,38 @@ import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_lambda as lambda, aw
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
-export interface CustomerEraserStepFunctionProps {
-	readonly customerTable: ddb.ITable
-	readonly customerAreaIndex: string
-	readonly customerStatsTable: ddb.ITable
+export interface DestinationEraserStepFunctionProps {
+	readonly destinationTable: ddb.ITable
+	readonly destinationAreaIndex: string
+	readonly destinationStatsTable: ddb.ITable
 }
 
-export class CustomerEraserStepFunction extends Construct {
+export class DestinationEraserStepFunction extends Construct {
 	public readonly lambda: lambda.Function
 
 	public readonly stepFunction: stepfunctions.StateMachine
 
-	constructor (scope: Construct, id: string, props: CustomerEraserStepFunctionProps) {
+	constructor (scope: Construct, id: string, props: DestinationEraserStepFunctionProps) {
 		super(scope, id)
 
 		const {
-			customerAreaIndex,
-			customerTable,
-			customerStatsTable,
+			destinationAreaIndex,
+			destinationTable,
+			destinationStatsTable,
 		} = props
 
-		this.lambda = new lambda.Function(this, 'CustomerEraserHelper', {
-			functionName: namespaced(this, 'CustomerEraserHelper'),
-			description: 'Lambda used by step function to delete customers',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/customer-eraser-helper.zip')),
+		this.lambda = new lambda.Function(this, 'DestinationEraserHelper', {
+			functionName: namespaced(this, 'DestinationEraserHelper'),
+			description: 'Lambda used by step function to delete destination',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-eraser-helper.zip')),
 			handler: 'index.handler',
 			runtime: lambda.Runtime.NODEJS_14_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				CUSTOMER_TABLE_NAME: customerTable.tableName,
-				CUSTOMER_STATS_TABLE_NAME: customerStatsTable.tableName,
-				CUSTOMER_AREA_INDEX: customerAreaIndex,
+				DESTINATION_TABLE_NAME: destinationTable.tableName,
+				DESTINATION_STATS_TABLE_NAME: destinationStatsTable.tableName,
+				DESTINATION_AREA_INDEX: destinationAreaIndex,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({
@@ -60,9 +60,9 @@ export class CustomerEraserStepFunction extends Construct {
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [
-						customerStatsTable.tableArn,
-						customerTable.tableArn,
-						`${customerTable.tableArn}/index/${props.customerAreaIndex}`,
+						destinationStatsTable.tableArn,
+						destinationTable.tableArn,
+						`${destinationTable.tableArn}/index/${props.destinationAreaIndex}`,
 					],
 				}),
 				new iam.PolicyStatement({
@@ -71,8 +71,8 @@ export class CustomerEraserStepFunction extends Construct {
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [
-						customerTable.tableArn,
-						customerStatsTable.tableArn,
+						destinationTable.tableArn,
+						destinationStatsTable.tableArn,
 					],
 				}),
 				new iam.PolicyStatement({
@@ -81,7 +81,7 @@ export class CustomerEraserStepFunction extends Construct {
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [
-						customerTable.tableArn,
+						destinationTable.tableArn,
 					],
 				}),
 			],
@@ -124,16 +124,16 @@ export class CustomerEraserStepFunction extends Construct {
 			},
 		)
 
-		const deleteCustomers = new tasks.LambdaInvoke(
+		const deleteDestinations = new tasks.LambdaInvoke(
 			this,
-			'DeleteCustomers',
+			'DeleteDestinations',
 			{
 				lambdaFunction: this.lambda,
 				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
 					type: stepfunctions.InputType.OBJECT,
 					value: {
-						cmd: 'deleteCustomers',
+						cmd: 'deleteDestinations',
 						payload: {
 							'ids.$': '$.iterator.ids',
 						},
@@ -142,18 +142,18 @@ export class CustomerEraserStepFunction extends Construct {
 			},
 		)
 
-		const deleteCustomerStats = new tasks.LambdaInvoke(
+		const deleteDestinationStats = new tasks.LambdaInvoke(
 			this,
-			'DeleteCustomerStats',
+			'DeleteDestinationStats',
 			{
 				lambdaFunction: this.lambda,
 				resultPath: stepfunctions.JsonPath.DISCARD,
 				payload: {
 					type: stepfunctions.InputType.OBJECT,
 					value: {
-						cmd: 'deleteCustomerStats',
+						cmd: 'deleteDestinationStats',
 						payload: {
-							'customerStatsId.$': '$$.Execution.Input.customerStatsId',
+							'destinationStatsId.$': '$$.Execution.Input.destinationStatsId',
 						},
 					},
 				},
@@ -169,15 +169,15 @@ export class CustomerEraserStepFunction extends Construct {
 
 		const definition = configureIterator
 		.next(iterate)
-		.next(deleteCustomers)
+		.next(deleteDestinations)
 		.next(
 			new stepfunctions.Choice(this, 'IsNextPage')
 			.when(stepfunctions.Condition.booleanEquals('$.iterator.continue', true), iterate)
-			.otherwise(deleteCustomerStats),
+			.otherwise(deleteDestinationStats),
 		)
 
-		this.stepFunction = new stepfunctions.StateMachine(this, 'CustomerEraserStepFunctions', {
-			stateMachineName: namespaced(this, 'CustomerEraserStepFunctions'),
+		this.stepFunction = new stepfunctions.StateMachine(this, 'DestinationEraserStepFunctions', {
+			stateMachineName: namespaced(this, 'DestinationEraserStepFunctions'),
 			definition,
 			role: stepFunctionRole,
 		})

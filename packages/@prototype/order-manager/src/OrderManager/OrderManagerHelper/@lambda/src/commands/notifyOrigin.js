@@ -30,18 +30,18 @@ const client = getRedisClient()
 client.hset = promisify(client.hset)
 
 const execute = async (payload) => {
-	logger.info('Executing notify restaurant with the following payload')
+	logger.info('Executing notify origin with the following payload')
 	logger.info(payload)
-	const { orderId, customerId, restaurantId, token } = payload
+	const { orderId, destinationId, originId, token } = payload
 
 	await client.hset(`${ORDER_MANAGER}:token`, orderId, token)
-	await client.hset(`${ORDER_MANAGER}:state`, orderId, 'NOTIFY_RESTAURANT')
+	await client.hset(`${ORDER_MANAGER}:state`, orderId, 'NOTIFY_ORIGIN')
 
-	await events.putEvent('NOTIFY_RESTAURANT',
+	await events.putEvent('NOTIFY_ORIGIN',
 		{
 			orderId,
-			customerId,
-			restaurantId,
+			destinationId,
+			originId,
 		},
 		config.serviceName,
 	)

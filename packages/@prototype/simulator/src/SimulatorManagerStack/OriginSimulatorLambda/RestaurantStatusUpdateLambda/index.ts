@@ -59,7 +59,7 @@ export class RestaurantStatusUpdateLambda extends DeclaredLambdaFunction<Environ
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
 				EVENT_BUS_NAME: eventBus.eventBusName,
-				SERVICE_NAME: SERVICE_NAME.RESTAURANT_SERVICE,
+				SERVICE_NAME: SERVICE_NAME.ORIGIN_SERVICE,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({

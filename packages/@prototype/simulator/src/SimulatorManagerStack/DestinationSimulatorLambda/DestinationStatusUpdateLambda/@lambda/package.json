@@ -1,5 +1,5 @@
 {
-  "name": "@lambda/customer-status-update",
+  "name": "@lambda/destination-status-update",
   "version": "1.0.0",
   "description": "",
   "private": "true",
