@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.api.v2;
+package com.aws.proto.dispatching.api.instant.sequential;
 
 import com.aws.proto.dispatching.api.request.AssignDriversRequest;
 import com.aws.proto.dispatching.api.response.DispatcherRequestResult;
@@ -38,16 +38,14 @@ import com.aws.proto.dispatching.domain.location.LocationBase;
 import com.aws.proto.dispatching.domain.location.RestaurantLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.planningentity.base.PlanningDriverBase;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDelivery;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDriver;
+import com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDelivery;
+import com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDriver;
 import com.aws.proto.dispatching.planner.solution.SolutionState;
-import com.aws.proto.dispatching.planner.solution.v2.DispatchingSolution;
-import com.aws.proto.dispatching.planner.solution.v2.SolutionConsumer;
+import com.aws.proto.dispatching.planner.solution.instant.sequential.DispatchingSolution;
+import com.aws.proto.dispatching.planner.solution.instant.sequential.SolutionConsumer;
 import com.aws.proto.dispatching.routing.Coordinates;
 import com.aws.proto.dispatching.routing.DistanceMatrix;
 import com.aws.proto.dispatching.routing.GraphhopperRouter;
-import io.smallrye.mutiny.Uni;
-import org.jobrunr.scheduling.JobScheduler;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
@@ -60,8 +58,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -118,7 +114,7 @@ public class DispatcherService {
 //        List<PlanningDriverBase> drivers = driverQueryManager.retrieveDriversWithExtendingRadius(
 //          Coordinates.valueOf(req.centroid.lat, req.centroid.lon), req.orders.length);
 
-        if(drivers.size() == 0) {
+        if (drivers.size() == 0) {
             DispatcherRequestResult result = new DispatcherRequestResult(problemId.toString());
             result.error = "No drivers present in the system";
 
@@ -169,8 +165,8 @@ public class DispatcherService {
         UUID problemId = solution.getId();
 
         SolverJob<DispatchingSolution, UUID> solverJob = this.solutionMap.get(problemId).solverJob;
-        long solverDurationInMs = solverJob.getSolvingDuration().getSeconds() * 1000 + (solverJob.getSolvingDuration().getNano()/1_000_000);
-        assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, SolverStatus.NOT_SOLVING, solverDurationInMs,true));
+        long solverDurationInMs = solverJob.getSolvingDuration().getSeconds() * 1000 + (solverJob.getSolvingDuration().getNano() / 1_000_000);
+        assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, SolverStatus.NOT_SOLVING, solverDurationInMs, true));
         SolutionConsumer.consumeSolution(solution);
 
         logger.debug("Removing problemId {} from solutionMap at consumeSolution", problemId);
@@ -187,7 +183,7 @@ public class DispatcherService {
         assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, this.solverManager.getSolverStatus(problemId), true));
         SolutionConsumer.consumeSolution(solution);
 
-        if(this.solverManager.getSolverStatus(problemId) == SolverStatus.NOT_SOLVING) {
+        if (this.solverManager.getSolverStatus(problemId) == SolverStatus.NOT_SOLVING) {
             logger.debug("Removing problemId {} from solutionMap at consumeSolution", problemId);
             this.solutionMap.remove(problemId);
         }
@@ -205,7 +201,7 @@ public class DispatcherService {
         }
 
         SolverStatus solverStatus = state.solverJob.getSolverStatus();
-        if(solverStatus == SolverStatus.NOT_SOLVING) {
+        if (solverStatus == SolverStatus.NOT_SOLVING) {
             logger.info(":: Solution found :: problemId = {} :: returning and persisting result result", problemId);
             try {
                 DispatchingSolution solution = state.solverJob.getFinalBestSolution();

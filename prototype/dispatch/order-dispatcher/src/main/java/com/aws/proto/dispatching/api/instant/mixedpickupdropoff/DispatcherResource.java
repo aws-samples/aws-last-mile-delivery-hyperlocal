@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.api.v1;
+package com.aws.proto.dispatching.api.instant.mixedpickupdropoff;
 
 import com.aws.proto.dispatching.api.request.AssignDriversRequest;
 import com.aws.proto.dispatching.api.response.DispatcherRequestResult;
@@ -34,17 +34,17 @@ import com.aws.proto.dispatching.data.DriverQueryManager;
 import com.aws.proto.dispatching.data.ddb.DdbDemographicAreaSettingsService;
 import com.aws.proto.dispatching.data.entity.DemographicAreaSetting;
 import com.aws.proto.dispatching.data.entity.InputDriverData;
-import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.location.CustomerLocation;
 import com.aws.proto.dispatching.domain.location.LocationBase;
 import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.planningentity.base.PlanningDriverBase;
-import com.aws.proto.dispatching.domain.planningentity.v1.CustomerVisit;
-import com.aws.proto.dispatching.domain.planningentity.v1.PlanningDriver;
-import com.aws.proto.dispatching.domain.planningentity.v1.PlanningVisit;
-import com.aws.proto.dispatching.domain.planningentity.v1.RestaurantVisit;
-import com.aws.proto.dispatching.planner.solution.v1.DispatchingSolution;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.CustomerVisit;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningDriver;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningVisit;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.RestaurantVisit;
 import com.aws.proto.dispatching.planner.solution.SolutionState;
+import com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff.DispatchingSolution;
 import com.aws.proto.dispatching.routing.Coordinates;
 import com.aws.proto.dispatching.routing.GraphhopperRouter;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -64,7 +64,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-@Path("/v1/dispatch")
+@Path("/instant/mixedpickupdropoff/dispatch")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class DispatcherResource {
@@ -103,7 +103,7 @@ public class DispatcherResource {
     public DispatcherRequestResult assignDrivers(AssignDriversRequest req) {
         List<PlanningVisit> planningVisits = new ArrayList<>();
         List<PlanningDriverBase> drivers = driverQueryManager.retrieveDriversWithExtendingRadius(
-          Coordinates.valueOf(req.centroid.lat, req.centroid.lon), req.orders.length);
+                Coordinates.valueOf(req.centroid.lat, req.centroid.lon), req.orders.length);
 
         List<LocationBase> allLocations = new ArrayList<>();
 
@@ -141,6 +141,7 @@ public class DispatcherResource {
     }
 
     Map<UUID, DispatcherResult> TMP_RESULTS = new HashMap<>();
+
     private UUID manualAssignment(List<PlanningVisit> planningVisits, List<PlanningDriver> drivers) {
         int orderNum = planningVisits.size() / 2;
         int driverNum = drivers.size();
@@ -152,25 +153,25 @@ public class DispatcherResource {
 
 
         for (int i = 0; i < len; i++) {
-            PlanningVisit pickup = planningVisits.get(2*i);
-            PlanningVisit dropoff = planningVisits.get(2*i+1);
+            PlanningVisit pickup = planningVisits.get(2 * i);
+            PlanningVisit dropoff = planningVisits.get(2 * i + 1);
             PlanningDriver driver = drivers.get(i);
 
             assignedOrders.add(new DispatcherResult.AssignedOrders(
-              driver.getId(),
-              driver.getDriverIdentity(),
-              driver.getLocation(),
-              new ArrayList<>(Arrays.asList(pickup.getOrder().getOrderId())),
-              new ArrayList<>(Arrays.asList(
-                new DispatcherResult.Visit(pickup.getLocation()),
-                new DispatcherResult.Visit(dropoff.getLocation())
-              ))
+                    driver.getId(),
+                    driver.getDriverIdentity(),
+                    driver.getLocation(),
+                    new ArrayList<>(Arrays.asList(pickup.getOrder().getOrderId())),
+                    new ArrayList<>(Arrays.asList(
+                            new DispatcherResult.Visit(pickup.getLocation()),
+                            new DispatcherResult.Visit(dropoff.getLocation())
+                    ))
             ));
         }
 
-        if(orderNum > driverNum) {
+        if (orderNum > driverNum) {
             for (int i = driverNum; i < orderNum; i++) {
-                unassignedOrders.add(planningVisits.get(2*i).getOrder().getOrderId());
+                unassignedOrders.add(planningVisits.get(2 * i).getOrder().getOrderId());
             }
         }
 
@@ -208,7 +209,7 @@ public class DispatcherResource {
 
         DispatcherResult res = TMP_RESULTS.get(problemId);
 
-        if(res == null) {
+        if (res == null) {
             return new DispatcherResult(problemId, "", Timestamp.valueOf(LocalDateTime.now()).getTime(), null, null, "NOT_EXISTS", null);
         }
 
@@ -266,29 +267,29 @@ public class DispatcherResource {
         logger.info("Dispatch solver terminated after {}", state.solverJob.getSolvingDuration());
 
         List<DispatcherResult.AssignedOrders> assignedOrders = new ArrayList<>();
-        for(PlanningDriver driver : state.problem.getPlanningDrivers()) {
+        for (PlanningDriver driver : state.problem.getPlanningDrivers()) {
             Set<String> orderIds = new HashSet<>();
             List<DispatcherResult.Visit> route = new ArrayList<>();
 
             PlanningVisit visit = driver.getNextPlanningVisit();
-            if(visit == null) {
+            if (visit == null) {
                 continue;
             }
 
-            while(visit != null) {
+            while (visit != null) {
                 orderIds.add(visit.getOrder().getOrderId());
 
                 route.add(new DispatcherResult.Visit(
-                  visit.getLocationType(), visit.getLocation().getId(),
-                  visit.getLocation().getCoordinates().latitude().doubleValue(),
-                  visit.getLocation().getCoordinates().longitude().doubleValue()));
+                        visit.getLocationType(), visit.getLocation().getId(),
+                        visit.getLocation().getCoordinates().latitude().doubleValue(),
+                        visit.getLocation().getCoordinates().longitude().doubleValue()));
 
                 visit = visit.getNextPlanningVisit();
             }
 
             assignedOrders.add(
-              new DispatcherResult.AssignedOrders(
-                driver.getId(), driver.getDriverIdentity(), driver.getLocation(), new ArrayList<>(orderIds), route));
+                    new DispatcherResult.AssignedOrders(
+                            driver.getId(), driver.getDriverIdentity(), driver.getLocation(), new ArrayList<>(orderIds), route));
         }
 
         DispatcherResult result = new DispatcherResult(problemId, "execId-1234", Timestamp.valueOf(LocalDateTime.now()).getTime(), assignedOrders, new ArrayList<>(), "TERMINATED", state.problem.getScore().toString());

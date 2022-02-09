@@ -30,12 +30,14 @@
     <!--    To solve faster by saturating multiple CPU cores-->
     <moveThreadCount>AUTO</moveThreadCount>
 
-    <solutionClass>com.aws.proto.dispatching.planner.solution.v2.DispatchingSolution</solutionClass>
-    <entityClass>com.aws.proto.dispatching.domain.planningentity.v2.DeliveryOrDriver</entityClass>
-    <entityClass>com.aws.proto.dispatching.domain.planningentity.v2.PlanningDelivery</entityClass>
+    <solutionClass>com.aws.proto.dispatching.planner.solution.instant.sequential.DispatchingSolution</solutionClass>
+    <entityClass>com.aws.proto.dispatching.domain.planningentity.instant.sequential.DeliveryOrDriver</entityClass>
+    <entityClass>com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDelivery</entityClass>
 
     <scoreDirectorFactory>
-        <constraintProviderClass>com.aws.proto.dispatching.planner.solution.v2.DispatchingConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>
+            com.aws.proto.dispatching.planner.solution.instant.sequential.DispatchingConstraintProvider
+        </constraintProviderClass>
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
     </scoreDirectorFactory>

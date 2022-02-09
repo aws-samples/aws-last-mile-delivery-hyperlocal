@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,25 +23,21 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.planner.solution.v2;
+package com.aws.proto.dispatching.planner.solution.instant.sequential;
 
 import com.aws.proto.dispatching.api.response.DispatcherResult;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDelivery;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDriver;
-import com.aws.proto.dispatching.planner.solution.v2.DispatchingSolution;
+import com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDelivery;
+import com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDriver;
 import com.aws.proto.dispatching.routing.Distance;
 import com.aws.proto.dispatching.routing.DistanceMatrix;
 import com.aws.proto.dispatching.util.Constants;
-import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 public class SolutionConsumer {
     private static final Logger logger = LoggerFactory.getLogger(SolutionConsumer.class);
@@ -52,9 +48,9 @@ public class SolutionConsumer {
         solution.getPlanningDrivers().stream().forEach(driver -> {
 
             logger.debug("driver[{}] :: location {} :: at [{}]",
-              driver.getId(),
-              driver.getLocation().getCoordinates(),
-              driver.getLocation().getDateTime().format(Constants.DATETIMEFORMATTER)
+                    driver.getId(),
+                    driver.getLocation().getCoordinates(),
+                    driver.getLocation().getDateTime().format(Constants.DATETIMEFORMATTER)
             );
 
             PlanningDelivery planningDelivery = driver.getNextPlanningDelivery();
@@ -67,8 +63,8 @@ public class SolutionConsumer {
                 Distance dist = planningDelivery.getDistanceFromPrevDriverOrDelivery();
 
                 logger.debug("\torder[id={}][at={}] [distance from prev = {}s/{}m]",
-                  order.getOrderId(), order.getDateTime().format(Constants.DATETIMEFORMATTER),
-                  dist.getTime()/1000, dist.getDistance()
+                        order.getOrderId(), order.getDateTime().format(Constants.DATETIMEFORMATTER),
+                        dist.getTime() / 1000, dist.getDistance()
                 );
                 planningDelivery = planningDelivery.getNextPlanningDelivery();
             }
@@ -91,14 +87,14 @@ public class SolutionConsumer {
 
         List<PlanningDriver> drivers = solution.getPlanningDrivers();
 
-        if(drivers.size() > 0) {
+        if (drivers.size() > 0) {
             DistanceMatrix distanceMatrix = drivers.get(0).getLocation().getDistanceMatrix();
             result.distanceMatrixMetrics = new DispatcherResult.DistanceMatrixMetrics(distanceMatrix.getGeneratedTime(), distanceMatrix.dimension());
         }
 
         List<DispatcherResult.AssignedOrders> assignedOrders = new ArrayList<>();
         List<String> unassigned = new ArrayList<>();
-        for(PlanningDriver driver : drivers) {
+        for (PlanningDriver driver : drivers) {
             List<String> orderIds = new ArrayList<>();
             List<DispatcherResult.Visit> visits = new ArrayList<>();
 
@@ -109,7 +105,7 @@ public class SolutionConsumer {
             // TODO: manually putting orders to unassigned if there are more than 2 assigned to a driver
             // because driver simulator at this point cannot handle more than one assigned order
             int ctr = 0;
-            while(delivery != null) {
+            while (delivery != null) {
                 ctr++;
                 if (ctr > 1) {
                     unassigned.add(delivery.getOrder().getOrderId());
@@ -122,11 +118,11 @@ public class SolutionConsumer {
             }
 
             assignedOrders.add(new DispatcherResult.AssignedOrders(
-              driver.getId(),
-              driver.getDriverIdentity(),
-              driver.getLocation(),
-              orderIds,
-              visits
+                    driver.getId(),
+                    driver.getDriverIdentity(),
+                    driver.getLocation(),
+                    orderIds,
+                    visits
             ));
         }
 

@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.planningentity.v1;
+package com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff;
 
-import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.location.LocationBase;
 import com.aws.proto.dispatching.domain.location.LocationType;
+import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.util.Constants;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
@@ -49,8 +49,8 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
 
     // initializes and changes during planning (initially null)
     @PlanningVariable(
-      valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningVisitRange},
-      graphType = PlanningVariableGraphType.CHAINED
+            valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningVisitRange},
+            graphType = PlanningVariableGraphType.CHAINED
     )
     private VisitOrDriver previousVisitOrDriver;
 
@@ -75,6 +75,7 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
     public Order getOrder() {
         return order;
     }
+
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -82,6 +83,7 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
     public LocationBase getLocation() {
         return location;
     }
+
     public void setLocation(LocationBase location) {
         this.location = location;
     }
@@ -150,7 +152,7 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
         int chainLength = this.chainLength();
 
         // there are more than 2 orders
-        if(chainLength > 2 * orderNum) {
+        if (chainLength > 2 * orderNum) {
             return 1L;
         }
 
@@ -199,18 +201,18 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
         // current visit is at Customer
         // --> must find Restaurant visit up the chain -- same orderId
         // --> must NOT find Restaurant visit down the chain -- same orderId
-        if(this.location.getLocationType() == LocationType.CUSTOMER) {
+        if (this.location.getLocationType() == LocationType.CUSTOMER) {
             boolean hasRestaurantVisitWithSameOrderIdBefore = this.walkChainToAnchor(
-              visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-              visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
+                    visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
+                    visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
             );
 
             boolean hasRestaurantVisitWithSameOrderIdAfter = this.walkChainToLeaf(
-              visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-              visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
+                    visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
+                    visit -> visit.getLocation().getLocationType() == LocationType.RESTAURANT
             );
 
-            if(!hasRestaurantVisitWithSameOrderIdBefore || hasRestaurantVisitWithSameOrderIdAfter) {
+            if (!hasRestaurantVisitWithSameOrderIdBefore || hasRestaurantVisitWithSameOrderIdAfter) {
                 return PENALTY;
             }
         }
@@ -219,16 +221,16 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
         // --> must find Customer visit down the chain -- same orderId
         else {
             boolean notHaveCustomerVisitWithSameOrderIdBefore = this.walkChainToAnchor(
-              visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-              visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
+                    visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
+                    visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
             );
 
             boolean notHaveCustomerVisitWithSameOrderIdAfter = this.walkChainToLeaf(
-              visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
-              visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
+                    visit -> visit.getOrder().getOrderId().equalsIgnoreCase(orderId),
+                    visit -> visit.getLocation().getLocationType() == LocationType.CUSTOMER
             );
 
-            if(!notHaveCustomerVisitWithSameOrderIdBefore || notHaveCustomerVisitWithSameOrderIdAfter) {
+            if (!notHaveCustomerVisitWithSameOrderIdBefore || notHaveCustomerVisitWithSameOrderIdAfter) {
                 return PENALTY;
             }
         }
@@ -244,7 +246,7 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
         // while typeof(current) == PlanningVisit
         while (current != null && !current.isDriver()) {
             PlanningVisit curr = (PlanningVisit) current;
-            if(matchCondition.test(curr)) {
+            if (matchCondition.test(curr)) {
                 return testCond.test(curr);
             }
 
@@ -257,8 +259,8 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
     private boolean walkChainToLeaf(Predicate<PlanningVisit> matchCondition, Predicate<PlanningVisit> test) {
         PlanningVisit current = this.getNextPlanningVisit();
 
-        while(current != null) {
-            if(matchCondition.test(current)) {
+        while (current != null) {
+            if (matchCondition.test(current)) {
                 return test.test(current);
             }
             current = (PlanningVisit) current.getNextPlanningVisit();
@@ -312,7 +314,7 @@ public class PlanningVisit implements VisitOrDriver { // , Comparator<PlanningVi
         sb.append("] :: ");
 
         curr = curr.getNextPlanningVisit();
-        while(curr != null) {
+        while (curr != null) {
             sb.append("[");
             sb.append(((PlanningVisit) curr).getLocation().getLocationType());
             sb.append("-");

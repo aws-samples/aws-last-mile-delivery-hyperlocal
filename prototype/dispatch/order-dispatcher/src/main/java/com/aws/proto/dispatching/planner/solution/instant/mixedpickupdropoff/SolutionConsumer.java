@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,13 +23,12 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.planner.solution.v1;
+package com.aws.proto.dispatching.planner.solution.instant.mixedpickupdropoff;
 
 import com.aws.proto.dispatching.api.response.DispatcherResult;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
-import com.aws.proto.dispatching.domain.planningentity.v1.PlanningDriver;
-import com.aws.proto.dispatching.domain.planningentity.v1.PlanningVisit;
-import com.aws.proto.dispatching.domain.planningentity.v2.PlanningDelivery;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningDriver;
+import com.aws.proto.dispatching.domain.planningentity.instant.mixedpickupdropoff.PlanningVisit;
 import com.aws.proto.dispatching.util.Constants;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
@@ -47,9 +46,9 @@ public class SolutionConsumer {
         solution.getPlanningDrivers().stream().forEach(driver -> {
 
             logger.debug("driver[{}] :: location {} :: at [{}]",
-              driver.getId(),
-              driver.getLocation().getCoordinates(),
-              driver.getLocation().getDateTime().format(Constants.DATETIMEFORMATTER)
+                    driver.getId(),
+                    driver.getLocation().getCoordinates(),
+                    driver.getLocation().getDateTime().format(Constants.DATETIMEFORMATTER)
             );
 
             PlanningVisit visit = driver.getNextPlanningVisit();
@@ -61,8 +60,8 @@ public class SolutionConsumer {
                 Order order = visit.getOrder();
 
                 logger.debug("\t[visit={}]\t{}\tfor order[id={}][at={}]",
-                  visit.getLocation().getLocationType(), visit.getLocation().getCoordinates(),
-                  order.getOrderId(), order.getDateTime().format(Constants.DATETIMEFORMATTER)
+                        visit.getLocation().getLocationType(), visit.getLocation().getCoordinates(),
+                        order.getOrderId(), order.getDateTime().format(Constants.DATETIMEFORMATTER)
                 );
                 visit = visit.getNextPlanningVisit();
             }
@@ -79,16 +78,16 @@ public class SolutionConsumer {
         List<PlanningDriver> drivers = solution.getPlanningDrivers();
 
         List<DispatcherResult.AssignedOrders> assignedOrders = new ArrayList<>();
-        for(PlanningDriver driver : drivers) {
+        for (PlanningDriver driver : drivers) {
             List<String> orderIds = new ArrayList<>();
             List<DispatcherResult.Visit> visits = new ArrayList<>();
 
             PlanningVisit visit = driver.getNextPlanningVisit();
-            if(visit == null) {
+            if (visit == null) {
                 continue;
             }
 
-            while(visit != null) {
+            while (visit != null) {
                 orderIds.add(visit.getOrder().getOrderId());
                 visits.add(new DispatcherResult.Visit(visit.getLocation()));
 
@@ -96,11 +95,11 @@ public class SolutionConsumer {
             }
 
             assignedOrders.add(new DispatcherResult.AssignedOrders(
-              driver.getId(),
-              driver.getDriverIdentity(),
-              driver.getLocation(),
-              orderIds,
-              visits
+                    driver.getId(),
+                    driver.getDriverIdentity(),
+                    driver.getLocation(),
+                    orderIds,
+                    visits
             ));
         }
 

@@ -18,7 +18,7 @@ participant "DynamoDB" as ddb
 
 == Handle incoming orders ==
 
-    dispatchOrchestrator -> dispatcherResource : **POST**\n///v2/dispatch/assign-drivers//
+    dispatchOrchestrator -> dispatcherResource : **POST**\n///instant/sequential/dispatch/assign-drivers//
     dispatcherResource -> dispatcherResource : //UUID.random()//
 
     dispatcherResource -> service : //solverJob::enqueue//

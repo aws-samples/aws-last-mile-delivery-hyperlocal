@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,12 +23,12 @@
  * THE SOFTWARE.
  * =========================LICENSE_END==================================
  */
-package com.aws.proto.dispatching.domain.planningentity.v2;
+package com.aws.proto.dispatching.domain.planningentity.instant.sequential;
 
-import com.aws.proto.dispatching.domain.location.LocationBase;
-import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.location.CustomerLocation;
+import com.aws.proto.dispatching.domain.location.LocationBase;
 import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.routing.Distance;
 import com.aws.proto.dispatching.util.Constants;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -51,8 +51,8 @@ public class PlanningDelivery implements DeliveryOrDriver {
     private long planningId;
 
     @PlanningVariable(
-      valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningDeliveryRange},
-      graphType = PlanningVariableGraphType.CHAINED
+            valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningDeliveryRange},
+            graphType = PlanningVariableGraphType.CHAINED
     )
     private DeliveryOrDriver previousDeliveryOrDriver;
 
@@ -75,6 +75,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
     public Order getOrder() {
         return order;
     }
+
     public void setOrder(Order order) {
         this.order = order;
     }
@@ -108,7 +109,9 @@ public class PlanningDelivery implements DeliveryOrDriver {
         this.planningId = planningId;
     }
 
-    public PlanningDelivery self() { return this; }
+    public PlanningDelivery self() {
+        return this;
+    }
 
     @Override
     public PlanningDriver getPlanningDriver() {
@@ -147,7 +150,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
         sb.append("] :: ");
 
         curr = curr.getNextPlanningDelivery();
-        while(curr != null) {
+        while (curr != null) {
             sb.append("[");
             sb.append(((PlanningDelivery) curr).getOrder().getShortId());
             sb.append("] ");
@@ -186,12 +189,12 @@ public class PlanningDelivery implements DeliveryOrDriver {
         // otherwise, return abs
         return diffBetweenCurrPickupAndPrevDropoffPlusTravel < 0L ?
 //          this.getConstraintsWeights().getTimeFrameWeightedValue(-diffBetweenCurrPickupAndPrevDropoffPlusTravel)
-            1L
-          : 0L;
+                1L
+                : 0L;
     }
 
     public Distance getDistanceFromPrevDriverOrDelivery() {
-        if(previousDeliveryOrDriver.isDriver()) {
+        if (previousDeliveryOrDriver.isDriver()) {
             return this.getPlanningDriver().getLocation().distanceTo(this.getPickup());
         } else {
             return ((PlanningDelivery) previousDeliveryOrDriver).dropoff.distanceTo(this.pickup);
@@ -201,7 +204,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
     public long scoreForPreferCloserDriverToPickupLocation() {
         Distance dist = this.getDistanceFromPrevDriverOrDelivery();
 
-        long distInSec = dist.getTime()/1000;
+        long distInSec = dist.getTime() / 1000;
         long distInMeters = dist.getDistance();
         return distInSec * distInMeters;
     }
@@ -209,7 +212,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
     public long scoreForDistance(LocationBase otherLocation) {
         Distance dist = otherLocation.distanceTo(this.getPickup());
 
-        long distInSec = dist.getTime()/1000;
+        long distInSec = dist.getTime() / 1000;
         long distInMeters = dist.getDistance();
         return distInSec * distInMeters;
     }
