@@ -29,7 +29,7 @@ export class AppConfigSetup extends Construct {
 
 	readonly driverAppEnvironment: appconfig.CfnEnvironment
 
-	readonly customerApp: appconfig.CfnApplication
+	readonly destinationApp: appconfig.CfnApplication
 
 	constructor (scope: Construct, id: string, props: AppConfigSetupProps) {
 		super(scope, id)
@@ -42,9 +42,9 @@ export class AppConfigSetup extends Construct {
 			description: 'Delivery App configuration environment',
 		})
 
-		const customerApp = new appconfig.CfnApplication(this, 'CustomerAppConfig', {
-			name: namespaced(this, 'CustomerApp'),
-			description: 'Customer App configuration environment',
+		const destinationApp = new appconfig.CfnApplication(this, 'DestinationAppConfig', {
+			name: namespaced(this, 'DestinationApp'),
+			description: 'Destination App configuration environment',
 		})
 
 		// 2. create an environments
@@ -60,10 +60,10 @@ export class AppConfigSetup extends Construct {
 			description: 'DriverApp Prod Environment',
 		})
 
-		const customerAppDevEnv = new appconfig.CfnEnvironment(this, 'CustomerAppDevEnv', {
-			applicationId: customerApp.ref,
-			name: namespaced(this, 'CustomerAppDev'),
-			description: 'Customer App Dev Environment',
+		const destinationAppDevEnv = new appconfig.CfnEnvironment(this, 'DestinationAppDevEnv', {
+			applicationId: destinationApp.ref,
+			name: namespaced(this, 'DestinationAppDev'),
+			description: 'Destintion App Dev Environment',
 		})
 
 		// 3. create configuration profile
@@ -103,7 +103,7 @@ export class AppConfigSetup extends Construct {
 
 		this.deploymentStrategy = deploymentStrategy
 		this.driverApp = driverApp
-		this.customerApp = customerApp
+		this.destinationApp = destinationApp
 		this.driverAppEnvironment = driverAppDevEnv
 	}
 }

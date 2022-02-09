@@ -116,18 +116,18 @@ export const columnDefinitions = (relativeDate: boolean) => ([
 		},
 	},
 	{
-		id: 'customer-location',
+		id: 'destination-location',
 		width: 200,
-		Header: 'Customer location',
-		accessor: 'customer',
+		Header: 'Destination location',
+		accessor: 'destination',
 		Cell: ({ row }: any) => {
 			if (row && row.original) {
-				const { customer } = row.original
+				const { destination } = row.original
 
 				return (
 					<>
-						{'lat'}&nbsp;&nbsp;&nbsp;&nbsp;{'= ' + customer.lat}<br/>
-						{'long = ' + customer.long}
+						{'lat'}&nbsp;&nbsp;&nbsp;&nbsp;{'= ' + destination.lat}<br/>
+						{'long = ' + destination.long}
 					</>
 				)
 			}
@@ -136,18 +136,18 @@ export const columnDefinitions = (relativeDate: boolean) => ([
 		},
 	},
 	{
-		id: 'restaurant-location',
+		id: 'origin-location',
 		width: 200,
-		Header: 'Restaurant location',
-		accessor: 'restaurant',
+		Header: 'Origin location',
+		accessor: 'origin',
 		Cell: ({ row }: any) => {
 			if (row && row.original) {
-				const { restaurant } = row.original
+				const { origin } = row.original
 
 				return (
 					<>
-						{'lat'}&nbsp;&nbsp;&nbsp;&nbsp;{'= ' + restaurant.lat}<br/>
-						{'long = ' + restaurant.long}
+						{'lat'}&nbsp;&nbsp;&nbsp;&nbsp;{'= ' + origin.lat}<br/>
+						{'long = ' + origin.long}
 					</>
 				)
 			}

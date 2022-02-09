@@ -22,8 +22,8 @@ const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const {
-	CUSTOMER_STATUS,
-	RESTAURANT_STATUS,
+	DESTINATION_STATUS,
+	ORIGIN_STATUS,
 	ORDER_STATUS,
 	DRIVER_STATUS_STATISTICS,
 	ORDER_TO_PROVIDER,
@@ -82,8 +82,8 @@ const getOrdersPerDriverGroup = async (hash) => {
 const execute = async () => {
 	logger.info('Getting statistics')
 	const result = {
-		restaurants: {},
-		customers: {},
+		origins: {},
+		destinations: {},
 		orders: {},
 		ordersToProvider: {},
 		drivers: {},
@@ -103,8 +103,8 @@ const execute = async () => {
 		ordersPerDriver: {},
 	}
 
-	result.customers = await getStatusCount(CUSTOMER_STATUS)
-	result.restaurants = await getStatusCount(RESTAURANT_STATUS)
+	result.destinations = await getStatusCount(DESTINATION_STATUS)
+	result.origins = await getStatusCount(ORIGIN_STATUS)
 	result.orders = await getStatusCount(ORDER_STATUS)
 	result.drivers = await getStatusCount(DRIVER_STATUS_STATISTICS)
 	result.ordersToProvider = await getStatusCount(ORDER_TO_PROVIDER)

@@ -25,8 +25,8 @@ export interface APIGatewayResourceStackProps {
 	readonly orderSimulatorLambda: lambda.Function
 	readonly eventSimulatorLambda: lambda.Function
 	readonly polygonManagerLambda: lambda.Function
-	readonly restaurantSimulatorLambda: lambda.Function
-	readonly customerSimulatorLambda: lambda.Function
+	readonly originSimulatorLambda: lambda.Function
+	readonly destinationSimulatorLambda: lambda.Function
 	readonly statisticSimulatorLambda: lambda.Function
 	readonly dispatcherAssignmentQueryLambda: lambda.Function
 	readonly simulatorRestApi: api.RestApi
@@ -42,8 +42,8 @@ export class APIGatewayResourceStack extends Construct {
 			orderSimulatorLambda,
 			eventSimulatorLambda,
 			polygonManagerLambda,
-			restaurantSimulatorLambda,
-			customerSimulatorLambda,
+			originSimulatorLambda,
+			destinationSimulatorLambda,
 			statisticSimulatorLambda,
 			dispatcherAssignmentQueryLambda,
 			userPool,
@@ -175,158 +175,158 @@ export class APIGatewayResourceStack extends Construct {
 			},
 		})
 
-		/// restaurants route
+		/// origins route
 
-		const restaurants = simulatorRestApi.addResourceWithAbsolutePath('restaurant')
+		const origins = simulatorRestApi.addResourceWithAbsolutePath('origin')
 
-		simulatorRestApi.addFunctionToResource(restaurants, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(origins, {
+			function: originSimulatorLambda,
 			httpMethod: 'POST',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		const restaurantRandom = simulatorRestApi.addResourceWithAbsolutePath('restaurant/random')
+		const originRandom = simulatorRestApi.addResourceWithAbsolutePath('origin/random')
 
-		simulatorRestApi.addFunctionToResource(restaurantRandom, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originRandom, {
+			function: originSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		const restaurantStats = simulatorRestApi.addResourceWithAbsolutePath('restaurant/stats')
-		const restaurantStat = simulatorRestApi.addResourceWithAbsolutePath('restaurant/stats/{restaurantStatsId}')
+		const originStats = simulatorRestApi.addResourceWithAbsolutePath('origin/stats')
+		const originStat = simulatorRestApi.addResourceWithAbsolutePath('origin/stats/{originStatsId}')
 
-		simulatorRestApi.addFunctionToResource(restaurantStats, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originStats, {
+			function: originSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(restaurantStat, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originStat, {
+			function: originSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(restaurantStat, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originStat, {
+			function: originSimulatorLambda,
 			httpMethod: 'DELETE',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		const restaurantsSimulations = simulatorRestApi.addResourceWithAbsolutePath('restaurant/simulations')
-		const restaurantsSimulation = simulatorRestApi.addResourceWithAbsolutePath('restaurant/simulations/{simulationId}')
+		const originsSimulations = simulatorRestApi.addResourceWithAbsolutePath('origin/simulations')
+		const originsSimulation = simulatorRestApi.addResourceWithAbsolutePath('origin/simulations/{simulationId}')
 
-		simulatorRestApi.addFunctionToResource(restaurantsSimulations, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originsSimulations, {
+			function: originSimulatorLambda,
 			httpMethod: 'PUT',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(restaurantsSimulations, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originsSimulations, {
+			function: originSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(restaurantsSimulation, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originsSimulation, {
+			function: originSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(restaurantsSimulation, {
-			function: restaurantSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(originsSimulation, {
+			function: originSimulatorLambda,
 			httpMethod: 'DELETE',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		/// customers route
+		/// destinations route
 
-		const customers = simulatorRestApi.addResourceWithAbsolutePath('customer')
+		const destinations = simulatorRestApi.addResourceWithAbsolutePath('destination')
 
-		simulatorRestApi.addFunctionToResource(customers, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinations, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'POST',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		const customerStats = simulatorRestApi.addResourceWithAbsolutePath('customer/stats')
-		const customerStat = simulatorRestApi.addResourceWithAbsolutePath('customer/stats/{customerStatsId}')
+		const destinationStats = simulatorRestApi.addResourceWithAbsolutePath('destination/stats')
+		const destinationStat = simulatorRestApi.addResourceWithAbsolutePath('destination/stats/{destinationStatsId}')
 
-		simulatorRestApi.addFunctionToResource(customerStats, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationStats, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(customerStat, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationStat, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(customerStat, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationStat, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'DELETE',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		const customersSimulations = simulatorRestApi.addResourceWithAbsolutePath('customer/simulations')
-		const customersSimulation = simulatorRestApi.addResourceWithAbsolutePath('customer/simulations/{simulationId}')
+		const destinationsSimulations = simulatorRestApi.addResourceWithAbsolutePath('destination/simulations')
+		const destinationsSimulation = simulatorRestApi.addResourceWithAbsolutePath('destination/simulations/{simulationId}')
 
-		simulatorRestApi.addFunctionToResource(customersSimulations, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationsSimulations, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'PUT',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(customersSimulations, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationsSimulations, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(customersSimulation, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationsSimulation, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,
 			},
 		})
 
-		simulatorRestApi.addFunctionToResource(customersSimulation, {
-			function: customerSimulatorLambda,
+		simulatorRestApi.addFunctionToResource(destinationsSimulation, {
+			function: destinationSimulatorLambda,
 			httpMethod: 'DELETE',
 			methodOptions: {
 				authorizer: cognitoAuth,

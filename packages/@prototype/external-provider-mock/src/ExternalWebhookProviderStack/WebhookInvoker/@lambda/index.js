@@ -24,8 +24,8 @@ let apiKey
 const getNextState = (state) => {
 	switch (state) {
 		case 'NEW':
-			return 'TO_RESTAURANT'
-		case 'TO_RESTAURANT':
+			return 'TO_ORIGIN'
+		case 'TO_ORIGIN':
 			return 'DELIVERING'
 		case 'DELIVERING':
 			return 'DELIVERED'

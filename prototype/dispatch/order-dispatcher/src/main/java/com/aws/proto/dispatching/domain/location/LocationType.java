@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum LocationType implements Comparable<LocationType> {
-    CUSTOMER(1),
-    RESTAURANT(2),
+    DESTINATION(1),
+    ORIGIN(2),
     DRIVER(4);
 
     private final int value;
@@ -45,8 +45,8 @@ public enum LocationType implements Comparable<LocationType> {
     static LocationType of(ObjectInputStream inputStream) throws IOException {
         int value = inputStream.readInt();
         Optional<LocationType> locationType = Arrays.stream(LocationType.values())
-          .filter(lt -> lt.value == value)
-          .findFirst();
+                .filter(lt -> lt.value == value)
+                .findFirst();
 
         return locationType.get();
     }

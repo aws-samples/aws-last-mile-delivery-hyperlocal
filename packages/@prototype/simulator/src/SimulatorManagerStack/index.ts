@@ -20,8 +20,8 @@ import * as api from '@aws-play/cdk-apigateway'
 import { Networking } from '@prototype/networking'
 import { SimulatorManagerLambda } from './SimulatorManagerLambda'
 import { OrderSimulatorLambda } from './OrderSimulatorLambda'
-import { RestaurantSimulatorLambda } from './RestaurantSimulatorLambda'
-import { CustomerSimulatorLambda } from './CustomerSimulatorLambda'
+import { OriginSimulatorLambda } from './OriginSimulatorLambda'
+import { DestinationSimulatorLambda } from './DestinationSimulatorLambda'
 import { APIGatewayResourceStack } from './APIGatewayResourceStack'
 import { PolygonManagerLambda } from './PolygonManagerLambda'
 import { EventSimulatorLambda } from './EventSimulatorLambda'
@@ -35,24 +35,24 @@ export interface SimulatorManagerStackProps {
 	readonly cluster: ecs.Cluster
 
 	readonly driverSimulatorContainer: SimulatorContainer
-	readonly customerSimulatorContainer: SimulatorContainer
-	readonly restaurantSimulatorContainer: SimulatorContainer
+	readonly originSimulatorContainer: SimulatorContainer
+	readonly destinationSimulatorContainer: SimulatorContainer
 
 	readonly simulatorRestApi: api.RestApi
 	readonly userPool: cognito.UserPool
 	readonly identityPool: cognito.CfnIdentityPool
 	readonly userPoolClient: cognito.UserPoolClient
 	readonly simulatorTable: ddb.ITable
-	readonly restaurantTable: ddb.ITable
-	readonly restaurantAreaIndex: string
-	readonly restaurantExecutionIdIndex: string
-	readonly restaurantStatsTable: ddb.ITable
-	readonly restaurantSimulationsTable: ddb.ITable
-	readonly customerTable: ddb.ITable
-	readonly customerAreaIndex: string
-	readonly customerExecutionIdIndex: string
-	readonly customerStatsTable: ddb.ITable
-	readonly customerSimulationsTable: ddb.ITable
+	readonly originTable: ddb.ITable
+	readonly originAreaIndex: string
+	readonly originExecutionIdIndex: string
+	readonly originStatsTable: ddb.ITable
+	readonly originSimulationsTable: ddb.ITable
+	readonly destinationTable: ddb.ITable
+	readonly destinationAreaIndex: string
+	readonly destinationExecutionIdIndex: string
+	readonly destinationStatsTable: ddb.ITable
+	readonly destinationSimulationsTable: ddb.ITable
 	readonly orderTable: ddb.ITable
 	readonly eventTable: ddb.ITable
 	readonly eventCreatedAtIndex: string
@@ -63,12 +63,12 @@ export interface SimulatorManagerStackProps {
 
 	readonly lambdaRefs: { [key: string]: lambda.IFunction, }
 	readonly simulatorConfig: { [key: string]: string | number, }
-	readonly restaurantUserPassword: string
-	readonly customerUserPassword: string
+	readonly originUserPassword: string
+	readonly destinationUserPassword: string
 
 	readonly iotDriverPolicy: iot.CfnPolicy
-	readonly iotCustomerPolicy: iot.CfnPolicy
-	readonly iotRestaurantPolicy: iot.CfnPolicy
+	readonly iotOriginPolicy: iot.CfnPolicy
+	readonly iotDestinationPolicy: iot.CfnPolicy
 
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
@@ -79,9 +79,9 @@ export interface SimulatorManagerStackProps {
 }
 
 export class SimulatorManagerStack extends Construct {
-	readonly customerSimulator: CustomerSimulatorLambda
+	readonly destinationSimulator: DestinationSimulatorLambda
 
-	readonly restaurantSimulator: RestaurantSimulatorLambda
+	readonly originSimulator: OriginSimulatorLambda
 
 	constructor (scope: Construct, id: string, props: SimulatorManagerStackProps) {
 		super(scope, id)
@@ -92,19 +92,19 @@ export class SimulatorManagerStack extends Construct {
 			securityGroup,
 			cluster,
 			driverSimulatorContainer,
-			customerSimulatorContainer,
-			restaurantSimulatorContainer,
+			originSimulatorContainer,
+			destinationSimulatorContainer,
 			simulatorRestApi,
 			simulatorTable,
 			orderTable,
-			restaurantTable,
-			restaurantAreaIndex,
-			restaurantSimulationsTable,
-			restaurantStatsTable,
-			customerTable,
-			customerAreaIndex,
-			customerSimulationsTable,
-			customerStatsTable,
+			originTable,
+			originAreaIndex,
+			originSimulationsTable,
+			originStatsTable,
+			destinationTable,
+			destinationAreaIndex,
+			destinationSimulationsTable,
+			destinationStatsTable,
 			eventTable,
 			eventCreatedAtIndex,
 			geoPolygonTable,
@@ -113,11 +113,11 @@ export class SimulatorManagerStack extends Construct {
 			identityPool,
 			userPoolClient,
 			iotDriverPolicy,
-			iotCustomerPolicy,
-			iotRestaurantPolicy,
+			iotOriginPolicy,
+			iotDestinationPolicy,
 			simulatorConfig,
-			restaurantUserPassword,
-			customerUserPassword,
+			originUserPassword,
+			destinationUserPassword,
 			privateVpc,
 			vpcNetworking,
 			redisCluster,
@@ -151,18 +151,18 @@ export class SimulatorManagerStack extends Construct {
 			},
 		})
 
-		this.restaurantSimulator = new RestaurantSimulatorLambda(this, 'RestaurantSimulatorLambda', {
-			restaurantTable,
-			restaurantAreaIndex,
-			restaurantStatsTable,
-			restaurantSimulationsTable,
+		this.originSimulator = new OriginSimulatorLambda(this, 'OriginSimulatorLambda', {
+			originTable,
+			originAreaIndex,
+			originStatsTable,
+			originSimulationsTable,
 			userPoolClient,
 			userPool,
 			identityPool,
-			iotPolicy: iotRestaurantPolicy,
+			iotPolicy: iotOriginPolicy,
 			simulatorConfig,
-			restaurantUserPassword,
-			restaurantSimulatorContainer,
+			originUserPassword,
+			originSimulatorContainer,
 			cluster,
 			vpc,
 			securityGroup,
@@ -174,18 +174,18 @@ export class SimulatorManagerStack extends Construct {
 			iotEndpointAddress,
 		})
 
-		this.customerSimulator = new CustomerSimulatorLambda(this, 'CustomerSimulatorLambda', {
-			customerTable,
-			customerAreaIndex,
-			customerStatsTable,
-			customerSimulationsTable,
+		this.destinationSimulator = new DestinationSimulatorLambda(this, 'DestinationSimulatorLambda', {
+			destinationTable,
+			destinationAreaIndex,
+			destinationStatsTable,
+			destinationSimulationsTable,
 			userPoolClient,
 			userPool,
 			identityPool,
-			iotPolicy: iotCustomerPolicy,
+			iotPolicy: iotDestinationPolicy,
 			simulatorConfig,
-			customerUserPassword,
-			customerSimulatorContainer,
+			destinationUserPassword,
+			destinationSimulatorContainer,
 			cluster,
 			vpc,
 			securityGroup,
@@ -222,8 +222,8 @@ export class SimulatorManagerStack extends Construct {
 			simulatorManagerLambda: simulatorManager.lambda,
 			orderSimulatorLambda: orderSimulator.lambda,
 			eventSimulatorLambda: eventSimulator.lambda,
-			restaurantSimulatorLambda: this.restaurantSimulator.lambda,
-			customerSimulatorLambda: this.customerSimulator.lambda,
+			originSimulatorLambda: this.originSimulator.lambda,
+			destinationSimulatorLambda: this.destinationSimulator.lambda,
 			statisticSimulatorLambda: statisticsLambdaSimulator.lambda,
 			polygonManagerLambda,
 			dispatcherAssignmentQueryLambda,

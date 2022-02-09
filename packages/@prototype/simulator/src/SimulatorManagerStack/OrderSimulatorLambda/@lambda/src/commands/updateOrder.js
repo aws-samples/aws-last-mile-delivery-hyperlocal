@@ -34,7 +34,7 @@ const handleGeofenceInvocation = async (event, order) => {
 	const { orderId, driverId, status } = event
 
 	if (driverId && (status === 'PICKING_UP_GOODS' || status === 'DELIVERING')) {
-		const subtype = status === 'PICKING_UP_GOODS' ? 'restaurant' : 'customer'
+		const subtype = status === 'PICKING_UP_GOODS' ? 'origin' : 'destination'
 
 		await lambda.invoke(config.geofencingArn, {
 			httpMethod: 'POST',

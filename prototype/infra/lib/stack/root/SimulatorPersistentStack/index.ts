@@ -23,8 +23,8 @@ import { ECSVpcStack, ECSContainerStack, SimulatorDataStack, IoTPolicyStack } fr
 import { BackendStack } from '../BackendStack'
 
 export interface Env {
-	readonly restaurantUserPassword: string
-	readonly customerUserPassword: string
+	readonly originUserPassword: string
+	readonly destinationUserPassword: string
 }
 
 export interface SimulatorPersistentStackProps extends StackProps {
@@ -93,20 +93,20 @@ export class SimulatorPersistentStack extends Stack {
 			simulatorConfig,
 			iotIngestionRule: iotDriverDataIngestRule,
 			iotDriverStatusRule: iotDriverStatusUpdateRule,
-			iotCustomerStatusRuleName: this.iotPolicies.customerStatusUpdateRuleName,
-			iotRestaurantStatusRuleName: this.iotPolicies.restaurantStatusUpdateRuleName,
+			iotDestinationStatusRuleName: this.iotPolicies.destinationStatusUpdateRuleName,
+			iotOriginStatusRuleName: this.iotPolicies.originStatusUpdateRuleName,
 			iotDriverPolicy,
 			ecsVpc: this.ecsVpc.vpc,
 			configBucket,
 			configBucketKey,
-			restaurantTable: this.dataStack.restaurantTable,
-			restaurantAreaIndex: this.dataStack.restaurantAreaIndex,
-			restaurantExecutionIdIndex: this.dataStack.restaurantExecutionIdIndex,
-			restaurantUserPassword: (env as Env).restaurantUserPassword,
-			customerTable: this.dataStack.customerTable,
-			customerAreaIndex: this.dataStack.customerAreaIndex,
-			customerExecutionIdIndex: this.dataStack.customerExecutionIdIndex,
-			customerUserPassword: (env as Env).customerUserPassword,
+			originTable: this.dataStack.originTable,
+			originAreaIndex: this.dataStack.originAreaIndex,
+			originExecutionIdIndex: this.dataStack.originExecutionIdIndex,
+			originUserPassword: (env as Env).originUserPassword,
+			destinationTable: this.dataStack.destinationTable,
+			destinationAreaIndex: this.dataStack.destinationAreaIndex,
+			destinationExecutionIdIndex: this.dataStack.destinationExecutionIdIndex,
+			destinationUserPassword: (env as Env).destinationUserPassword,
 		})
 
 		const websiteHosting = new WebsiteHosting(this, 'SimulatorWebsiteHosting', {

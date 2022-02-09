@@ -67,7 +67,7 @@ function publishMessage (device, topic, msg) {
 	})
 }
 
-/// new one used by customer / restaurant app
+/// new one used by origin / destination app
 const setupLogin = async (email, password) => {
 	const usr = await amplify.signIn(email, password)
 	const jwt = usr.signInUserSession.getIdToken().getJwtToken()

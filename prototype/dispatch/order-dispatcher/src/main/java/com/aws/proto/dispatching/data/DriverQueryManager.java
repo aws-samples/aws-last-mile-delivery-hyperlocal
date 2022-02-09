@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -54,32 +54,34 @@ public class DriverQueryManager {
 
     public List<PlanningDriverBase> retrieveDriversAroundLocations(List<Coordinates> locations) {
         int countPerLocation = 3;
-        if(locations.size() > 30) {
+        if (locations.size() > 30) {
             countPerLocation = 2;
         }
 
         DriverQueryRequest driverQueryRequest = new DriverQueryRequest();
-        driverQueryRequest.locations = locations.stream().map(c -> { return new DriverQueryRequest.LatLong(c); }).collect(Collectors.toList());
+        driverQueryRequest.locations = locations.stream().map(c -> {
+            return new DriverQueryRequest.LatLong(c);
+        }).collect(Collectors.toList());
         driverQueryRequest.countPerLocation = countPerLocation;
         driverQueryRequest.distance = 500;
         driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
-        List<InputDriverData> drivers = driverQueryClient.getAvailableDriversPerRestaurant(driverQueryRequest);
+        List<InputDriverData> drivers = driverQueryClient.getAvailableDriversPerOrigin(driverQueryRequest);
 
-        if(drivers == null || drivers.size() == 0) {
+        if (drivers == null || drivers.size() == 0) {
             return new ArrayList<>();
         }
 
         List<PlanningDriverBase> planningDrivers = new ArrayList<>();
-        for(InputDriverData driver : drivers) {
+        for (InputDriverData driver : drivers) {
             DriverLocation driverLocation = new DriverLocation(driver.driverId, Coordinates.valueOf(driver.lat, driver.lon), driver.timestamp);
             PlanningDriverBase planningDriver = new PlanningDriverBase(driver.driverId, driver.driverIdentity, driverLocation, driver.status);
 
             planningDrivers.add(planningDriver);
         }
 
-        logger.debug("Retrieved {} IDLE drivers - from around each restaurant", planningDrivers.size());
+        logger.debug("Retrieved {} IDLE drivers - from around each origin", planningDrivers.size());
 
 //        logger.warn("returning only 3 drivers");
 //        return planningDrivers.stream().limit(3).collect(Collectors.toList());
@@ -96,16 +98,16 @@ public class DriverQueryManager {
 
         while (numOfDrivers < numOfOrders) {
             drivers = driverQueryClient.getAvailableDrivers(
-              "m", "IDLE",
-              centroid.getLatitude().doubleValue(), centroid.getLongitude().doubleValue(),
-              numOfOrders + 5,
-              radius);
+                    "m", "IDLE",
+                    centroid.getLatitude().doubleValue(), centroid.getLongitude().doubleValue(),
+                    numOfOrders + 5,
+                    radius);
 
             int newNumOfDrivers = drivers.size();
             requestCnt++;
             logger.trace("[driver# = {}][prev# = {}][radius = {}]", numOfDrivers, prevNumOfDrivers, radius);
 
-            if(prevNumOfDrivers >= newNumOfDrivers && prevNumOfDrivers > 0) {
+            if (prevNumOfDrivers >= newNumOfDrivers && prevNumOfDrivers > 0) {
                 break;
             } else {
                 radius += driverQueryProperties.extendRadiusInM();
@@ -120,12 +122,12 @@ public class DriverQueryManager {
 
         logger.debug("[driver# = {}][prev# = {}][radius = {}][req# = {}]", numOfDrivers, prevNumOfDrivers, radius, requestCnt);
 
-        if(drivers == null) {
+        if (drivers == null) {
             return new ArrayList<>();
         }
 
         List<PlanningDriverBase> planningDrivers = new ArrayList<>();
-        for(InputDriverData driver : drivers) {
+        for (InputDriverData driver : drivers) {
             DriverLocation driverLocation = new DriverLocation(driver.driverId, Coordinates.valueOf(driver.lat, driver.lon), driver.timestamp);
             PlanningDriverBase planningDriver = new PlanningDriverBase(driver.driverId, driver.driverIdentity, driverLocation, driver.status);
 
@@ -145,13 +147,15 @@ public class DriverQueryManager {
 
     public List<InputDriverData> getDriversAroundLocations(List<Coordinates> locations, int countPerLocation) {
         DriverQueryRequest driverQueryRequest = new DriverQueryRequest();
-        driverQueryRequest.locations = locations.stream().map(c -> { return new DriverQueryRequest.LatLong(c); }).collect(Collectors.toList());
+        driverQueryRequest.locations = locations.stream().map(c -> {
+            return new DriverQueryRequest.LatLong(c);
+        }).collect(Collectors.toList());
         driverQueryRequest.countPerLocation = countPerLocation;
         driverQueryRequest.distance = 500;
         driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
-        List<InputDriverData> drivers = driverQueryClient.getAvailableDriversPerRestaurant(driverQueryRequest);
+        List<InputDriverData> drivers = driverQueryClient.getAvailableDriversPerOrigin(driverQueryRequest);
 
         return drivers;
     }

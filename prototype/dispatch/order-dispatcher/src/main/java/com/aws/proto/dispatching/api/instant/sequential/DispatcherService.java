@@ -33,9 +33,9 @@ import com.aws.proto.dispatching.config.SolutionConfig;
 import com.aws.proto.dispatching.data.DriverQueryManager;
 import com.aws.proto.dispatching.data.ddb.DdbAssignmentService;
 import com.aws.proto.dispatching.data.ddb.DdbDemographicAreaSettingsService;
-import com.aws.proto.dispatching.domain.location.CustomerLocation;
+import com.aws.proto.dispatching.domain.location.DestinationLocation;
 import com.aws.proto.dispatching.domain.location.LocationBase;
-import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.location.OriginLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.domain.planningentity.base.PlanningDriverBase;
 import com.aws.proto.dispatching.domain.planningentity.instant.sequential.PlanningDelivery;
@@ -107,7 +107,7 @@ public class DispatcherService {
 
         List<Coordinates> locationsForDriverQuery = new ArrayList<>();
         for (AssignDriversRequest.Order inputOrder : req.orders) {
-            locationsForDriverQuery.add(Coordinates.valueOf(inputOrder.restaurant.lat, inputOrder.restaurant.lon));
+            locationsForDriverQuery.add(Coordinates.valueOf(inputOrder.origin.lat, inputOrder.origin.lon));
         }
 
         List<PlanningDriverBase> drivers = driverQueryManager.retrieveDriversAroundLocations(locationsForDriverQuery);
@@ -127,15 +127,15 @@ public class DispatcherService {
         List<LocationBase> allLocations = new ArrayList<>();
 
         for (AssignDriversRequest.Order inputOrder : req.orders) {
-            Order order = new Order(inputOrder.orderId, inputOrder.createdAt, inputOrder.state, inputOrder.restaurant.preparationTimeInMins);
-            RestaurantLocation restaurantLocation = new RestaurantLocation(inputOrder.restaurant.id, Coordinates.valueOf(inputOrder.restaurant.lat, inputOrder.restaurant.lon));
-            CustomerLocation customerLocation = new CustomerLocation(inputOrder.customer.id, Coordinates.valueOf(inputOrder.customer.lat, inputOrder.customer.lon));
+            Order order = new Order(inputOrder.orderId, inputOrder.createdAt, inputOrder.state, inputOrder.origin.preparationTimeInMins);
+            OriginLocation originLocation = new OriginLocation(inputOrder.origin.id, Coordinates.valueOf(inputOrder.origin.lat, inputOrder.origin.lon));
+            DestinationLocation destinationLocation = new DestinationLocation(inputOrder.destination.id, Coordinates.valueOf(inputOrder.destination.lat, inputOrder.destination.lon));
 
-            PlanningDelivery delivery = new PlanningDelivery(order, restaurantLocation, customerLocation);
+            PlanningDelivery delivery = new PlanningDelivery(order, originLocation, destinationLocation);
             planningDeliveries.add(delivery);
 
-            allLocations.add(restaurantLocation);
-            allLocations.add(customerLocation);
+            allLocations.add(originLocation);
+            allLocations.add(destinationLocation);
         }
 
         // save locations to _all_ locations

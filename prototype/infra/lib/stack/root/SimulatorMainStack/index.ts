@@ -28,8 +28,8 @@ import { BackendStack } from '../BackendStack'
 
 export interface Env {
 	readonly mapBoxToken: string
-	readonly restaurantUserPassword: string
-	readonly customerUserPassword: string
+	readonly originUserPassword: string
+	readonly destinationUserPassword: string
 }
 
 export interface SimulatorMainStackProps extends StackProps {
@@ -131,20 +131,20 @@ export class SimulatorMainStack extends Stack {
 			cluster: ecsContainerStack.cluster,
 
 			driverSimulatorContainer: ecsContainerStack.driverSimulator,
-			customerSimulatorContainer: ecsContainerStack.customerSimulator,
-			restaurantSimulatorContainer: ecsContainerStack.restaurantSimulator,
+			originSimulatorContainer: ecsContainerStack.destinationSimulator,
+			destinationSimulatorContainer: ecsContainerStack.originSimulator,
 
-			restaurantTable: dataStack.restaurantTable,
-			restaurantAreaIndex: dataStack.restaurantAreaIndex,
-			restaurantExecutionIdIndex: dataStack.restaurantExecutionIdIndex,
-			restaurantSimulationsTable: dataStack.restaurantSimulationsTable,
-			restaurantStatsTable: dataStack.restaurantStatsTable,
+			originTable: dataStack.originTable,
+			originAreaIndex: dataStack.originAreaIndex,
+			originExecutionIdIndex: dataStack.originExecutionIdIndex,
+			originSimulationsTable: dataStack.originSimulationsTable,
+			originStatsTable: dataStack.originStatsTable,
 
-			customerTable: dataStack.customerTable,
-			customerAreaIndex: dataStack.customerAreaIndex,
-			customerExecutionIdIndex: dataStack.customerExecutionIdIndex,
-			customerSimulationsTable: dataStack.customerSimulationsTable,
-			customerStatsTable: dataStack.customerStatsTable,
+			destinationTable: dataStack.destinationTable,
+			destinationAreaIndex: dataStack.destinationAreaIndex,
+			destinationExecutionIdIndex: dataStack.destinationExecutionIdIndex,
+			destinationSimulationsTable: dataStack.destinationSimulationsTable,
+			destinationStatsTable: dataStack.destinationStatsTable,
 
 			simulatorTable: dataStack.simulatorTable,
 			eventTable: dataStack.eventTable,
@@ -157,11 +157,11 @@ export class SimulatorMainStack extends Stack {
 			identityPool,
 			userPoolClient: simulatorAppClient,
 			iotDriverPolicy,
-			iotCustomerPolicy: iotPolicies.iotCustomerPolicy,
-			iotRestaurantPolicy: iotPolicies.iotRestaurantPolicy,
+			iotDestinationPolicy: iotPolicies.iotDestinationPolicy,
+			iotOriginPolicy: iotPolicies.iotOriginPolicy,
 			simulatorConfig,
-			restaurantUserPassword: (env as Env).restaurantUserPassword,
-			customerUserPassword: (env as Env).customerUserPassword,
+			originUserPassword: (env as Env).originUserPassword,
+			destinationUserPassword: (env as Env).destinationUserPassword,
 
 			lambdaLayers: lambdaLayerRefs,
 			privateVpc: vpc,
@@ -176,10 +176,10 @@ export class SimulatorMainStack extends Stack {
 		})
 
 		const iotRules = new IoTRuleStack(this, 'IoTSimulatorRule', {
-			customerStatusUpdateLambda: manager.customerSimulator.customerStatusUpdateLambda,
-			restaurantStatusUpdateLambda: manager.restaurantSimulator.restaurantStatusUpdateLambda,
-			customerStatusUpdateRuleName: iotPolicies.customerStatusUpdateRuleName,
-			restaurantStatusUpdateRuleName: iotPolicies.restaurantStatusUpdateRuleName,
+			destinationStatusUpdateLambda: manager.destinationSimulator.destinationStatusUpdateLambda,
+			destinationStatusUpdateRuleName: iotPolicies.destinationStatusUpdateRuleName,
+			originStatusUpdateLambda: manager.originSimulator.originStatusUpdateLambda,
+			originStatusUpdateRuleName: iotPolicies.originStatusUpdateRuleName,
 		})
 
 		// simulatorWeb hosting
@@ -205,11 +205,11 @@ export class SimulatorMainStack extends Stack {
 			service: 'Lambda',
 			action: 'updateFunctionConfiguration',
 			parameters: {
-				FunctionName: manager.customerSimulator.starter.lambda.functionArn,
+				FunctionName: manager.destinationSimulator.starter.lambda.functionArn,
 				Environment: {
 					Variables: {
 						/// needed to avoid that env will get fully replaced with only the additional one
-						...manager.customerSimulator.starter.environmentVariables,
+						...manager.destinationSimulator.starter.environmentVariables,
 						SIMULATOR_API: simulatorRestApi.url,
 					},
 				},

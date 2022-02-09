@@ -22,26 +22,26 @@ const ddb = require('../lib/dynamoDB')
 const events = require('../lib/eventBridge')
 
 const execute = async (body) => {
-	const { customer, restaurant, quantity } = body
+	const { destination, origin, quantity } = body
 
 	logger.info('Creating order with configuration: ')
 	logger.info(JSON.stringify(body, null, 2))
 
-	if (!customer || !restaurant) {
+	if (!destination || !origin) {
 		return utils.fail({
-			message: 'Both customer and restaurant information are required.',
+			message: 'Both destination and origin information are required.',
 		}, 400)
 	}
 
-	if (!customer.id || !customer.lat || !customer.long) {
+	if (!destination.id || !destination.lat || !destination.long) {
 		return utils.fail({
-			message: 'Lat and Long are required for the customer',
+			message: 'Lat and Long are required for the destination',
 		}, 400)
 	}
 
-	if (!restaurant.id || !restaurant.lat || !restaurant.long) {
+	if (!origin.id || !origin.lat || !origin.long) {
 		return utils.fail({
-			message: 'Lat and Long are required for the restaurant',
+			message: 'Lat and Long are required for the origin',
 		}, 400)
 	}
 
@@ -55,9 +55,9 @@ const execute = async (body) => {
 		const id = uuidv4()
 		const record = {
 			ID: id,
-			customer,
-			restaurant: {
-				...restaurant,
+			destination,
+			origin: {
+				...origin,
 				// add a preparation time between 10 and 30 minutes
 				// in 3% of the cases, add/remove another random 5 to 10 minutes
 				preparationTimeInMins: rnd + (variance <= 3 ? (op * add) : 0),

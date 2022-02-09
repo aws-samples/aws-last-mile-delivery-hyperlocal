@@ -49,7 +49,7 @@ public interface DeliveryOrDriver {
     /**
      * Set the next PlanningDelivery to this planning entity.
      *
-     * @param nextPlanningDelivery The next planning delivery (CustomerVisit, RestaurantVisit instance)
+     * @param nextPlanningDelivery The next planning delivery (DestinationVisit, OriginVisit instance)
      */
     void setNextPlanningDelivery(PlanningDelivery nextPlanningDelivery);
 

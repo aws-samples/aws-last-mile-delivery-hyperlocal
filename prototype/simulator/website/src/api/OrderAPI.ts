@@ -17,12 +17,12 @@
 import { ILatLong } from '../components/LatLongPairComponent'
 import common, { APIS } from './Common'
 
-const createOrder = (customer: ILatLong, restaurant: ILatLong, quantity: number): Promise<any> => {
+const createOrder = (destination: ILatLong, origin: ILatLong, quantity: number): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
 	return common.commonPostRequest('/order', {
-		customer,
-		restaurant,
+		destination,
+		origin,
 		quantity,
 	})
 }

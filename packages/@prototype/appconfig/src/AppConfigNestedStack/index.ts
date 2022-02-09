@@ -69,7 +69,7 @@ export class AppConfigNestedStack extends NestedStack {
 
 		const deploymentHandlerLambda = new DeploymentHandlerLambda(this, 'DeploymentHandlerLambda', {
 			dependencies: {
-				appConfigAppIds: [appConfigSetup.driverApp.ref, appConfigSetup.customerApp.ref],
+				appConfigAppIds: [appConfigSetup.driverApp.ref, appConfigSetup.destinationApp.ref],
 				configBucket: configStorage.configBucket,
 				iotEndpointAddress,
 			},

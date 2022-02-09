@@ -25,9 +25,9 @@
  */
 package com.aws.proto.dispatching.domain.planningentity.instant.sequential;
 
-import com.aws.proto.dispatching.domain.location.CustomerLocation;
+import com.aws.proto.dispatching.domain.location.DestinationLocation;
 import com.aws.proto.dispatching.domain.location.LocationBase;
-import com.aws.proto.dispatching.domain.location.RestaurantLocation;
+import com.aws.proto.dispatching.domain.location.OriginLocation;
 import com.aws.proto.dispatching.domain.planningentity.base.Order;
 import com.aws.proto.dispatching.routing.Distance;
 import com.aws.proto.dispatching.util.Constants;
@@ -46,8 +46,8 @@ public class PlanningDelivery implements DeliveryOrDriver {
     private static final Logger logger = LoggerFactory.getLogger(PlanningDelivery.class);
 
     private Order order;
-    private RestaurantLocation pickup;
-    private CustomerLocation dropoff;
+    private OriginLocation pickup;
+    private DestinationLocation dropoff;
     private long planningId;
 
     @PlanningVariable(
@@ -64,7 +64,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
     public PlanningDelivery() {
     }
 
-    public PlanningDelivery(Order order, RestaurantLocation pickup, CustomerLocation dropoff) {
+    public PlanningDelivery(Order order, OriginLocation pickup, DestinationLocation dropoff) {
         this.order = order;
         this.pickup = pickup;
         this.dropoff = dropoff;
@@ -84,19 +84,19 @@ public class PlanningDelivery implements DeliveryOrDriver {
         return this.order.getTimestamp();
     }
 
-    public RestaurantLocation getPickup() {
+    public OriginLocation getPickup() {
         return pickup;
     }
 
-    public void setPickup(RestaurantLocation pickup) {
+    public void setPickup(OriginLocation pickup) {
         this.pickup = pickup;
     }
 
-    public CustomerLocation getDropoff() {
+    public DestinationLocation getDropoff() {
         return dropoff;
     }
 
-    public void setDropoff(CustomerLocation dropoff) {
+    public void setDropoff(DestinationLocation dropoff) {
         this.dropoff = dropoff;
     }
 

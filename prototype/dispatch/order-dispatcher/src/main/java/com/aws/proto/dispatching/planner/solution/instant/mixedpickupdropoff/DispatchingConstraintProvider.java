@@ -50,7 +50,7 @@ public class DispatchingConstraintProvider implements ConstraintProvider {
 
     /**
      * Constraint to express that a dropoff must happen after a pickup.
-     * What this means is that the CustomerVisit must be _after_ the RestaurantVisit
+     * What this means is that the DestinationVisit must be _after_ the OriginVisit
      * in the chain, both belonging to the same order (orderId).
      *
      * @param factory The constraint factory provided by Optaplanner

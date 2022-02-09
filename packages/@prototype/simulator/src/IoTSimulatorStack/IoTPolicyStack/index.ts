@@ -24,26 +24,26 @@ interface IoTPolicyStackProps {
 }
 
 export class IoTPolicyStack extends Construct {
-	public readonly customerStatusUpdateRuleName: string
+	public readonly destinationStatusUpdateRuleName: string
 
-	public readonly restaurantStatusUpdateRuleName: string
+	public readonly originStatusUpdateRuleName: string
 
-	public readonly iotCustomerPolicy: iot.CfnPolicy
+	public readonly iotDestinationPolicy: iot.CfnPolicy
 
-	public readonly iotRestaurantPolicy: iot.CfnPolicy
+	public readonly iotOriginPolicy: iot.CfnPolicy
 
 	constructor (scope: Construct, id: string, props: IoTPolicyStackProps) {
 		super(scope, id)
 		const stack = Stack.of(this)
 
-		this.customerStatusUpdateRuleName = namespaced(this, 'customer_status_update', { delimiter: '_' })
+		this.destinationStatusUpdateRuleName = namespaced(this, 'destination_status_update', { delimiter: '_' })
 
-		this.restaurantStatusUpdateRuleName = namespaced(this, 'restaurant_status_update', { delimiter: '_' })
+		this.originStatusUpdateRuleName = namespaced(this, 'origin_status_update', { delimiter: '_' })
 
 		const prefix = `arn:aws:iot:${stack.region}:${stack.account}`
 
-		this.iotCustomerPolicy = new iot.CfnPolicy(this, 'IoTCustomerPolicy', {
-			policyName: namespaced(this, 'customer_policy', { delimiter: '_' }),
+		this.iotDestinationPolicy = new iot.CfnPolicy(this, 'IoTDestinationPolicy', {
+			policyName: namespaced(this, 'destination_policy', { delimiter: '_' }),
 			policyDocument: {
 				Version: '2012-10-17',
 				Statement: [
@@ -55,7 +55,7 @@ export class IoTPolicyStack extends Construct {
 					{
 						Effect: 'Allow',
 						Action: 'iot:Publish',
-						Resource: prefix + `:topic/$aws/rules/${this.customerStatusUpdateRuleName}`,
+						Resource: prefix + `:topic/$aws/rules/${this.destinationStatusUpdateRuleName}`,
 					},
 					{
 						Effect: 'Allow',
@@ -81,8 +81,8 @@ export class IoTPolicyStack extends Construct {
 			},
 		})
 
-		this.iotRestaurantPolicy = new iot.CfnPolicy(this, 'IoTRestaurantPolicy', {
-			policyName: namespaced(this, 'restaurant_policy', { delimiter: '_' }),
+		this.iotOriginPolicy = new iot.CfnPolicy(this, 'IoTOriginPolicy', {
+			policyName: namespaced(this, 'origin_policy', { delimiter: '_' }),
 			policyDocument: {
 				Version: '2012-10-17',
 				Statement: [
@@ -94,7 +94,7 @@ export class IoTPolicyStack extends Construct {
 					{
 						Effect: 'Allow',
 						Action: 'iot:Publish',
-						Resource: prefix + `:topic/$aws/rules/${this.restaurantStatusUpdateRuleName}`,
+						Resource: prefix + `:topic/$aws/rules/${this.originStatusUpdateRuleName}`,
 					},
 					{
 						Effect: 'Allow',
@@ -120,7 +120,7 @@ export class IoTPolicyStack extends Construct {
 			},
 		})
 
-		props.cognitoAuthenticatedRole.attachInlinePolicy(new iam.Policy(this, 'CustomerRestaurantPolicy', {
+		props.cognitoAuthenticatedRole.attachInlinePolicy(new iam.Policy(this, 'destinationoriginPolicy', {
 			document: new iam.PolicyDocument({
 				statements: [
 					new iam.PolicyStatement({
@@ -129,13 +129,13 @@ export class IoTPolicyStack extends Construct {
 							'iot:Publish',
 						],
 						resources: [
-							prefix + `:topic/$aws/rules/${this.customerStatusUpdateRuleName}`,
-							prefix + `:topic/$aws/rules/${this.restaurantStatusUpdateRuleName}`,
+							prefix + `:topic/$aws/rules/${this.destinationStatusUpdateRuleName}`,
+							prefix + `:topic/$aws/rules/${this.originStatusUpdateRuleName}`,
 						],
 					}),
 				],
 			}),
-			policyName: namespaced(this, 'CustomerRestaurantPolicy'),
+			policyName: namespaced(this, 'destinationoriginPolicy'),
 		}))
 	}
 }

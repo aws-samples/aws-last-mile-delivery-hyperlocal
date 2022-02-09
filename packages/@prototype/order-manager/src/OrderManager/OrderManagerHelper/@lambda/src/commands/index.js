@@ -14,13 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const notifyRestaurant = require('./notifyRestaurant').execute
+const notifyOrigin = require('./notifyOrigin').execute
 const notifyOrderStatusChange = require('./notifyOrderStatusChange').execute
 const notifyProviderFound = require('./notifyProviderFound').execute
 const initiateOrderCallback = require('./initiateOrderCallback').execute
 
 module.exports = {
-	notifyRestaurant,
+	notifyOrigin,
 	notifyProviderFound,
 	initiateOrderCallback,
 	notifyOrderRejected: notifyOrderStatusChange('Rejected'),

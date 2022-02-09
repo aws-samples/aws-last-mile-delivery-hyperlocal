@@ -17,16 +17,16 @@
 const account = process.env.CDK_DEFAULT_ACCOUNT
 const region = process.env.CDK_DEFAULT_REGION
 const mapBoxToken = process.env.MAP_BOX_TOKEN
-const restaurantUserPassword = process.env.RESTAURANT_USER_PASSWORD
-const customerUserPassword = process.env.CUSTOMER_USER_PASSWORD
+const originUserPassword = process.env.ORIGIN_USER_PASSWORD
+const destinationUserPassword = process.env.DESTINATION_USER_PASSWORD
 
 module.exports = {
 	env: {
 		account,
 		region,
 		mapBoxToken,
-		restaurantUserPassword,
-		customerUserPassword,
+		originUserPassword,
+		destinationUserPassword,
 	},
 	namespace: 'Hyperlocal',
 	administratorName: 'Admin',

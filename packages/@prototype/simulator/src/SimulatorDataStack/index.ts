@@ -23,29 +23,29 @@ type SimulatorDataStackProps = NestedStackProps
 export class SimulatorDataStack extends NestedStack {
 	public readonly simulatorTable: ddb.Table
 
-	public readonly restaurantTable: ddb.Table
+	public readonly originTable: ddb.Table
 
-	public readonly restaurantAreaIndex: string
+	public readonly originAreaIndex: string
 
-	public readonly restaurantExecutionIdIndex: string
+	public readonly originExecutionIdIndex: string
 
-	public readonly restaurantStatsTable: ddb.Table
+	public readonly originStatsTable: ddb.Table
 
-	public readonly restaurantSimulationsTable: ddb.Table
+	public readonly originSimulationsTable: ddb.Table
 
 	public readonly eventTable: ddb.Table
 
 	public readonly eventCreatedAtIndex: string
 
-	public readonly customerTable: ddb.Table
+	public readonly destinationTable: ddb.Table
 
-	public readonly customerAreaIndex: string
+	public readonly destinationAreaIndex: string
 
-	public readonly customerExecutionIdIndex: string
+	public readonly destinationExecutionIdIndex: string
 
-	public readonly customerStatsTable: ddb.Table
+	public readonly destinationStatsTable: ddb.Table
 
-	public readonly customerSimulationsTable: ddb.Table
+	public readonly destinationSimulationsTable: ddb.Table
 
 	constructor (scope: Construct, id: string, props: SimulatorDataStackProps) {
 		super(scope, id)
@@ -86,8 +86,8 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.restaurantTable = new ddb.Table(this, 'RestaurantTable', {
-			tableName: namespaced(this, 'restaurant'),
+		this.originTable = new ddb.Table(this, 'OriginTable', {
+			tableName: namespaced(this, 'origin'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -97,26 +97,26 @@ export class SimulatorDataStack extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.restaurantAreaIndex = namespaced(this, 'idx-restaurant-area')
-		this.restaurantTable.addGlobalSecondaryIndex({
-			indexName: this.restaurantAreaIndex,
+		this.originAreaIndex = namespaced(this, 'idx-origin-area')
+		this.originTable.addGlobalSecondaryIndex({
+			indexName: this.originAreaIndex,
 			partitionKey: {
 				name: 'area',
 				type: ddb.AttributeType.STRING,
 			},
 		})
 
-		this.restaurantExecutionIdIndex = namespaced(this, 'idx-restaurant-executionId')
-		this.restaurantTable.addGlobalSecondaryIndex({
-			indexName: this.restaurantExecutionIdIndex,
+		this.originExecutionIdIndex = namespaced(this, 'idx-origin-executionId')
+		this.originTable.addGlobalSecondaryIndex({
+			indexName: this.originExecutionIdIndex,
 			partitionKey: {
 				name: 'executionId',
 				type: ddb.AttributeType.STRING,
 			},
 		})
 
-		this.restaurantStatsTable = new ddb.Table(this, 'RestaurantStatsTable', {
-			tableName: namespaced(this, 'restaurant-stats'),
+		this.originStatsTable = new ddb.Table(this, 'OriginStatsTable', {
+			tableName: namespaced(this, 'origin-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -126,8 +126,8 @@ export class SimulatorDataStack extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.restaurantSimulationsTable = new ddb.Table(this, 'RestaurantSimulationsTable', {
-			tableName: namespaced(this, 'restaurant-simulations'),
+		this.originSimulationsTable = new ddb.Table(this, 'OriginSimulationsTable', {
+			tableName: namespaced(this, 'origin-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -137,8 +137,8 @@ export class SimulatorDataStack extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.customerTable = new ddb.Table(this, 'CustomerTable', {
-			tableName: namespaced(this, 'customer'),
+		this.destinationTable = new ddb.Table(this, 'DestinationTable', {
+			tableName: namespaced(this, 'destination'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -148,26 +148,26 @@ export class SimulatorDataStack extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.customerAreaIndex = namespaced(this, 'idx-customer-area')
-		this.customerTable.addGlobalSecondaryIndex({
-			indexName: this.customerAreaIndex,
+		this.destinationAreaIndex = namespaced(this, 'idx-destination-area')
+		this.destinationTable.addGlobalSecondaryIndex({
+			indexName: this.destinationAreaIndex,
 			partitionKey: {
 				name: 'area',
 				type: ddb.AttributeType.STRING,
 			},
 		})
 
-		this.customerExecutionIdIndex = namespaced(this, 'idx-customer-executionId')
-		this.customerTable.addGlobalSecondaryIndex({
-			indexName: this.customerExecutionIdIndex,
+		this.destinationExecutionIdIndex = namespaced(this, 'idx-destination-executionId')
+		this.destinationTable.addGlobalSecondaryIndex({
+			indexName: this.destinationExecutionIdIndex,
 			partitionKey: {
 				name: 'executionId',
 				type: ddb.AttributeType.STRING,
 			},
 		})
 
-		this.customerStatsTable = new ddb.Table(this, 'CustomerStatsTable', {
-			tableName: namespaced(this, 'customer-stats'),
+		this.destinationStatsTable = new ddb.Table(this, 'DestinationStatsTable', {
+			tableName: namespaced(this, 'destination-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -177,8 +177,8 @@ export class SimulatorDataStack extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.customerSimulationsTable = new ddb.Table(this, 'CustomerSimulationsTable', {
-			tableName: namespaced(this, 'customer-simulations'),
+		this.destinationSimulationsTable = new ddb.Table(this, 'DestinationSimulationsTable', {
+			tableName: namespaced(this, 'destination-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',

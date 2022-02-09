@@ -29,7 +29,7 @@ participant "DynamoDB" as ddb
 
     service -> ddb : //assignment(ENQUEUED)//
 
-    service -> gh : //genDistanceMatrix(drivers,restaurants,customers)//
+    service -> gh : //genDistanceMatrix(drivers,origins,destinations)//
     gh --> service : //distanceMatrix//
 
     service -> solverManager : //dispatchingProblem//

@@ -21,29 +21,29 @@ const helper = require('../../common/helper')
 
 let startingPosition
 let currentPosition
-let restaurantPath
+let originPath
 let restProgress = 0
-let customerPath
+let destinationPath
 let custProgress = 0
 
 const getCoordinates = (lat, long, radius, status) => {
 	switch (status) {
 		case state.STATUSES.PICKING_UP_GOODS:
 		case state.STATUSES.ARRIVED_AT_ORIGIN: {
-			const toRestaurant = state.getState().routing
+			const toorigin = state.getState().routing
 
-			if (toRestaurant.length > 0) {
-				if (!restaurantPath) {
-					const pathPolyline = toRestaurant[0].pathPolyline
-					restaurantPath = polyline.decode(pathPolyline)
+			if (toorigin.length > 0) {
+				if (!originPath) {
+					const pathPolyline = toorigin[0].pathPolyline
+					originPath = polyline.decode(pathPolyline)
 
-					logger.info('Restaurant path')
-					logger.info(restaurantPath)
+					logger.info('origin path')
+					logger.info(originPath)
 				}
 
-				const [_lat, _long] = restaurantPath[restProgress]
+				const [_lat, _long] = originPath[restProgress]
 
-				if (restProgress === restaurantPath.length - 1) {
+				if (restProgress === originPath.length - 1) {
 					if (status === state.STATUSES.PICKING_UP_GOODS) {
 						state.setState('status', state.STATUSES.ARRIVED_AT_ORIGIN)
 					}
@@ -59,20 +59,20 @@ const getCoordinates = (lat, long, radius, status) => {
 		case state.STATUSES.DELIVERING:
 		case state.STATUSES.ARRIVED_AT_DESTINATION:
 		case state.STATUSES.DELIVERED: {
-			const toCustomer = state.getState().routing
+			const todestination = state.getState().routing
 
-			if (toCustomer.length > 1) {
-				if (!customerPath) {
-					const pathPolyline = toCustomer[1].pathPolyline
-					customerPath = polyline.decode(pathPolyline)
+			if (todestination.length > 1) {
+				if (!destinationPath) {
+					const pathPolyline = todestination[1].pathPolyline
+					destinationPath = polyline.decode(pathPolyline)
 
-					logger.info('Customer path')
-					logger.info(customerPath)
+					logger.info('destination path')
+					logger.info(destinationPath)
 				}
 
-				const [_lat, _long] = customerPath[custProgress]
+				const [_lat, _long] = destinationPath[custProgress]
 
-				if (custProgress === customerPath.length - 1) {
+				if (custProgress === destinationPath.length - 1) {
 					if (status === state.STATUSES.DELIVERING) {
 						state.setState('status', state.STATUSES.ARRIVED_AT_DESTINATION)
 					}
@@ -88,14 +88,14 @@ const getCoordinates = (lat, long, radius, status) => {
 		case state.STATUSES.IDLE:
 		case state.STATUSES.ACCEPTED:
 		default: {
-			customerPath = null
-			restaurantPath = null
+			destinationPath = null
+			originPath = null
 			custProgress = 0
 			restProgress = 0
 
 			state.setState('routing', state.DEFAULT_STATE.routing)
-			state.setState('customer', state.DEFAULT_STATE.customer)
-			state.setState('restaurant', state.DEFAULT_STATE.restaurant)
+			state.setState('destination', state.DEFAULT_STATE.destination)
+			state.setState('origin', state.DEFAULT_STATE.origin)
 
 			if (!startingPosition) {
 				startingPosition = helper.generateRandomPoint(lat, long, radius)

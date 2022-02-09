@@ -14,13 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const restaurant = require('./restaurant').execute
+const origin = require('./origin').execute
 const order = require('./order').execute
 const provider = require('./provider').execute
 const config = require('../config')
 
 module.exports = {
-	[config.restaurantService]: restaurant,
+	[config.originService]: origin,
 	[config.orderService]: order,
 	// all provider will use the same handler function
 	// given that they share the same message interface

@@ -82,7 +82,7 @@ const EntitySimulationSummary: React.FC<EntitySimulationSummaryProps> = ({ simul
 						<Heading variant='h3'>Simulation Setup</Heading>
 					</Box>
 					<EntityDetailsTableComponent
-						entityName={'Restaurants'}
+						entityName={'Origins (eg. restaurants)'}
 						entities={simulation.stats}
 						renderActions={false}
 						renderState={false}

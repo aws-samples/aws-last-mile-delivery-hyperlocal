@@ -50,7 +50,7 @@ public interface VisitOrDriver {
     /**
      * Set the next PlanningVisit to this planning entity.
      *
-     * @param nextPlanningVisit The next planning visit (CustomerVisit, RestaurantVisit instance)
+     * @param nextPlanningVisit The next planning visit (DestinationVisit, OriginVisit instance)
      */
     void setNextPlanningVisit(PlanningVisit nextPlanningVisit);
 

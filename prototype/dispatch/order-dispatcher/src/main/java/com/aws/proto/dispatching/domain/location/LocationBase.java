@@ -10,10 +10,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,7 +30,7 @@ import com.aws.proto.dispatching.routing.Distance;
 import com.aws.proto.dispatching.routing.DistanceMatrix;
 
 public class LocationBase implements ILocation, Comparable<LocationBase> {
-    // customer ID or restaurant ID
+    // destination ID or origin ID
     private String id;
     private Coordinates coordinates;
     private long leaveDelay;
@@ -75,6 +75,7 @@ public class LocationBase implements ILocation, Comparable<LocationBase> {
     public DistanceMatrix getDistanceMatrix() {
         return this.distanceMatrix;
     }
+
     public void setDistanceMatrix(DistanceMatrix distanceMatrix) {
         this.distanceMatrix = distanceMatrix;
     }
@@ -86,8 +87,9 @@ public class LocationBase implements ILocation, Comparable<LocationBase> {
     /**
      * The time needed for doing business between arrival and leaving.
      * E.g.
-     * 1. at restaurant for a driver to park, pickup the food, and leave
-     * 2. at customer for a driver to enter premise, park, find customer's apt, go back to bike, leave
+     * 1. at origin for a driver to park, pickup the food, and leave
+     * 2. at destination for a driver to enter premise, park, find destination's apt, go back to bike, leave
+     *
      * @return Time spent in MILLISECONDS
      */
     public long getLeaveDelay() {

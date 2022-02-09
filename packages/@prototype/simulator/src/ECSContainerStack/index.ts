@@ -25,23 +25,23 @@ interface ECSContainerStackProps {
 	readonly userPoolClient: cognito.UserPoolClient
 	readonly iotIngestionRule: iot.CfnTopicRule
 	readonly iotDriverStatusRule: iot.CfnTopicRule
-	readonly iotCustomerStatusRuleName: string
-	readonly iotRestaurantStatusRuleName: string
+	readonly iotDestinationStatusRuleName: string
+	readonly iotOriginStatusRuleName: string
 	readonly iotDriverPolicy: iot.CfnPolicy
 	readonly ecsVpc: ec2.IVpc
 	readonly simulatorConfig: { [key: string]: string | number, }
 	readonly configBucket: s3.IBucket
 	readonly configBucketKey: string
 
-	readonly restaurantTable: ddb.Table
-	readonly restaurantAreaIndex: string
-	readonly restaurantExecutionIdIndex: string
-	readonly restaurantUserPassword: string
+	readonly originTable: ddb.Table
+	readonly originAreaIndex: string
+	readonly originExecutionIdIndex: string
+	readonly originUserPassword: string
 
-	readonly customerTable: ddb.Table
-	readonly customerAreaIndex: string
-	readonly customerExecutionIdIndex: string
-	readonly customerUserPassword: string
+	readonly destinationTable: ddb.Table
+	readonly destinationAreaIndex: string
+	readonly destinationExecutionIdIndex: string
+	readonly destinationUserPassword: string
 }
 
 export class ECSContainerStack extends Construct {
@@ -51,9 +51,9 @@ export class ECSContainerStack extends Construct {
 
 	public readonly driverSimulator: SimulatorContainer
 
-	public readonly customerSimulator: SimulatorContainer
+	public readonly destinationSimulator: SimulatorContainer
 
-	public readonly restaurantSimulator: SimulatorContainer
+	public readonly originSimulator: SimulatorContainer
 
 	constructor (scope: Construct, id: string, props: ECSContainerStackProps) {
 		super(scope, id)
@@ -96,23 +96,23 @@ export class ECSContainerStack extends Construct {
 			...props,
 		})
 
-		this.customerSimulator = new SimulatorContainer(this, 'CustomerSimulatorContainer', {
-			name: 'customer',
+		this.destinationSimulator = new SimulatorContainer(this, 'DestinationSimulatorContainer', {
+			name: 'destination',
 			cpu: 256,
 			memoryMiB: 512,
 			repository: this.repository,
-			baseUsername: props.simulatorConfig.customerBaseUsername as string,
+			baseUsername: props.simulatorConfig.destinationBaseUsername as string,
 			iotEndpointAddress,
 			...props,
 			additionalENVs: {
-				CUSTOMER_TABLE_NAME: props.customerTable.tableName,
-				CUSTOMER_EXECUTIONID_INDEX: props.customerExecutionIdIndex,
-				CUSTOMER_AREA_INDEX: props.customerAreaIndex,
-				CUSTOMER_PASSWORD: props.customerUserPassword,
-				CUSTOMER_STATUS_UPDATE_RULE_NAME: props.iotCustomerStatusRuleName,
+				DESTINATION_TABLE_NAME: props.destinationTable.tableName,
+				DESTINATION_EXECUTIONID_INDEX: props.destinationExecutionIdIndex,
+				DESTINATION_AREA_INDEX: props.destinationAreaIndex,
+				DESTINATION_PASSWORD: props.destinationUserPassword,
+				DESTINATION_STATUS_UPDATE_RULE_NAME: props.iotDestinationStatusRuleName,
 			},
 		})
-		this.customerSimulator.taskDefinitionRole.addToPolicy(
+		this.destinationSimulator.taskDefinitionRole.addToPolicy(
 			new iam.PolicyStatement({
 				actions: [
 					'dynamodb:UpdateItem',
@@ -120,30 +120,30 @@ export class ECSContainerStack extends Construct {
 				],
 				effect: iam.Effect.ALLOW,
 				resources: [
-					props.customerTable.tableArn,
-					`${props.customerTable.tableArn}/index/${props.customerExecutionIdIndex}`,
-					`${props.customerTable.tableArn}/index/${props.customerAreaIndex}`,
+					props.destinationTable.tableArn,
+					`${props.destinationTable.tableArn}/index/${props.destinationExecutionIdIndex}`,
+					`${props.destinationTable.tableArn}/index/${props.destinationAreaIndex}`,
 				],
 			}),
 		)
 
-		this.restaurantSimulator = new SimulatorContainer(this, 'RestaurantSimulatorContainer', {
-			name: 'restaurant',
+		this.originSimulator = new SimulatorContainer(this, 'OriginSimulatorContainer', {
+			name: 'origin',
 			cpu: 256,
 			memoryMiB: 512,
 			repository: this.repository,
-			baseUsername: props.simulatorConfig.restaurantBaseUsername as string,
+			baseUsername: props.simulatorConfig.originBaseUsername as string,
 			iotEndpointAddress,
 			...props,
 			additionalENVs: {
-				RESTAURANT_TABLE_NAME: props.restaurantTable.tableName,
-				RESTAURANT_EXECUTIONID_INDEX: props.restaurantExecutionIdIndex,
-				RESTAURANT_AREA_INDEX: props.restaurantAreaIndex,
-				RESTAURANT_PASSWORD: props.restaurantUserPassword,
-				RESTAURANT_STATUS_UPDATE_RULE_NAME: props.iotRestaurantStatusRuleName,
+				ORIGIN_TABLE_NAME: props.originTable.tableName,
+				ORIGN_EXECUTIONID_INDEX: props.originExecutionIdIndex,
+				ORIGIN_AREA_INDEX: props.originAreaIndex,
+				ORIGIN_PASSWORD: props.originUserPassword,
+				ORIGIN_STATUS_UPDATE_RULE_NAME: props.iotOriginStatusRuleName,
 			},
 		})
-		this.restaurantSimulator.taskDefinitionRole.addToPolicy(
+		this.originSimulator.taskDefinitionRole.addToPolicy(
 			new iam.PolicyStatement({
 				actions: [
 					'dynamodb:UpdateItem',
@@ -151,9 +151,9 @@ export class ECSContainerStack extends Construct {
 				],
 				effect: iam.Effect.ALLOW,
 				resources: [
-					props.restaurantTable.tableArn,
-					`${props.restaurantTable.tableArn}/index/${props.restaurantExecutionIdIndex}`,
-					`${props.restaurantTable.tableArn}/index/${props.restaurantAreaIndex}`,
+					props.originTable.tableArn,
+					`${props.originTable.tableArn}/index/${props.originExecutionIdIndex}`,
+					`${props.originTable.tableArn}/index/${props.originAreaIndex}`,
 				],
 			}),
 		)

@@ -30,11 +30,11 @@ const state = {
 	status: 'IDLE',
 	orderId: '',
 	routing: [],
-	restaurant: {
+	origin: {
 		lat: '',
 		long: '',
 	},
-	customer: {
+	destination: {
 		lat: '',
 		long: '',
 	},

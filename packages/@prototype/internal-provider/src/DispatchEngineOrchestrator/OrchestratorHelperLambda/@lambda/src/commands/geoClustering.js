@@ -22,14 +22,14 @@ const execute = async (payload) => {
 	logger.info('Executing geo clustering for payload')
 	logger.info(JSON.stringify(payload))
 	const { orders } = payload
-	const coordinates = orders.map(q => [q.restaurant.lat, q.restaurant.long])
+	const coordinates = orders.map(q => [q.origin.lat, q.origin.long])
 	const clustered = geocluster(coordinates, config.geoClusteringBias)
 
 	const clonedOrders = JSON.parse(JSON.stringify(orders))
 	const clusters = clustered.map(q => {
 		const { centroid, elements } = q
 		const filteredOrders = elements.map(el => {
-			const idx = clonedOrders.findIndex(o => o.restaurant.lat === el[0] && o.restaurant.long === el[1])
+			const idx = clonedOrders.findIndex(o => o.origin.lat === el[0] && o.origin.long === el[1])
 			const order = JSON.parse(JSON.stringify(clonedOrders[idx]))
 
 			// remove the order from the list so if there's another order with the same coordinates

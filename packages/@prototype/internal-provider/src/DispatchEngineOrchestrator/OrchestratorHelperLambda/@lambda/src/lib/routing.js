@@ -39,17 +39,17 @@ const queryGraphHopper = async (points) => {
 }
 
 const getRoutingDetails = async (driverLocation, order) => {
-	const { restaurant, customer } = order
-	const fromDriverToRestaurant = [[driverLocation.long, driverLocation.lat], [restaurant.long, restaurant.lat]]
-	const fromRestaurantToCustomer = [[restaurant.long, restaurant.lat], [customer.long, customer.lat]]
+	const { origin, destination } = order
+	const fromDriverToOrigin = [[driverLocation.long, driverLocation.lat], [origin.long, origin.lat]]
+	const fromOriginToDestination = [[origin.long, origin.lat], [destination.long, destination.lat]]
 
-	// TODO: routes can be cached (eg. from restaurant to customer)
-	const toRestaurant = await queryGraphHopper(fromDriverToRestaurant)
-	const toCustomer = await queryGraphHopper(fromRestaurantToCustomer)
+	// TODO: routes can be cached (eg. from origin to destination)
+	const toOrigin = await queryGraphHopper(fromDriverToOrigin)
+	const toDestination = await queryGraphHopper(fromOriginToDestination)
 
 	return [
-		toRestaurant,
-		toCustomer,
+		toOrigin,
+		toDestination,
 	]
 }
 
