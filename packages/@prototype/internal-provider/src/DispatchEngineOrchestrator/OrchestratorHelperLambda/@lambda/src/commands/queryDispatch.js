@@ -22,7 +22,7 @@ const execute = async (payload) => {
 	logger.info('Executing query dispatch for payload')
 	logger.info(payload)
 	const { orders, problemId } = payload
-	const url = `http://${config.dispatchEngineElbDNS}/v2/dispatch/status/${problemId}`
+	const url = `http://${config.dispatchEngineElbDNS}/instant/sequential/dispatch/status/${problemId}`
 
 	try {
 		const results = await axios.get(url, {
