@@ -17,6 +17,7 @@
 import { Box, Button, Column, ColumnLayout, Inline, LoadingIndicator, Table } from 'aws-northstar'
 import AssignmentMap from '../../components/MapComponent/AssignmentMap'
 import React, { useEffect, useState } from 'react'
+import { DateRangeOutlined, DateRangeRounded } from '@material-ui/icons'
 import OrderAPI from '../../api/OrderAPI'
 import { columnDefinitions } from './table-columns'
 
@@ -65,8 +66,8 @@ const Dispatching: React.FC = () => {
 	const tableActions = (
 		<Inline>
 			{nextToken && <Button loading={loading} onClick={() => loadNextPage()}>Load More...</Button>}
-			<Button onClick={() => setRelDate(!relDate)} icon={relDate ? 'DateRangeOutlined' : 'DateRangeRounded'} variant="icon"></Button>
-			<Button onClick={() => fetchAssignments(undefined, true)} icon='Refresh' variant="icon"></Button>
+			<Button onClick={() => setRelDate(!relDate)} icon={relDate ? DateRangeOutlined : DateRangeRounded} variant="icon"></Button>
+			<Button onClick={() => fetchAssignments(undefined, true)} icon='refresh' variant="icon"></Button>
 		</Inline>
 	)
 

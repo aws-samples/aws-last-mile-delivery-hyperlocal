@@ -23,6 +23,7 @@ import Button from 'aws-northstar/components/Button'
 import Inline from 'aws-northstar/layouts/Inline'
 import Input from 'aws-northstar/components/Input'
 import FormField from 'aws-northstar/components/FormField'
+import { PlayArrow } from '@material-ui/icons'
 import utils from '../../utils'
 
 export type IEntity = {
@@ -56,7 +57,7 @@ const GenerateEntityComponent: React.FC<EntityDetailsComponent> = ({ entityName,
 			footerContent={
 				<Button
 					variant="primary"
-					icon="PlayArrow"
+					icon={PlayArrow}
 					onClick={generateHandler}
 				>
           Generate

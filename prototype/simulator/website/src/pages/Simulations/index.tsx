@@ -20,6 +20,7 @@ import Box from 'aws-northstar/layouts/Box'
 import Inline from 'aws-northstar/layouts/Inline'
 import Button from 'aws-northstar/components/Button'
 import LoadingIndicator from 'aws-northstar/components/LoadingIndicator'
+import { Add, Details, Stop } from '@material-ui/icons'
 import SimulatorAPI from '../../api/SimulatorAPI'
 import SimulationComponent from '../../components/SimulationComponent'
 import utils from '../../utils'
@@ -68,7 +69,7 @@ const Simulations: React.FC = () => {
 		<>
 			{loading && <LoadingIndicator size="large" />}
 			{!loading && <Box display="flex" alignItems='flex-end' flexDirection='column'>
-				<Button icon="Add" variant="primary" onClick={handleNewSimulation}>Add Simulation</Button>
+				<Button icon={Add} variant="primary" onClick={handleNewSimulation}>Add Simulation</Button>
 			</Box>}
 
 			{utils.sortByCreationDateDesc(simulations).map((s: any, idx: number) => (
@@ -78,14 +79,14 @@ const Simulations: React.FC = () => {
 					actions={
 						<Inline spacing='s'>
 							<Button
-								icon="Details"
+								icon={Details}
 								onClick={() => handleSimulationDetail(s.ID)}
 							>
 							Details
 							</Button>
 							<Button
 								variant="primary"
-								icon="Stop"
+								icon={Stop}
 								onClick={() => stopSimulator(s.ID)}
 								disabled={s.state === 'STOPPED'}
 							>

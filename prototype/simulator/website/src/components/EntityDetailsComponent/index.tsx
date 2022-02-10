@@ -22,6 +22,7 @@ import Button from 'aws-northstar/components/Button'
 import Alert from 'aws-northstar/components/Alert'
 import { ILatLong } from '../LatLongPairComponent'
 import utils from '../../utils'
+import { Remove, Refresh, PlayArrow } from '@material-ui/icons'
 
 export type IEntityDetails = ILatLong & {
 	ID: string
@@ -87,7 +88,7 @@ export const EntityDetailsTableComponent: React.FC<IEntityDetailsTableComponent>
 							<td>
 								<Button
 									variant='icon'
-									icon="Remove"
+									icon={Remove}
 									onClick={() => onRemove && onRemove(a)}
 								/>
 							</td>
@@ -130,14 +131,14 @@ const EntityDetailsComponent: React.FC<IEntityDetailsComponent> = ({
 			actionGroup={
 				<Button
 					variant='icon'
-					icon="Refresh"
+					icon={Refresh}
 					onClick={onRefresh}
 				/>
 			}
 			footerContent={renderFooter &&
 				<Button
 					variant="primary"
-					icon="PlayArrow"
+					icon={PlayArrow}
 					onClick={onStart}
 				>
           Start Simulation

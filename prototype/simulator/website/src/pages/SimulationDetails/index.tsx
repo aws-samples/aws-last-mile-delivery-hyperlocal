@@ -20,6 +20,7 @@ import Inline from 'aws-northstar/layouts/Inline'
 import Button from 'aws-northstar/components/Button'
 import LoadingIndicator from 'aws-northstar/components/LoadingIndicator'
 import SimulationComponent from '../../components/SimulationComponent'
+import { ArrowBackIos, Stop } from '@material-ui/icons'
 import SimulatorAPI from '../../api/SimulatorAPI'
 
 const SimulationDetails: React.FC = () => {
@@ -69,14 +70,14 @@ const SimulationDetails: React.FC = () => {
 				actions={
 					<Inline spacing='s'>
 						<Button
-							icon="ArrowBackIos"
+							icon={ArrowBackIos}
 							onClick={handleBackButton}
 						>
 							Simulation List
 						</Button>
 						<Button
 							variant="primary"
-							icon="Stop"
+							icon={Stop}
 							onClick={() => stopSimulator(data.ID)}
 							disabled={data.state === 'STOPPED'}
 						>

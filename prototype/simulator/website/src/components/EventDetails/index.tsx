@@ -18,6 +18,7 @@ import React from 'react'
 import Container from 'aws-northstar/layouts/Container'
 import MarkdownViewer from 'aws-northstar/components/MarkdownViewer'
 import Button from 'aws-northstar/components/Button'
+import { Close } from '@material-ui/icons'
 import './style.css'
 
 export type EventDebugger = {
@@ -30,7 +31,7 @@ const EventDetail: React.FC<EventDebugger> = ({ event, onClose }) => {
 		<Container
 			headingVariant='h2'
 			title='Event Detail'
-			actionGroup={event && <Button variant='icon' icon="Close" onClick={() => onClose && onClose()}></Button>}
+			actionGroup={event && <Button variant='icon' icon={Close} onClick={() => onClose && onClose()}></Button>}
 			style={{ marginTop: '25px', width: '100%', maxHeight: '329.781px', overflow: 'scroll' }}
 		>
 			{event &&

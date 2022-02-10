@@ -20,6 +20,7 @@ import Inline from 'aws-northstar/layouts/Inline'
 import Table from 'aws-northstar/components/Table'
 import Icon from 'aws-northstar/components/Icon'
 import Button from 'aws-northstar/components/Button'
+import { Delete } from '@material-ui/icons'
 import SimulatorAPI from '../../api/SimulatorAPI'
 import { columnDefinitions } from './table-columns'
 
@@ -68,7 +69,7 @@ const Polygons: React.FC = () => {
 			<Button onClick={() => setForceRefresh((old) => old++)}>
 				<Icon name='Refresh' color='primary' fontSize='small' />
 			</Button>
-			<Button onClick={deletePolygons} icon="Delete" disabled={selectedIds.length === 0}>
+			<Button onClick={deletePolygons} icon={Delete} disabled={selectedIds.length === 0}>
 				Delete
 			</Button>
 			<Button onClick={handleNewPolygon} variant='primary'>

@@ -14,7 +14,7 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Button, Checkbox, Icon, Inline, Link, Table, Badge, Popover, KeyValuePair } from 'aws-northstar'
+import { Popover } from 'aws-northstar'
 import dayjs from '../../utils/daysjs'
 
 export const columnDefinitions = (relativeDate: boolean) => ([
