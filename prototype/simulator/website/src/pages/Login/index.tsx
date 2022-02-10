@@ -39,7 +39,7 @@ const Login: React.FC = () => {
 			const user = await UserApi.login(username, password)
 
 			setUser(user)
-		} catch (err) {
+		} catch (err: any) {
 			console.error('Login: ', err)
 			setNotifications((old): FlashbarMessage[] => [...old, {
 				type: 'error',

@@ -18,6 +18,7 @@ import React, { useEffect, useState } from 'react'
 import Button from 'aws-northstar/components/Button'
 import Inline from 'aws-northstar/layouts/Inline'
 import Table from 'aws-northstar/components/Table'
+import { DateRangeOutlined, DateRangeRounded } from '@material-ui/icons'
 import { columnDefinitions } from './table-columns'
 import OrderAPI from '../../api/OrderAPI'
 
@@ -61,8 +62,8 @@ const Orders: React.FC = () => {
 	const tableActions = (
 		<Inline>
 			{nextToken && <Button loading={loading} onClick={() => loadNextPage()}>Load More...</Button>}
-			<Button onClick={() => setRelDate(!relDate)} icon={relDate ? 'DateRangeOutlined' : 'DateRangeRounded'} variant="icon"></Button>
-			<Button onClick={() => fetchOrders(undefined, true)} icon='Refresh' variant="icon"></Button>
+			<Button onClick={() => setRelDate(!relDate)} icon={relDate ? DateRangeOutlined : DateRangeRounded} variant="icon"></Button>
+			<Button onClick={() => fetchOrders(undefined, true)} icon='refresh' variant="icon"></Button>
 		</Inline>
 	)
 

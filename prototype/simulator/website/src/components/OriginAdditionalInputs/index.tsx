@@ -19,6 +19,7 @@ import Modal from 'aws-northstar/components/Modal'
 import Button from 'aws-northstar/components/Button'
 import FormField from 'aws-northstar/components/FormField'
 import Input from 'aws-northstar/components/Input'
+import { PlayArrow } from '@material-ui/icons'
 
 export type IAdditionalInputResults = {
 	rejectionRate: number
@@ -52,7 +53,7 @@ const OriginAdditionalInputs: React.FC<IAdditionalInput> = ({ visible, onClose, 
 			visible={visible}
 			onClose={onClose}
 			footer={
-				<Button type='button' icon='PlayArrow' onClick={onStart}>
+				<Button type='button' icon={PlayArrow} onClick={onStart}>
 					Start
 				</Button>
 			}

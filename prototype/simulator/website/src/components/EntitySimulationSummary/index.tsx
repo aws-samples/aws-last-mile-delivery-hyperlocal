@@ -25,6 +25,7 @@ import Heading from 'aws-northstar/components/Heading'
 import Badge from 'aws-northstar/components/Badge'
 import Popover from 'aws-northstar/components/Popover'
 import MarkdownViewer from 'aws-northstar/components/MarkdownViewer'
+import { Stop } from '@material-ui/icons'
 import { EntityDetailsTableComponent, IEntityDetails } from '../EntityDetailsComponent'
 import utils from '../../utils'
 import dayjs from '../../utils/daysjs'
@@ -68,7 +69,7 @@ const EntitySimulationSummary: React.FC<EntitySimulationSummaryProps> = ({ simul
 			footerContent={
 				<Button
 					variant="primary"
-					icon="Stop"
+					icon={Stop}
 					onClick={() => onStop && onStop(simulation)}
 					disabled={simulation.state !== 'RUNNING'}
 				>

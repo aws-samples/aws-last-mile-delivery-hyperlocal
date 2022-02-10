@@ -25,6 +25,7 @@ import Button from 'aws-northstar/components/Button'
 import FormField from 'aws-northstar/components/FormField'
 import Input from 'aws-northstar/components/Input'
 import Heading from 'aws-northstar/components/Heading'
+import { ArrowBackIos, Add, Remove, PlayArrow } from '@material-ui/icons'
 import SimulatorAPI from '../../api/SimulatorAPI'
 import utils from '../../utils'
 
@@ -120,14 +121,14 @@ const NewSimulation: React.FC = () => {
 				footerContent={
 					<Inline spacing='s'>
 						<Button
-							icon="ArrowBackIos"
+							icon={ArrowBackIos}
 							onClick={handleBackButton}
 						>
 							Simulation List
 						</Button>
 						<Button
 							variant="primary"
-							icon="PlayArrow"
+							icon={PlayArrow}
 							onClick={createNewSimulation}
 							loading={loading}
 						>
@@ -208,8 +209,8 @@ const NewSimulation: React.FC = () => {
 								</Box>
 								<Box marginTop="10px">
 									<Inline>
-										<Button icon='Add' variant="normal" onClick={addNewArea}>Add new item</Button>
-										<Button icon='Remove' variant="normal" onClick={() => removeIdx(idx)} disabled={areas.length === 1}>Remove last item</Button>
+										<Button icon={Add} variant="normal" onClick={addNewArea}>Add new item</Button>
+										<Button icon={Remove} variant="normal" onClick={() => removeIdx(idx)} disabled={areas.length === 1}>Remove last item</Button>
 									</Inline>
 								</Box>
 							</>

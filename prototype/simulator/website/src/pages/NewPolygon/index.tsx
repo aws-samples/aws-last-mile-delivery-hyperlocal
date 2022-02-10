@@ -25,6 +25,7 @@ import Button from 'aws-northstar/components/Button'
 import FormField from 'aws-northstar/components/FormField'
 import Input from 'aws-northstar/components/Input'
 import Heading from 'aws-northstar/components/Heading'
+import { ArrowBackIos, SaveOutlined, Add, Remove } from '@material-ui/icons'
 import SimulatorAPI from '../../api/SimulatorAPI'
 import { ILatLong } from '../../components/LatLongPairComponent'
 import utils from '../../utils'
@@ -113,14 +114,14 @@ const NewPolygon: React.FC = () => {
 				footerContent={
 					<Inline spacing='s'>
 						<Button
-							icon="ArrowBackIos"
+							icon={ArrowBackIos}
 							onClick={handleBackButton}
 						>
 							Cancel
 						</Button>
 						<Button
 							variant="primary"
-							icon="SaveOutlined"
+							icon={SaveOutlined}
 							onClick={savePolygon}
 							loading={loading}
 						>
@@ -174,8 +175,8 @@ const NewPolygon: React.FC = () => {
 				))}
 				<Box marginTop="10px">
 					<Inline>
-						<Button icon='Add' variant="normal" onClick={addNewLatLong}>Add new item</Button>
-						<Button icon='Remove' variant="normal" onClick={() => removeIdx(vertices.length - 1)} disabled={vertices.length < 1}>Remove last item</Button>
+						<Button icon={Add} variant="normal" onClick={addNewLatLong}>Add new item</Button>
+						<Button icon={Remove} variant="normal" onClick={() => removeIdx(vertices.length - 1)} disabled={vertices.length < 1}>Remove last item</Button>
 					</Inline>
 				</Box>
 			</Container>

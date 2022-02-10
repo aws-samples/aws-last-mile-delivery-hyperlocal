@@ -255,7 +255,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 					longitude={d.long}
 					color={d.color}
 					data={{ originId: d.id }}
-					iconName='originMenuOutlined'
+					iconName='TripOriginOutlined'
 				/>))}
 				{destinationPins && destinationPins.map((d: any) => (
 					<MapPin
