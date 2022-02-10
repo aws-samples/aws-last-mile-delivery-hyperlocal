@@ -1,0 +1,34 @@
+{
+  "name": "@prototype/instant-delivery-provider",
+  "description": "Instant Delivery provider implementation",
+  "version": "0.0.0-alpha.0",
+  "license": "MIT-0",
+  "private": true,
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "homepage": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.json",
+    "watch": "yarn build --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@prototype/common": "0.0.0-alpha.0",
+    "@prototype/lambda-common": "0.0.0-alpha.0"
+  },
+  "peerDependencies": {
+    "aws-cdk-lib": "^2.10.0",
+    "constructs": "^10.0.0",
+    "typescript": "^4.5.5"
+  }
+}

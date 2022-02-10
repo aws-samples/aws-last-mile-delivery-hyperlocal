@@ -16,4 +16,4 @@
  *********************************************************************************************************************/
 export * from './ExamplePollingProvider'
 export * from './ExampleWebhookProvider'
-export * from './InternalWebhookProvider'
+export * from './InstantDeliveryProvider'

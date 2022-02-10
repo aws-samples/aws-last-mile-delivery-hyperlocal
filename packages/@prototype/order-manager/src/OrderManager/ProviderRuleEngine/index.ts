@@ -43,7 +43,7 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 
 		const pollingProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'PollingProviderSecret', providersConfig.ExamplePollingProvider.apiKeySecretName)
 		const webhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'WebhookProviderSecret', providersConfig.ExampleWebhookProvider.apiKeySecretName)
-		const internalProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InternalProviderSecret', providersConfig.InternalWebhookProvider.apiKeySecretName)
+		const instantDeliveryProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InstantDeliverySecret', providersConfig.InstantDeliveryProvider.apiKeySecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'ProviderRuleEngineLambda'),
@@ -58,8 +58,8 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 				EXAMPLE_POLLING_PROVIDER_URL: providerApiUrls.ExamplePollingProvider.url,
 				EXAMPLE_WEBHOOK_PROVIDER_SECRET_NAME: providersConfig.ExampleWebhookProvider.apiKeySecretName,
 				EXAMPLE_WEBHOOK_PROVIDER_URL: providerApiUrls.ExampleWebhookProvider.url,
-				INTERNAL_WEBHOOK_PROVIDER_SECRET_NAME: providersConfig.InternalWebhookProvider.apiKeySecretName,
-				INTERNAL_WEBHOOK_PROVIDER_URL: providerApiUrls.InternalWebhookProvider.url,
+				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: providersConfig.InstantDeliveryProvider.apiKeySecretName,
+				INSTANT_DELIVERY_PROVIDER_URL: providerApiUrls.InstantDeliveryProvider.url,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({
@@ -80,7 +80,7 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 					resources: [
 						`${pollingProviderSecret.secretArn}*`,
 						`${webhookProviderSecret.secretArn}*`,
-						`${internalProviderSecret.secretArn}*`,
+						`${instantDeliveryProviderSecret.secretArn}*`,
 					],
 				}),
 			],

@@ -62,15 +62,15 @@ const Simulations: React.FC = () => {
 		providers: {
 			ExamplePollingProvider: {},
 			ExampleWebhookProvider: {},
-			InternalWebhookProvider: {},
+			InstantDeliveryProvider: {},
 		},
 		orderExecutionTime: {
 			ExamplePollingProvider: 0,
 			ExampleWebhookProvider: 0,
-			InternalWebhookProvider: 0,
+			InstantDeliveryProvider: 0,
 		},
 		errors: {
-			InternalWebhookProvider: 0,
+			InstantDeliveryProvider: 0,
 		},
 		ordersPerDriver: {},
 	})
@@ -222,9 +222,9 @@ const Simulations: React.FC = () => {
 								position="right"
 								size="small"
 								triggerType="text"
-								content={`${Math.floor(status.orderExecutionTime.InternalWebhookProvider / 1000)} seconds`}
+								content={`${Math.floor(status.orderExecutionTime.InstantDeliveryProvider / 1000)} seconds`}
 							>
-								<KeyValuePair label='Internal Provider (Impl.)' value={dayjs.duration(status.orderExecutionTime.InternalWebhookProvider).humanize()} />
+								<KeyValuePair label='Instant Delivery Provider (Impl.)' value={dayjs.duration(status.orderExecutionTime.InstantDeliveryProvider).humanize()} />
 							</Popover>
 						</Inline>
 					</Container>

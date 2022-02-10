@@ -35,7 +35,7 @@ export class ExternalWebhookInvokerStack extends Construct {
 			externalOrderFinalisedIndex,
 		} = props
 
-		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InternalWebhookSecret', exampleWebhookApiSecretName)
+		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'ExternalWebhookSecret', exampleWebhookApiSecretName)
 
 		const webhookInvoker = new lambda.Function(this, 'ExternalWebhookInvoker', {
 			functionName: namespaced(this, 'WebhookInvoker'),

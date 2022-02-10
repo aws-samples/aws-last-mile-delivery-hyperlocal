@@ -20,7 +20,7 @@ const services = {
 	orderManagerService: process.env.ORDER_MANAGER_SERVICE_NAME,
 	examplePollingProviderService: process.env.EXAMPLE_POLLING_PROVIDER_SERVICE_NAME,
 	exampleWebhookProviderService: process.env.EXAMPLE_WEBHOOK_PROVIDER_SERVICE_NAME,
-	internalWebhookProviderService: process.env.INTERNAL_WEBHOOK_PROVIDER_SERVICE_NAME,
+	instantDeliveryWebhookProviderService: process.env.INSTANT_DELIVERY_PROVIDER_SERVICE_NAME,
 	dispatchEngineService: process.env.DISPATCH_ENGINE_SERVICE,
 }
 
@@ -28,6 +28,6 @@ module.exports = {
 	...services,
 	pollingProviderName: process.env.EXAMPLE_POLLING_PROVIDER_NAME,
 	webhookProviderName: process.env.EXAMPLE_WEBHOOK_PROVIDER_NAME,
-	internalProviderName: process.env.INTERNAL_WEBHOOK_PROVIDER_NAME,
+	instantDeliveryProviderName: process.env.INSTANT_DELIVERY_PROVIDER_NAME,
 	supportedServices: Object.keys(services).map(q => services[q]),
 }

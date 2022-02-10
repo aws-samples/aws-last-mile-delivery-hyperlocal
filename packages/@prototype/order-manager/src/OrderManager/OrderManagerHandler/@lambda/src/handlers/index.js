@@ -26,5 +26,5 @@ module.exports = {
 	// given that they share the same message interface
 	[config.examplePollingService]: provider(config.examplePollingService),
 	[config.exampleWehookService]: provider(config.exampleWehookService),
-	[config.internalWebhookService]: provider(config.internalWebhookService),
+	[config.instantDeliveryService]: provider(config.instantDeliveryService),
 }

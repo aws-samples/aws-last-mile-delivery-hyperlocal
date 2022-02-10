@@ -71,9 +71,9 @@ export class CustomResourcesStack extends NestedStack {
 				secret: providersConfig.ExampleWebhookProvider.apiKeySecretName,
 			},
 			{
-				keyArn: providerNestedStack.internalWebhookProvider.apiKey.keyArn,
-				keyId: providerNestedStack.internalWebhookProvider.apiKey.keyId,
-				secret: providersConfig.InternalWebhookProvider.apiKeySecretName,
+				keyArn: providerNestedStack.instantDeliveryWebhookProvider.apiKey.keyArn,
+				keyId: providerNestedStack.instantDeliveryWebhookProvider.apiKey.keyId,
+				secret: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 			},
 		]
 

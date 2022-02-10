@@ -60,7 +60,7 @@ export class SimulatorMainStack extends Stack {
 					geoPolygonTable,
 					orderTable,
 					dispatcherAssignmentsTable,
-					internalProviderOrders,
+					instantDeliveryProviderOrders,
 				},
 				backendBaseNestedStack: {
 					vpcNetworking,
@@ -170,7 +170,7 @@ export class SimulatorMainStack extends Stack {
 
 			orderTable,
 			dispatcherAssignmentsTable,
-			internalProviderOrdersTable: internalProviderOrders,
+			instantDeliveryProviderOrdersTable: instantDeliveryProviderOrders,
 
 			iotEndpointAddress,
 		})

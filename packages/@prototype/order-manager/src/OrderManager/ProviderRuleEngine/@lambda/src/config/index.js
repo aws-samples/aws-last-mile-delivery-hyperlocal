@@ -25,8 +25,8 @@ module.exports = {
 		secretName: process.env.EXAMPLE_WEBHOOK_PROVIDER_SECRET_NAME,
 		url: process.env.EXAMPLE_WEBHOOK_PROVIDER_URL,
 	},
-	InternalWebhookProvider: {
-		secretName: process.env.INTERNAL_WEBHOOK_PROVIDER_SECRET_NAME,
-		url: process.env.INTERNAL_WEBHOOK_PROVIDER_URL,
+	InstantDeliveryProvider: {
+		secretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
+		url: process.env.INSTANT_DELIVERY_PROVIDER_URL,
 	},
 }

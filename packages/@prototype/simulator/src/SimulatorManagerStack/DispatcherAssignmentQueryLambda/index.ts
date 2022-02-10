@@ -27,7 +27,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly dispatcherAssignmentsTable: ddb.ITable
-	readonly internalProviderOrdersTable: ddb.ITable
+	readonly instantDeliveryProviderOrdersTable: ddb.ITable
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -36,7 +36,7 @@ export class DispatcherAssignmentQueryLambda extends DeclaredLambdaFunction<Envi
 	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
 		const {
 			dispatcherAssignmentsTable,
-			internalProviderOrdersTable,
+			instantDeliveryProviderOrdersTable,
 		} = props.dependencies
 
 		const declaredProps: TDeclaredProps = {
@@ -47,11 +47,11 @@ export class DispatcherAssignmentQueryLambda extends DeclaredLambdaFunction<Envi
 			timeout: Duration.minutes(2),
 			environment: {
 				ASSIGNMENTS_TABLE: dispatcherAssignmentsTable.tableName,
-				ORDER_TABLE: internalProviderOrdersTable.tableName,
+				ORDER_TABLE: instantDeliveryProviderOrdersTable.tableName,
 			},
 			initialPolicy: [
 				readDDBTablePolicyStatement(dispatcherAssignmentsTable.tableArn),
-				readDDBTablePolicyStatement(internalProviderOrdersTable.tableArn),
+				readDDBTablePolicyStatement(instantDeliveryProviderOrdersTable.tableArn),
 			],
 		}
 

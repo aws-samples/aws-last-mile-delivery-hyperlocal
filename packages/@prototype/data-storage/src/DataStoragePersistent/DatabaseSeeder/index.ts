@@ -132,7 +132,7 @@ export class DatabaseSeeder extends Construct {
 				priority: 20,
 			},
 			{
-				name: 'InternalProvider',
+				name: 'InstantDeliveryProvider',
 				conditions: {
 					any: [
 						{
@@ -176,9 +176,9 @@ export class DatabaseSeeder extends Construct {
 					],
 				},
 				event: {
-					type: 'internal-provider-triggered',
+					type: 'instant-delivery-provider-triggered',
 					params: {
-						provider: 'InternalWebhookProvider',
+						provider: 'InstantDeliveryProvider',
 					},
 				},
 				priority: 20,
