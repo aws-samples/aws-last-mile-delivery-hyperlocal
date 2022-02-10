@@ -24,13 +24,13 @@ export const SERVICE_NAME = {
 	ORIGIN_SERVICE: 'com.aws.proto.origin',
 	EXAMPLE_POLLING_PROVIDER_SERVICE: 'com.aws.proto.provider.examplePollingProvider',
 	EXAMPLE_WEBHOOK_PROVIDER_SERVICE: 'com.aws.proto.provider.exampleWebhookProvider',
-	INTERNAL_WEBHOOK_PROVIDER_SERVICE: 'com.aws.proto.provider.internalWebhookProvider',
+	INSTANT_DELIVERY_PROVIDER_SERVICE: 'com.aws.proto.provider.instantDeliveryProvider',
 }
 
 export const PROVIDER_NAME = {
 	EXAMPLE_POLLING_PROVIDER: 'ExamplePollingProvider',
 	EXAMPLE_WEBHOOK_PROVIDER: 'ExampleWebhookProvider',
-	INTERNAL_WEBHOOK_PROVIDER: 'InternalWebhookProvider',
+	INSTANT_DELIVERY_PROVIDER: 'InstantDeliveryProvider',
 }
 
 export const DEMOGRAPHIC_AREA = {

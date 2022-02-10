@@ -45,7 +45,7 @@ export interface BackendStackProps extends StackProps {
 		MockPollingProvider: ExternalProviderType
 		MockWebhookProvider: ExternalProviderType
 	}
-	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
+	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 	readonly geoTrackingApiKeySecretName: string
 	readonly graphhopperDockerRepoName: string
@@ -86,9 +86,9 @@ export class BackendStack extends Stack {
 					demographicAreaDispatchSettings,
 					dispatcherAssignmentsTable,
 					demographicAreaProviderEngineSettings,
-					internalProviderLocks,
-					internalProviderOrders,
-					internalProviderOrdersStatusIndex,
+					instantDeliveryProviderLocks,
+					instantDeliveryProviderOrders,
+					instantDeliveryProviderOrdersStatusIndex,
 				},
 				backendBaseNestedStack: {
 					vpcNetworking,
@@ -101,7 +101,7 @@ export class BackendStack extends Stack {
 			deliveryAppConfig,
 			pollingProviderSettings,
 			webhookProviderSettings,
-			internalWebhookProviderSettings,
+			instantDeliveryProviderSettings,
 			providersConfig,
 			externalProviderConfig,
 			env,
@@ -185,13 +185,13 @@ export class BackendStack extends Stack {
 			eventBus: microServiceNestedStack.eventBus,
 			lambdaLayers: microServiceNestedStack.lambdaLayers,
 			redisCluster: liveDataCache.redisCluster,
-			internalProviderOrders,
-			internalProviderOrdersStatusIndex,
+			instantDeliveryProviderOrders,
+			instantDeliveryProviderOrdersStatusIndex,
 			pollingProviderSettings,
 			webhookProviderSettings,
 			externalProviderConfig,
-			internalWebhookProviderSettings,
-			internalProviderLocks,
+			instantDeliveryProviderSettings,
+			instantDeliveryProviderLocks,
 			dispatchEngineLB: dispatcherStack.dispatcherLB,
 			providersConfig,
 			backendEcsCluster,
@@ -210,7 +210,7 @@ export class BackendStack extends Stack {
 			redisCluster: liveDataCache.redisCluster,
 			orderManagerSettings,
 			providerApiUrls: {
-				InternalWebhookProvider: providerNestedStack.internalWebhookProvider.apiGwInstance,
+				InstantDeliveryProvider: providerNestedStack.instantDeliveryWebhookProvider.apiGwInstance,
 				ExampleWebhookProvider: providerNestedStack.exampleWebhookProvider.apiGwInstance,
 				ExamplePollingProvider: providerNestedStack.examplePollingProvider.apiGwInstance,
 			},

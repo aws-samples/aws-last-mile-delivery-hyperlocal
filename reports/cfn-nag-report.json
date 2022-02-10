@@ -734,11 +734,11 @@
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderorderstatusorderIdGETDA9F1BD8",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercancelorderorderIdDELETEF36357B0",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercallbackPOST5B983D75",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderANY85B8A564",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderrequestorderfulfillmentPOST70A276EA",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderorderstatusorderIdGETDAADE814",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProvidercancelorderorderIdDELETEED541754",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProvidercallbackPOST0D170ACF"
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderANY85B8A564",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderrequestorderfulfillmentPOST70A276EA",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderorderstatusorderIdGETDAADE814",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercancelorderorderIdDELETEED541754",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercallbackPOST0D170ACF"
           ],
           "line_numbers": [
             816,
@@ -781,7 +781,7 @@
           "logical_resource_ids": [
             "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderDeploymentStageprod577E8B25",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderDeploymentStageprod0FC4087A",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderDeploymentStageprod9647C981"
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderDeploymentStageprod9647C981"
           ],
           "line_numbers": [
             753,
@@ -875,10 +875,10 @@
             "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
             "ExampleWebhookProviderCancelOrderLambda941062B6",
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "InternalWebhookProviderInternalCallbackLambda2DD96B55",
-            "InternalWebhookProviderRequestOrderFulfillmentLambda7E376774",
-            "InternalWebhookProviderGetOrderStatusLambda999C94C0",
-            "InternalWebhookProviderCancelOrderLambdaD0CDF432",
+            "InstantDeliveryProviderInternalCallbackLambda2DD96B55",
+            "InstantDeliveryProviderRequestOrderFulfillmentLambda7E376774",
+            "InstantDeliveryProviderGetOrderStatusLambda999C94C0",
+            "InstantDeliveryProviderCancelOrderLambdaD0CDF432",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
             "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
             "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
@@ -968,10 +968,10 @@
             "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
             "ExampleWebhookProviderCancelOrderLambda941062B6",
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "InternalWebhookProviderInternalCallbackLambda2DD96B55",
-            "InternalWebhookProviderRequestOrderFulfillmentLambda7E376774",
-            "InternalWebhookProviderGetOrderStatusLambda999C94C0",
-            "InternalWebhookProviderCancelOrderLambdaD0CDF432",
+            "InstantDeliveryProviderInternalCallbackLambda2DD96B55",
+            "InstantDeliveryProviderRequestOrderFulfillmentLambda7E376774",
+            "InstantDeliveryProviderGetOrderStatusLambda999C94C0",
+            "InstantDeliveryProviderCancelOrderLambdaD0CDF432",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
             "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
             "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
@@ -1057,7 +1057,7 @@
           "logical_resource_ids": [
             "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderApiKeyExamplePollingProviderZvwSX6669D844A",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderApiKeyExampleWebhookProvidernePWC8F2F0EBF",
-            "InternalWebhookProviderProviderApiGwInstanceInternalWebhookProviderApiKeyInternalWebhookProviderZ16H1Vw485F9B46",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderApiKeyInstantDeliveryProviderZ16H1Vw485F9B46",
             "GraphhopperSetupGraphhopperALB4E50D909",
             "DriverDataIngestStreamIdB09121CE"
           ],

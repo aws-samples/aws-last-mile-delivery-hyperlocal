@@ -31,13 +31,13 @@
 	"providersConfig": {
 		"ExamplePollingProvider": {},
 		"ExampleWebhookProvider": {},
-		"InternalWebhookProvider": {}
+		"InstantDeliveryProvider": {}
 	},
 	"orderManagerSettings": {
 		"providerTimeoutInMinutes": 45,
 		"originTimeoutInMinutes": 5
 	},
-	"internalWebhookProviderSettings": {
+	"instantDeliveryProviderSettings": {
 		"driverAcknowledgeTimeoutInSeconds": 30,
 		"orderIngestMaxBatchingWindowMs": 60000,
 		"orderCancellationTimeoutInSeconds": 1500,

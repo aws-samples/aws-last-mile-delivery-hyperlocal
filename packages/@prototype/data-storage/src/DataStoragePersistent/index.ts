@@ -33,9 +33,9 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly orderTable: ddb.ITable
 
-	public readonly internalProviderOrders: ddb.ITable
+	public readonly instantDeliveryProviderOrders: ddb.ITable
 
-	public readonly internalProviderOrdersStatusIndex: string
+	public readonly instantDeliveryProviderOrdersStatusIndex: string
 
 	public readonly dispatcherAssignmentsTable: ddb.ITable
 
@@ -43,7 +43,7 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly demographicAreaProviderEngineSettings: ddb.ITable
 
-	public readonly internalProviderLocks: ddb.ITable
+	public readonly instantDeliveryProviderLocks: ddb.ITable
 
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
@@ -93,8 +93,8 @@ export class DataStoragePersistent extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		const internalProviderOrders = new ddb.Table(this, 'InternalProviderOrders', {
-			tableName: namespaced(this, 'internal-provider-orders'),
+		const instantDeliveryProviderOrders = new ddb.Table(this, 'InstantDeliveryProviderOrders', {
+			tableName: namespaced(this, 'instant-delivery-provider-orders'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -104,9 +104,9 @@ export class DataStoragePersistent extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		const internalProviderOrdersStatusIndex = 'idx-internal-provider-orders-status'
-		internalProviderOrders.addGlobalSecondaryIndex({
-			indexName: internalProviderOrdersStatusIndex,
+		const instantDeliveryProviderOrdersStatusIndex = 'idx-instant-delivery-provider-orders-status'
+		instantDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: instantDeliveryProviderOrdersStatusIndex,
 			partitionKey: {
 				name: 'status',
 				type: ddb.AttributeType.STRING,
@@ -117,8 +117,8 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		this.internalProviderOrdersStatusIndex = internalProviderOrdersStatusIndex
-		this.internalProviderOrders = internalProviderOrders
+		this.instantDeliveryProviderOrdersStatusIndex = instantDeliveryProviderOrdersStatusIndex
+		this.instantDeliveryProviderOrders = instantDeliveryProviderOrders
 
 		this.demographicAreaDispatchSettings = new ddb.Table(this, 'DemographicAreaDispatchSettings', {
 			tableName: namespaced(this, 'demographic-area-dispatch-settings'),
@@ -142,8 +142,8 @@ export class DataStoragePersistent extends NestedStack {
 			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.internalProviderLocks = new ddb.Table(this, 'InternalProviderLocks', {
-			tableName: namespaced(this, 'internal-provider-locks'),
+		this.instantDeliveryProviderLocks = new ddb.Table(this, 'InstantDeliveryProviderLocks', {
+			tableName: namespaced(this, 'inteinstant-delivery-provider-locks'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',

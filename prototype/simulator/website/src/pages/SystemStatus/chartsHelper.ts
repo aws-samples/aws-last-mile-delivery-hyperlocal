@@ -32,7 +32,7 @@ const getProviderPieOptions = (status: any): any => {
 				data: [
 					{ value: status.ordersToProvider.examplepollingprovider, name: 'Polling Provider (Mock)' },
 					{ value: status.ordersToProvider.examplewebhookprovider, name: 'Webhook Provider (Mock)' },
-					{ value: status.ordersToProvider.internalwebhookprovider, name: 'Internal Webhook Provider (Implementation)' },
+					{ value: status.ordersToProvider.instantdeliveryprovider, name: 'Instant Delivery Provider (Implementation)' },
 				],
 			},
 		],
@@ -140,7 +140,7 @@ const getProviderDistributionOptions = (status: any): any => {
 		xAxis: [
 			{
 				type: 'category',
-				data: ['Polling Provider (Mock)', 'Webhook Provider (Mock)', 'Internal Provider'],
+				data: ['Polling Provider (Mock)', 'Webhook Provider (Mock)', 'Instnat Delivery Provider'],
 			},
 		],
 		yAxis: [
@@ -165,7 +165,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.requested || 0,
 					status.providers.ExampleWebhookProvider.requested || 0,
-					status.providers.InternalWebhookProvider.requested || 0,
+					status.providers.InstantDeliveryProvider.requested || 0,
 				],
 			},
 			{
@@ -188,10 +188,10 @@ const getProviderDistributionOptions = (status: any): any => {
 						(status.providers.ExampleWebhookProvider.delivering || 0)
 					),
 					(
-						(status.providers.InternalWebhookProvider.driver_assigned || 0) +
-						(status.providers.InternalWebhookProvider.picking_up_goods || 0) +
-						(status.providers.InternalWebhookProvider.arrived_at_origin || 0) +
-						(status.providers.InternalWebhookProvider.delivering || 0)
+						(status.providers.InstantDeliveryProvider.driver_assigned || 0) +
+						(status.providers.InstantDeliveryProvider.picking_up_goods || 0) +
+						(status.providers.InstantDeliveryProvider.arrived_at_origin || 0) +
+						(status.providers.InstantDeliveryProvider.delivering || 0)
 					),
 				],
 			},
@@ -206,7 +206,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.driver_assigned || 0,
 					status.providers.ExampleWebhookProvider.driver_assigned || 0,
-					status.providers.InternalWebhookProvider.driver_assigned || 0,
+					status.providers.InstantDeliveryProvider.driver_assigned || 0,
 				],
 			},
 			{
@@ -220,7 +220,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.picking_up_goods || 0,
 					status.providers.ExampleWebhookProvider.picking_up_goods || 0,
-					status.providers.InternalWebhookProvider.picking_up_goods || 0,
+					status.providers.InstantDeliveryProvider.picking_up_goods || 0,
 				],
 			},
 			{
@@ -234,7 +234,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.arrived_at_origin || 0,
 					status.providers.ExampleWebhookProvider.arrived_at_origin || 0,
-					status.providers.InternalWebhookProvider.arrived_at_origin || 0,
+					status.providers.InstantDeliveryProvider.arrived_at_origin || 0,
 				],
 			},
 			{
@@ -248,7 +248,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.delivering || 0,
 					status.providers.ExampleWebhookProvider.delivering || 0,
-					status.providers.InternalWebhookProvider.delivering || 0,
+					status.providers.InstantDeliveryProvider.delivering || 0,
 				],
 			},
 			{
@@ -269,9 +269,9 @@ const getProviderDistributionOptions = (status: any): any => {
 						(status.providers.ExampleWebhookProvider.rejected || 0)
 					),
 					(
-						(status.providers.InternalWebhookProvider.delivered || 0) +
-						(status.providers.InternalWebhookProvider.cancelled || 0) +
-						(status.providers.InternalWebhookProvider.rejected || 0)
+						(status.providers.InstantDeliveryProvider.delivered || 0) +
+						(status.providers.InstantDeliveryProvider.cancelled || 0) +
+						(status.providers.InstantDeliveryProvider.rejected || 0)
 					),
 				],
 			},
@@ -286,7 +286,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.delivered || 0,
 					status.providers.ExampleWebhookProvider.delivered || 0,
-					status.providers.InternalWebhookProvider.delivered || 0,
+					status.providers.InstantDeliveryProvider.delivered || 0,
 				],
 			},
 			{
@@ -300,7 +300,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.cancelled || 0,
 					status.providers.ExampleWebhookProvider.cancelled || 0,
-					status.providers.InternalWebhookProvider.cancelled || 0,
+					status.providers.InstantDeliveryProvider.cancelled || 0,
 				],
 			},
 			{
@@ -314,7 +314,7 @@ const getProviderDistributionOptions = (status: any): any => {
 				data: [
 					status.providers.ExamplePollingProvider.rejected || 0,
 					status.providers.ExampleWebhookProvider.rejected || 0,
-					status.providers.InternalWebhookProvider.rejected || 0,
+					status.providers.InstantDeliveryProvider.rejected || 0,
 				],
 			},
 		],

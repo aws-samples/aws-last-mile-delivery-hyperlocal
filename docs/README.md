@@ -20,7 +20,7 @@
 * [data-streaming](../packages/@prototype/data-streaming/README.md)
 * [dispatch-setup](../packages/@prototype/dispatch-setup/README.md)
 * [external-provider-mock](../packages/@prototype/external-provider-mock/README.md)
-* [internal-provider](../packages/@prototype/internal-provider/README.md)
+* [instant-delivery-provider](../packages/@prototype/instant-delivery-provider/README.md)
 * [lambda-functions](../packages/@prototype/lambda-functions/README.md)
 * [iot-ingestion](../packages/@prototype/iot-iot-ingestion/README.md)
 * [lambda-common](../packages/@prototype/lambda-common/README.md)

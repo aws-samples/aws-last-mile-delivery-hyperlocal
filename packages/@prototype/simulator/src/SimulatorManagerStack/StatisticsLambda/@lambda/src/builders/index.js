@@ -27,6 +27,6 @@ module.exports = {
 	[config.orderManagerService]: orderManager,
 	[config.examplePollingProviderService]: providerManager(config.pollingProviderName),
 	[config.exampleWebhookProviderService]: providerManager(config.webhookProviderName),
-	[config.internalWebhookProviderService]: providerManager(config.internalProviderName),
+	[config.instantDeliveryWebhookProviderService]: providerManager(config.instantDeliveryProviderName),
 	[config.dispatchEngineService]: dispatching,
 }

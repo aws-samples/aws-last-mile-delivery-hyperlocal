@@ -33,7 +33,7 @@ module.exports = {
 	[config.exampleWebhookProviderServiceName]: {
 		ORDER_UPDATE: externalProviderOrderUpdate,
 	},
-	[config.internalWebhookProviderServiceName]: {
+	[config.instantDeliveryWebhookProviderServiceName]: {
 		ORDER_UPDATE: updateOrder,
 	},
 	[config.geofencingSeviceName]: {

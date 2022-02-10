@@ -15,10 +15,10 @@ This package creates the following persistent resources.
 
 1. `geoPolygon` - to store polygons for complex driver search queries
 2. `order` - to store information on incoming orders
-3. `internal-provider-orders` - to store information on orders that are routed into the internal provider
+3. `instant-delivery-provider-orders` - to store information on orders that are routed into the internal provider
 4. `demAreaSettings` - to store demographic area settings for the dispatch engine
 5. `demographic-area-provider-engine-settings` - to store demographic area settings for the provider rule engine
-6. `internal-provider-locks` - table for implementing driver locking mechinanism
+6. `instant-delivery-provider-locks` - table for implementing driver locking mechinanism
 
 ### ECS Cluster
 

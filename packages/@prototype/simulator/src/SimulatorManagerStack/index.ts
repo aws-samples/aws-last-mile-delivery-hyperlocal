@@ -58,7 +58,7 @@ export interface SimulatorManagerStackProps {
 	readonly eventCreatedAtIndex: string
 	readonly geoPolygonTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
-	readonly internalProviderOrdersTable: ddb.ITable
+	readonly instantDeliveryProviderOrdersTable: ddb.ITable
 	readonly eventBus: events.EventBus
 
 	readonly lambdaRefs: { [key: string]: lambda.IFunction, }
@@ -123,7 +123,7 @@ export class SimulatorManagerStack extends Construct {
 			redisCluster,
 			lambdaLayers,
 			dispatcherAssignmentsTable,
-			internalProviderOrdersTable,
+			instantDeliveryProviderOrdersTable,
 			iotEndpointAddress,
 		} = props
 
@@ -214,7 +214,7 @@ export class SimulatorManagerStack extends Construct {
 		const dispatcherAssignmentQueryLambda = new DispatcherAssignmentQueryLambda(this, 'DispatcherAssignmentQueryLambda', {
 			dependencies: {
 				dispatcherAssignmentsTable,
-				internalProviderOrdersTable,
+				instantDeliveryProviderOrdersTable,
 			},
 		})
 

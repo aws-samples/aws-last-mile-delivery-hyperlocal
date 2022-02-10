@@ -17,8 +17,8 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_elasticache as elasticache, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
-import { ExamplePollingProvider, ExampleWebhookProvider, InternalWebhookProvider } from '@prototype/provider-impl'
-import { DispatchEngineOrchestrator, DriverEventHandler } from '@prototype/internal-provider'
+import { ExamplePollingProvider, ExampleWebhookProvider, InstantDeliveryProvider } from '@prototype/provider-impl'
+import { DispatchEngineOrchestrator, DriverEventHandler } from '@prototype/instant-delivery-provider'
 import { GraphhopperSetup } from '@prototype/dispatch-setup'
 import { ExternalProviderType } from '../../root/ExternalProviderStack'
 
@@ -26,19 +26,19 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly eventBus: events.IEventBus
-	readonly internalProviderOrders: ddb.ITable
-	readonly internalProviderLocks: ddb.ITable
+	readonly instantDeliveryProviderOrders: ddb.ITable
+	readonly instantDeliveryProviderLocks: ddb.ITable
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly pollingProviderSettings: { [key: string]: string | number, }
 	readonly webhookProviderSettings: { [key: string]: string | number, }
-	readonly internalWebhookProviderSettings: { [key: string]: string | number | boolean, }
+	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly providersConfig: { [key: string]: any, }
 	readonly externalProviderConfig: {
 		MockPollingProvider: ExternalProviderType
 		MockWebhookProvider: ExternalProviderType
 	}
-	readonly internalProviderOrdersStatusIndex: string
+	readonly instantDeliveryProviderOrdersStatusIndex: string
 	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly backendEcsCluster: ecs.ICluster
 	readonly graphhopperDockerRepoName: string
@@ -50,7 +50,7 @@ export class ProviderStack extends NestedStack {
 
 	public readonly exampleWebhookProvider: ExampleWebhookProvider
 
-	public readonly internalWebhookProvider: InternalWebhookProvider
+	public readonly instantDeliveryWebhookProvider: InstantDeliveryProvider
 
 	constructor (scope: Construct, id: string, props: ProviderStackProps) {
 		super(scope, id, props)
@@ -65,11 +65,11 @@ export class ProviderStack extends NestedStack {
 			pollingProviderSettings,
 			webhookProviderSettings,
 			externalProviderConfig,
-			internalWebhookProviderSettings,
+			instantDeliveryProviderSettings,
 			redisCluster,
-			internalProviderLocks,
-			internalProviderOrders,
-			internalProviderOrdersStatusIndex,
+			instantDeliveryProviderLocks,
+			instantDeliveryProviderOrders,
+			instantDeliveryProviderOrdersStatusIndex,
 			providersConfig,
 			dispatchEngineLB,
 			backendEcsCluster,
@@ -108,9 +108,9 @@ export class ProviderStack extends NestedStack {
 			...baseParams,
 		})
 
-		this.internalWebhookProvider = new InternalWebhookProvider(this, 'InternalWebhookProvider', {
-			internalWebhookProviderSettings,
-			internalProviderOrders,
+		this.instantDeliveryWebhookProvider = new InstantDeliveryProvider(this, 'InstantDeliveryProvider', {
+			instantDeliveryProviderSettings,
+			instantDeliveryProviderOrders,
 			...baseParams,
 		})
 
@@ -124,12 +124,12 @@ export class ProviderStack extends NestedStack {
 		const graphhopperLB = graphhopperSetup.loadBalancer
 
 		new DispatchEngineOrchestrator(this, 'DispatchEngineOrchestrator', {
-			internalProviderApi: this.internalWebhookProvider.apiGwInstance,
-			internalProviderApiSecretName: providersConfig.InternalWebhookProvider.apiKeySecretName,
-			orderBatchStream: this.internalWebhookProvider.orderBatchStream,
-			internalWebhookProviderSettings,
-			internalProviderOrders,
-			internalProviderLocks,
+			instantDeliveryProviderApi: this.instantDeliveryWebhookProvider.apiGwInstance,
+			instandDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
+			orderBatchStream: this.instantDeliveryWebhookProvider.orderBatchStream,
+			instantDeliveryProviderSettings,
+			instantDeliveryProviderOrders,
+			instantDeliveryProviderLocks,
 			eventBus,
 			dispatchEngineLB,
 			graphhopperLB,
@@ -139,13 +139,13 @@ export class ProviderStack extends NestedStack {
 		})
 
 		new DriverEventHandler(this, 'DriverEventHandler', {
-			orderBatchStream: this.internalWebhookProvider.orderBatchStream,
-			internalProviderApi: this.internalWebhookProvider.apiGwInstance,
-			internalProviderApiSecretName: providersConfig.InternalWebhookProvider.apiKeySecretName,
-			internalProviderOrdersStatusIndex,
-			internalWebhookProviderSettings,
-			internalProviderOrders,
-			internalProviderLocks,
+			orderBatchStream: this.instantDeliveryWebhookProvider.orderBatchStream,
+			instantDeliveryProviderApi: this.instantDeliveryWebhookProvider.apiGwInstance,
+			instandDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
+			instantDeliveryProviderOrdersStatusIndex,
+			instantDeliveryProviderSettings,
+			instantDeliveryProviderOrders,
+			instantDeliveryProviderLocks,
 			eventBus,
 			iotEndpointAddress,
 		})

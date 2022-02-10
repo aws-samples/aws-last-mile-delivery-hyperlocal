@@ -90,15 +90,15 @@ const execute = async () => {
 		providers: {
 			[config.webhookProviderName]: {},
 			[config.pollingProviderName]: {},
-			[config.internalProviderName]: {},
+			[config.instantDeliveryProviderName]: {},
 		},
 		orderExecutionTime: {
 			[config.webhookProviderName]: 0,
 			[config.pollingProviderName]: 0,
-			[config.internalProviderName]: 0,
+			[config.instantDeliveryProviderName]: 0,
 		},
 		errors: {
-			[config.internalProviderName]: 0,
+			[config.instantDeliveryProviderName]: 0,
 		},
 		ordersPerDriver: {},
 	}
@@ -110,11 +110,11 @@ const execute = async () => {
 	result.ordersToProvider = await getStatusCount(ORDER_TO_PROVIDER)
 	result.providers[config.webhookProviderName] = await getStatusCount(`${PROVIDER_DISTRIBUTION}:${config.webhookProviderName}`)
 	result.providers[config.pollingProviderName] = await getStatusCount(`${PROVIDER_DISTRIBUTION}:${config.pollingProviderName}`)
-	result.providers[config.internalProviderName] = await getStatusCount(`${PROVIDER_DISTRIBUTION}:${config.internalProviderName}`)
+	result.providers[config.instantDeliveryProviderName] = await getStatusCount(`${PROVIDER_DISTRIBUTION}:${config.instantDeliveryProviderName}`)
 	result.orderExecutionTime[config.webhookProviderName] = await getAverageOrderExecutionTime(`${PROVIDER_TIME}:${config.webhookProviderName}`)
 	result.orderExecutionTime[config.pollingProviderName] = await getAverageOrderExecutionTime(`${PROVIDER_TIME}:${config.pollingProviderName}`)
-	result.orderExecutionTime[config.internalProviderName] = await getAverageOrderExecutionTime(`${PROVIDER_TIME}:${config.internalProviderName}`)
-	result.errors[config.internalProviderName] = await getCounter(`${PROVIDER_ERRORS}:${config.internalProviderName}`, 'all')
+	result.orderExecutionTime[config.instantDeliveryProviderName] = await getAverageOrderExecutionTime(`${PROVIDER_TIME}:${config.instantDeliveryProviderName}`)
+	result.errors[config.instantDeliveryProviderName] = await getCounter(`${PROVIDER_ERRORS}:${config.instantDeliveryProviderName}`, 'all')
 	result.ordersPerDriver = await getOrdersPerDriverGroup(`${DISPATCH_ENGINE_STATS}:group`)
 
 	logger.log('Returning data:')
