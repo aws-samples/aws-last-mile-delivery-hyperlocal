@@ -19,7 +19,7 @@ const redis = require('redis')
 let client = null
 exports.getRedisClient = () => {
 	if (client == null) {
-		client = redis.createClient(process.env.REDIS_PORT, process.env.REDIS_HOST, { no_ready_check: true })
+		client = redis.createClient(process.env.MEMORYDB_PORT, process.env.MEMORYDB_HOST, { no_ready_check: true })
 	}
 
 	return client

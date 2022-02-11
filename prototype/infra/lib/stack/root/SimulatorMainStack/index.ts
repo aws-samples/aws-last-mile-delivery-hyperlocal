@@ -65,7 +65,7 @@ export class SimulatorMainStack extends Stack {
 				backendBaseNestedStack: {
 					vpcNetworking,
 					liveDataCache: {
-						redisCluster,
+						memoryDBCluster,
 					},
 				},
 			},
@@ -165,7 +165,7 @@ export class SimulatorMainStack extends Stack {
 
 			lambdaLayers: lambdaLayerRefs,
 			privateVpc: vpc,
-			redisCluster,
+			memoryDBCluster,
 			vpcNetworking,
 
 			orderTable,

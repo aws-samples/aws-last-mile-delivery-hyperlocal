@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
 import { Networking } from '@prototype/networking'
 import { SimulatorManagerLambda } from './SimulatorManagerLambda'
@@ -72,7 +72,7 @@ export interface SimulatorManagerStackProps {
 
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
 	readonly iotEndpointAddress: string
@@ -120,7 +120,7 @@ export class SimulatorManagerStack extends Construct {
 			destinationUserPassword,
 			privateVpc,
 			vpcNetworking,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			dispatcherAssignmentsTable,
 			instantDeliveryProviderOrdersTable,
@@ -169,7 +169,7 @@ export class SimulatorManagerStack extends Construct {
 			privateVpc,
 			vpcNetworking,
 			lambdaLayers,
-			redisCluster,
+			memoryDBCluster,
 			eventBus,
 			iotEndpointAddress,
 		})
@@ -192,7 +192,7 @@ export class SimulatorManagerStack extends Construct {
 			privateVpc,
 			vpcNetworking,
 			lambdaLayers,
-			redisCluster,
+			memoryDBCluster,
 			eventBus,
 			iotEndpointAddress,
 		})
@@ -206,7 +206,7 @@ export class SimulatorManagerStack extends Construct {
 		const statisticsLambdaSimulator = new StatisticsLambda(this, 'StatsSimulatorLambda', {
 			eventBus,
 			privateVpc,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			vpcNetworking,
 		})

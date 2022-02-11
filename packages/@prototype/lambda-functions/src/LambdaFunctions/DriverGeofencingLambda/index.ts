@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
@@ -26,7 +26,7 @@ import { SERVICE_NAME } from '@prototype/common'
 export interface DriverGeofencingtLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly openSearchDomain: opensearchservice.IDomain
 	readonly eventBus: events.EventBus
@@ -34,8 +34,8 @@ export interface DriverGeofencingtLambdaExternalDeps {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-	readonly REDIS_HOST: string
-	readonly REDIS_PORT: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
@@ -52,7 +52,7 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 			externalDeps: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers,
 				eventBus,
 			},
@@ -65,8 +65,8 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.GEOFENCING_SERVICE,
 			},

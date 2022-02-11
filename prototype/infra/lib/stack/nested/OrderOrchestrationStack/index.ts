@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
 import * as net from '@prototype/networking'
 import { OrderManagerStack } from '@prototype/order-manager'
@@ -30,7 +30,7 @@ export interface OrderOrchestrationStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: net.Networking
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
 
@@ -48,7 +48,7 @@ export class OrderOrchestrationStack extends NestedStack {
 			vpcNetworking,
 			vpc,
 			lambdaLayers,
-			redisCluster,
+			memoryDBCluster,
 			orderManagerSettings,
 			demographicAreaProviderEngineSettings,
 		} = props
@@ -61,7 +61,7 @@ export class OrderOrchestrationStack extends NestedStack {
 			vpcNetworking,
 			privateVpc: vpc,
 			lambdaLayers,
-			redisCluster,
+			memoryDBCluster,
 			orderManagerSettings,
 			demographicAreaProviderEngineSettings,
 		})

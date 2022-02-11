@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_lambda as lambda, aws_iam as iam, aws_stepfunctions as stepfunctions, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb } from 'aws-cdk-lib'
+import { Duration, aws_lambda as lambda, aws_iam as iam, aws_stepfunctions as stepfunctions, aws_ec2 as ec2, aws_memorydb as memorydb, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -32,7 +32,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly orderOrchestrator: stepfunctions.IStateMachine
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 }
 
@@ -45,7 +45,7 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 			orderOrchestrator,
 			privateVpc,
 			vpcNetworking,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 		} = props.dependencies
 
@@ -56,8 +56,8 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(120),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				ORDER_TABLE: orderTable.tableName,
 				ORDER_ORCHESTRATOR_STATE_MACHINE: orderOrchestrator.stateMachineArn,
 				ORDER_SERVICE_NAME: SERVICE_NAME.ORDER_SERVICE,

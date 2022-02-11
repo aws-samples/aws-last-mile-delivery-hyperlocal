@@ -23,7 +23,7 @@ import * as path from 'path'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MonitoringProps {
     readonly esEndpoint: string
-    readonly redisEndpoint: string
+    readonly memoryDBEndpoint: string
     readonly cognitoEndpoint: string
     readonly vpc: ec2.IVpc
     readonly securityGroup: ec2.ISecurityGroup
@@ -146,17 +146,17 @@ export class Monitoring extends Construct {
 			}),
 		)
 
-		let { esEndpoint, cognitoEndpoint, redisEndpoint } = props
+		let { esEndpoint, cognitoEndpoint, memoryDBEndpoint } = props
 		esEndpoint = esEndpoint.replace('https://', '')
 		cognitoEndpoint = cognitoEndpoint.replace('https://', '')
-		redisEndpoint = redisEndpoint.replace('https://', '')
+		memoryDBEndpoint = memoryDBEndpoint.replace('https://', '')
 
 		let nginxConfString = fs.readFileSync(path.join(__dirname, './assets/nginx.conf'), { encoding: 'utf-8' })
 		nginxConfString = nginxConfString.replace('__ES_ENDPOINT__', esEndpoint)
 		nginxConfString = nginxConfString.replace('__INTERNAL_COGNITO_ENDPOINT__', cognitoEndpoint)
 
 		let redisCommanderPm2Config = fs.readFileSync(path.join(__dirname, './assets/pm2.json'), { encoding: 'utf-8' })
-		redisCommanderPm2Config = redisCommanderPm2Config.replace('__REDIS_HOST__', redisEndpoint)
+		redisCommanderPm2Config = redisCommanderPm2Config.replace('__MEMORYDB_HOST__', memoryDBEndpoint)
 
 		const resourceConfigs = [
 			{

@@ -42,11 +42,11 @@ import { LambdaFunctions } from '@prototype/lambda-functions';
 const lambdaFunctions = new LambdaFunctions(this, 'LambdaFunctions', {
     vpc,
     lambdaSecurityGroups: [securityGroups.lambda],
-    redisCluster,
+    memoryDBCluster,
     lambdaLayers,
     cleanupScheduleMins: 1,
     driverDataIngestStream: driverDataStream.driverDataIngestStream,
-    driverLocationUpdateTTLInMs: redisConfig.driverLocationUpdateTTLInMS as number,
+    driverLocationUpdateTTLInMs: memoryDBConfig.driverLocationUpdateTTLInMS as number,
     openSearchDomain: elasticSearchCluster,
     eventBus,
     geofencingBatchSize: kinesisConfig.geofencingBatchSize as number,

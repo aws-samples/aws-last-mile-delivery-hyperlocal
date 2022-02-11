@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -23,8 +23,8 @@ import { SERVICE_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-	readonly REDIS_HOST: string
-	readonly REDIS_PORT: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 	readonly EVENT_BUS_NAME: string
 	readonly SERVICE_NAME: string
 }
@@ -32,7 +32,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly eventBus: events.EventBus
 }
@@ -44,7 +44,7 @@ export class OriginStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 		const {
 			vpc,
 			lambdaSecurityGroups,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			eventBus,
 		} = props.dependencies
@@ -56,8 +56,8 @@ export class OriginStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				EVENT_BUS_NAME: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.ORIGIN_SERVICE,
 			},

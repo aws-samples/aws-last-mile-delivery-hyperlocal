@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_elasticache as elasticache, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_memorydb as memorydb, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { ExamplePollingProvider, ExampleWebhookProvider, InstantDeliveryProvider } from '@prototype/provider-impl'
 import { DispatchEngineOrchestrator, DriverEventHandler } from '@prototype/instant-delivery-provider'
@@ -29,7 +29,7 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly instantDeliveryProviderOrders: ddb.ITable
 	readonly instantDeliveryProviderLocks: ddb.ITable
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly pollingProviderSettings: { [key: string]: string | number, }
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
@@ -66,7 +66,7 @@ export class ProviderStack extends NestedStack {
 			webhookProviderSettings,
 			externalProviderConfig,
 			instantDeliveryProviderSettings,
-			redisCluster,
+			memoryDBCluster,
 			instantDeliveryProviderLocks,
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderOrdersStatusIndex,
@@ -96,7 +96,7 @@ export class ProviderStack extends NestedStack {
 			pollingProviderSettings,
 			externalProviderMockUrl: externalProviderConfig.MockPollingProvider.url,
 			externalProviderSecretName: externalProviderConfig.MockPollingProvider.apiKeySecretName,
-			redisCluster,
+			memoryDBCluster,
 			...baseParams,
 		})
 
@@ -104,7 +104,7 @@ export class ProviderStack extends NestedStack {
 			webhookProviderSettings,
 			externalProviderMockUrl: externalProviderConfig.MockWebhookProvider.url,
 			externalProviderSecretName: externalProviderConfig.MockWebhookProvider.apiKeySecretName,
-			redisCluster,
+			memoryDBCluster,
 			...baseParams,
 		})
 
