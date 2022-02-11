@@ -15,29 +15,36 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_opensearchservice as opensearchservice, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { aws_opensearchservice as opensearchservice, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import { OpenSearchCluster, OpenSearchClusterProps } from './OpenSearchCluster'
-import { RedisCluster, RedisClusterProps } from './RedisCluster'
+import { MemoryDBCluster, MemoryDBClusterProps } from './MemoryDBCluster'
+// import { memoryDBCluster, memoryDBClusterProps } from './memoryDBCluster'
 
 export interface LiveDataCacheProps {
-	readonly redisClusterProps: RedisClusterProps
+	readonly memoryDBClusterProps: MemoryDBClusterProps
 	readonly openSearchClusterProps: OpenSearchClusterProps
+	// readonly memoryDBClusterProps: memoryDBClusterProps
 }
 
 export class LiveDataCache extends Construct {
 	readonly openSearchDomain: opensearchservice.IDomain
 
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
+
+	// readonly memoryDBCluster: memorydb.CfnCluster
 
 	constructor (scope: Construct, id: string, props: LiveDataCacheProps) {
 		super(scope, id)
 
-		const { redisClusterProps, openSearchClusterProps } = props
+		const { memoryDBClusterProps, openSearchClusterProps } = props
 
 		const openSearchCluster = new OpenSearchCluster(this, 'OpenSearchCluster', openSearchClusterProps)
 		this.openSearchDomain = openSearchCluster.domain
 
-		const ecCluster = new RedisCluster(this, 'RedisCluster', redisClusterProps)
-		this.redisCluster = ecCluster.redisCluster
+		const memoryDBCluster = new MemoryDBCluster(this, 'MemoryDBCluster', memoryDBClusterProps)
+		this.memoryDBCluster = memoryDBCluster.cluster
+
+		// const ecCluster = new memoryDBCluster(this, 'memoryDBCluster', memoryDBClusterProps)
+		// this.memoryDBCluster = ecCluster.memoryDBCluster
 	}
 }

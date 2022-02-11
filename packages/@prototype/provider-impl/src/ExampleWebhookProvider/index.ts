@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, custom_resources as cr, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { aws_events as events, custom_resources as cr, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import { WebhookProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExampleCallbackLambda } from './lambdas/ExampleCallback'
@@ -27,7 +27,7 @@ import { GetOrderStatusLambda } from './lambdas/GetOrderStatus'
 export interface ExampleWebhookProviderProps extends VpcLambdaProps {
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly eventBus: events.IEventBus
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
 }
@@ -42,7 +42,7 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 			layers,
 			externalProviderMockUrl,
 			externalProviderSecretName,
-			redisCluster,
+			memoryDBCluster,
 		} = props
 
 		const callbackLambdaHandler = new ExampleCallbackLambda(scope, 'WebhookProvider-ExampleCallbackLambda', {
@@ -51,7 +51,7 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 				vpc,
 				lambdaSecurityGroups,
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 
@@ -63,7 +63,7 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
 				externalProviderMockUrl,
 				externalProviderSecretName,
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 
@@ -75,7 +75,7 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
 				externalProviderMockUrl,
 				externalProviderSecretName,
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 
@@ -87,7 +87,7 @@ export class ExampleWebhookProvider extends WebhookProviderBase {
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
 				externalProviderMockUrl,
 				externalProviderSecretName,
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 

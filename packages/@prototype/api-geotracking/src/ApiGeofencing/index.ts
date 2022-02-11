@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw, aws_cognito as cognito, aws_events as events, aws_ec2 as ec2, aws_elasticache as elasticache, aws_lambda as lambda } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_events as events, aws_ec2 as ec2, aws_memorydb as memorydb, aws_lambda as lambda } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
@@ -30,7 +30,7 @@ export interface ApiGeofencingProps {
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 }
 
 export class ApiGeofencing extends Construct {
@@ -45,7 +45,7 @@ export class ApiGeofencing extends Construct {
 			userPool,
 			eventBus,
 			vpc,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			lambdaSecurityGroups,
 		} = props
@@ -60,7 +60,7 @@ export class ApiGeofencing extends Construct {
 				eventBus,
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,

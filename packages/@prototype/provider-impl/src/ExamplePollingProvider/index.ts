@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, aws_sqs as sqs, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { aws_events as events, aws_sqs as sqs, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import { PollingProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExamplePollingLambda } from './lambdas/ExamplePolling'
@@ -29,7 +29,7 @@ export interface ExamplePollingProviderProps extends VpcLambdaProps {
 	readonly eventBus: events.IEventBus
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 }
 
 export class ExamplePollingProvider extends PollingProviderBase {
@@ -42,7 +42,7 @@ export class ExamplePollingProvider extends PollingProviderBase {
 			layers,
 			externalProviderMockUrl,
 			externalProviderSecretName,
-			redisCluster,
+			memoryDBCluster,
 		} = props
 
 		const pollingLambdaCreator = (queue: sqs.IQueue): ExamplePollingLambda => {
@@ -55,7 +55,7 @@ export class ExamplePollingProvider extends PollingProviderBase {
 					pendingOrdersQueue: queue,
 					externalProviderMockUrl,
 					externalProviderSecretName,
-					redisCluster,
+					memoryDBCluster,
 				},
 			})
 		}
@@ -70,7 +70,7 @@ export class ExamplePollingProvider extends PollingProviderBase {
 					pendingOrdersQueue: queue,
 					externalProviderMockUrl,
 					externalProviderSecretName,
-					redisCluster,
+					memoryDBCluster,
 				},
 			})
 		}
@@ -83,7 +83,7 @@ export class ExamplePollingProvider extends PollingProviderBase {
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
 				externalProviderMockUrl,
 				externalProviderSecretName,
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 
@@ -95,7 +95,7 @@ export class ExamplePollingProvider extends PollingProviderBase {
 				lambdaLayers: [layers.lambdaUtilsLayer, layers.lambdaInsightsLayer, layers.redisClientLayer],
 				externalProviderMockUrl,
 				externalProviderSecretName,
-				redisCluster,
+				memoryDBCluster,
 			},
 		})
 

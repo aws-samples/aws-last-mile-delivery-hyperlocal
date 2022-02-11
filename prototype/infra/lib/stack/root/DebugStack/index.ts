@@ -55,7 +55,7 @@ export class DebugStack extends Stack {
 			vpc,
 			vpcNetworking,
 			openSearchDomain: liveDataCache.openSearchDomain,
-			redisCluster: liveDataCache.redisCluster,
+			memoryDBCluster: liveDataCache.memoryDBCluster,
 			internalUserPoolDomain,
 		})
 	}

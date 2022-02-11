@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { LambdaUtilsLayer, OpenSearchClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
@@ -30,10 +30,10 @@ export interface MicroServiceStackProps extends NestedStackProps {
 	readonly demographicAreaDispatchSettings: ddb.ITable
 	readonly userPool: cognito.IUserPool
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly openSearchDomain: opensearchservice.IDomain
 	readonly driverDataIngestStream: kinesis.IStream
-	readonly redisConfig: { [key: string]: string | number, }
+	readonly memoryDBConfig: { [key: string]: string | number, }
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
 	readonly env?: Environment
 }
@@ -61,10 +61,10 @@ export class MicroServiceStack extends NestedStack {
 			vpc,
 			userPool,
 			vpcNetworking,
-			redisCluster,
+			memoryDBCluster,
 			openSearchDomain,
 			driverDataIngestStream,
-			redisConfig,
+			memoryDBConfig,
 			kinesisConfig,
 			env,
 		} = props
@@ -104,11 +104,11 @@ export class MicroServiceStack extends NestedStack {
 		const lambdaFunctions = new LambdaFunctions(this, 'LambdaFunctions-Stack', {
 			vpc,
 			lambdaSecurityGroups: [securityGroups.lambda],
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			cleanupScheduleMins: 1,
 			driverDataIngestStream: kinesis.Stream.fromStreamArn(this, 'DriverDataIngestStreamMS', driverDataIngestStream.streamArn),
-			driverLocationUpdateTTLInMs: redisConfig.driverLocationUpdateTTLInMS as number,
+			driverLocationUpdateTTLInMs: memoryDBConfig.driverLocationUpdateTTLInMS as number,
 			openSearchDomain,
 			eventBus,
 			geofencingBatchSize: kinesisConfig.geofencingBatchSize as number,
@@ -129,7 +129,7 @@ export class MicroServiceStack extends NestedStack {
 			lambdaLayers,
 			vpc,
 			lambdaSecurityGroups: [securityGroups.lambda],
-			redisCluster,
+			memoryDBCluster,
 			geoPolygonTable,
 			// for this API only the dispatcher settings table is being used
 			demographicAreaDispatchSettings,
@@ -143,7 +143,7 @@ export class MicroServiceStack extends NestedStack {
 			lambdaLayers,
 			vpc,
 			lambdaSecurityGroups: [securityGroups.lambda],
-			redisCluster,
+			memoryDBCluster,
 			eventBus,
 		})
 

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_elasticache as elasticache, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_memorydb as memorydb, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -47,7 +47,7 @@ export interface OriginSimulatorProps {
 	readonly eventBus: events.EventBus
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly iotEndpointAddress: string
 }
@@ -83,7 +83,7 @@ export class OriginSimulatorLambda extends Construct {
 			securityGroup,
 			privateVpc,
 			vpcNetworking,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			eventBus,
 			iotEndpointAddress,
@@ -131,8 +131,8 @@ export class OriginSimulatorLambda extends Construct {
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				ORIGIN_TABLE: originTable.tableName,
 				ORIGIN_SIMULATIONS_TABLE_NAME: originSimulationsTable.tableName,
 				ORIGIN_STATS_TABLE_NAME: originStatsTable.tableName,
@@ -184,7 +184,7 @@ export class OriginSimulatorLambda extends Construct {
 				eventBus,
 				vpc: privateVpc,
 				lambdaSecurityGroups: [vpcNetworking.securityGroups.lambda],
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,

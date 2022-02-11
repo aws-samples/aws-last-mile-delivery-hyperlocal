@@ -11,7 +11,7 @@
 	},
 	"geoTrackingApiKeySecretName": "",
 	"openSearchConfig": {},
-	"redisConfig": {},
+	"memoryDBConfig": {},
 	"simulatorConfig": {},
 	"kinesisConfig": {
 		"driverLocationUpdateMaxBatchingWindowMs": 5000,

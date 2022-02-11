@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_apigateway as apigw, aws_ec2 as ec2, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_apigateway as apigw, aws_ec2 as ec2, aws_memorydb as memorydb } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { SERVICE_NAME } from '@prototype/common'
 import { OrderManagerHandlerLambda } from './OrderManagerHandler'
@@ -32,7 +32,7 @@ export interface OrderManagerStackProps {
 	readonly providerApiUrls: {[key: string]: apigw.RestApi, }
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
@@ -54,7 +54,7 @@ export class OrderManagerStack extends Construct {
 			providerApiUrls,
 			privateVpc,
 			vpcNetworking,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			orderManagerSettings,
 			demographicAreaProviderEngineSettings,
@@ -66,7 +66,7 @@ export class OrderManagerStack extends Construct {
 				eventBus,
 				privateVpc,
 				vpcNetworking,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers,
 			},
 		})
@@ -91,7 +91,7 @@ export class OrderManagerStack extends Construct {
 				orderTable,
 				privateVpc,
 				vpcNetworking,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers,
 				orderOrchestrator: this.orderManagerStepFunction,
 			},

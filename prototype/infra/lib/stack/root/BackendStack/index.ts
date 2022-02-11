@@ -35,7 +35,7 @@ import * as path from 'path'
 export interface BackendStackProps extends StackProps {
 	readonly namespace: string
 	readonly persistent: PersistentBackendStack
-	readonly redisConfig: { [key: string]: string | number, }
+	readonly memoryDBConfig: { [key: string]: string | number, }
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
 	readonly deliveryAppConfig: { [key: string]: any, }
 	readonly pollingProviderSettings: { [key: string]: string | number, }
@@ -96,7 +96,7 @@ export class BackendStack extends Stack {
 				},
 				backendEcsCluster,
 			},
-			redisConfig,
+			memoryDBConfig,
 			kinesisConfig,
 			deliveryAppConfig,
 			pollingProviderSettings,
@@ -139,10 +139,10 @@ export class BackendStack extends Stack {
 			vpc,
 			userPool,
 			vpcNetworking,
-			redisCluster: liveDataCache.redisCluster,
+			memoryDBCluster: liveDataCache.memoryDBCluster,
 			openSearchDomain: liveDataCache.openSearchDomain,
 			driverDataIngestStream: streamingNestedStack.kinesisDataStreams.driverDataIngestStream,
-			redisConfig,
+			memoryDBConfig,
 			kinesisConfig,
 			env,
 		})
@@ -184,7 +184,7 @@ export class BackendStack extends Stack {
 			vpcNetworking,
 			eventBus: microServiceNestedStack.eventBus,
 			lambdaLayers: microServiceNestedStack.lambdaLayers,
-			redisCluster: liveDataCache.redisCluster,
+			memoryDBCluster: liveDataCache.memoryDBCluster,
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderOrdersStatusIndex,
 			pollingProviderSettings,
@@ -207,7 +207,7 @@ export class BackendStack extends Stack {
 			vpc,
 			vpcNetworking,
 			lambdaLayers: microServiceNestedStack.lambdaLayers,
-			redisCluster: liveDataCache.redisCluster,
+			memoryDBCluster: liveDataCache.memoryDBCluster,
 			orderManagerSettings,
 			providerApiUrls: {
 				InstantDeliveryProvider: providerNestedStack.instantDeliveryWebhookProvider.apiGwInstance,

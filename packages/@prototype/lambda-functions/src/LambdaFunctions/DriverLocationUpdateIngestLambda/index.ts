@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
@@ -25,7 +25,7 @@ import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/
 export interface DriverLocationUpdateIngestLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
 	readonly openSearchDomain: opensearchservice.IDomain
@@ -34,8 +34,8 @@ export interface DriverLocationUpdateIngestLambdaExternalDeps {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
-	readonly REDIS_HOST: string
-	readonly REDIS_PORT: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 	readonly DOMAIN_ENDPOINT: string
 }
 
@@ -53,7 +53,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 			externalDeps: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers,
 				driverLocationUpdateTTLInMs,
 				openSearchDomain,
@@ -67,8 +67,8 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 			},

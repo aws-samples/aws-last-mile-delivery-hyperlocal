@@ -15,15 +15,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { AllowOpenSearchDelete, AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-    readonly REDIS_HOST: string
-    readonly REDIS_PORT: string
+    readonly MEMORYDB_HOST: string
+    readonly MEMORYDB_PORT: string
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
 	readonly DOMAIN_ENDPOINT: string
 }
@@ -31,7 +31,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
 	readonly openSearchDomain: opensearchservice.IDomain
@@ -44,7 +44,7 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 		const {
 			vpc,
 			lambdaSecurityGroups,
-			redisCluster,
+			memoryDBCluster,
 			lambdaLayers,
 			driverLocationUpdateTTLInMs,
 			openSearchDomain,
@@ -57,8 +57,8 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 

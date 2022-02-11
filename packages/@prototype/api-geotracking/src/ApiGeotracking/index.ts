@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_memorydb as memorydb, aws_dynamodb as ddb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
@@ -32,7 +32,7 @@ export interface ApiGeoTrackingProps {
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly geoPolygonTable: ddb.ITable
 	readonly demographicAreaDispatchSettings: ddb.ITable
 	readonly openSearchDomain: opensearchservice.IDomain
@@ -53,7 +53,7 @@ export class ApiGeoTracking extends Construct {
 			apiPrefix = 'api/geotracking',
 			lambdaLayers,
 			userPool,
-			vpc, lambdaSecurityGroups, redisCluster,
+			vpc, lambdaSecurityGroups, memoryDBCluster,
 			geoPolygonTable,
 			demographicAreaDispatchSettings,
 			openSearchDomain,
@@ -85,7 +85,7 @@ export class ApiGeoTracking extends Construct {
 			dependencies: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
@@ -116,7 +116,7 @@ export class ApiGeoTracking extends Construct {
 			dependencies: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
@@ -175,7 +175,7 @@ export class ApiGeoTracking extends Construct {
 			dependencies: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,

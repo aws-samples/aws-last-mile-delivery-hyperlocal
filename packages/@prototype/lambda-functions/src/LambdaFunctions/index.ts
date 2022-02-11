@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_events as events, aws_opensearchservice as opensearchservice, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb, aws_events as events, aws_opensearchservice as opensearchservice, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { KinesisConsumer } from '@prototype/lambda-common'
 import { DriverLocationCleanupLambda } from './DriverLocationCleanupLambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -28,7 +28,7 @@ import { OpenSearchInitialSetupLambda } from './OpenSearchInitialSetupLambda'
 export interface LambdaFunctionsProps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly cleanupScheduleMins: number
 	readonly driverDataIngestStream: kinesis.IStream
@@ -63,7 +63,7 @@ export class LambdaFunctions extends Construct {
 
 		const {
 			vpc, lambdaSecurityGroups,
-			redisCluster, lambdaLayers,
+			memoryDBCluster, lambdaLayers,
 			cleanupScheduleMins,
 			driverDataIngestStream,
 			driverLocationUpdateTTLInMs,
@@ -85,7 +85,7 @@ export class LambdaFunctions extends Construct {
 			dependencies: {
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
@@ -121,7 +121,7 @@ export class LambdaFunctions extends Construct {
 						lambdaLayers.openSearchClientLayer,
 						lambdaLayers.lambdaInsightsLayer,
 					],
-					redisCluster,
+					memoryDBCluster,
 					driverLocationUpdateTTLInMs,
 					openSearchDomain,
 				},
@@ -151,7 +151,7 @@ export class LambdaFunctions extends Construct {
 						lambdaLayers.openSearchClientLayer,
 						lambdaLayers.lambdaInsightsLayer,
 					],
-					redisCluster,
+					memoryDBCluster,
 					openSearchDomain,
 					eventBus,
 				},
@@ -175,7 +175,7 @@ export class LambdaFunctions extends Construct {
 				eventBus,
 				vpc,
 				lambdaSecurityGroups,
-				redisCluster,
+				memoryDBCluster,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,

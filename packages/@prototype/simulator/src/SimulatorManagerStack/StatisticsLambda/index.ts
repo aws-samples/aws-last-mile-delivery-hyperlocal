@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, Stack, aws_ec2 as ec2, aws_events as events, aws_events_targets as events_targets, aws_elasticache as elasticache, aws_lambda as lambda } from 'aws-cdk-lib'
+import { Duration, Stack, aws_ec2 as ec2, aws_events as events, aws_events_targets as events_targets, aws_memorydb as memorydb, aws_lambda as lambda } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -24,7 +24,7 @@ import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 export interface StatisticsProps {
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly eventBus: events.EventBus
 }
@@ -38,7 +38,7 @@ export class StatisticsLambda extends Construct {
 		const stack = Stack.of(this)
 		const {
 			eventBus,
-			redisCluster,
+			memoryDBCluster,
 			privateVpc,
 			vpcNetworking,
 			lambdaLayers,
@@ -53,8 +53,8 @@ export class StatisticsLambda extends Construct {
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				DISPATCH_ENGINE_SERVICE: SERVICE_NAME.DISPATCH_ENGINE,
 				ORDER_SERVICE_NAME: SERVICE_NAME.ORDER_SERVICE,
 				DRIVER_SERVICE_NAME: SERVICE_NAME.DRIVER_SERVICE,

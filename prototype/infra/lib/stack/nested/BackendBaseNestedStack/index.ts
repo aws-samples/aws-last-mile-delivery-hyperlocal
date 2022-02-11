@@ -29,7 +29,7 @@ export interface BackendBaseNestedStackProps extends NestedStackProps {
 	readonly adminRole: iam.IRole
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
 	readonly openSearchConfig: { [key: string]: string | number, }
-	readonly redisConfig: { [key: string]: string | number, }
+	readonly memoryDBConfig: { [key: string]: string | number, }
 }
 
 /**
@@ -51,7 +51,7 @@ export class BackendBaseNestedStack extends NestedStack {
 			adminRole,
 			vpcNetworkConfig,
 			openSearchConfig,
-			redisConfig,
+			memoryDBConfig,
 		} = props
 
 		this.vpcNetworking = new Networking(this, 'Networking', {
@@ -74,9 +74,10 @@ export class BackendBaseNestedStack extends NestedStack {
 				authenticatedUserRole: internalIdentityAuthenticatedRole,
 				adminRole,
 			},
-			redisClusterProps: {
-				numNodes: 3,
-				nodeType: redisConfig.instanceType as string,
+			memoryDBClusterProps: {
+				numShards: memoryDBConfig.numShards as number,
+				numReplicasPerShard: memoryDBConfig.numReplicasPerShard as number,
+				nodeType: memoryDBConfig.instanceType as string,
 				securityGroups: [securityGroups.redis],
 				vpc,
 			},

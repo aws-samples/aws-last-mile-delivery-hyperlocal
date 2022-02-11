@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_elasticache as elasticache, aws_iam as iam } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_memorydb as memorydb, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -23,8 +23,8 @@ import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-	readonly REDIS_HOST: string
-	readonly REDIS_PORT: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 	readonly EVENT_BUS: string
 	readonly SERVICE_NAME: string
 }
@@ -34,7 +34,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly eventBus: events.IEventBus
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -46,7 +46,7 @@ export class ExampleCallbackLambda extends DeclaredLambdaFunction<Environment, D
 			lambdaSecurityGroups,
 			lambdaLayers,
 			eventBus,
-			redisCluster,
+			memoryDBCluster,
 		} = props.dependencies
 
 		const declaredProps: TDeclaredProps = {
@@ -56,8 +56,8 @@ export class ExampleCallbackLambda extends DeclaredLambdaFunction<Environment, D
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.EXAMPLE_WEBHOOK_PROVIDER_SERVICE,
 				PROVIDER_NAME: PROVIDER_NAME.EXAMPLE_WEBHOOK_PROVIDER,

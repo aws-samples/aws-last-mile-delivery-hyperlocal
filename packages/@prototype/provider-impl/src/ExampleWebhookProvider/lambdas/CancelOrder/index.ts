@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_secretsmanager as secretsmanager, aws_elasticache as elasticache, aws_events as events, aws_iam as iam } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_secretsmanager as secretsmanager, aws_memorydb as memorydb, aws_events as events, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -23,8 +23,8 @@ import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-	readonly REDIS_HOST: string
-	readonly REDIS_PORT: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 	readonly EVENT_BUS: string
 	readonly SERVICE_NAME: string
 }
@@ -34,7 +34,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly eventBus: events.IEventBus
-	readonly redisCluster: elasticache.CfnCacheCluster
+	readonly memoryDBCluster: memorydb.CfnCluster
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
 }
@@ -48,7 +48,7 @@ export class CancelOrderLambda extends DeclaredLambdaFunction<Environment, Depen
 			lambdaSecurityGroups,
 			lambdaLayers,
 			eventBus,
-			redisCluster,
+			memoryDBCluster,
 			externalProviderMockUrl,
 			externalProviderSecretName,
 		} = props.dependencies
@@ -65,8 +65,8 @@ export class CancelOrderLambda extends DeclaredLambdaFunction<Environment, Depen
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.EXAMPLE_WEBHOOK_PROVIDER_SERVICE,
 				PROVIDER_NAME: PROVIDER_NAME.EXAMPLE_WEBHOOK_PROVIDER,
-				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
-				REDIS_PORT: redisCluster.attrRedisEndpointPort,
+				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
 				EXTERNAL_PROVIDER_URL: externalProviderMockUrl,
 				EXTERNAL_PROVIDER_SECRETNAME: externalProviderSecretName,
 			},
