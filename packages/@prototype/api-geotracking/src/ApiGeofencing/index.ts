@@ -64,7 +64,7 @@ export class ApiGeofencing extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 			},

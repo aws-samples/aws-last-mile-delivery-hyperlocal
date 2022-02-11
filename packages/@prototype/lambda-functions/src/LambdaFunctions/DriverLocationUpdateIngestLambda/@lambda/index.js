@@ -17,8 +17,8 @@
 /* eslint-disable no-console */
 const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
-const { getESClient } = require('/opt/es-client')
-const { success, fail, REDIS_HASH, DRIVERAPP_MESSAGE_TYPE, ES } = require('/opt/lambda-utils')
+const { getOpenSearchClient } = require('/opt/opensearch-client')
+const { success, fail, REDIS_HASH, DRIVERAPP_MESSAGE_TYPE, OPENSEARCH } = require('/opt/lambda-utils')
 
 const { DRIVER_LOCATION, DRIVER_LOCATION_TTLS, DRIVER_LOCATION_RAW } = REDIS_HASH
 const TTL = parseInt(process.env.DRIVER_LOCATION_UPDATE_TTL_MS, 10) // 2 * 60 * 1000 // 2 minutes == 120000ms
@@ -28,7 +28,7 @@ redisClient.geoadd = promisify(redisClient.geoadd)
 redisClient.zadd = promisify(redisClient.zadd)
 redisClient.hset = promisify(redisClient.hset)
 
-const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 const handler = async (event, context) => {
 	if (event.Records === undefined) {
@@ -109,7 +109,7 @@ const handler = async (event, context) => {
 
 	try {
 		const body = dataArr.flatMap(data => [
-			{ index: { _index: ES.DRIVER_LOCATION_INDEX, _id: data.driverId } },
+			{ index: { _index: OPENSEARCH.DRIVER_LOCATION_INDEX, _id: data.driverId } },
 			{
 				ttl: data.latestLocation.timestamp + TTL,
 				location: {
@@ -120,7 +120,7 @@ const handler = async (event, context) => {
 			},
 		])
 
-		const { body: bulkResponse } = await esClient.bulk({ body })
+		const { body: bulkResponse } = await openSearchClient.bulk({ body })
 
 		if (bulkResponse.errors) {
 			const erroredDocuments = []

@@ -29,7 +29,7 @@ For further performance enhancements, we recommend to run multiple load tests to
 
 An ElasticSeach cluster enables us to store drivers' location and status updates in an indexed format, so we can perform complicated geo-queries and build isochrones in the future phases.
 
-We define one index, `driver-location`, with an initial mapping for a `location` field as `geo_point` type. This initial mapping setup is performed in a custom resource lambda function and is ran once the ES Domain has been deployed and available (see `packages/live-data-chache` ESSetup construct and lambda implementation).
+We define one index, `driver-location`, with an initial mapping for a `location` field as `geo_point` type. This initial mapping setup is performed in a custom resource lambda function and is ran once the OPENSEARCH Domain has been deployed and available (see `packages/live-data-chache` ESSetup construct and lambda implementation).
 
 The index holds the following data structure:
 * _id: \<driverId\> `string`
@@ -128,7 +128,7 @@ The `DriverLocationCleanupLambda` lambda function is setup to run once every min
 3. [Current implementation] Remove those drivers from `driver:stat:status` and `driver:stat:updated` redis hashes
 4. [Current implementation] Remove those drivers from `driver-location` Elasticsearch index
 
-**[Recommended implementation:]** Update those drivers' status to `OFFLINE` in `driver:stat:status` redis hash and in `driver-location` ES index.
+**[Recommended implementation:]** Update those drivers' status to `OFFLINE` in `driver:stat:status` redis hash and in `driver-location` OPENSEARCH index.
 
 
 ## Queries

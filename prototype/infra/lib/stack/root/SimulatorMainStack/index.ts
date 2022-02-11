@@ -121,7 +121,7 @@ export class SimulatorMainStack extends Stack {
 		const lambdaLayerRefs = {
 			lambdaUtilsLayer: SharedLayer.of(this, 'LambdaUtilsLayer'),
 			redisClientLayer: SharedLayer.of(this, 'RedisClientLayer'),
-			esClientLayer: SharedLayer.of(this, 'ESClientLayer'),
+			openSearchClientLayer: SharedLayer.of(this, 'OpenSearchClientLayer'),
 			lambdaInsightsLayer: lambdaLayers.lambdaInsightsLayer,
 		}
 

@@ -18,13 +18,13 @@
 const aws = require('aws-sdk')
 const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
-const { getESClient } = require('/opt/es-client')
-const { REDIS_HASH, ES } = require('/opt/lambda-utils')
+const { getOpenSearchClient } = require('/opt/opensearch-client')
+const { REDIS_HASH, OPENSEARCH } = require('/opt/lambda-utils')
 
 const { DRIVER_STATUS, DRIVER_STATUS_UPDATED_AT } = REDIS_HASH
 
 const client = getRedisClient()
-const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 const eventBridge = new aws.EventBridge()
 
 client.hget = promisify(client.hget)
@@ -57,9 +57,9 @@ const handler = async (event, context) => {
 	}
 
 	try {
-		await esClient.update({
+		await openSearchClient.update({
 			id: driverId,
-			index: ES.DRIVER_LOCATION_INDEX,
+			index: OPENSEARCH.DRIVER_LOCATION_INDEX,
 			body: {
 				doc: {
 					status,
@@ -67,7 +67,7 @@ const handler = async (event, context) => {
 				},
 			},
 		})
-		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully updated ES`)
+		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully updated OPENSEARCH`)
 	} catch (err) {
 		console.error(`Error updating Elasticache :: ${event.type} :: ${JSON.stringify(err)}`)
 	}

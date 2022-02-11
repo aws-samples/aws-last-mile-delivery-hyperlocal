@@ -16,11 +16,13 @@
  *********************************************************************************************************************/
 export * from './LambdaUtils'
 export * from './ESClientLayer'
+export * from './OpenSearchClientLayer'
 export * from './RedisClientLayer'
 export * from './LambdaInsights'
 export * from './SharedLayer'
 
 export * from './ESPolicies'
+export * from './OpenSearchPolicies'
 export * from './TablePolicy'
 export * from './VpcLambdaProps'
 

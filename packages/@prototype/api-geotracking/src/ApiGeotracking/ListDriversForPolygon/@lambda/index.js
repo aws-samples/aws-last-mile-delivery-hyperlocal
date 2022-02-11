@@ -17,11 +17,11 @@
 /* eslint-disable no-console */
 const { promisify } = require('util')
 const aws = require('aws-sdk')
-const { getESClient } = require('/opt/es-client')
-const { success, fail, ES } = require('/opt/lambda-utils')
+const { getOpenSearchClient } = require('/opt/opensearch-client')
+const { success, fail, OPENSEARCH } = require('/opt/lambda-utils')
 
 const ddbClient = new aws.DynamoDB.DocumentClient()
-const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 const DDB_TABLE = process.env.POLYGON_TABLE
 
 const handler = async (event) => {
@@ -91,8 +91,8 @@ const searchByPolygon = async (polygon, startFrom, count) => {
 	const from = startFrom || 0
 	const size = count || 25
 
-	const result = await esClient.search({
-		index: ES.DRIVER_LOCATION_INDEX,
+	const result = await openSearchClient.search({
+		index: OPENSEARCH.DRIVER_LOCATION_INDEX,
 		body: {
 			from,
 			size,

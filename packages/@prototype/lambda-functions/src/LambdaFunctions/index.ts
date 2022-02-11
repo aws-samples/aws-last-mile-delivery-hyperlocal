@@ -89,7 +89,7 @@ export class LambdaFunctions extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				driverLocationUpdateTTLInMs,
@@ -118,7 +118,7 @@ export class LambdaFunctions extends Construct {
 					lambdaLayers: [
 						lambdaLayers.lambdaUtilsLayer,
 						lambdaLayers.redisClientLayer,
-						lambdaLayers.esClientLayer,
+						lambdaLayers.openSearchClientLayer,
 						lambdaLayers.lambdaInsightsLayer,
 					],
 					redisCluster,
@@ -148,7 +148,7 @@ export class LambdaFunctions extends Construct {
 					lambdaLayers: [
 						lambdaLayers.lambdaUtilsLayer,
 						lambdaLayers.redisClientLayer,
-						lambdaLayers.esClientLayer,
+						lambdaLayers.openSearchClientLayer,
 						lambdaLayers.lambdaInsightsLayer,
 					],
 					redisCluster,
@@ -179,7 +179,7 @@ export class LambdaFunctions extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				openSearchDomain,
@@ -193,7 +193,7 @@ export class LambdaFunctions extends Construct {
 				openSearchDomain,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				lambdaSecurityGroups,

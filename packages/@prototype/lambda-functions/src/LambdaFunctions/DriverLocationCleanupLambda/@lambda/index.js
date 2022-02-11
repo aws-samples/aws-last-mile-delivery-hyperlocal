@@ -16,12 +16,12 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 const { promisify } = require('util')
-const { REDIS_HASH, ES } = require('/opt/lambda-utils')
+const { REDIS_HASH, OPENSEARCH } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
-const { getESClient } = require('/opt/es-client')
+const { getOpenSearchClient } = require('/opt/opensearch-client')
 
 const redisClient = getRedisClient()
-const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 redisClient.zrangebyscore = promisify(redisClient.zrangebyscore)
 redisClient.zremrangebyscore = promisify(redisClient.zremrangebyscore)
@@ -97,9 +97,9 @@ const handler = async () => {
 		}
 
 		// // -------------------------------------------------------------------------------------------------------------
-		// // same applies to ES
-		// await esClient.updateByQuery({
-		// 	index: ES.DRIVER_LOCATION_INDEX,
+		// // same applies to OPENSEARCH
+		// await openSearchClient.updateByQuery({
+		// 	index: OPENSEARCH.DRIVER_LOCATION_INDEX,
 		// 	type: '_doc',
 		// 	refresh: true,
 		// 	body: {
@@ -115,8 +115,8 @@ const handler = async () => {
 		// 	},
 		// })
 
-		await esClient.deleteByQuery({
-			index: ES.DRIVER_LOCATION_INDEX,
+		await openSearchClient.deleteByQuery({
+			index: OPENSEARCH.DRIVER_LOCATION_INDEX,
 			type: '_doc',
 			body: {
 				query: {

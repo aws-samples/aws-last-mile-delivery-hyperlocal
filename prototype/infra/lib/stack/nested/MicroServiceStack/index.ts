@@ -19,7 +19,7 @@ import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { LambdaUtilsLayer, ESClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
+import { LambdaUtilsLayer, OpenSearchClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
 import { Networking } from '@prototype/networking'
 import { ApiGeoTracking, ApiGeofencing } from '@prototype/api-geotracking'
 import { LambdaFunctions } from '@prototype/lambda-functions'
@@ -88,18 +88,13 @@ export class MicroServiceStack extends NestedStack {
 
 		const lambdaUtilsLayer = new LambdaUtilsLayer(this, 'LambdaUtilsLayer')
 		const redisClientLayer = new RedisClientLayer(this, 'RedisClientLayer')
-		const esClientLayer = new ESClientLayer(this, 'ESClientLayer')
+		const openSearchClientLayer = new OpenSearchClientLayer(this, 'OpenSearchClientLayer')
 		const lambdaInsightsLayer = LambdaInsightsLayer(this, 'LambdaInsightLayer')
-
-		// this.exportValue(lambdaUtilsLayer.layerVersionArn, { name: 'lambdaUtilsLayerExport' })
-		// this.exportValue(redisClientLayer.layerVersionArn, { name: 'redisClientLayerExport' })
-		// this.exportValue(esClientLayer.layerVersionArn, { name: 'esClientLayerExport' })
-		// this.exportValue(lambdaInsightsLayer.layerVersionArn, { name: 'lambdaInsightsLayerExport' })
 
 		const lambdaLayers = {
 			lambdaUtilsLayer,
 			redisClientLayer,
-			esClientLayer,
+			openSearchClientLayer,
 			lambdaInsightsLayer,
 		}
 		this.lambdaLayers = lambdaLayers

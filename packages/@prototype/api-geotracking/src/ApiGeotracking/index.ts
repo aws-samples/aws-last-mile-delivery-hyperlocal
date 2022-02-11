@@ -89,7 +89,7 @@ export class ApiGeoTracking extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 			},
@@ -120,7 +120,7 @@ export class ApiGeoTracking extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 			},
@@ -179,7 +179,7 @@ export class ApiGeoTracking extends Construct {
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
-					lambdaLayers.esClientLayer,
+					lambdaLayers.openSearchClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				geoPolygonTable,
