@@ -41,7 +41,7 @@ export class RedisCluster extends Construct {
 		const redisSubnetGroup = new elasticache.CfnSubnetGroup(this, 'RedisClusterSubnetGroup', {
 			cacheSubnetGroupName: namespaced(this, 'live-data', { lowerCase: true }), // NOTE: lowercase
 			description: 'Subnet for LiveData RedisCluster',
-			subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED }).subnetIds,
+			subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_ISOLATED }).subnetIds,
 		})
 
 		const redisClusterName = namespaced(this, 'live-data', { lowerCase: true }) // NOTE: lowercase

@@ -49,7 +49,7 @@ export class VpcPersistent extends Construct {
 					name: namespaced(this, 'private'),
 				},
 				{
-					subnetType: ec2.SubnetType.ISOLATED,
+					subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
 					cidrMask: 24,
 					name: namespaced(this, 'isolated'),
 				},

@@ -85,7 +85,7 @@ export class ElasticSearchCluster extends Construct {
 				dataNodeInstanceType: esConfig.dataNodeInstanceType as string || 't3.medium.elasticsearch',
 			},
 			vpc,
-			vpcSubnets: [vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED })],
+			vpcSubnets: [vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_ISOLATED })],
 			securityGroups,
 			zoneAwareness: {
 				availabilityZoneCount: vpc.availabilityZones.length,
