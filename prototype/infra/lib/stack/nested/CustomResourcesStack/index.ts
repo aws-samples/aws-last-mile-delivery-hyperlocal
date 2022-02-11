@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_ec2 as ec2, aws_lambda as lambda } from 'aws-cdk-lib'
-import { ESInitialSetup } from '@prototype/live-data-cache'
+import { OpenSearchInitialSetup } from '@prototype/live-data-cache'
 import { ProviderInitialSetup } from '@prototype/provider'
 import { ProviderStack } from '../ProviderStack'
 import { Networking } from '@prototype/networking'
@@ -53,7 +53,8 @@ export class CustomResourcesStack extends NestedStack {
 			additionalApiConfig,
 		} = props
 
-		const esSetup = new ESInitialSetup(this, 'ESSetup', {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const openSearchSetup = new OpenSearchInitialSetup(this, 'OpenSearchSetup', {
 			lambdaSecurityGroups: [securityGroups.lambda],
 			vpc,
 			setupLambdaArn: lambdaRefs.esInitialSetup.functionArn,
@@ -81,6 +82,7 @@ export class CustomResourcesStack extends NestedStack {
 			apiKeySecretNameList = apiKeySecretNameList.concat(additionalApiConfig)
 		}
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const providerSetup = new ProviderInitialSetup(this, 'ProviderSetup', {
 			apiKeySecretNameList,
 		})

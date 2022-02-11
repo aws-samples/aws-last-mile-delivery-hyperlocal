@@ -37,7 +37,7 @@ const apiGeotracking = new ApiGeoTracking(this, 'ApiGeoTracking', {
     lambdaSecurityGroups: [securityGroups.lambda],
     redisCluster,
     geoPolygonTable,
-    esDomain: elasticSearchCluster,
+    openSearchDomain: elasticSearchCluster,
 })
 
 ```

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_elasticache as elasticache, aws_dynamodb as ddb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
@@ -35,7 +35,7 @@ export interface ApiGeoTrackingProps {
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly geoPolygonTable: ddb.ITable
 	readonly demographicAreaDispatchSettings: ddb.ITable
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 }
 
 export class ApiGeoTracking extends Construct {
@@ -56,7 +56,7 @@ export class ApiGeoTracking extends Construct {
 			vpc, lambdaSecurityGroups, redisCluster,
 			geoPolygonTable,
 			demographicAreaDispatchSettings,
-			esDomain,
+			openSearchDomain,
 		} = props
 
 		const cognitoAuthorizer = new apigw.CognitoUserPoolsAuthorizer(this, 'GeoTrackingApiCognitoAuthorizer', {
@@ -183,7 +183,7 @@ export class ApiGeoTracking extends Construct {
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				geoPolygonTable,
-				esDomain,
+				openSearchDomain,
 			},
 		})
 		restApi.addFunctionToResource(listDriversForPolygonWithIdEndpoint, {

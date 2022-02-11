@@ -28,7 +28,7 @@ redisClient.geoadd = promisify(redisClient.geoadd)
 redisClient.zadd = promisify(redisClient.zadd)
 redisClient.hset = promisify(redisClient.hset)
 
-const esClient = getESClient(`https://${process.env.ES_DOMAIN_ENDPOINT}`)
+const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 const handler = async (event, context) => {
 	if (event.Records === undefined) {

@@ -28,7 +28,7 @@ export interface BackendBaseNestedStackProps extends NestedStackProps {
 	readonly internalIdentityAuthenticatedRole: iam.IRole
 	readonly adminRole: iam.IRole
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
-	readonly esConfig: { [key: string]: string | number, }
+	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly redisConfig: { [key: string]: string | number, }
 }
 
@@ -50,7 +50,7 @@ export class BackendBaseNestedStack extends NestedStack {
 			internalIdentityAuthenticatedRole,
 			adminRole,
 			vpcNetworkConfig,
-			esConfig,
+			openSearchConfig,
 			redisConfig,
 		} = props
 
@@ -64,10 +64,10 @@ export class BackendBaseNestedStack extends NestedStack {
 		const { securityGroups } = this.vpcNetworking
 
 		this.liveDataCache = new LiveDataCache(this, 'LiveDataCache', {
-			elasticSearchClusterProps: {
+			openSearchClusterProps: {
 				securityGroups: [securityGroups.redis],
 				vpc,
-				esConfig,
+				openSearchConfig,
 				identityPoolId,
 				userPoolId,
 				// internal pool

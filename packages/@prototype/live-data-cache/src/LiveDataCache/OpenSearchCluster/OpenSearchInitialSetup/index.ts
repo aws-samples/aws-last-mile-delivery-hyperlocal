@@ -19,23 +19,22 @@ import { CustomResource, Duration, aws_ec2 as ec2, aws_iam as iam, custom_resour
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ESInitialSetupProps {
+export interface OpenSearchInitialSetupProps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 	readonly setupLambdaArn: string
 }
 
-export class ESInitialSetup extends Construct {
-	constructor (scope: Construct, id: string, props: ESInitialSetupProps) {
+export class OpenSearchInitialSetup extends Construct {
+	constructor (scope: Construct, id: string, props: OpenSearchInitialSetupProps) {
 		super(scope, id)
 
 		const { vpc, lambdaSecurityGroups, setupLambdaArn } = props
 
-		const esSetupLambda = new lambda.Function(this, 'ESSetup-CR', {
-			functionName: namespaced(scope, 'ES-Initial-Setup-CustomResource'),
-			description: 'Setup initial ES settings - Custom Resource Lambda',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-setup-customresource.zip')),
+		const openSearchSetupLambda = new lambda.Function(this, 'OpenSearchSetup-CR', {
+			functionName: namespaced(scope, 'OpenSearch-Initial-Setup-CustomResource'),
+			description: 'Setup initial OpenSearch settings - Custom Resource Lambda',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-setup-customresource.zip')),
 			handler: 'index.onEvent',
 			runtime: lambda.Runtime.NODEJS_14_X,
 			architecture: lambda.Architecture.ARM_64,
@@ -57,8 +56,8 @@ export class ESInitialSetup extends Construct {
 			securityGroups: lambdaSecurityGroups,
 		})
 
-		const esSetupProvider = new cr.Provider(this, 'ESSetupProvider', {
-			onEventHandler: esSetupLambda,
+		const openSearchSetupProvider = new cr.Provider(this, 'OpenSearchSetupProvider', {
+			onEventHandler: openSearchSetupLambda,
 			vpc,
 			vpcSubnets: {
 				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
@@ -67,8 +66,8 @@ export class ESInitialSetup extends Construct {
 		})
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const esSetupCustomResource = new CustomResource(this, 'ESSetupCR', {
-			serviceToken: esSetupProvider.serviceToken,
+		const openSearchSetupCustomResource = new CustomResource(this, 'OpenSearchSetupCR', {
+			serviceToken: openSearchSetupProvider.serviceToken,
 		})
 	}
 }

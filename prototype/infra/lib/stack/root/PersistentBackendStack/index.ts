@@ -28,7 +28,7 @@ export interface PersistentBackendStackProps extends StackProps {
 	readonly administratorName: string
 
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
-	readonly esConfig: { [key: string]: string | number, }
+	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly redisConfig: { [key: string]: string | number, }
 }
 
@@ -53,7 +53,7 @@ export class PersistentBackendStack extends Stack {
 
 		const {
 			namespace, administratorEmail, administratorName,
-			vpcNetworkConfig, esConfig, redisConfig,
+			vpcNetworkConfig, openSearchConfig, redisConfig,
 		} = props
 
 		setNamespace(this, namespace)
@@ -95,7 +95,7 @@ export class PersistentBackendStack extends Stack {
 			internalIdentityAuthenticatedRole: internalIdentityStack.authenticatedRole,
 			adminRole: internalIdentityStack.adminRole,
 			vpcNetworkConfig,
-			esConfig,
+			openSearchConfig,
 			redisConfig,
 		})
 

@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { LambdaUtilsLayer, ESClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
@@ -31,7 +31,7 @@ export interface MicroServiceStackProps extends NestedStackProps {
 	readonly userPool: cognito.IUserPool
 	readonly vpcNetworking: Networking
 	readonly redisCluster: elasticache.CfnCacheCluster
-	readonly elasticSearchCluster: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 	readonly driverDataIngestStream: kinesis.IStream
 	readonly redisConfig: { [key: string]: string | number, }
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
@@ -62,7 +62,7 @@ export class MicroServiceStack extends NestedStack {
 			userPool,
 			vpcNetworking,
 			redisCluster,
-			elasticSearchCluster,
+			openSearchDomain,
 			driverDataIngestStream,
 			redisConfig,
 			kinesisConfig,
@@ -114,7 +114,7 @@ export class MicroServiceStack extends NestedStack {
 			cleanupScheduleMins: 1,
 			driverDataIngestStream: kinesis.Stream.fromStreamArn(this, 'DriverDataIngestStreamMS', driverDataIngestStream.streamArn),
 			driverLocationUpdateTTLInMs: redisConfig.driverLocationUpdateTTLInMS as number,
-			esDomain: elasticSearchCluster,
+			openSearchDomain,
 			eventBus,
 			geofencingBatchSize: kinesisConfig.geofencingBatchSize as number,
 			geofencingParallelizationFactor: kinesisConfig.geofencingParallelizationFactor as number,
@@ -138,7 +138,7 @@ export class MicroServiceStack extends NestedStack {
 			geoPolygonTable,
 			// for this API only the dispatcher settings table is being used
 			demographicAreaDispatchSettings,
-			esDomain: elasticSearchCluster,
+			openSearchDomain,
 		})
 		this.geoTrackingRestApiKey = apiGeotracking.geoTrackingApiKey
 
@@ -156,7 +156,7 @@ export class MicroServiceStack extends NestedStack {
 			driverSearch: apiGeotracking.queryDrivers,
 			driverStatusUpdateLambda: lambdaFunctions.driverStatusUpdateLambda,
 			geofencing: apiGeofencing.geofencingLambda,
-			esInitialSetup: lambdaFunctions.esInitialSetupLambda,
+			esInitialSetup: lambdaFunctions.openSearchInitialSetupLambda,
 		}
 	}
 }

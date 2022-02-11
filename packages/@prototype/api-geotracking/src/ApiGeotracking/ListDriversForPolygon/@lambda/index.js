@@ -21,7 +21,7 @@ const { getESClient } = require('/opt/es-client')
 const { success, fail, ES } = require('/opt/lambda-utils')
 
 const ddbClient = new aws.DynamoDB.DocumentClient()
-const esClient = getESClient(`https://${process.env.ES_DOMAIN_ENDPOINT}`)
+const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 const DDB_TABLE = process.env.POLYGON_TABLE
 
 const handler = async (event) => {

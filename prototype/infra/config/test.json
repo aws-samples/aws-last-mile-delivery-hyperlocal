@@ -10,7 +10,7 @@
 		"dmzSecurityIngress": []
 	},
 	"geoTrackingApiKeySecretName": "",
-	"esConfig": {},
+	"openSearchConfig": {},
 	"redisConfig": {},
 	"simulatorConfig": {},
 	"kinesisConfig": {

@@ -125,7 +125,7 @@ export class ProviderStack extends NestedStack {
 
 		new DispatchEngineOrchestrator(this, 'DispatchEngineOrchestrator', {
 			instantDeliveryProviderApi: this.instantDeliveryWebhookProvider.apiGwInstance,
-			instandDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
+			instantDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 			orderBatchStream: this.instantDeliveryWebhookProvider.orderBatchStream,
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderOrders,

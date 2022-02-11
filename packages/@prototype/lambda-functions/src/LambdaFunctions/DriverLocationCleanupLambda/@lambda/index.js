@@ -21,7 +21,7 @@ const { getRedisClient } = require('/opt/redis-client')
 const { getESClient } = require('/opt/es-client')
 
 const redisClient = getRedisClient()
-const esClient = getESClient(`https://${process.env.ES_DOMAIN_ENDPOINT}`)
+const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 redisClient.zrangebyscore = promisify(redisClient.zrangebyscore)
 redisClient.zremrangebyscore = promisify(redisClient.zremrangebyscore)

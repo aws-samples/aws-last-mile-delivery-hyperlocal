@@ -24,7 +24,7 @@ const { REDIS_HASH, ES } = require('/opt/lambda-utils')
 const { DRIVER_STATUS, DRIVER_STATUS_UPDATED_AT } = REDIS_HASH
 
 const client = getRedisClient()
-const esClient = getESClient(`https://${process.env.ES_DOMAIN_ENDPOINT}`)
+const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 const eventBridge = new aws.EventBridge()
 
 client.hget = promisify(client.hget)

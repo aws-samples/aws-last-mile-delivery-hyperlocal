@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
@@ -28,7 +28,7 @@ export interface DriverLocationUpdateIngestLambdaExternalDeps {
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -36,7 +36,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
 	readonly REDIS_HOST: string
 	readonly REDIS_PORT: string
-	readonly ES_DOMAIN_ENDPOINT: string
+	readonly DOMAIN_ENDPOINT: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
@@ -56,7 +56,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 				redisCluster,
 				lambdaLayers,
 				driverLocationUpdateTTLInMs,
-				esDomain,
+				openSearchDomain,
 			},
 		} = props.dependencies
 
@@ -70,7 +70,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
-				ES_DOMAIN_ENDPOINT: esDomain.domainEndpoint,
+				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({
@@ -86,7 +86,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 					],
 					resources: [ingestDataStream.streamArn],
 				}),
-				AllowESWrite(esDomain.domainArn),
+				AllowESWrite(openSearchDomain.domainArn),
 			],
 			layers: lambdaLayers,
 			vpc,

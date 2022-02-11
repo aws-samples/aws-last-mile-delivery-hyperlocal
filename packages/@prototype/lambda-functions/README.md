@@ -47,7 +47,7 @@ const lambdaFunctions = new LambdaFunctions(this, 'LambdaFunctions', {
     cleanupScheduleMins: 1,
     driverDataIngestStream: driverDataStream.driverDataIngestStream,
     driverLocationUpdateTTLInMs: redisConfig.driverLocationUpdateTTLInMS as number,
-    esDomain: elasticSearchCluster,
+    openSearchDomain: elasticSearchCluster,
     eventBus,
     geofencingBatchSize: kinesisConfig.geofencingBatchSize as number,
     geofencingParallelizationFactor: kinesisConfig.geofencingParallelizationFactor as number,
