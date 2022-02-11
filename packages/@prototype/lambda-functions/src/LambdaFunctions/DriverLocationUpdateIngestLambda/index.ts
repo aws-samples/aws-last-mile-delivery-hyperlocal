@@ -21,7 +21,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
 import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DriverLocationUpdateIngestLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
@@ -31,7 +30,6 @@ export interface DriverLocationUpdateIngestLambdaExternalDeps {
 	readonly openSearchDomain: opensearchservice.IDomain
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
 	readonly MEMORYDB_HOST: string

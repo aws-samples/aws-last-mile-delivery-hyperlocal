@@ -19,7 +19,6 @@ import { aws_dynamodb as ddb, custom_resources } from 'aws-cdk-lib'
 import * as utils from '@aws-sdk/util-dynamodb'
 import { DEMOGRAPHIC_AREA, STATIC_AREAS_POLYGON } from '@prototype/common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DatabaseSeederProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
 	readonly demographicAreaDispatcherEngineSettings: ddb.ITable

@@ -21,7 +21,6 @@ import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
 import { GeofencingServiceLambda } from './GeofencingService'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ApiGeofencingProps {
 	readonly restApi: RestApi
 	readonly apiPrefix?: string

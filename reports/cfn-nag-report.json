@@ -830,7 +830,7 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzias8trCustomResourcePolicyD001ECB3",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzibqgvhCustomResourcePolicy46F2AC21",
             "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
           ],
@@ -2003,7 +2003,7 @@
             "SimulatorManagerOriginSimulatorLambdaOriginEventHandlerServiceRoleDefaultPolicy70005689",
             "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
-            "UpdateLambdaConfigurationkzias90pCustomResourcePolicy3337A8CE"
+            "UpdateLambdaConfigurationkzibqh1xCustomResourcePolicy2F1477C4"
           ],
           "line_numbers": [
             5,

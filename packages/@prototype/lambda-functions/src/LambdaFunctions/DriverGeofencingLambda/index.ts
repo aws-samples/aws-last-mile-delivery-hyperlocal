@@ -22,7 +22,6 @@ import { Kinesis } from 'cdk-iam-actions/lib/actions'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DriverGeofencingtLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
@@ -32,7 +31,6 @@ export interface DriverGeofencingtLambdaExternalDeps {
 	readonly eventBus: events.EventBus
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly MEMORYDB_HOST: string
 	readonly MEMORYDB_PORT: string

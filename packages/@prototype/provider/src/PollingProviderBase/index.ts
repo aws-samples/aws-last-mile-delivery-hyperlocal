@@ -19,7 +19,6 @@ import { Duration, aws_sqs as sqs, aws_lambda as lambda, aws_lambda_event_source
 import { ProviderBase, ProviderBaseProps } from '../ProviderBase'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PollingProviderBaseProps extends ProviderBaseProps {
 	pollingLambdaCreator: (queue: sqs.IQueue) => lambda.IFunction
 	requestOrderFulfillmentLambdaCreator: (queue: sqs.IQueue) => lambda.IFunction

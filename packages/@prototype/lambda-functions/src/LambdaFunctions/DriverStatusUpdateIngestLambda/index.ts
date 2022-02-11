@@ -21,7 +21,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly DOMAIN_ENDPOINT: string
 	readonly MEMORYDB_HOST: string

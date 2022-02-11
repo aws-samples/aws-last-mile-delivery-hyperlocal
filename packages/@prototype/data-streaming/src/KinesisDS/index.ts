@@ -18,7 +18,6 @@ import { Construct } from 'constructs'
 import { Duration, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface KinesisDSProps {
     readonly dataStreamRetention: Duration
 	readonly shardCount: number

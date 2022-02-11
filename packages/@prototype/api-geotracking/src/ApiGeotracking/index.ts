@@ -24,7 +24,6 @@ import { QueryDriversLambda } from './QueryDrivers'
 import { ListDriversForPolygonLambda } from './ListDriversForPolygon'
 import { GetDemAreaSettingsLambda } from './GetDemAreaSettings'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ApiGeoTrackingProps {
 	readonly restApi: RestApi
 	readonly apiPrefix?: string

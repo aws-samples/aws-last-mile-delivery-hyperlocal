@@ -19,7 +19,6 @@ import { Duration, aws_lambda as lambda, aws_iam as iam, aws_dynamodb as ddb } f
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly EXTERNAL_ORDER_TABLE: string
 }

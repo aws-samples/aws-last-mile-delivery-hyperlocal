@@ -18,7 +18,6 @@ import { Construct } from 'constructs'
 import { Stack, aws_ecs as ecs, aws_ecr as ecr, aws_iam as iam, aws_s3 as s3, aws_iot as iot, aws_ec2 as ec2, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SimulatorContainerProps {
 	readonly name: string
 	readonly cpu: number

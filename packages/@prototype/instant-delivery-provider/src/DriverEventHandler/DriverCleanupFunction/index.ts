@@ -20,7 +20,6 @@ import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly PROVIDER_LOCKS_TABLE: string
 	readonly PROVIDER_ORDERS_TABLE: string

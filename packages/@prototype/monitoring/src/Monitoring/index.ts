@@ -20,7 +20,6 @@ import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
 import * as fs from 'fs'
 import * as path from 'path'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MonitoringProps {
     readonly esEndpoint: string
     readonly memoryDBEndpoint: string

@@ -19,7 +19,6 @@ import { Duration, aws_lambda as lambda, aws_lambda_event_sources as lambda_even
 import { namespaced } from '@aws-play/cdk-core'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface KinesisConsumerProps {
   readonly baseName: string
 	readonly batchSize: number

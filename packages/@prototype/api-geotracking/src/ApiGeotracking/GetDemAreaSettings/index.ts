@@ -20,7 +20,6 @@ import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy, readDDBTablePolicyStatement } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
     readonly DDB_TABLE: string
 }

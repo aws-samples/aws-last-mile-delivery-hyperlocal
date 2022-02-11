@@ -19,7 +19,6 @@ import { Duration, CustomResource, aws_iam as iam, aws_lambda as lambda, custom_
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ExternalProviderSetupProps {
 	apiKeySecretNameList: {
 		keyArn: string

@@ -21,7 +21,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly GEO_CLUSTERING_MANAGER_ARN: string
 }

@@ -23,7 +23,6 @@ import { RequestOrderFulfillmentLambda } from './lambdas/RequestOrderFulfillment
 import { CancelOrderLambda } from './lambdas/CancelOrder'
 import { GetOrderStatusLambda } from './lambdas/GetOrderStatus'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ExampleWebhookProviderProps extends VpcLambdaProps {
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly eventBus: events.IEventBus

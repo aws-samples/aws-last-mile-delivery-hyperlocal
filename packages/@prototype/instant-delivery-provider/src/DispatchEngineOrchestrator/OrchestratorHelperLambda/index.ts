@@ -22,7 +22,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	EVENT_BUS: string
 	PROVIDER_ORDERS_TABLE: string

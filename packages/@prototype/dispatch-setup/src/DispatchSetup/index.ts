@@ -20,7 +20,6 @@ import { DispatchHosting } from './DispatchHosting'
 import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DispatchSetupProps {
     readonly vpc: ec2.IVpc
     readonly dmzSecurityGroup: ec2.ISecurityGroup

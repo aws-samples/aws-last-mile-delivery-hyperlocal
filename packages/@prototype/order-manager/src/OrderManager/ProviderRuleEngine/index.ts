@@ -20,7 +20,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { namespaced } from '@aws-play/cdk-core'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	PROVIDERS: string
 }

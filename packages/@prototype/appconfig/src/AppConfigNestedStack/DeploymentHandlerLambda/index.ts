@@ -20,7 +20,6 @@ import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { S3, IoT } from 'cdk-iam-actions/lib/actions'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly CONFIG_BUCKET: string
 	readonly APP_IDS: string

@@ -20,7 +20,6 @@ import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@prototype/lambda-common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DispatchInstanceProps {
     readonly vpc: ec2.IVpc
     readonly dmzSecurityGroup: ec2.ISecurityGroup

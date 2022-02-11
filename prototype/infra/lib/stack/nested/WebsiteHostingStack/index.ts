@@ -20,7 +20,6 @@ import { HostingDeployment, AppVariables } from '@aws-play/cdk-web'
 import { sync as findUp } from 'find-up'
 import * as path from 'path'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface WebsiteHostingStackProps extends NestedStackProps {
 	readonly hostingBucket: s3.IBucket
 	readonly appVars: { [key: string]: any, }

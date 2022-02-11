@@ -21,7 +21,6 @@ import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps
 import { LambdaInsightsExecutionPolicy, readDDBTablePolicyStatement } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly EVENT_BUS_NAME: string
 	readonly ORDER_MANAGER_SERVICE_NAME: string

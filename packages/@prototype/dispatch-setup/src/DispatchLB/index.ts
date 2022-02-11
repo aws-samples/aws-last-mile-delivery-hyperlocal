@@ -18,7 +18,6 @@ import { Construct } from 'constructs'
 import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DispatchLBProps {
     readonly vpc: ec2.IVpc
     readonly dmzSecurityGroup: ec2.ISecurityGroup

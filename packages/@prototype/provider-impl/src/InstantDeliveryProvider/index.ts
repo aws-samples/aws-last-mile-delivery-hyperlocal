@@ -24,7 +24,6 @@ import { CancelOrderLambda } from './lambdas/CancelOrder'
 import { GetOrderStatusLambda } from './lambdas/GetOrderStatus'
 import { namespaced } from '@aws-play/cdk-core'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface InstantDeliveryProviderProps extends VpcLambdaProps {
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly eventBus: events.IEventBus

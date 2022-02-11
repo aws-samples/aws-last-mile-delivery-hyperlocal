@@ -24,7 +24,6 @@ import { DriverStatusUpdateLambda } from './DriverStatusUpdateIngestLambda'
 import { DriverGeofencingtLambda } from './DriverGeofencingLambda'
 import { OpenSearchInitialSetupLambda } from './OpenSearchInitialSetupLambda'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LambdaFunctionsProps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
