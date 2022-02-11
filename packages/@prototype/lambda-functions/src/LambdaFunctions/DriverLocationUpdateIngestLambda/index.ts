@@ -19,7 +19,7 @@ import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda,
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DriverLocationUpdateIngestLambdaExternalDeps {
@@ -86,7 +86,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 					],
 					resources: [ingestDataStream.streamArn],
 				}),
-				AllowESWrite(openSearchDomain.domainArn),
+				AllowOpenSearchWrite(openSearchDomain.domainArn),
 			],
 			layers: lambdaLayers,
 			vpc,

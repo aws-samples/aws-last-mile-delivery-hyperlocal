@@ -1,0 +1,26 @@
+{
+  "name": "@lambda/opensearch-client",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "main": "index.js",
+  "scripts": {
+    "mkdir": "mkdir -p ../../../dist/@lambda && mkdir -p ../tmp/$npm_package_name && cp -r ./* ../tmp/$npm_package_name/",
+    "zipasset": "cd ../tmp && zip -rXq ../../../dist/$npm_package_name.zip $npm_package_name/ && rm -rf ../tmp/",
+    "build": "yarn mkdir &&  yarn zipasset"
+  },
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "license": "MIT-0",
+  "dependencies": {
+    "@opensearch-project/opensearch": "^1.0.2",
+    "aws-opensearch-connector": "^1.0.0"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**/@opensearch-project/opensearch",
+      "**/@opensearch-project/opensearch/**",
+      "**/aws-opensearch-connector",
+      "**/aws-opensearch-connector/**"
+    ]
+  }
+}

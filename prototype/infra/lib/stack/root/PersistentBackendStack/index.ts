@@ -68,7 +68,7 @@ export class PersistentBackendStack extends Stack {
 		// and for ES to be able to detect. So moving it here.
 		const esServiceLinkedRole = new iam.CfnServiceLinkedRole(this, 'EsServiceLinkedRole', {
 			awsServiceName: 'es.amazonaws.com',
-			description: 'ES Service-Linked Role for VPC Access',
+			description: 'OpenSearch (former ES) Service-Linked Role for VPC Access',
 		})
 		esServiceLinkedRole.node.addDependency(vpcPersistent)
 

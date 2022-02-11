@@ -18,7 +18,7 @@ Triggered by Kinesis Data Stream.
 
 ### DriverLocationCleanupLambda
 
-This function observes the current status of Redis and ElasticSearch. If a driver doesn't send an update by `TTL` value, it means driver is offline/not reachable, so this lambda will cleanup the driver's related records from both Redis and ES.
+This function observes the current status of Redis and ElasticSearch. If a driver doesn't send an update by `TTL` value, it means driver is offline/not reachable, so this lambda will cleanup the driver's related records from both Redis and OpenSearch.
 
 Triggered by Cloudwatch, once a minute.
 

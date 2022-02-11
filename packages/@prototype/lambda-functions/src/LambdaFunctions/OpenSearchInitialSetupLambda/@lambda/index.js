@@ -15,16 +15,18 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { getESClient } = require('/opt/es-client')
-const { ES } = require('/opt/lambda-utils')
+const { getOpenSearchClient } = require('/opt/opensearch-client')
+const { OPENSEARCH } = require('/opt/lambda-utils')
 
-const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+const DRIVER_LOCATION_INDEX = { OPENSEARCH }
 
-const esIndexObj = {
-	index: ES.DRIVER_LOCATION_INDEX,
+const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+
+const indexObj = {
+	index: DRIVER_LOCATION_INDEX,
 }
-const esMappingObj = {
-	index: ES.DRIVER_LOCATION_INDEX,
+const mappingObj = {
+	index: DRIVER_LOCATION_INDEX,
 	includeTypeName: false,
 	body: {
 		properties: {
@@ -56,12 +58,12 @@ const handler = async (event, context) => {
 
 const handleCreate = async () => {
 	try {
-		let result = await esClient.indices.create(esIndexObj)
-		console.log(`Successfully created index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
-		result = await esClient.indices.putMapping(esMappingObj)
-		console.log(`Successfully updated index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+		let result = await openSearchClient.indices.create(indexObj)
+		console.log(`Successfully created index ${DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+		result = await openSearchClient.indices.putMapping(mappingObj)
+		console.log(`Successfully updated index ${DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
 	} catch (err) {
-		console.log(`Error while creating index ${ES.DRIVER_LOCATION_INDEX}. Updating instead. Error: ${JSON.stringify(err)}`)
+		console.log(`Error while creating index ${DRIVER_LOCATION_INDEX}. Updating instead. Error: ${JSON.stringify(err)}`)
 
 		await handleUpdate()
 	}
@@ -69,10 +71,10 @@ const handleCreate = async () => {
 
 const handleUpdate = async () => {
 	try {
-		const result = await esClient.indices.putMapping(esMappingObj)
-		console.log(`Successfully updated index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+		const result = await openSearchClient.indices.putMapping(mappingObj)
+		console.log(`Successfully updated index ${DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
 	} catch (err) {
-		console.log(`Error while updating index ${ES.DRIVER_LOCATION_INDEX}. Error: ${JSON.stringify(err)}`)
+		console.log(`Error while updating index ${DRIVER_LOCATION_INDEX}. Error: ${JSON.stringify(err)}`)
 	}
 }
 

@@ -14,53 +14,23 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
-import { namespaced } from '@aws-play/cdk-core'
-import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowOpenSearchWrite } from '@prototype/lambda-common'
+import { aws_iam as iam } from 'aws-cdk-lib'
+import { ES } from 'cdk-iam-actions/lib/actions'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Environment extends DeclaredLambdaEnvironment {
-	readonly DOMAIN_ENDPOINT: string
+const allowStatement = (openSearchDomainArn: string, actions: string[]): iam.PolicyStatement => {
+	return new iam.PolicyStatement({
+		actions,
+		effect: iam.Effect.ALLOW,
+		resources: [`${openSearchDomainArn}/*`],
+	})
 }
 
-interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: ec2.IVpc
-	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly lambdaLayers: lambda.ILayerVersion[]
-	readonly openSearchDomain: opensearchservice.IDomain
+export const AllowOpenSearchRead = (openSearchDomainArn: string): iam.PolicyStatement => {
+	return allowStatement(openSearchDomainArn, [ES.ES_HTTP_GET])
 }
-
-type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
-
-export class OpenSearchInitialSetupLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
-	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
-		const {
-			vpc,
-			lambdaSecurityGroups,
-			lambdaLayers,
-			openSearchDomain,
-		} = props.dependencies
-
-		const declaredProps: TDeclaredProps = {
-			functionName: namespaced(scope, 'OpenSearch-Initial-Setup'),
-			description: 'Setup initial OpenSearch mappings',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-initial-setup.zip')),
-			dependencies: props.dependencies,
-			timeout: Duration.seconds(30),
-			environment: {
-				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
-			},
-			initialPolicy: [AllowOpenSearchWrite(openSearchDomain.domainArn)],
-			layers: lambdaLayers,
-			vpc,
-			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
-			},
-			securityGroups: lambdaSecurityGroups,
-		}
-
-		super(scope, id, declaredProps)
-	}
+export const AllowOpenSearchWrite = (openSearchDomainArn: string): iam.PolicyStatement => {
+	return allowStatement(openSearchDomainArn, [ES.ES_HTTP_POST, ES.ES_HTTP_PUT])
+}
+export const AllowOpenSearchDelete = (openSearchDomainArn: string): iam.PolicyStatement => {
+	return allowStatement(openSearchDomainArn, [ES.ES_HTTP_DELETE])
 }

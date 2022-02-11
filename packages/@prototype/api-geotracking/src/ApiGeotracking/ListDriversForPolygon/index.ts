@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_dynamodb as ddb, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowESRead, AllowESWrite, readDDBTablePolicyStatement, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchRead, AllowOpenSearchWrite, readDDBTablePolicyStatement, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
@@ -65,8 +65,8 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 			},
 			layers: lambdaLayers,
 			initialPolicy: [
-				AllowESRead(openSearchDomain.domainArn),
-				AllowESWrite(openSearchDomain.domainArn),
+				AllowOpenSearchRead(openSearchDomain.domainArn),
+				AllowOpenSearchWrite(openSearchDomain.domainArn),
 				readDDBTablePolicyStatement(geoPolygonTable.tableArn),
 			],
 			vpc,

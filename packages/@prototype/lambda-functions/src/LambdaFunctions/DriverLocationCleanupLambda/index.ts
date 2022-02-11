@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowESDelete, AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchDelete, AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
@@ -65,8 +65,8 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 			},
 			layers: lambdaLayers,
 			initialPolicy: [
-				AllowESWrite(openSearchDomain.domainArn),
-				AllowESDelete(openSearchDomain.domainArn),
+				AllowOpenSearchWrite(openSearchDomain.domainArn),
+				AllowOpenSearchDelete(openSearchDomain.domainArn),
 			],
 			vpc,
 			vpcSubnets: {

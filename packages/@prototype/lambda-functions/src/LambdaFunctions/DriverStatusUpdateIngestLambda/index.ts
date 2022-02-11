@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_opensearchservice as opensearchservice, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -73,7 +73,7 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				AllowESWrite(openSearchDomain.domainArn),
+				AllowOpenSearchWrite(openSearchDomain.domainArn),
 			],
 			layers: lambdaLayers,
 			vpc,

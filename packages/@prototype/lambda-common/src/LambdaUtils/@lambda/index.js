@@ -70,7 +70,7 @@ exports.DRIVERAPP_MESSAGE_TYPE = {
 	// add more here if needed
 }
 
-exports.ES = {
+exports.OPENSEARCH = {
 	DRIVER_LOCATION_INDEX: 'driver-location',
 }
 

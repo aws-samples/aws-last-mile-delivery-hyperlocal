@@ -15,52 +15,20 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { aws_lambda as lambda } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
-import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowOpenSearchWrite } from '@prototype/lambda-common'
+import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
+import { SharedLayer } from '../SharedLayer'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Environment extends DeclaredLambdaEnvironment {
-	readonly DOMAIN_ENDPOINT: string
-}
-
-interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: ec2.IVpc
-	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly lambdaLayers: lambda.ILayerVersion[]
-	readonly openSearchDomain: opensearchservice.IDomain
-}
-
-type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
-
-export class OpenSearchInitialSetupLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
-	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
-		const {
-			vpc,
-			lambdaSecurityGroups,
-			lambdaLayers,
-			openSearchDomain,
-		} = props.dependencies
-
-		const declaredProps: TDeclaredProps = {
-			functionName: namespaced(scope, 'OpenSearch-Initial-Setup'),
-			description: 'Setup initial OpenSearch mappings',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-initial-setup.zip')),
-			dependencies: props.dependencies,
-			timeout: Duration.seconds(30),
-			environment: {
-				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
-			},
-			initialPolicy: [AllowOpenSearchWrite(openSearchDomain.domainArn)],
-			layers: lambdaLayers,
-			vpc,
-			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
-			},
-			securityGroups: lambdaSecurityGroups,
-		}
-
-		super(scope, id, declaredProps)
+export class OpenSearchClientLayer extends SharedLayer {
+	constructor (scope: Construct, id: string) {
+		super(scope, id, {
+			layerId: 'OpenSearchClientLayer',
+			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleArchitectures: [lambda.Architecture.ARM_64],
+			description: 'OpenSearch Client Layer',
+			layerVersionName: namespaced(scope, 'OpenSearchClient'),
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-client.zip')),
+		})
 	}
 }
