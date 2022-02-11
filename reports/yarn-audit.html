@@ -82,7 +82,7 @@
             <h3>
                 11 unique from
                 25 known vulnerabilities |
-                5943 dependencies
+                5960 dependencies
             </h3>
         </div>
     </div>
@@ -513,6 +513,85 @@
                     <div class="card-body">
                         <h1 class="card-title">
                             <span class="badge badge-secondary">moderate</span>
+                            Improper Privilege Management in shelljs
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/shelljs" target="_blank">shelljs</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 0.7.0</li>
+                                    
+                                    <li>Published: 1/15/2022, 6:00:43 AM</li>
+                                    
+                                    <li>CWE-269</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &lt;0.8.5</li>
+                                    <li>Patched: &gt;=0.8.5</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><h3 id="impact">Impact</h3>
+<p>Output from the synchronous version of <code>shell.exec()</code> may be visible to other users on the same system. You may be affected if you execute <code>shell.exec()</code> in multi-user Mac, Linux, or WSL environments, or if you execute <code>shell.exec()</code> as the root user.</p>
+<p>Other shelljs functions (including the asynchronous version of <code>shell.exec()</code>) are not impacted.</p>
+<h3 id="patches">Patches</h3>
+<p>Patched in shelljs 0.8.5</p>
+<h3 id="workarounds">Workarounds</h3>
+<p>Recommended action is to upgrade to 0.8.5.</p>
+<h3 id="references">References</h3>
+<p><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></p>
+<h3 id="for-more-information">For more information</h3>
+<p>If you have any questions or comments about this advisory:</p>
+<ul>
+<li>Ask at <a href="https://github.com/shelljs/shelljs/issues/1058">https://github.com/shelljs/shelljs/issues/1058</a></li>
+<li>Open an issue at <a href="https://github.com/shelljs/shelljs/issues/new">https://github.com/shelljs/shelljs/issues/new</a></li>
+</ul>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 0.8.5 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj</a></li>
+<li><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></li>
+<li><a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/advisories/GHSA-64g7-mvw6-v9qj</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-6" type="checkbox">
+                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>@aws-play/config-commitlint&gt;cz-lerna-changelog&gt;shelljs</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-secondary">moderate</span>
                             Inefficient Regular Expression Complexity in nth-check
                         </h1>
                         <div class="row">
@@ -560,8 +639,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-6" type="checkbox">
-                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-7" type="checkbox">
+                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -633,8 +712,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-7" type="checkbox">
-                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-8" type="checkbox">
+                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -718,8 +797,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-8" type="checkbox">
-                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-9" type="checkbox">
+                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -786,8 +865,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-9" type="checkbox">
-                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-10" type="checkbox">
+                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -802,88 +881,9 @@
                 </div>
             </div>
         
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                            Improper Privilege Management in shelljs
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/shelljs" target="_blank">shelljs</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 0.7.0</li>
-                                    
-                                    <li>Published: 1/15/2022, 6:00:43 AM</li>
-                                    
-                                    <li>CWE-269</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;0.8.5</li>
-                                    <li>Patched: &gt;=0.8.5</li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><h3 id="impact">Impact</h3>
-<p>Output from the synchronous version of <code>shell.exec()</code> may be visible to other users on the same system. You may be affected if you execute <code>shell.exec()</code> in multi-user Mac, Linux, or WSL environments, or if you execute <code>shell.exec()</code> as the root user.</p>
-<p>Other shelljs functions (including the asynchronous version of <code>shell.exec()</code>) are not impacted.</p>
-<h3 id="patches">Patches</h3>
-<p>Patched in shelljs 0.8.5</p>
-<h3 id="workarounds">Workarounds</h3>
-<p>Recommended action is to upgrade to 0.8.5.</p>
-<h3 id="references">References</h3>
-<p><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></p>
-<h3 id="for-more-information">For more information</h3>
-<p>If you have any questions or comments about this advisory:</p>
-<ul>
-<li>Ask at <a href="https://github.com/shelljs/shelljs/issues/1058">https://github.com/shelljs/shelljs/issues/1058</a></li>
-<li>Open an issue at <a href="https://github.com/shelljs/shelljs/issues/new">https://github.com/shelljs/shelljs/issues/new</a></li>
-</ul>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 0.8.5 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/shelljs/shelljs/security/advisories/GHSA-64g7-mvw6-v9qj</a></li>
-<li><a href="https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/">https://huntr.dev/bounties/50996581-c08e-4eed-a90e-c0bac082679c/</a></li>
-<li><a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj">https://github.com/advisories/GHSA-64g7-mvw6-v9qj</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-10" type="checkbox">
-                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@aws-play/config-commitlint&gt;cz-lerna-changelog&gt;shelljs</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-64g7-mvw6-v9qj" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
         
 
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 2/8/2022, 5:27:32 PM</h6>
+        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 2/11/2022, 8:03:16 PM</h6>
     </div>
 </div>
 </body>
