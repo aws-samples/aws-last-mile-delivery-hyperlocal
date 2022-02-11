@@ -140,7 +140,7 @@ export class BackendStack extends Stack {
 			userPool,
 			vpcNetworking,
 			redisCluster: liveDataCache.redisCluster,
-			elasticSearchCluster: liveDataCache.elasticSearchCluster,
+			openSearchDomain: liveDataCache.openSearchDomain,
 			driverDataIngestStream: streamingNestedStack.kinesisDataStreams.driverDataIngestStream,
 			redisConfig,
 			kinesisConfig,

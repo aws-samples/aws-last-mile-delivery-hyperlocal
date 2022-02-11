@@ -14,53 +14,66 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
-import { namespaced } from '@aws-play/cdk-core'
-import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowESWrite } from '@prototype/lambda-common'
+/* eslint-disable no-console */
+const { getESClient } = require('/opt/es-client')
+const { ES } = require('/opt/lambda-utils')
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Environment extends DeclaredLambdaEnvironment {
-	readonly ES_DOMAIN_ENDPOINT: string
+const esClient = getESClient(`https://${process.env.DOMAIN_ENDPOINT}`)
+
+const esIndexObj = {
+	index: ES.DRIVER_LOCATION_INDEX,
+}
+const esMappingObj = {
+	index: ES.DRIVER_LOCATION_INDEX,
+	includeTypeName: false,
+	body: {
+		properties: {
+			location: {
+				type: 'geo_point',
+			},
+		},
+	},
 }
 
-interface Dependencies extends DeclaredLambdaDependencies {
-	readonly vpc: ec2.IVpc
-	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly lambdaLayers: lambda.ILayerVersion[]
-	readonly esDomain: elasticsearch.IDomain
-}
+const handler = async (event, context) => {
+	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`)
 
-type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
+	const { RequestType } = event
 
-export class ESInitialSetupLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
-	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
-		const {
-			vpc,
-			lambdaSecurityGroups,
-			lambdaLayers,
-			esDomain,
-		} = props.dependencies
+	console.log(`OpenSearchInitialSetup :: RequestType = ${RequestType}`)
 
-		const declaredProps: TDeclaredProps = {
-			functionName: namespaced(scope, 'ES-Initial-Setup'),
-			description: 'Setup initial ElasticSearch mappings',
-			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/es-initial-setup.zip')),
-			dependencies: props.dependencies,
-			timeout: Duration.seconds(30),
-			environment: {
-				ES_DOMAIN_ENDPOINT: esDomain.domainEndpoint,
-			},
-			initialPolicy: [AllowESWrite(esDomain.domainArn)],
-			layers: lambdaLayers,
-			vpc,
-			vpcSubnets: {
-				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,
-			},
-			securityGroups: lambdaSecurityGroups,
-		}
-
-		super(scope, id, declaredProps)
+	switch (RequestType) {
+		case 'Create':
+			await handleCreate()
+			break
+		case 'Update':
+			await handleUpdate()
+			break
+		default:
+            // noop
 	}
 }
+
+const handleCreate = async () => {
+	try {
+		let result = await esClient.indices.create(esIndexObj)
+		console.log(`Successfully created index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+		result = await esClient.indices.putMapping(esMappingObj)
+		console.log(`Successfully updated index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+	} catch (err) {
+		console.log(`Error while creating index ${ES.DRIVER_LOCATION_INDEX}. Updating instead. Error: ${JSON.stringify(err)}`)
+
+		await handleUpdate()
+	}
+}
+
+const handleUpdate = async () => {
+	try {
+		const result = await esClient.indices.putMapping(esMappingObj)
+		console.log(`Successfully updated index ${ES.DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
+	} catch (err) {
+		console.log(`Error while updating index ${ES.DRIVER_LOCATION_INDEX}. Error: ${JSON.stringify(err)}`)
+	}
+}
+
+exports.handler = handler

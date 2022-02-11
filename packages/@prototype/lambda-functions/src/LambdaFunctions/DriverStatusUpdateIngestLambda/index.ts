@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticsearch as elasticsearch, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_opensearchservice as opensearchservice, aws_elasticache as elasticache } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -23,7 +23,7 @@ import { SERVICE_NAME } from '@prototype/common'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Environment extends DeclaredLambdaEnvironment {
-	readonly ES_DOMAIN_ENDPOINT: string
+	readonly DOMAIN_ENDPOINT: string
 	readonly REDIS_HOST: string
 	readonly REDIS_PORT: string
 	readonly EVENT_BUS_NAME: string
@@ -36,7 +36,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly eventBus: events.EventBus
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -49,7 +49,7 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 			redisCluster,
 			lambdaLayers,
 			eventBus,
-			esDomain,
+			openSearchDomain,
 		} = props.dependencies
 
 		const declaredProps: TDeclaredProps = {
@@ -63,7 +63,7 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
 				EVENT_BUS_NAME: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.DRIVER_SERVICE,
-				ES_DOMAIN_ENDPOINT: esDomain.domainEndpoint,
+				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({
@@ -73,7 +73,7 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
-				AllowESWrite(esDomain.domainArn),
+				AllowESWrite(openSearchDomain.domainArn),
 			],
 			layers: lambdaLayers,
 			vpc,

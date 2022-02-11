@@ -15,11 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Arn, Stack, aws_elasticsearch as elasticsearch, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
+import { Arn, Stack, aws_opensearchservice as opensearchservice, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
-export interface ElasticSearchClusterProps {
-	readonly esConfig: { [key: string]: string | number, }
+export interface OpenSearchClusterProps {
+	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly vpc: ec2.IVpc
 	readonly securityGroups: ec2.ISecurityGroup[]
 
@@ -32,38 +32,37 @@ export interface ElasticSearchClusterProps {
 /**
  * Notes:
  *
- * An ES Service-Linked Role for VPC Access must be created before creating an ES Domain.
+ * ElasticSearch -> OpenSearch service rename summary:
+ * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/rename.html
+ *
+ * Service-Linked Role for VPC Access:
+ * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/slr.html
  */
-export class ElasticSearchCluster extends Construct {
-	readonly esDomain: elasticsearch.IDomain
+export class OpenSearchCluster extends Construct {
+	readonly domain: opensearchservice.IDomain
 
-	constructor (scope: Construct, id: string, props: ElasticSearchClusterProps) {
+	constructor (scope: Construct, id: string, props: OpenSearchClusterProps) {
 		super(scope, id)
 
-		const baseArn = Arn.format({
-			resource: 'domain',
-			service: 'es',
-		}, Stack.of(scope))
-
 		const {
-			esConfig,
+			openSearchConfig,
 			securityGroups, vpc,
 			identityPoolId, userPoolId, authenticatedUserRole, adminRole,
 		} = props
 
-		// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-role
-		const cognitoKibanaRole = new iam.Role(this, 'CognitoKabanaAuthRole', {
+		// https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html
+		const cognitoDashboardsRole = new iam.Role(this, 'CognitoKabanaAuthRole', {
 			assumedBy: new iam.ServicePrincipal('es.amazonaws.com'),
-			managedPolicies: [iam.ManagedPolicy.fromManagedPolicyArn(this, 'AmazonESCognitoAccess', 'arn:aws:iam::aws:policy/AmazonESCognitoAccess')],
+			managedPolicies: [iam.ManagedPolicy.fromManagedPolicyArn(this, 'AmazonOpenSearchServiceCognitoAccess', 'arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess')],
 		})
 
-		const domainName = namespaced(this, 'live-data-es', { lowerCase: true })
+		const domainName = namespaced(this, 'live-data', { lowerCase: true })
+		const baseArn = Arn.format({ resource: 'domain', service: 'es' }, Stack.of(scope))
 
 		authenticatedUserRole.addToPrincipalPolicy(
 			new iam.PolicyStatement({
 				effect: iam.Effect.ALLOW,
-				// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-config-ac
-				// https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelasticsearchservice.html
+				// https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html#cognito-auth-config-ac
 				actions: [
 					'es:ESHttp*',
 				],
@@ -73,16 +72,16 @@ export class ElasticSearchCluster extends Construct {
 			}),
 		)
 
-		const elasticSearchClusterDomain = new elasticsearch.Domain(this, 'ESCluster', {
-			version: elasticsearch.ElasticsearchVersion.V7_10,
+		const domain = new opensearchservice.Domain(this, 'ESCluster', {
+			version: opensearchservice.EngineVersion.OPENSEARCH_1_1, // or remove this to get the latest OPENSEARCH version
 			domainName,
 			enableVersionUpgrade: true,
 			nodeToNodeEncryption: true,
 			capacity: {
-				masterNodes: esConfig.masterNodes as number || 3,
-				dataNodes: esConfig.dataNodes as number || 3,
-				masterNodeInstanceType: esConfig.masterNodeInstanceType as string || 't3.medium.elasticsearch',
-				dataNodeInstanceType: esConfig.dataNodeInstanceType as string || 't3.medium.elasticsearch',
+				masterNodes: openSearchConfig.masterNodes as number || 3,
+				dataNodes: openSearchConfig.dataNodes as number || 3,
+				masterNodeInstanceType: openSearchConfig.masterNodeInstanceType as string || 't3.medium.search',
+				dataNodeInstanceType: openSearchConfig.dataNodeInstanceType as string || 't3.medium.search',
 			},
 			vpc,
 			vpcSubnets: [vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_ISOLATED })],
@@ -95,20 +94,20 @@ export class ElasticSearchCluster extends Construct {
 				enabled: true,
 			},
 			enforceHttps: true,
-			cognitoKibanaAuth: {
+			cognitoDashboardsAuth: {
 				identityPoolId,
 				userPoolId,
-				role: cognitoKibanaRole,
+				role: cognitoDashboardsRole,
 			},
 			ebs: {
-				// TODO: verify the right value for prod
+				// NOTE: verify the right value for prod
 				iops: 1600,
 				volumeSize: 64,
 				volumeType: ec2.EbsDeviceVolumeType.IO1,
 			},
 			accessPolicies: [
 				// eslint-disable-next-line max-len
-				// https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-cognito-auth.html#es-cognito-auth-config-ac
+				// https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html#cognito-auth-config-ac
 				new iam.PolicyStatement({
 					principals: [
 						new iam.ArnPrincipal(authenticatedUserRole.roleArn),
@@ -132,8 +131,6 @@ export class ElasticSearchCluster extends Construct {
 			],
 		})
 
-		// retainResource(elasticSearchClusterDomain)
-
-		this.esDomain = elasticSearchClusterDomain
+		this.domain = domain
 	}
 }

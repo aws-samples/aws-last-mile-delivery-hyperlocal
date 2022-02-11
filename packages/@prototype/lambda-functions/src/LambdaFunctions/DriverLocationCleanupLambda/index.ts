@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { AllowESDelete, AllowESWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -25,7 +25,7 @@ interface Environment extends DeclaredLambdaEnvironment {
     readonly REDIS_HOST: string
     readonly REDIS_PORT: string
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
-	readonly ES_DOMAIN_ENDPOINT: string
+	readonly DOMAIN_ENDPOINT: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
@@ -34,7 +34,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -47,7 +47,7 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 			redisCluster,
 			lambdaLayers,
 			driverLocationUpdateTTLInMs,
-			esDomain,
+			openSearchDomain,
 		} = props.dependencies
 
 		const declaredProps: TDeclaredProps = {
@@ -60,13 +60,13 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 				REDIS_HOST: redisCluster.attrRedisEndpointAddress,
 				REDIS_PORT: redisCluster.attrRedisEndpointPort,
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
-				ES_DOMAIN_ENDPOINT: esDomain.domainEndpoint,
+				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 
 			},
 			layers: lambdaLayers,
 			initialPolicy: [
-				AllowESWrite(esDomain.domainArn),
-				AllowESDelete(esDomain.domainArn),
+				AllowESWrite(openSearchDomain.domainArn),
+				AllowESDelete(openSearchDomain.domainArn),
 			],
 			vpc,
 			vpcSubnets: {

@@ -15,27 +15,27 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_elasticsearch as elasticsearch, aws_elasticache as elasticache } from 'aws-cdk-lib'
-import { ElasticSearchCluster, ElasticSearchClusterProps } from './ElasticSearchCluster'
+import { aws_opensearchservice as opensearchservice, aws_elasticache as elasticache } from 'aws-cdk-lib'
+import { OpenSearchCluster, OpenSearchClusterProps } from './OpenSearchCluster'
 import { RedisCluster, RedisClusterProps } from './RedisCluster'
 
 export interface LiveDataCacheProps {
 	readonly redisClusterProps: RedisClusterProps
-	readonly elasticSearchClusterProps: ElasticSearchClusterProps
+	readonly openSearchClusterProps: OpenSearchClusterProps
 }
 
 export class LiveDataCache extends Construct {
-	readonly elasticSearchCluster: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 
 	readonly redisCluster: elasticache.CfnCacheCluster
 
 	constructor (scope: Construct, id: string, props: LiveDataCacheProps) {
 		super(scope, id)
 
-		const { redisClusterProps, elasticSearchClusterProps } = props
+		const { redisClusterProps, openSearchClusterProps } = props
 
-		const esCluster = new ElasticSearchCluster(this, 'ElasticSearchCluster', elasticSearchClusterProps)
-		this.elasticSearchCluster = esCluster.esDomain
+		const openSearchCluster = new OpenSearchCluster(this, 'OpenSearchCluster', openSearchClusterProps)
+		this.openSearchDomain = openSearchCluster.domain
 
 		const ecCluster = new RedisCluster(this, 'RedisCluster', redisClusterProps)
 		this.redisCluster = ecCluster.redisCluster

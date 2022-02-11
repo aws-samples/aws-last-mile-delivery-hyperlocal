@@ -21,7 +21,7 @@ server {
     ssl_ciphers HIGH:!aNULL:!eNULL:!EXPORT:!CAMELLIA:!DES:!MD5:!PSK:!RC4;
     ssl_prefer_server_ciphers on;
 
-    set $es_endpoint vpc-devproto-live-data-es-XXXXXXXXXX.ap-southeast-1.es.amazonaws.com;
+    set $es_endpoint vpc-devproto-live-data-opensearch-XXXXXXXXXX.ap-southeast-1.es.amazonaws.com;
     set $cognito_endpoint devproto-internal-domain-XXXXXXXXXX-ap-southeast-1.auth.ap-southeast-1.amazoncognito.com;
 
     location ^~ /_plugin/kibana {

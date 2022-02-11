@@ -15,14 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Stack, NestedStack, NestedStackProps, aws_ec2 as ec2, aws_elasticsearch as elasticsearch, aws_elasticache as elasticache, aws_cognito as cognito } from 'aws-cdk-lib'
+import { Stack, NestedStack, NestedStackProps, aws_ec2 as ec2, aws_opensearchservice as opensearchservice, aws_elasticache as elasticache, aws_cognito as cognito } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { Monitoring } from '@prototype/monitoring'
 
 export interface MonitoringNestedStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-    readonly esDomain: elasticsearch.IDomain
+    readonly openSearchDomain: opensearchservice.IDomain
     readonly redisCluster: elasticache.CfnCacheCluster
     readonly internalUserPoolDomain: cognito.IUserPoolDomain
 }
@@ -36,7 +36,7 @@ export class MonitoringNestedStack extends NestedStack {
 			vpcNetworking: {
 				securityGroups,
 			},
-			esDomain,
+			openSearchDomain,
 			redisCluster,
 			internalUserPoolDomain,
 		} = props
@@ -46,7 +46,7 @@ export class MonitoringNestedStack extends NestedStack {
 		const monitoring = new Monitoring(this, 'MonitoringInst', {
 			vpc,
 			securityGroup: securityGroups.dmz,
-			esEndpoint: esDomain.domainEndpoint,
+			esEndpoint: openSearchDomain.domainEndpoint,
 			redisEndpoint: redisCluster.attrRedisEndpointAddress,
 			cognitoEndpoint: `${internalUserPoolDomain.domainName}.auth.${region}.amazoncognito.com`,
 		})

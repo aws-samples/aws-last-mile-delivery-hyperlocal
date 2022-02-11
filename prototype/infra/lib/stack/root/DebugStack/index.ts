@@ -54,7 +54,7 @@ export class DebugStack extends Stack {
 		const monitoringNestedStack = new MonitoringNestedStack(this, 'MonitoringNestedStack', {
 			vpc,
 			vpcNetworking,
-			esDomain: liveDataCache.elasticSearchCluster,
+			openSearchDomain: liveDataCache.openSearchDomain,
 			redisCluster: liveDataCache.redisCluster,
 			internalUserPoolDomain,
 		})

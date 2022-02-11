@@ -15,4 +15,4 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 export * from './LiveDataCache'
-export * from './LiveDataCache/ElasticSearchCluster/ESInitialSetup'
+export * from './LiveDataCache/OpenSearchCluster/OpenSearchInitialSetup'

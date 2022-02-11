@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache, aws_elasticsearch as elasticsearch } from 'aws-cdk-lib'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_elasticache as elasticache, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
@@ -28,7 +28,7 @@ export interface DriverGeofencingtLambdaExternalDeps {
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
 	readonly redisCluster: elasticache.CfnCacheCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 	readonly eventBus: events.EventBus
 }
 

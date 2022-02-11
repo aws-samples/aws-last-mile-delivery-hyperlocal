@@ -1,5 +1,5 @@
 {
-  "name": "@lambda/es-initial-setup",
+  "name": "@lambda/opensearch-initial-setup",
   "version": "1.0.0",
   "description": "",
   "private": "true",

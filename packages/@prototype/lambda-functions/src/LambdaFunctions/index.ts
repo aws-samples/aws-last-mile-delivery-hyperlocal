@@ -15,14 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_events as events, aws_elasticsearch as elasticsearch, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_lambda as lambda, aws_elasticache as elasticache, aws_events as events, aws_opensearchservice as opensearchservice, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
 import { KinesisConsumer } from '@prototype/lambda-common'
 import { DriverLocationCleanupLambda } from './DriverLocationCleanupLambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { DriverLocationUpdateIngestLambda } from './DriverLocationUpdateIngestLambda'
 import { DriverStatusUpdateLambda } from './DriverStatusUpdateIngestLambda'
 import { DriverGeofencingtLambda } from './DriverGeofencingLambda'
-import { ESInitialSetupLambda } from './ESInitialSetupLambda'
+import { OpenSearchInitialSetupLambda } from './OpenSearchInitialSetupLambda'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LambdaFunctionsProps {
@@ -43,7 +43,7 @@ export interface LambdaFunctionsProps {
 	readonly geofencingRetryAttempts: number
 	readonly geofencingUseFanOutConsumer: boolean
 	readonly geofencingMaxBatchingWindowMs: number
-	readonly esDomain: elasticsearch.IDomain
+	readonly openSearchDomain: opensearchservice.IDomain
 	readonly eventBus: events.EventBus
 }
 
@@ -56,7 +56,7 @@ export class LambdaFunctions extends Construct {
 
 	readonly driverGeofencingLambda: lambda.IFunction
 
-	readonly esInitialSetupLambda: lambda.IFunction
+	readonly openSearchInitialSetupLambda: lambda.IFunction
 
 	constructor (scope: Construct, id: string, props: LambdaFunctionsProps) {
 		super(scope, id)
@@ -67,7 +67,7 @@ export class LambdaFunctions extends Construct {
 			cleanupScheduleMins,
 			driverDataIngestStream,
 			driverLocationUpdateTTLInMs,
-			esDomain,
+			openSearchDomain,
 			eventBus,
 			driverLocationUpdateBatchSize,
 			driverLocationUpdateParallelizationFactor,
@@ -93,7 +93,7 @@ export class LambdaFunctions extends Construct {
 					lambdaLayers.lambdaInsightsLayer,
 				],
 				driverLocationUpdateTTLInMs,
-				esDomain,
+				openSearchDomain,
 			},
 		})
 
@@ -123,7 +123,7 @@ export class LambdaFunctions extends Construct {
 					],
 					redisCluster,
 					driverLocationUpdateTTLInMs,
-					esDomain,
+					openSearchDomain,
 				},
 			},
 		})
@@ -152,7 +152,7 @@ export class LambdaFunctions extends Construct {
 						lambdaLayers.lambdaInsightsLayer,
 					],
 					redisCluster,
-					esDomain,
+					openSearchDomain,
 					eventBus,
 				},
 			},
@@ -182,15 +182,15 @@ export class LambdaFunctions extends Construct {
 					lambdaLayers.esClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
 				],
-				esDomain,
+				openSearchDomain,
 			},
 		})
 
 		this.driverStatusUpdateLambda = driverStatusUpdateLambda
 
-		const esInitialSetupLambda = new ESInitialSetupLambda(this, 'ESInitialSetupLambda', {
+		const openSearchInitialSetupLambda = new OpenSearchInitialSetupLambda(this, 'ESInitialSetupLambda', {
 			dependencies: {
-				esDomain,
+				openSearchDomain,
 				lambdaLayers: [
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.esClientLayer,
@@ -200,6 +200,6 @@ export class LambdaFunctions extends Construct {
 				vpc,
 			},
 		})
-		this.esInitialSetupLambda = esInitialSetupLambda
+		this.openSearchInitialSetupLambda = openSearchInitialSetupLambda
 	}
 }

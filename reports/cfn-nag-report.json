@@ -253,8 +253,8 @@
           "type": "WARN",
           "message": "Lambda functions require permission to write CloudWatch Logs",
           "logical_resource_ids": [
-            "ESSetupESSetupCR464E7FB8",
-            "ESSetupESSetupProviderframeworkonEvent58B41B7C",
+            "OpenSearchSetupOpenSearchSetupCR8287D1A3",
+            "OpenSearchSetupOpenSearchSetupProviderframeworkonEventBD451A05",
             "ProviderSetupProviderInitialSetupLambda51CB974A",
             "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
           ],
@@ -295,8 +295,8 @@
           "type": "WARN",
           "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
           "logical_resource_ids": [
-            "ESSetupESSetupCR464E7FB8",
-            "ESSetupESSetupProviderframeworkonEvent58B41B7C",
+            "OpenSearchSetupOpenSearchSetupCR8287D1A3",
+            "OpenSearchSetupOpenSearchSetupProviderframeworkonEventBD451A05",
             "ProviderSetupProviderInitialSetupLambda51CB974A",
             "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
           ],
@@ -734,11 +734,11 @@
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderorderstatusorderIdGETDA9F1BD8",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercancelorderorderIdDELETEF36357B0",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProvidercallbackPOST5B983D75",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderANY85B8A564",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderrequestorderfulfillmentPOST70A276EA",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderorderstatusorderIdGETDAADE814",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercancelorderorderIdDELETEED541754",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercallbackPOST0D170ACF"
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderANY339EA6A5",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderrequestorderfulfillmentPOSTCEDA423B",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderorderstatusorderIdGET7CC7C362",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercancelorderorderIdDELETE7D7C7E79",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercallbackPOSTF8164DF5"
           ],
           "line_numbers": [
             816,
@@ -781,7 +781,7 @@
           "logical_resource_ids": [
             "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderDeploymentStageprod577E8B25",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderDeploymentStageprod0FC4087A",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderDeploymentStageprod9647C981"
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderDeploymentStageprod7F1AA99C"
           ],
           "line_numbers": [
             753,
@@ -830,7 +830,7 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzdy3i5qCustomResourcePolicy73A69E42",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzhz79agCustomResourcePolicy3BD19780",
             "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
           ],
@@ -875,10 +875,10 @@
             "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
             "ExampleWebhookProviderCancelOrderLambda941062B6",
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "InstantDeliveryProviderInternalCallbackLambda2DD96B55",
-            "InstantDeliveryProviderRequestOrderFulfillmentLambda7E376774",
-            "InstantDeliveryProviderGetOrderStatusLambda999C94C0",
-            "InstantDeliveryProviderCancelOrderLambdaD0CDF432",
+            "InstantDeliveryProviderInternalCallbackLambdaA06E2387",
+            "InstantDeliveryProviderRequestOrderFulfillmentLambda8083362B",
+            "InstantDeliveryProviderGetOrderStatusLambda9D12E71D",
+            "InstantDeliveryProviderCancelOrderLambda4ECAF6DB",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
             "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
             "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
@@ -968,10 +968,10 @@
             "ExampleWebhookProviderGetOrderStatusLambdaBB82E03B",
             "ExampleWebhookProviderCancelOrderLambda941062B6",
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C",
-            "InstantDeliveryProviderInternalCallbackLambda2DD96B55",
-            "InstantDeliveryProviderRequestOrderFulfillmentLambda7E376774",
-            "InstantDeliveryProviderGetOrderStatusLambda999C94C0",
-            "InstantDeliveryProviderCancelOrderLambdaD0CDF432",
+            "InstantDeliveryProviderInternalCallbackLambdaA06E2387",
+            "InstantDeliveryProviderRequestOrderFulfillmentLambda8083362B",
+            "InstantDeliveryProviderGetOrderStatusLambda9D12E71D",
+            "InstantDeliveryProviderCancelOrderLambda4ECAF6DB",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaC7223A82",
             "DispatchEngineOrchestratorOrderIngestLambdaD7C22931",
             "DriverEventHandlerDriverStatusChangeHandlerEDB62454",
@@ -1057,7 +1057,7 @@
           "logical_resource_ids": [
             "ExamplePollingProviderProviderApiGwInstanceExamplePollingProviderApiKeyExamplePollingProviderZvwSX6669D844A",
             "ExampleWebhookProviderProviderApiGwInstanceExampleWebhookProviderApiKeyExampleWebhookProvidernePWC8F2F0EBF",
-            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderApiKeyInstantDeliveryProviderZ16H1Vw485F9B46",
+            "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderApiKeyInstantDeliveryProviderZ18UajW93D60468",
             "GraphhopperSetupGraphhopperALB4E50D909",
             "DriverDataIngestStreamIdB09121CE"
           ],
@@ -1084,7 +1084,7 @@
           "logical_resource_ids": [
             "PendingOrderDlqExamplePollingProviderFCB034E2",
             "PendingOrderQExamplePollingProviderB7973C0F",
-            "DispatchEngineOrchestratorOrderIngestKinesisConsumerinternalproviderDlq16F2B34D"
+            "DispatchEngineOrchestratorOrderIngestKinesisConsumerinstantdeliveryproviderDlqAF169715"
           ],
           "line_numbers": [
             400,
@@ -1297,17 +1297,14 @@
           "logical_resource_ids": [
             "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
             "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
-            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3",
-            "LiveDataCacheElasticSearchClusterESClusterBC5B0825"
+            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
           ],
           "line_numbers": [
             4,
             132,
-            152,
-            265
+            152
           ],
           "element_types": [
-            "resource",
             "resource",
             "resource",
             "resource"
@@ -1404,10 +1401,10 @@
           "logical_resource_ids": [
             "GeoPolygonTable42E97153",
             "OrderTable416EB896",
-            "InternalProviderOrders1554C70A",
+            "InstantDeliveryProviderOrdersFBBFF6BF",
             "DemographicAreaDispatchSettingsB488376F",
             "DemographicAreaProviderEngineSettingsC557CEE7",
-            "InternalProviderLocksF59A3CC4",
+            "InstantDeliveryProviderLocksC016DD6F",
             "DispatcherAssignmentsB45A6CFD"
           ],
           "line_numbers": [
@@ -1533,10 +1530,10 @@
           "logical_resource_ids": [
             "GeoPolygonTable42E97153",
             "OrderTable416EB896",
-            "InternalProviderOrders1554C70A",
+            "InstantDeliveryProviderOrdersFBBFF6BF",
             "DemographicAreaDispatchSettingsB488376F",
             "DemographicAreaProviderEngineSettingsC557CEE7",
-            "InternalProviderLocksF59A3CC4",
+            "InstantDeliveryProviderLocksC016DD6F",
             "DispatcherAssignmentsB45A6CFD"
           ],
           "line_numbers": [
@@ -1939,7 +1936,7 @@
           "type": "WARN",
           "message": "AWS::ApiGateway::Deployment resources should be associated with an AWS::ApiGateway::UsagePlan. ",
           "logical_resource_ids": [
-            "SimulatorRestApiDeployment7165AE7B741b52e537835a63399935998c4650d9"
+            "SimulatorRestApiDeployment7165AE7B9ea7ca8ab5bf12e8aa6c954e3f72ae0e"
           ],
           "line_numbers": [
             176
@@ -2001,12 +1998,12 @@
           "logical_resource_ids": [
             "IoTEndpointSimulatorStackCustomResourcePolicyD5FE1C80",
             "SimulatorManagerSimulatorManagerLambdaServiceRoleDefaultPolicy875CCB78",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperServiceRoleDefaultPolicy715F1B69",
-            "SimulatorManagerRestaurantSimulatorLambdaServiceRoleDefaultPolicy278B7173",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerServiceRoleDefaultPolicy61640560",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperServiceRoleDefaultPolicy3FBF5ECF",
-            "SimulatorManagerCustomerSimulatorLambdaServiceRoleDefaultPolicyB4FDAF8A",
-            "UpdateLambdaConfigurationkzdy3icaCustomResourcePolicyE8CD6FE6"
+            "SimulatorManagerOriginSimulatorLambdaOriginGeneratorStepFunctionOriginGeneratorHelperServiceRoleDefaultPolicy7F7C5518",
+            "SimulatorManagerOriginSimulatorLambdaServiceRoleDefaultPolicyB9182468",
+            "SimulatorManagerOriginSimulatorLambdaOriginEventHandlerServiceRoleDefaultPolicy70005689",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
+            "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
+            "UpdateLambdaConfigurationkzhz79hwCustomResourcePolicyF250BB7F"
           ],
           "line_numbers": [
             5,
@@ -2040,17 +2037,17 @@
             "SimulatorManagerSimulatorManagerLambda269D5609",
             "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
             "SimulatorManagerPolygonManagerLambdaB5FAE450",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
-            "SimulatorManagerRestaurantSimulatorLambda8BB6A355",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStatusUpdateLambda80394D9E",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
-            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStatusUpdateLambdaD2F8CF9F",
+            "SimulatorManagerOriginSimulatorLambdaOriginGeneratorStepFunctionOriginGeneratorHelperC2BD95BD",
+            "SimulatorManagerOriginSimulatorLambdaOriginStarterStepFunctionOriginStarterHelperA28A5905",
+            "SimulatorManagerOriginSimulatorLambdaOriginEraserStepFunctionOriginEraserHelperFE478FE3",
+            "SimulatorManagerOriginSimulatorLambda669B2FA5",
+            "SimulatorManagerOriginSimulatorLambdaOriginStatusUpdateLambdaD5130653",
+            "SimulatorManagerOriginSimulatorLambdaOriginEventHandler70EF4889",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperD80AFFC5",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStarterStepFunctionDestinationStarterHelper6D16BE0E",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
+            "SimulatorManagerDestinationSimulatorLambdaE614D361",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStatusUpdateLambda7FD0C441",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
@@ -2109,14 +2106,14 @@
             "SimulatorManagerSimulatorManagerLambda269D5609",
             "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
             "SimulatorManagerPolygonManagerLambdaB5FAE450",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
-            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
+            "SimulatorManagerOriginSimulatorLambdaOriginGeneratorStepFunctionOriginGeneratorHelperC2BD95BD",
+            "SimulatorManagerOriginSimulatorLambdaOriginStarterStepFunctionOriginStarterHelperA28A5905",
+            "SimulatorManagerOriginSimulatorLambdaOriginEraserStepFunctionOriginEraserHelperFE478FE3",
+            "SimulatorManagerOriginSimulatorLambdaOriginEventHandler70EF4889",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperD80AFFC5",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStarterStepFunctionDestinationStarterHelper6D16BE0E",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
+            "SimulatorManagerDestinationSimulatorLambdaE614D361",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
@@ -2166,17 +2163,17 @@
             "SimulatorManagerSimulatorManagerLambda269D5609",
             "SimulatorManagerEventsSimulatorEventSimulatorLambda192B31F9",
             "SimulatorManagerPolygonManagerLambdaB5FAE450",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperF371AF34",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperEB1E0F62",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEraserStepFunctionRestaurantEraserHelper7452A65C",
-            "SimulatorManagerRestaurantSimulatorLambda8BB6A355",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStatusUpdateLambda80394D9E",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantEventHandlerA5BB713E",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperF19217F9",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelper838BCFD1",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerEraserStepFunctionCustomerEraserHelper9C34716A",
-            "SimulatorManagerCustomerSimulatorLambdaBB394AD0",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStatusUpdateLambdaD2F8CF9F",
+            "SimulatorManagerOriginSimulatorLambdaOriginGeneratorStepFunctionOriginGeneratorHelperC2BD95BD",
+            "SimulatorManagerOriginSimulatorLambdaOriginStarterStepFunctionOriginStarterHelperA28A5905",
+            "SimulatorManagerOriginSimulatorLambdaOriginEraserStepFunctionOriginEraserHelperFE478FE3",
+            "SimulatorManagerOriginSimulatorLambda669B2FA5",
+            "SimulatorManagerOriginSimulatorLambdaOriginStatusUpdateLambdaD5130653",
+            "SimulatorManagerOriginSimulatorLambdaOriginEventHandler70EF4889",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperD80AFFC5",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStarterStepFunctionDestinationStarterHelper6D16BE0E",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
+            "SimulatorManagerDestinationSimulatorLambdaE614D361",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStatusUpdateLambda7FD0C441",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
@@ -2230,12 +2227,12 @@
           "type": "WARN",
           "message": "SPCM for IAM policy document is higher than 25",
           "logical_resource_ids": [
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantGeneratorStepFunctionRestaurantGeneratorHelperServiceRoleDefaultPolicy715F1B69",
-            "SimulatorManagerRestaurantSimulatorLambdaRestaurantStarterStepFunctionRestaurantStarterHelperServiceRoleDefaultPolicy14C1C0DC",
-            "SimulatorManagerRestaurantSimulatorLambdaServiceRoleDefaultPolicy278B7173",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerGeneratorStepFunctionCustomerGeneratorHelperServiceRoleDefaultPolicy3FBF5ECF",
-            "SimulatorManagerCustomerSimulatorLambdaCustomerStarterStepFunctionCustomerStarterHelperServiceRoleDefaultPolicyCE431ED3",
-            "SimulatorManagerCustomerSimulatorLambdaServiceRoleDefaultPolicyB4FDAF8A"
+            "SimulatorManagerOriginSimulatorLambdaOriginGeneratorStepFunctionOriginGeneratorHelperServiceRoleDefaultPolicy7F7C5518",
+            "SimulatorManagerOriginSimulatorLambdaOriginStarterStepFunctionOriginStarterHelperServiceRoleDefaultPolicyCBE0EF66",
+            "SimulatorManagerOriginSimulatorLambdaServiceRoleDefaultPolicyB9182468",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
+            "SimulatorManagerDestinationSimulatorLambdaDestinationStarterStepFunctionDestinationStarterHelperServiceRoleDefaultPolicy4FA4D8AD",
+            "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5"
           ],
           "line_numbers": [
             5992,
@@ -2319,10 +2316,10 @@
             "SimulatorECSStackIoTEndpointCustomResourcePolicy0204C605",
             "SimulatorECSStackDriverSimulatorContainerSimulatorRoledriverDefaultPolicy22E59F35",
             "SimulatorECSStackDriverSimulatorContainerECSExecutionRoledriverDefaultPolicy070C0E29",
-            "SimulatorECSStackCustomerSimulatorContainerSimulatorRolecustomerDefaultPolicy1544560C",
-            "SimulatorECSStackCustomerSimulatorContainerECSExecutionRolecustomerDefaultPolicy9DF35E8F",
-            "SimulatorECSStackRestaurantSimulatorContainerSimulatorRolerestaurantDefaultPolicy3EE97BB6",
-            "SimulatorECSStackRestaurantSimulatorContainerECSExecutionRolerestaurantDefaultPolicy124D5D32"
+            "SimulatorECSStackDestinationSimulatorContainerSimulatorRoledestinationDefaultPolicyF258DA5E",
+            "SimulatorECSStackDestinationSimulatorContainerECSExecutionRoledestinationDefaultPolicy0070E31D",
+            "SimulatorECSStackOriginSimulatorContainerSimulatorRoleoriginDefaultPolicy5C9476E8",
+            "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleoriginDefaultPolicy6A16E111"
           ],
           "line_numbers": [
             414,
@@ -2395,8 +2392,8 @@
           "message": "CloudWatchLogs LogGroup should specify a KMS Key Id to encrypt the log data",
           "logical_resource_ids": [
             "SimulatorECSStackDriverSimulatorContainerECSTaskDefinitiondriverECSContainerDefdriverLogGroupFFC5028E",
-            "SimulatorECSStackCustomerSimulatorContainerECSTaskDefinitioncustomerECSContainerDefcustomerLogGroupD8CD78C5",
-            "SimulatorECSStackRestaurantSimulatorContainerECSTaskDefinitionrestaurantECSContainerDefrestaurantLogGroup5A8BC3A1"
+            "SimulatorECSStackDestinationSimulatorContainerECSTaskDefinitiondestinationECSContainerDefdestinationLogGroupB9C68822",
+            "SimulatorECSStackOriginSimulatorContainerECSTaskDefinitionoriginECSContainerDeforiginLogGroup535ED592"
           ],
           "line_numbers": [
             778,
@@ -2416,8 +2413,8 @@
           "message": "CloudWatchLogs LogGroup should specify RetentionInDays to expire the log data",
           "logical_resource_ids": [
             "SimulatorECSStackDriverSimulatorContainerECSTaskDefinitiondriverECSContainerDefdriverLogGroupFFC5028E",
-            "SimulatorECSStackCustomerSimulatorContainerECSTaskDefinitioncustomerECSContainerDefcustomerLogGroupD8CD78C5",
-            "SimulatorECSStackRestaurantSimulatorContainerECSTaskDefinitionrestaurantECSContainerDefrestaurantLogGroup5A8BC3A1"
+            "SimulatorECSStackDestinationSimulatorContainerECSTaskDefinitiondestinationECSContainerDefdestinationLogGroupB9C68822",
+            "SimulatorECSStackOriginSimulatorContainerECSTaskDefinitionoriginECSContainerDeforiginLogGroup535ED592"
           ],
           "line_numbers": [
             778,
@@ -2440,10 +2437,10 @@
             "SimulatorECSStackSimulatorCommonRepository716850DC",
             "SimulatorECSStackDriverSimulatorContainerSimulatorRoledriverE93A15DF",
             "SimulatorECSStackDriverSimulatorContainerECSExecutionRoledriver759B0CAF",
-            "SimulatorECSStackCustomerSimulatorContainerSimulatorRolecustomer812C9531",
-            "SimulatorECSStackCustomerSimulatorContainerECSExecutionRolecustomerD61843F2",
-            "SimulatorECSStackRestaurantSimulatorContainerSimulatorRolerestaurant5E2D72E3",
-            "SimulatorECSStackRestaurantSimulatorContainerECSExecutionRolerestaurant00C784E0"
+            "SimulatorECSStackDestinationSimulatorContainerSimulatorRoledestination82E749C8",
+            "SimulatorECSStackDestinationSimulatorContainerECSExecutionRoledestination519A456C",
+            "SimulatorECSStackOriginSimulatorContainerSimulatorRoleorigin229FA9BF",
+            "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleorigin0CDA4808"
           ],
           "line_numbers": [
             204,
@@ -2619,12 +2616,12 @@
           "logical_resource_ids": [
             "SimulatorTableD8B9B513",
             "EventTable3F3CD4B2",
-            "RestaurantTableBDE2029A",
-            "RestaurantStatsTableC9D91E83",
-            "RestaurantSimulationsTableD337F50F",
-            "CustomerTable260DCC08",
-            "CustomerStatsTable6A45FA43",
-            "CustomerSimulationsTableC2935AC0"
+            "OriginTable53940FF7",
+            "OriginStatsTable48C5148A",
+            "OriginSimulationsTable4BE992A3",
+            "DestinationTableE41E7513",
+            "DestinationStatsTable3F0A6F48",
+            "DestinationSimulationsTableBB0F81AF"
           ],
           "line_numbers": [
             4,
@@ -2655,12 +2652,12 @@
           "logical_resource_ids": [
             "SimulatorTableD8B9B513",
             "EventTable3F3CD4B2",
-            "RestaurantTableBDE2029A",
-            "RestaurantStatsTableC9D91E83",
-            "RestaurantSimulationsTableD337F50F",
-            "CustomerTable260DCC08",
-            "CustomerStatsTable6A45FA43",
-            "CustomerSimulationsTableC2935AC0"
+            "OriginTable53940FF7",
+            "OriginStatsTable48C5148A",
+            "OriginSimulationsTable4BE992A3",
+            "DestinationTableE41E7513",
+            "DestinationStatsTable3F0A6F48",
+            "DestinationSimulationsTableBB0F81AF"
           ],
           "line_numbers": [
             4,
