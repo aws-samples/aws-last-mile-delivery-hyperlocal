@@ -13,7 +13,7 @@ import { LiveDataCache } from '@prototype/live-data-cache'
 
 const liveDataCluster = new LiveDataCache(this, 'LiveDataCache', {
     elasticSearchClusterProps: {
-        securityGroups: [securityGroups.redis],
+        securityGroups: [securityGroups.openSearch],
         vpc,
         esConfig,
         identityPoolId,
@@ -26,7 +26,7 @@ const liveDataCluster = new LiveDataCache(this, 'LiveDataCache', {
     memoryDBClusterProps: {
         numNodes: 1,
         nodeType: memoryDBConfig.instanceType as string,
-        securityGroups: [securityGroups.redis],
+        securityGroups: [securityGroups.memoryDB],
         vpc,
     },
 })

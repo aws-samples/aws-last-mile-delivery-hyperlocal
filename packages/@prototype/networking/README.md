@@ -9,9 +9,9 @@ The following resources are being created:
 * `vpc` - a new VPC with
 	* `PUBLIC`, `PRIVATE` and `ISOLATED` subnets
 	* 1 NAT Gateway
-	* security groups for `DMZ`, `Lambdas`, `memoryDBCluster` (including OPENSEARCH)
+	* security groups for `DMZ`, `Lambdas`, `MemoryDB`, `OpenSearch`
 	* ingress rules setup to provide communication between artifacts residing in each security group
-	* a `Bastion` instance to be able to `ssh tunnel` to the database from a developer's machine
+	* ~~a `Bastion` instance to be able to `ssh tunnel` to the database from a developer's machine~~
 
 	For further configuration, please see the source.
 

@@ -65,7 +65,7 @@ export class BackendBaseNestedStack extends NestedStack {
 
 		this.liveDataCache = new LiveDataCache(this, 'LiveDataCache', {
 			openSearchClusterProps: {
-				securityGroups: [securityGroups.redis],
+				securityGroups: [securityGroups.openSearch],
 				vpc,
 				openSearchConfig,
 				identityPoolId,
@@ -78,7 +78,7 @@ export class BackendBaseNestedStack extends NestedStack {
 				numShards: memoryDBConfig.numShards as number,
 				numReplicasPerShard: memoryDBConfig.numReplicasPerShard as number,
 				nodeType: memoryDBConfig.instanceType as string,
-				securityGroups: [securityGroups.redis],
+				securityGroups: [securityGroups.memoryDB],
 				vpc,
 			},
 		})

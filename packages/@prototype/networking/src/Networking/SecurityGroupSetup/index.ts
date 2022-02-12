@@ -60,20 +60,33 @@ export class SecurityGroupSetup extends Construct {
 		// access dmz items from lambda
 		dmzSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic(), 'Access from lambdas')
 
-		// Redis securityGroup
-		const redisSecurityGroup = new ec2.SecurityGroup(this, 'RedisSecurityGroup', {
+		// MemoryDB securityGroup
+		const memoryDBSecurityGroup = new ec2.SecurityGroup(this, 'MemoryDBSecurityGroup', {
 			vpc,
 			allowAllOutbound: true,
-			description: 'Security group for Redis cluster in VPC',
-			securityGroupName: namespaced(this, 'Redis'),
+			description: 'Security group for MemoryDB cluster in VPC',
+			securityGroupName: namespaced(this, 'MemoryDB'),
 		})
 
-		redisSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(6379)) // redis
-		redisSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(443)) // kibana
-		redisSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic())
+		memoryDBSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(6379)) // memoryDB (redis)
+		memoryDBSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic())
+
+		// OpenSearch securityGroup
+		const openSearchSecurityGroup = new ec2.SecurityGroup(this, 'OpenSearchSecurityGroup', {
+			vpc,
+			allowAllOutbound: true,
+			description: 'Security group for OpenSearch cluster in VPC',
+			securityGroupName: namespaced(this, 'OpenSearch'),
+		})
+
+		openSearchSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(443)) // opensearch dashboard (kibana)
+		openSearchSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(9200)) // opensearch
+		openSearchSecurityGroup.addIngressRule(dmzSecurityGroup, ec2.Port.tcp(9600)) // opensearch
+		openSearchSecurityGroup.addIngressRule(lambdaSecurityGroup, ec2.Port.allTraffic())
 
 		this.securityGroups.lambda = lambdaSecurityGroup
 		this.securityGroups.dmz = dmzSecurityGroup
-		this.securityGroups.redis = redisSecurityGroup
+		this.securityGroups.memoryDB = memoryDBSecurityGroup
+		this.securityGroups.openSearch = openSearchSecurityGroup
 	}
 }
