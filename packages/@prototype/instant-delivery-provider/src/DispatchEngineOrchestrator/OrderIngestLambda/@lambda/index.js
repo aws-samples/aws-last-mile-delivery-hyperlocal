@@ -42,7 +42,7 @@ const handler = async (event, context) => {
 		try {
 			data = JSON.parse(kinesisData)
 
-			console.debug(`Data payload: ${JSON.stringify(data, null, 2)}`) // TODO: remove this for PROD
+			console.debug(`Data payload: ${JSON.stringify(data, null, 2)}`) // PROD: remove this
 		} catch (err) {
 			console.error(`Record from kinesis is malformatted (JSON parse failure). Skipping. Data received: ${kinesisData}`)
 			continue

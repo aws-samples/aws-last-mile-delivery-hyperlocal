@@ -31,7 +31,7 @@ client.hget = promisify(client.hget)
 client.hset = promisify(client.hset)
 
 const handler = async (event, context) => {
-	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // TODO: remove this for PROD
+	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	if (event.type !== 'STATUS_CHANGE') {
 		console.error(`Record from IoT Core is not valid. The type is not 'STATUS_CHANGE', skipping. Data received: ${JSON.stringify(event)}`)

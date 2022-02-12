@@ -31,7 +31,7 @@ client.hset = promisify(client.hset)
 client.hdel = promisify(client.hdel)
 
 const handler = async (event, context) => {
-	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // TODO: remove this for PROD
+	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	try {
 		await eventBridge.putEvents({

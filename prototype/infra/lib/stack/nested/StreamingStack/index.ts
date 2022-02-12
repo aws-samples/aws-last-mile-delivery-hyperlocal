@@ -41,7 +41,7 @@ export class StreamingStack extends NestedStack {
 		} = props
 
 		this.kinesisDataStreams = new KinesisDS(this, 'DriverDataStream', {
-			dataStreamRetention: Duration.hours(kinesisConfig.dataStreamRetentionHrs as number), // TODO: review for PROD
+			dataStreamRetention: Duration.hours(kinesisConfig.dataStreamRetentionHrs as number), // PROD: review this value
 			shardCount: kinesisConfig.shardCount as number,
 		})
 

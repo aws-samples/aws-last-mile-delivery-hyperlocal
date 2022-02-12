@@ -54,7 +54,7 @@ export class VpcPersistent extends Construct {
 					name: namespaced(this, 'isolated'),
 				},
 			],
-			natGateways: 1, // TODO: review for PROD
+			natGateways: 1, // PROD: review this value
 			natGatewayProvider: ec2.NatProvider.gateway(),
 		})
 
