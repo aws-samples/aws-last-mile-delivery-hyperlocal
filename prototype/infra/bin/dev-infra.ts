@@ -16,7 +16,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import 'source-map-support/register'
-import { App } from 'aws-cdk-lib'
+import { App, Tags } from 'aws-cdk-lib'
 import config from '../config'
 import { BackendStack } from '../lib/stack/root/BackendStack'
 import { PersistentBackendStack } from '../lib/stack/root/PersistentBackendStack'
@@ -71,3 +71,5 @@ const externalProver = new ExternalProviderStack(app, 'ExternalProviderStack-Moc
 	...config,
 	namespace: 'external',
 })
+
+Tags.of(app).add('x-deployment-id', `${config.namespace}-deployment`)
