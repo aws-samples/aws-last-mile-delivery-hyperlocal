@@ -35,11 +35,6 @@ export class Networking extends Construct {
 
 		const { vpc, ingressRules } = props
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		// const routingSetup = new RoutingSetup(this, 'VpcRoutingSetup', {
-		// 	vpc,
-		// })
-
 		const securityGroupSetup = new SecurityGroupSetup(this, 'SecurityGroupSetup', {
 			vpc,
 			ingressRules,
