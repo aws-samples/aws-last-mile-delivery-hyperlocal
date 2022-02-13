@@ -1,0 +1,265 @@
+---
+# #####################################################################################################################
+Copyright: >
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# #####################################################################################################################
+
+# environment vars
+env:
+  # AWS account ID (12-digit integer)
+  account: XXXXXXXXXXXX
+
+  # AWS region string
+  region: ap-southeast-1
+
+  # token for mapBox
+  mapBoxToken: XXXXXX
+
+  # origin (e.g.: restaurant) simulator users' password (users are generated for simulation)
+  originUserPassword: XXXXXX
+
+  # destination (e.g.: customer) simulator users' password (users are generated for simulation)
+  destinationUserPassword: XXXXXX
+
+# string prefix for resources created by CDK
+namespace: devproto
+
+# the administrator email address
+# make sure this is accurate, cognito will send a temporary password once the deployment goes through
+administratorEmail: your-email@example.com
+
+# network configuration for the VPC that's being created
+vpcNetworkConfig:
+  # array of cidr/port pairs to add for DMZ ingress config: allow access from these CIDR:port
+  # DMZ ingress is used to access the backend system for administration purposes
+  # usually this is the IP address range of your company's VPN
+  dmzSecurityIngress:
+    - cidr: 11.22.33.0/24
+      port: 22
+    - cidr: 11.22.33.0/24
+      port: 443
+
+# the secret name we use to refer to the geoTrackingApiKey in SecretManager
+geoTrackingApiKeySecretName: GeoTrackingApiKeySecret
+
+# open search service config
+# instance types:
+#   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html
+#   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/rename.html#rename-instances
+openSearchConfig:
+  masterNodeInstanceType: m6g.2xlarge.search
+  masterNodes: 3
+  dataNodeInstanceType: m6g.2xlarge.search
+  dataNodes: 3
+
+# memory DB config
+memoryDBConfig:
+  # node types: https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.supportedtypes.html
+  instanceType: db.r6g.xlarge
+
+  # number of shards
+  numShards: 3
+
+  # number of read replicas per shard
+  numReplicasPerShard: 2
+
+  # timeout in MS for driverLocationUpdate TTL in DDB
+  driverLocationUpdateTTLInMS: 120000
+
+# simulator configuration
+simulatorConfig:
+  # base name for driver usernames generated for driver simulator
+  driverBaseUsername: proto-play+hyperlocal-driversim
+
+  # base name for destination usernames generated for destination simulator
+  destinationBaseUsername: proto-play+hyperlocal-destinationsim
+
+  # number of containers to spin up in one step while starting a simulation
+  destinationContainerBatchSize: 10
+
+  # base name for origin usernames generated for origin simulator
+  originBaseUsername: proto-play+hyperlocal-originsim
+
+  # number of containers to spin up in one step while starting a simulation
+  originContainerBatchSize: 10
+
+# kinesis configuration (for ingesting driver location/status updates)
+kinesisConfig:
+  # number of shards
+  shardCount: 15
+
+  # how long to retain data (in hours) in kinesis
+  dataStreamRetentionHrs: 24
+
+  # trigger the driverLocationUpdate lambda if this batchSize is met
+  # number of records to consume at once
+  driverLocationUpdateBatchSize: 50
+
+  # the number of parallel lambdas executed (max 10)
+  driverLocationUpdateParallelizationFactor: 5
+
+  # number of retry attempts before the message goes in a dead letter queue
+  driverLocationUpdateRetryAttempts: 20
+
+  # use fanout consumers for driverLocationUpdate
+  driverLocationUpdateUseFanOutConsumer: true
+
+  # trigger the driverLocationUpdate lambda in max XXX ms if it doesn't reach its batchsize before
+  driverLocationUpdateMaxBatchingWindowMs: 5000
+
+  # trigger the geofencing lambda if this batchSize is met
+  # number of records to consume at once
+  geofencingBatchSize: 50
+
+  # the number of parallel lambdas executed (max 10)
+  geofencingParallelizationFactor: 5
+
+  # number of retry attempts before the message goes in a dead letter queue
+  geofencingRetryAttempts: 5
+
+  # use fanout consumers for geofencing
+  geofencingUseFanOutConsumer: true
+
+  # trigger geofencing lambda in max XXX ms if it doesn't reach its batchSize before
+  geofencingMaxBatchingWindowMs: 5000
+
+# configuration for the delivery application (e.g. mobile app on the driver's device)
+deliveryAppConfig:
+  # AppConfig for the driver app
+  driverAppConfig:
+    # the state when a driver is NOT assigned to any order but waiting
+    passiveState:
+      # number of seconds to wait between recording driver's GPS coordinates
+      captureFrequency: 10
+
+      # number of seconds to wait between sending the accumulated GPS data to the cloud
+      sendInterval: 30
+
+    # active state when a driver IS assinged to an order
+    activeState:
+      # number of seconds to wait between recording driver's GPS coordinates
+      captureFrequency: 4
+
+      # number of seconds to wait between sending the accumulated GPS data to the cloud
+      sendInterval: 16
+
+# settings for polling providers
+pollingProviderSettings:
+  # Timeout of processing a single message in the pending order queue
+  # see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-visibility-timeout.html
+  pendingOrderQueueVisibilityTimeoutInMins: 1
+
+  # The time in seconds that the delivery of all messages in the pending orders queue is delayed.
+  # see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-delay-queues.html
+  deliveryDelayInSec: 30
+
+  # batch size (max number of records) to meet to handle pending orders with a Lambda
+  # see https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html#events-sqs-queueconfig
+  sqsBatchSize: 3
+
+  # The number of times a message can be unsuccesfully dequeued from pending orders queue before being moved to the DQL.
+  # see https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dead-letter-queues.html#sqs-dead-letter-queues-how-they-work
+  dlqMaxReceiveCount: 10
+
+# settings for the generic webhook provider
+webhookProviderSettings: {}
+
+# EXTERNAL provider config
+# * key: the _name_ of the external provider
+# * value:
+#     * apiKeySecretName: the entry key in SecretsManager wherre the API key is stored
+#     * url: the endpoint of the external provider
+externalProviderConfig:
+  # example polling provider
+  MockPollingProvider:
+    apiKeySecretName: ExternalMockPollingProviderApiKeySecret
+    url: https://XXXXXXXXXX.execute-api.ap-southeast-1.amazonaws.com/prod
+  # example webhook provider
+  MockWebhookProvider:
+    apiKeySecretName: ExternalMockWebhookProviderApiKeySecret
+    url: https://XXXXXXXXXX.execute-api.ap-southeast-1.amazonaws.com/prod
+
+# providers in the system (non-external)
+# * key: the name of the provider
+# * value:
+#     * apiKeySecretName: the entry key in SecretsManager wherre the API key is stored
+providersConfig:
+  # example polling provider (non-external)
+  ExamplePollingProvider:
+    apiKeySecretName: ExamplePollingProviderApiKeySecret
+
+  # example webhook provider (non-external)
+  ExampleWebhookProvider:
+    apiKeySecretName: ExampleWebhookProviderApiKeySecret
+
+  # the example implementation of an instant delivery provider
+  InstantDeliveryProvider:
+    apiKeySecretName: InternalWebhookProviderApiKeySecret
+
+# settings for the order manager component
+orderManagerSettings:
+  # timeout for the provider feedback
+  # if we don't get an update by then, it will find a new provider
+  providerTimeoutInMinutes: 45
+
+  # timeout that is used for the origin (eg. restaurant) to ack the order
+  # if a reject/accept event doesn't come by then, the order will be automaticall rejected
+  originTimeoutInMinutes: 5
+
+# settigns for the example instant delivery provider implementation
+instantDeliveryProviderSettings:
+  # shard count for the order batch stream
+  orderBatchStreamShardCount: 2
+
+  # how long to retain data (in hours)
+  dataStreamRetentionHrs: 48
+
+  # order stream batchsize
+  orderIngestBatchSize: 150
+
+  # the number of parallel lambdas executed (max 10) to handle incoming orders through the kinesis stream
+  orderIngestParallelizationFactor: 1
+
+  # number of retry attempts before the message goes in a dead letter queue
+  orderIngestRetryAttempts: 20
+
+  # use fanout consumers for incoming orders
+  orderIngestUseFanOutConsumer: false
+
+  # # trigger the incoming order handler lambda in max XXX ms if it doesn't reach its batchsize before
+  orderIngestMaxBatchingWindowMs: 60000
+
+  # run the driver cleanup lambda every XX seconds
+  driverCleanupIntervalInSeconds: 15
+
+  # timeout for driver to acknowledge an assigned order - otherwise order goes back to unassigned queue
+  driverAcknowledgeTimeoutInSeconds: 30
+
+  # interval in mins for subMinuteStepFunction helper
+  subMinuteStepFunctionIntervalInMinutes: 10
+
+  # cancel orders after XX seconds if not assigned
+  orderCancellationTimeoutInSeconds: 1500
+
+  # bias for geocluster algo
+  # see https://github.com/yetzt/node-geocluster
+  geoClusteringBias: 1.8
+
+# name for graphhopper docker repo
+graphhopperDockerRepoName: graphhopper-indonesia
+
+# name for dispatcher app docker repo
+dispatcherAppDockerRepoName: order-dispatcher
