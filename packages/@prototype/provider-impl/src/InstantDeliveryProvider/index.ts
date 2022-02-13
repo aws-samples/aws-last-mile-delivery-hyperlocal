@@ -47,7 +47,7 @@ export class InstantDeliveryProvider extends WebhookProviderBase {
 		const orderBatchStream = new kinesis.Stream(scope, 'DriverDataIngestStreamId', {
 			streamName: namespaced(scope, 'OrderBatchStream'),
 			retentionPeriod: Duration.hours(instantDeliveryProviderSettings.dataStreamRetentionHrs as number),
-			shardCount: instantDeliveryProviderSettings.shardCount as number,
+			shardCount: instantDeliveryProviderSettings.orderBatchStreamShardCount as number,
 		})
 
 		const callbackLambdaHandler = new InstantDeliveryProviderCallbackLambda(scope, 'InstantDeliveryProvider-InternalCallbackLambda', {

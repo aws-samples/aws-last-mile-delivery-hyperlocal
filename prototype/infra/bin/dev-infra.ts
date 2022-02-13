@@ -72,4 +72,4 @@ const externalProver = new ExternalProviderStack(app, 'ExternalProviderStack-Moc
 	namespace: 'external',
 })
 
-Tags.of(app).add('x-deployment-id', `${config.namespace}-deployment`)
+Tags.of(app).add('proto:deployment:id', `${config.namespace}-lastmiledelivery-deployment`)

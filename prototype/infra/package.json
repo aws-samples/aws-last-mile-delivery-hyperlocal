@@ -14,7 +14,7 @@
     "cdk": "cdk",
     "synth": "cdk synth",
     "deploy:pipeline": "cdk deploy PrototypeCode-Pipeline",
-    "bootstrap": "cdk bootstrap --cloudformationExecutionPolicies arn:aws:iam::aws:policy/AdministratorAccess",
+    "bootstrap": "yarn dev:cdk bootstrap",
     "dev:cdk": "cdk --app=\"npx ts-node bin/dev-infra.ts\" --output cdk.out.dev",
     "dev:deploy:persistent": "yarn dev:cdk deploy Dev-PersistentBackend",
     "dev:deploy": "yarn dev:cdk deploy --require-approval never Dev-Backend",
