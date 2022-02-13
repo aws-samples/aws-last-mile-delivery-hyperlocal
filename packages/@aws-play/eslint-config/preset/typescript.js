@@ -20,7 +20,6 @@ const path = require('path')
 module.exports = {
 	extends: [
 		'@aws-play/eslint-config/preset/standard',
-		'@aws-play/eslint-config/preset/license-headers',
 		'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
 		// 'prettier/@typescript-eslint',
 		'plugin:import/typescript',

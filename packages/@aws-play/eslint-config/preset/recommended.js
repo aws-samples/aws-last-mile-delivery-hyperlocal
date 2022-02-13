@@ -14,7 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+
 // TODO: currently just extends typescript (which extends standard), but add react, etc once created
 module.exports = {
-	extends: ['@aws-play/eslint-config/preset/typescript'],
+	extends: [
+		'@aws-play/eslint-config/preset/typescript',
+		'@aws-play/eslint-config/preset/license-headers',
+		'plugin:yml/standard',
+	],
 }

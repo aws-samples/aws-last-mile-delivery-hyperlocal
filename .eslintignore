@@ -5,11 +5,7 @@ _templates
 cdk.out.dev
 docs/
 
-prototype/web
 tsconfig.eslint.json
-
-# TODO: uncomment this after resolving onboarding app build
-prototype/tools
 
 dependency-check-bin/
 reports/

@@ -53,7 +53,8 @@
 		"typescript",
 		"typescriptreact",
 		"html",
-		"json"
+		"json",
+		"yaml"
 	],
 	"search.exclude": {
 		"**/node_modules": true,

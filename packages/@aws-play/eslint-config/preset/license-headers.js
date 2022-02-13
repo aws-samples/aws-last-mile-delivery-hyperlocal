@@ -14,17 +14,30 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+
 const path = require('path')
 
 module.exports = {
-	plugins: ['header'],
+	plugins: [
+		// 'header'
+		'license-header',
+	],
 	overrides: [
 		{
 			files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
 			parser: '@typescript-eslint/parser',
 			rules: {
-				'header/header': [2, path.join(__dirname, 'header.txt')],
+				// 'header/header': [2, path.join(__dirname, 'header-js.txt')],
+				'license-header/header': ['error', path.join(__dirname, 'header.js')],
 			},
 		},
+		// {
+		// 	files: ['**/*.yaml', '**/*.yml'],
+		// 	parser: 'yaml-eslint-parser',
+		// 	rules: {
+		// 		// 'header/header': [2, path.join(__dirname, 'header-yaml.txt')],
+		// 		'license-header/header': ['error', path.join(__dirname, 'header.yml')],
+		// 	},
+		// },
 	],
 }

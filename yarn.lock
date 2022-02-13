@@ -9721,6 +9721,13 @@ eslint-plugin-jsx-a11y@^6.3.1:
     language-tags "^1.0.5"
     minimatch "^3.0.4"
 
+eslint-plugin-license-header@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-license-header/-/eslint-plugin-license-header-0.4.0.tgz#3e83825ed8e8bf3f83009e97cd1dd30531b6481e"
+  integrity sha512-KNpyxD+r8d9VoioyaHofUDsrYO+epVv/WjGZKugfO+qVN1KvHi/LwpXXY1618OCOYEaRNXZeRUtbOIb2YvJXTw==
+  dependencies:
+    requireindex "^1.2.0"
+
 eslint-plugin-lodash@7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-lodash/-/eslint-plugin-lodash-7.1.0.tgz#5ad9bf1240a01c6c3f94e956213e2d6422af3192"
@@ -9798,6 +9805,16 @@ eslint-plugin-testing-library@^3.9.2:
   integrity sha512-WAmOCt7EbF1XM8XfbCKAEzAPnShkNSwcIsAD2jHdsMUT9mZJPjLCG7pMzbcC8kK366NOuGip8HKLDC+Xk4yIdA==
   dependencies:
     "@typescript-eslint/experimental-utils" "^3.10.1"
+
+eslint-plugin-yml@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-yml/-/eslint-plugin-yml-0.13.0.tgz#37762f3a3f3c32622894910d583da982deaaec6c"
+  integrity sha512-rZvdnhe28jIbgSIZo3qYqkl9hKslyTDfMwqIGDzz873gxghzBw0yeFG+P7sMfOkFfpqwJzZy3IKe2cIiCp4FrA==
+  dependencies:
+    debug "^4.3.2"
+    lodash "^4.17.21"
+    natural-compare "^1.4.0"
+    yaml-eslint-parser "^0.5.0"
 
 eslint-scope@^4.0.3:
   version "4.0.3"
@@ -17682,6 +17699,11 @@ require-main-filename@^2.0.0:
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
   integrity sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg==
 
+requireindex@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/requireindex/-/requireindex-1.2.0.tgz#3463cdb22ee151902635aa6c9535d4de9c2ef1ef"
+  integrity sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==
+
 requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
@@ -20705,7 +20727,16 @@ yaml-cfn@^0.2.3:
   dependencies:
     js-yaml "^3.10.0"
 
-yaml@1.10.2, yaml@^1.10.0, yaml@^1.7.2:
+yaml-eslint-parser@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/yaml-eslint-parser/-/yaml-eslint-parser-0.5.0.tgz#01d4e4d992a820769ea85ef5fd526dfc20ebc6f5"
+  integrity sha512-nJeyLA3YHAzhBTZbRAbu3W6xrSCucyxExmA+ZDtEdUFpGllxAZpto2Zxo2IG0r0eiuEiBM4e+wiAdxTziTq94g==
+  dependencies:
+    eslint-visitor-keys "^3.0.0"
+    lodash "^4.17.21"
+    yaml "^1.10.2"
+
+yaml@1.10.2, yaml@^1.10.0, yaml@^1.10.2, yaml@^1.7.2:
   version "1.10.2"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
