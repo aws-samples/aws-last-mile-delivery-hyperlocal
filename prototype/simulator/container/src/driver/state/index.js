@@ -26,18 +26,16 @@ const STATUSES = {
 	DELIVERED: 'DELIVERED',
 }
 
+const ASSIGNMENT_STATUS = {
+	IDLE: 'IDLE',
+	IN_PROGRESS: 'IN_PROGRESS',
+}
+
 const state = {
+	assignmentStatus: 'IDLE',
 	status: 'IDLE',
 	orderId: '',
-	routing: [],
-	origin: {
-		lat: '',
-		long: '',
-	},
-	destination: {
-		lat: '',
-		long: '',
-	},
+	segments: [],
 	updatesConfig: {
 		passiveState: {
 			captureFrequency: 4,
@@ -108,7 +106,7 @@ const setStateChangeHandler = (prop, fn) => {
 }
 
 const generateChangeStatusMessage = (driverId, driverIdentity) => {
-	const { status, orderId } = state
+	const { status } = state
 	const baseMessage = {
 		type: 'STATUS_CHANGE',
 		driverId,
@@ -118,7 +116,7 @@ const generateChangeStatusMessage = (driverId, driverIdentity) => {
 	}
 
 	if (status !== STATUSES.IDLE) {
-		baseMessage.orderId = orderId
+		baseMessage.orderId = state.orderId
 	}
 
 	return baseMessage
@@ -132,4 +130,5 @@ module.exports = {
 	generateChangeStatusMessage,
 	STATUSES,
 	DEFAULT_STATE: state,
+	ASSIGNMENT_STATUS,
 }

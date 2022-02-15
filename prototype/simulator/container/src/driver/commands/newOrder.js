@@ -21,20 +21,19 @@ const execute = async (payload) => {
 	logger.info('Executing command: newOrder')
 	logger.info('Payload', JSON.stringify(payload, null, 2))
 
-	const { orderId, destination, origin, routing } = payload
-	const currentState = state.getState()
-	const current = currentState.status
+	const { segments } = payload
+	const currentState = state.getStateRaw()
+	const current = currentState.assignmentStatus
 
-	if (current === state.STATUSES.IDLE) {
-		state.setState('orderId', orderId)
-		state.setState('destination', destination)
-		state.setState('origin', origin)
-		state.setState('routing', routing)
+	if (current === state.ASSIGNMENT_STATUS.IDLE) {
+		state.setState('segments', segments)
 		state.setState('status', state.STATUSES.ACCEPTED)
+		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.IN_PROGRESS)
 		state.setState('updates', currentState.updatesConfig.activeState)
 	} else {
 		state.setState('status', state.STATUSES.REJECTED)
 		state.setState('updates', currentState.updatesConfig.passiveState)
+		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.IDLE)
 	}
 }
 
