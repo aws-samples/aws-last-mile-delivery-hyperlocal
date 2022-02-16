@@ -28,7 +28,8 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
-	readonly dispatcherAppDockerRepoName: string
+	readonly dispatcherDockerOsmPbfMapFileUrl: string
+	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
 }
@@ -51,7 +52,8 @@ export class DispatcherStack extends NestedStack {
 			dispatcherConfigPath,
 			dispatcherVersion,
 			driverApiUrl,
-			dispatcherAppDockerRepoName,
+			dispatcherDockerContainerName,
+			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 		} = props
@@ -66,7 +68,8 @@ export class DispatcherStack extends NestedStack {
 			driverApiUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
-			dispatcherAppDockerRepoName,
+			dispatcherDockerContainerName,
+			dispatcherDockerOsmPbfMapFileUrl,
 		})
 
 		this.dispatcherLB = dispatchSetup.loadBalancer

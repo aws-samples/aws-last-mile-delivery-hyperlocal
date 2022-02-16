@@ -15,10 +15,12 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@prototype/lambda-common'
+import path from 'path'
+import { sync as findup } from 'find-up'
 
 export interface DispatchEcsServiceProps {
 	readonly vpc: ec2.IVpc
@@ -26,9 +28,10 @@ export interface DispatchEcsServiceProps {
 	readonly ecsCluster: ecs.ICluster
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiKeySecretName: string
-	readonly dockerRepoName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
+	readonly osmPbfMapFileUrl: string
+	readonly containerName: string
 }
 
 export class DispatchEcsService extends Construct {
@@ -45,12 +48,12 @@ export class DispatchEcsService extends Construct {
 			ecsCluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			dockerRepoName,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
+			osmPbfMapFileUrl,
+			containerName,
 		} = props
 
-		const dockerRepo = ecr.Repository.fromRepositoryName(this, 'DispatcherDockerRepo', dockerRepoName)
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
 
 		const dispatcherTaskRole = new iam.Role(this, 'DispatcherTaskRole', {
@@ -110,9 +113,21 @@ export class DispatchEcsService extends Construct {
 			networkMode: ecs.NetworkMode.AWS_VPC,
 		})
 
+		const dispatcherImage = new ecr_assets.DockerImageAsset(this, 'DispatcherImage', {
+			directory: path.join(
+				findup('packages', { cwd: __dirname, type: 'directory' }) || '../../../../../',
+				'..',
+				'prototype', 'dispatch', 'order-dispatcher', 'build',
+			),
+			buildArgs: {
+				MAPFILE_URL: osmPbfMapFileUrl,
+			},
+			target: 'prod',
+		})
+
 		const container = dispatcherTask.addContainer('order-dispatcher', {
-			image: ecs.ContainerImage.fromEcrRepository(dockerRepo),
-			containerName: namespaced(this, 'order-dispatcher'),
+			image: ecs.ContainerImage.fromDockerImageAsset(dispatcherImage),
+			containerName: namespaced(this, containerName),
 			memoryReservationMiB: 6000,
 			environment: {
 				JAVA_OPTS: '-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager',
