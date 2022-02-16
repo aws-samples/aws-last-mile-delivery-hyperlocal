@@ -1,3 +1,10 @@
+# ***IMPORTANT***
+
+This folder's content is currently **DEPRECATED**. Graphhopper docker image creation has been moved to `packages/@prototype/dispatch-setup/src/GraphhopperSetup`.
+Keeping this folder to host scripts to support local dispatcher development.
+
+---
+
 # Graphhopper routing
 
 > Since Graphhopper mainline was using `Log4j` until Dec 10, 2021, we cannot use the `v3.2` tag anymore.

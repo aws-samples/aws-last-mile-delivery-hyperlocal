@@ -1,9 +1,9 @@
 graphhopper:
 
   # OpenStreetMap input file PBF or XML, can be changed via command line -Ddw.graphhopper.datareader.file=some.pbf
-  datareader.file: "/data/indonesia-latest.osm.pbf"
+  datareader.file: "/map/mapfile.osm.pbf"
   # Local folder used by graphhopper to store its data
-  graph.location: /data/indonesia-latest.osm-gh
+  graph.location: /graphhopper-cache
 
   ##### Vehicles #####
 

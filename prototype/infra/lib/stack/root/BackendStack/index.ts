@@ -48,7 +48,7 @@ export interface BackendStackProps extends StackProps {
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 	readonly geoTrackingApiKeySecretName: string
-	readonly graphhopperDockerRepoName: string
+	readonly graphhopperSettings: Record<string, string>
 	readonly dispatcherAppDockerRepoName: string
 }
 
@@ -107,7 +107,7 @@ export class BackendStack extends Stack {
 			env,
 			geoTrackingApiKeySecretName,
 			orderManagerSettings,
-			graphhopperDockerRepoName,
+			graphhopperSettings,
 			dispatcherAppDockerRepoName,
 		} = props
 
@@ -195,7 +195,7 @@ export class BackendStack extends Stack {
 			dispatchEngineLB: dispatcherStack.dispatcherLB,
 			providersConfig,
 			backendEcsCluster,
-			graphhopperDockerRepoName,
+			graphhopperSettings,
 			iotEndpointAddress,
 		})
 

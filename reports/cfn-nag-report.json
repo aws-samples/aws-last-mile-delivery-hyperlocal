@@ -28,7 +28,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            84
+            90
           ],
           "element_types": [
             "resource"
@@ -43,7 +43,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            84
+            90
           ],
           "element_types": [
             "resource"
@@ -58,7 +58,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            84
+            90
           ],
           "element_types": [
             "resource"
@@ -92,9 +92,9 @@
             "VpcPersistentVpcdevprotopublicSubnet3Subnet509A8694"
           ],
           "line_numbers": [
-            25,
-            140,
-            217
+            29,
+            160,
+            245
           ],
           "element_types": [
             "resource",
@@ -134,7 +134,7 @@
             "DeploymentHandlerLambdaServiceRoleDefaultPolicy5C7DE2FF"
           ],
           "line_numbers": [
-            239
+            251
           ],
           "element_types": [
             "resource"
@@ -150,8 +150,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            328,
-            577
+            340,
+            601
           ],
           "element_types": [
             "resource",
@@ -168,8 +168,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            328,
-            577
+            340,
+            601
           ],
           "element_types": [
             "resource",
@@ -186,8 +186,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            328,
-            577
+            340,
+            601
           ],
           "element_types": [
             "resource",
@@ -241,7 +241,7 @@
             "ProviderSetupProviderInitialSetupLambdaServiceRoleDefaultPolicy09CBAA48"
           ],
           "line_numbers": [
-            316
+            346
           ],
           "element_types": [
             "resource"
@@ -259,10 +259,10 @@
             "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
           ],
           "line_numbers": [
-            76,
-            209,
-            411,
-            535
+            82,
+            227,
+            441,
+            577
           ],
           "element_types": [
             "resource",
@@ -281,8 +281,8 @@
             "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
           ],
           "line_numbers": [
-            411,
-            535
+            441,
+            577
           ],
           "element_types": [
             "resource",
@@ -301,10 +301,10 @@
             "ProviderSetupProviderSetupProviderframeworkonEventD18167FA"
           ],
           "line_numbers": [
-            76,
-            209,
-            411,
-            535
+            82,
+            227,
+            441,
+            577
           ],
           "element_types": [
             "resource",
@@ -330,7 +330,7 @@
             "DispatchSetupDispatchEcsServiceDispatcherALBDispatcherListener2E971289"
           ],
           "line_numbers": [
-            816
+            875
           ],
           "element_types": [
             "resource"
@@ -346,8 +346,8 @@
             "DispatchSetupDispatchEcsServiceDispatcherTaskDefExecutionRoleDefaultPolicy0080C216"
           ],
           "line_numbers": [
-            224,
-            642
+            236,
+            683
           ],
           "element_types": [
             "resource",
@@ -363,7 +363,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            896
+            967
           ],
           "element_types": [
             "resource"
@@ -378,7 +378,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            896
+            967
           ],
           "element_types": [
             "resource"
@@ -393,7 +393,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            896
+            967
           ],
           "element_types": [
             "resource"
@@ -408,7 +408,7 @@
             "DispatchSetupDispatchEcsServiceorderdispatchertaskloggroup8F6998C0"
           ],
           "line_numbers": [
-            699
+            740
           ],
           "element_types": [
             "resource"
@@ -425,9 +425,9 @@
             "DispatchSetupDispatchEcsServiceDispatcherTaskRoleFB87E9FF"
           ],
           "line_numbers": [
-            769,
-            167,
-            407
+            822,
+            173,
+            430
           ],
           "element_types": [
             "resource",
@@ -481,13 +481,13 @@
             "GeoTrackingRestApiapigeotrackinginternaldemareasettingsGET2ABAA416"
           ],
           "line_numbers": [
-            206,
-            1434,
-            1599,
-            1718,
-            1940,
-            2048,
-            2213
+            224,
+            1452,
+            1617,
+            1736,
+            1958,
+            2066,
+            2231
           ],
           "element_types": [
             "resource",
@@ -508,7 +508,7 @@
             "GeoTrackingRestApiDeploymentStageprod14BF27C1"
           ],
           "line_numbers": [
-            143
+            155
           ],
           "element_types": [
             "resource"
@@ -532,16 +532,16 @@
             "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
           ],
           "line_numbers": [
-            2700,
-            2829,
-            3024,
-            3189,
-            3483,
-            3746,
-            4011,
-            4247,
-            4409,
-            4600
+            2736,
+            2877,
+            3084,
+            3261,
+            3576,
+            3851,
+            4134,
+            4388,
+            4562,
+            4765
           ],
           "element_types": [
             "resource",
@@ -574,16 +574,16 @@
             "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
           ],
           "line_numbers": [
-            2700,
-            2829,
-            3024,
-            3189,
-            3483,
-            3746,
-            4011,
-            4247,
-            4409,
-            4600
+            2736,
+            2877,
+            3084,
+            3261,
+            3576,
+            3851,
+            4134,
+            4388,
+            4562,
+            4765
           ],
           "element_types": [
             "resource",
@@ -607,7 +607,7 @@
             "GeoTrackingRestApidevprotoApiKeyGeoTrackingApiZ14orxO5BD65768"
           ],
           "line_numbers": [
-            2587
+            2605
           ],
           "element_types": [
             "resource"
@@ -623,8 +623,8 @@
             "LambdaFunctionsStackKinesisGeofencingConsumergeofencingDlq731D69E3"
           ],
           "line_numbers": [
-            3822,
-            4087
+            3933,
+            4216
           ],
           "element_types": [
             "resource",
@@ -648,7 +648,7 @@
             "OrderManagerStackOrderManagerHandlerServiceRoleDefaultPolicy8E9977C4"
           ],
           "line_numbers": [
-            611
+            653
           ],
           "element_types": [
             "resource"
@@ -665,9 +665,9 @@
             "OrderManagerStackOrderManagerHandler71247775"
           ],
           "line_numbers": [
-            98,
-            291,
-            655
+            104,
+            309,
+            697
           ],
           "element_types": [
             "resource",
@@ -684,7 +684,7 @@
             "OrderManagerStackProviderRuleEngineACDAE3AD"
           ],
           "line_numbers": [
-            291
+            309
           ],
           "element_types": [
             "resource"
@@ -701,9 +701,9 @@
             "OrderManagerStackOrderManagerHandler71247775"
           ],
           "line_numbers": [
-            98,
-            291,
-            655
+            104,
+            309,
+            697
           ],
           "element_types": [
             "resource",
@@ -741,20 +741,20 @@
             "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercallbackPOSTF8164DF5"
           ],
           "line_numbers": [
-            810,
-            960,
-            1185,
-            1410,
-            2675,
-            2825,
-            3050,
-            3275,
-            3443,
-            4671,
-            4821,
-            5046,
-            5271,
-            5439
+            876,
+            1026,
+            1251,
+            1476,
+            2831,
+            2981,
+            3206,
+            3431,
+            3599,
+            4923,
+            5073,
+            5298,
+            5523,
+            5691
           ],
           "element_types": [
             "resource",
@@ -784,9 +784,9 @@
             "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderDeploymentStageprod7F1AA99C"
           ],
           "line_numbers": [
-            747,
-            2612,
-            4608
+            807,
+            2762,
+            4854
           ],
           "element_types": [
             "resource",
@@ -803,7 +803,7 @@
             "GraphhopperSetupGraphhopperALB4E50D909"
           ],
           "line_numbers": [
-            5764
+            6055
           ],
           "element_types": [
             "resource"
@@ -818,7 +818,7 @@
             "GraphhopperSetupGraphhopperALBGHListenerB51A0073"
           ],
           "line_numbers": [
-            5797
+            6094
           ],
           "element_types": [
             "resource"
@@ -830,14 +830,14 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzibqgvhCustomResourcePolicy46F2AC21",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzpari69CustomResourcePolicyF51E76F8",
             "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
           ],
           "line_numbers": [
-            3538,
-            5650,
-            5898
+            3706,
+            5935,
+            6207
           ],
           "element_types": [
             "resource",
@@ -854,7 +854,7 @@
             "DriverDataIngestStreamIdB09121CE"
           ],
           "line_numbers": [
-            3753
+            3933
           ],
           "element_types": [
             "resource"
@@ -886,24 +886,24 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            104,
-            300,
-            554,
-            1631,
-            1833,
-            2027,
-            2223,
-            2419,
-            3726,
-            3863,
-            4053,
-            4237,
-            4421,
-            5979,
-            6466,
-            6648,
-            6830,
-            6968
+            110,
+            318,
+            596,
+            1715,
+            1929,
+            2135,
+            2343,
+            2551,
+            3900,
+            4055,
+            4257,
+            4453,
+            4649,
+            6288,
+            6811,
+            7011,
+            7205,
+            7355
           ],
           "element_types": [
             "resource",
@@ -939,11 +939,11 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            3726,
-            6466,
-            6648,
-            6830,
-            6968
+            3900,
+            6811,
+            7011,
+            7205,
+            7355
           ],
           "element_types": [
             "resource",
@@ -979,24 +979,24 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            104,
-            300,
-            554,
-            1631,
-            1833,
-            2027,
-            2223,
-            2419,
-            3726,
-            3863,
-            4053,
-            4237,
-            4421,
-            5979,
-            6466,
-            6648,
-            6830,
-            6968
+            110,
+            318,
+            596,
+            1715,
+            1929,
+            2135,
+            2343,
+            2551,
+            3900,
+            4055,
+            4257,
+            4453,
+            4649,
+            6288,
+            6811,
+            7011,
+            7205,
+            7355
           ],
           "element_types": [
             "resource",
@@ -1028,7 +1028,7 @@
             "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
           ],
           "line_numbers": [
-            5622
+            5893
           ],
           "element_types": [
             "resource"
@@ -1043,7 +1043,7 @@
             "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
           ],
           "line_numbers": [
-            5622
+            5893
           ],
           "element_types": [
             "resource"
@@ -1062,11 +1062,11 @@
             "DriverDataIngestStreamIdB09121CE"
           ],
           "line_numbers": [
-            1450,
-            3483,
-            5479,
-            5764,
-            3753
+            1516,
+            3639,
+            5731,
+            6055,
+            3933
           ],
           "element_types": [
             "resource",
@@ -1087,9 +1087,9 @@
             "DispatchEngineOrchestratorOrderIngestKinesisConsumerinstantdeliveryproviderDlqAF169715"
           ],
           "line_numbers": [
-            396,
-            408,
-            6539
+            420,
+            438,
+            6890
           ],
           "element_types": [
             "resource",
@@ -1130,7 +1130,7 @@
             "DriverDataStreamDriverDataIngestStreamId27485230"
           ],
           "line_numbers": [
-            30,
+            36,
             4
           ],
           "element_types": [
@@ -1155,7 +1155,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            413
+            435
           ],
           "element_types": [
             "resource"
@@ -1170,7 +1170,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            413
+            435
           ],
           "element_types": [
             "resource"
@@ -1185,7 +1185,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            413
+            435
           ],
           "element_types": [
             "resource"
@@ -1215,7 +1215,7 @@
             "MonitoringInstDebugInstanceRole907F1010"
           ],
           "line_numbers": [
-            232
+            238
           ],
           "element_types": [
             "resource"
@@ -1253,7 +1253,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            542
+            692
           ],
           "element_types": [
             "resource"
@@ -1268,7 +1268,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            542
+            692
           ],
           "element_types": [
             "resource"
@@ -1283,7 +1283,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            542
+            692
           ],
           "element_types": [
             "resource"
@@ -1297,14 +1297,17 @@
           "logical_resource_ids": [
             "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
             "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
-            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+            "NetworkingSecurityGroupSetupMemoryDBSecurityGroup114BF753",
+            "NetworkingSecurityGroupSetupOpenSearchSecurityGroup5531C375"
           ],
           "line_numbers": [
             4,
-            132,
-            152
+            138,
+            164,
+            236
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource"
@@ -1318,14 +1321,17 @@
           "logical_resource_ids": [
             "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
             "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
-            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+            "NetworkingSecurityGroupSetupMemoryDBSecurityGroup114BF753",
+            "NetworkingSecurityGroupSetupOpenSearchSecurityGroup5531C375"
           ],
           "line_numbers": [
             4,
-            132,
-            152
+            138,
+            164,
+            236
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource"
@@ -1339,14 +1345,17 @@
           "logical_resource_ids": [
             "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
             "NetworkingSecurityGroupSetupLambdaSecurityGroup07A91ADC",
-            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+            "NetworkingSecurityGroupSetupMemoryDBSecurityGroup114BF753",
+            "NetworkingSecurityGroupSetupOpenSearchSecurityGroup5531C375"
           ],
           "line_numbers": [
             4,
-            132,
-            152
+            138,
+            164,
+            236
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource"
@@ -1359,13 +1368,16 @@
           "message": "Security Groups ingress with an ipProtocol of -1 found ",
           "logical_resource_ids": [
             "NetworkingSecurityGroupSetupDmzSecurityGroup99D1A718",
-            "NetworkingSecurityGroupSetupRedisSecurityGroup5269F5E3"
+            "NetworkingSecurityGroupSetupMemoryDBSecurityGroup114BF753",
+            "NetworkingSecurityGroupSetupOpenSearchSecurityGroup5531C375"
           ],
           "line_numbers": [
             4,
-            152
+            164,
+            236
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource"
           ]
@@ -1408,13 +1420,13 @@
             "DispatcherAssignmentsB45A6CFD"
           ],
           "line_numbers": [
-            150,
-            180,
-            207,
-            260,
-            287,
-            314,
-            570
+            162,
+            198,
+            231,
+            290,
+            323,
+            356,
+            630
           ],
           "element_types": [
             "resource",
@@ -1435,7 +1447,7 @@
             "GeoPolygonTable42E97153"
           ],
           "line_numbers": [
-            150
+            162
           ],
           "element_types": [
             "resource"
@@ -1452,9 +1464,9 @@
             "DatabaseSeederSeedDBPolygonTableCoordsCustomResourcePolicy86F9826E"
           ],
           "line_numbers": [
-            341,
-            397,
-            453
+            389,
+            445,
+            501
           ],
           "element_types": [
             "resource",
@@ -1471,7 +1483,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            543
+            597
           ],
           "element_types": [
             "resource"
@@ -1486,7 +1498,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            543
+            597
           ],
           "element_types": [
             "resource"
@@ -1501,7 +1513,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            543
+            597
           ],
           "element_types": [
             "resource"
@@ -1516,7 +1528,7 @@
             "DriversTelemetryBucket0AE0FD9C"
           ],
           "line_numbers": [
-            124
+            130
           ],
           "element_types": [
             "resource"
@@ -1537,13 +1549,13 @@
             "DispatcherAssignmentsB45A6CFD"
           ],
           "line_numbers": [
-            150,
-            180,
-            207,
-            260,
-            287,
-            314,
-            570
+            162,
+            198,
+            231,
+            290,
+            323,
+            356,
+            630
           ],
           "element_types": [
             "resource",
@@ -1566,7 +1578,7 @@
           ],
           "line_numbers": [
             4,
-            124
+            130
           ],
           "element_types": [
             "resource",
@@ -1590,7 +1602,7 @@
             "devprotoIdentityPool"
           ],
           "line_numbers": [
-            257
+            266
           ],
           "element_types": [
             "resource"
@@ -1607,7 +1619,7 @@
           ],
           "line_numbers": [
             4,
-            302
+            311
           ],
           "element_types": [
             "resource",
@@ -1624,8 +1636,8 @@
             "devprotoUnauthenticatedRole29C9E543"
           ],
           "line_numbers": [
-            302,
-            365
+            311,
+            380
           ],
           "element_types": [
             "resource",
@@ -1664,7 +1676,7 @@
             "InternalAuthenticatedRole438E4A1B"
           ],
           "line_numbers": [
-            182
+            191
           ],
           "element_types": [
             "resource"
@@ -1694,14 +1706,14 @@
             "ExternalWebhookProviderStackExternalWebhookProviderApiorderorderIdDELETE0D496FC3"
           ],
           "line_numbers": [
-            291,
-            441,
-            606,
-            714,
-            1293,
-            1443,
-            1608,
-            1716
+            327,
+            477,
+            642,
+            750,
+            1389,
+            1539,
+            1704,
+            1812
           ],
           "element_types": [
             "resource",
@@ -1724,8 +1736,8 @@
             "ExternalWebhookProviderStackExternalWebhookProviderApiDeploymentStageprod1D68BB84"
           ],
           "line_numbers": [
-            228,
-            1230
+            258,
+            1320
           ],
           "element_types": [
             "resource",
@@ -1741,7 +1753,7 @@
             "ExternalProviderSetupServiceRoleDefaultPolicy8D6BF04A"
           ],
           "line_numbers": [
-            1845
+            1959
           ],
           "element_types": [
             "resource"
@@ -1760,11 +1772,11 @@
             "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
           ],
           "line_numbers": [
-            96,
-            900,
-            1052,
-            1910,
-            2026
+            108,
+            960,
+            1124,
+            2024,
+            2152
           ],
           "element_types": [
             "resource",
@@ -1787,11 +1799,11 @@
             "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
           ],
           "line_numbers": [
-            96,
-            900,
-            1052,
-            1910,
-            2026
+            108,
+            960,
+            1124,
+            2024,
+            2152
           ],
           "element_types": [
             "resource",
@@ -1814,11 +1826,11 @@
             "ExternalProviderSetupExternalProviderSetupProviderframeworkonEvent380AEAED"
           ],
           "line_numbers": [
-            96,
-            900,
-            1052,
-            1910,
-            2026
+            108,
+            960,
+            1124,
+            2024,
+            2152
           ],
           "element_types": [
             "resource",
@@ -1838,8 +1850,8 @@
             "ExternalWebhookProviderStackExternalWebhookProviderApiApiKeyExternalWebhook1VO1vMAB9496D7"
           ],
           "line_numbers": [
-            754,
-            1756
+            790,
+            1852
           ],
           "element_types": [
             "resource",
@@ -1936,10 +1948,10 @@
           "type": "WARN",
           "message": "AWS::ApiGateway::Deployment resources should be associated with an AWS::ApiGateway::UsagePlan. ",
           "logical_resource_ids": [
-            "SimulatorRestApiDeployment7165AE7B9ea7ca8ab5bf12e8aa6c954e3f72ae0e"
+            "SimulatorRestApiDeployment7165AE7B833b78043a4df56c23840dd8f37fa76c"
           ],
           "line_numbers": [
-            176
+            200
           ],
           "element_types": [
             "resource"
@@ -1954,7 +1966,7 @@
             "SimulatorRestApiANYB8AFA192"
           ],
           "line_numbers": [
-            332
+            362
           ],
           "element_types": [
             "resource"
@@ -1969,7 +1981,7 @@
             "SimulatorRestApiDeploymentStageprod2BCF2C02"
           ],
           "line_numbers": [
-            269
+            293
           ],
           "element_types": [
             "resource"
@@ -1984,7 +1996,7 @@
             "SimulatorRestApiDeploymentStageprod2BCF2C02"
           ],
           "line_numbers": [
-            269
+            293
           ],
           "element_types": [
             "resource"
@@ -2003,17 +2015,17 @@
             "SimulatorManagerOriginSimulatorLambdaOriginEventHandlerServiceRoleDefaultPolicy70005689",
             "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
-            "UpdateLambdaConfigurationkzibqh1xCustomResourcePolicy2F1477C4"
+            "UpdateLambdaConfigurationkzparigtCustomResourcePolicy659A9F5D"
           ],
           "line_numbers": [
             5,
-            5564,
-            5992,
-            6899,
-            7334,
-            7515,
-            8409,
-            9456
+            5624,
+            6088,
+            7068,
+            7527,
+            7720,
+            8687,
+            9806
           ],
           "element_types": [
             "resource",
@@ -2053,25 +2065,25 @@
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
-            84,
-            5344,
-            5610,
-            5740,
-            5917,
-            6092,
-            6400,
-            6687,
-            7017,
-            7193,
-            7375,
-            7615,
-            7922,
-            8209,
-            8513,
-            8656,
-            8833,
-            9102,
-            9311
+            90,
+            5380,
+            5670,
+            5812,
+            6001,
+            6188,
+            6521,
+            6832,
+            7186,
+            7374,
+            7568,
+            7820,
+            8152,
+            8463,
+            8791,
+            8946,
+            9135,
+            9416,
+            9637
           ],
           "element_types": [
             "resource",
@@ -2118,21 +2130,21 @@
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
-            84,
-            5344,
-            5610,
-            5740,
-            5917,
-            6092,
-            6400,
-            6687,
-            7375,
-            7615,
-            7922,
-            8209,
-            8513,
-            8833,
-            9311
+            90,
+            5380,
+            5670,
+            5812,
+            6001,
+            6188,
+            6521,
+            6832,
+            7568,
+            7820,
+            8152,
+            8463,
+            8791,
+            9135,
+            9637
           ],
           "element_types": [
             "resource",
@@ -2179,25 +2191,25 @@
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
-            84,
-            5344,
-            5610,
-            5740,
-            5917,
-            6092,
-            6400,
-            6687,
-            7017,
-            7193,
-            7375,
-            7615,
-            7922,
-            8209,
-            8513,
-            8656,
-            8833,
-            9102,
-            9311
+            90,
+            5380,
+            5670,
+            5812,
+            6001,
+            6188,
+            6521,
+            6832,
+            7186,
+            7374,
+            7568,
+            7820,
+            8152,
+            8463,
+            8791,
+            8946,
+            9135,
+            9416,
+            9637
           ],
           "element_types": [
             "resource",
@@ -2235,12 +2247,12 @@
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5"
           ],
           "line_numbers": [
-            5992,
-            6314,
-            6899,
-            7515,
-            7836,
-            8409
+            6088,
+            6435,
+            7068,
+            7720,
+            8066,
+            8687
           ],
           "element_types": [
             "resource",
@@ -2268,7 +2280,7 @@
             "SimulatorWebsiteHostingCloudFrontDistroCFDistributionF9EFFC1F"
           ],
           "line_numbers": [
-            1755
+            1901
           ],
           "element_types": [
             "resource"
@@ -2283,7 +2295,7 @@
             "SimulatorWebsiteHostingCloudFrontDistroCFDistributionF9EFFC1F"
           ],
           "line_numbers": [
-            1755
+            1901
           ],
           "element_types": [
             "resource"
@@ -2299,8 +2311,8 @@
             "SimulatorVPCVpcsimpublicSubnet2Subnet5E741620"
           ],
           "line_numbers": [
-            22,
-            99
+            26,
+            111
           ],
           "element_types": [
             "resource",
@@ -2322,13 +2334,13 @@
             "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleoriginDefaultPolicy6A16E111"
           ],
           "line_numbers": [
-            414,
-            480,
-            551,
-            807,
-            921,
-            1201,
-            1315
+            462,
+            534,
+            611,
+            887,
+            1007,
+            1308,
+            1428
           ],
           "element_types": [
             "resource",
@@ -2349,7 +2361,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1608
+            1742
           ],
           "element_types": [
             "resource"
@@ -2364,7 +2376,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1608
+            1742
           ],
           "element_types": [
             "resource"
@@ -2379,7 +2391,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1608
+            1742
           ],
           "element_types": [
             "resource"
@@ -2396,9 +2408,9 @@
             "SimulatorECSStackOriginSimulatorContainerECSTaskDefinitionoriginECSContainerDeforiginLogGroup535ED592"
           ],
           "line_numbers": [
-            778,
-            1172,
-            1566
+            844,
+            1265,
+            1686
           ],
           "element_types": [
             "resource",
@@ -2417,9 +2429,9 @@
             "SimulatorECSStackOriginSimulatorContainerECSTaskDefinitionoriginECSContainerDeforiginLogGroup535ED592"
           ],
           "line_numbers": [
-            778,
-            1172,
-            1566
+            844,
+            1265,
+            1686
           ],
           "element_types": [
             "resource",
@@ -2443,14 +2455,14 @@
             "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleorigin0CDA4808"
           ],
           "line_numbers": [
-            204,
-            400,
-            459,
-            530,
-            786,
-            900,
-            1180,
-            1294
+            228,
+            442,
+            507,
+            584,
+            860,
+            980,
+            1281,
+            1401
           ],
           "element_types": [
             "resource",
@@ -2472,7 +2484,7 @@
             "SimulatorWebsiteHostingHostingBucket1AAE5F4A"
           ],
           "line_numbers": [
-            1635
+            1775
           ],
           "element_types": [
             "resource"
@@ -2487,7 +2499,7 @@
             "SimulatorVPCECSSecurityGroupEA9C0F68"
           ],
           "line_numbers": [
-            204
+            228
           ],
           "element_types": [
             "resource"
@@ -2502,7 +2514,7 @@
             "SimulatorVPCECSSecurityGroupEA9C0F68"
           ],
           "line_numbers": [
-            204
+            228
           ],
           "element_types": [
             "resource"
@@ -2517,7 +2529,7 @@
             "SimulatorVPCECSSecurityGroupEA9C0F68"
           ],
           "line_numbers": [
-            204
+            228
           ],
           "element_types": [
             "resource"
@@ -2556,8 +2568,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            185,
-            439
+            191,
+            457
           ],
           "element_types": [
             "resource",
@@ -2574,8 +2586,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            185,
-            439
+            191,
+            457
           ],
           "element_types": [
             "resource",
@@ -2592,8 +2604,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            185,
-            439
+            191,
+            457
           ],
           "element_types": [
             "resource",
@@ -2625,13 +2637,13 @@
           ],
           "line_numbers": [
             4,
-            31,
-            88,
-            149,
-            176,
-            203,
-            264,
-            291
+            37,
+            100,
+            167,
+            200,
+            233,
+            300,
+            333
           ],
           "element_types": [
             "resource",
@@ -2661,13 +2673,13 @@
           ],
           "line_numbers": [
             4,
-            31,
-            88,
-            149,
-            176,
-            203,
-            264,
-            291
+            37,
+            100,
+            167,
+            200,
+            233,
+            300,
+            333
           ],
           "element_types": [
             "resource",

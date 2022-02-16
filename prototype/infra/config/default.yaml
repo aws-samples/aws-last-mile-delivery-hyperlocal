@@ -258,8 +258,17 @@ instantDeliveryProviderSettings:
   # see https://github.com/yetzt/node-geocluster
   geoClusteringBias: 1.8
 
-# name for graphhopper docker repo
-graphhopperDockerRepoName: graphhopper-indonesia
+# graphhopper ECS service-related docker settings
+graphhopperSettings:
+  # URL that points to the OSM pbf file. This will be used in the pre-built
+  # graphhopper docker image along with the pre-generated gh-cache
+  osmPbfMapFileUrl: https://download.geofabrik.de/asia/indonesia-latest.osm.pbf
+
+  # optional JAVA_OPTS
+  # javaOpts: -Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80
+
+  # name for graphhopper docker repo
+  containerName: graphhopper-indonesia
 
 # name for dispatcher app docker repo
 dispatcherAppDockerRepoName: order-dispatcher

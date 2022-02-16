@@ -15,14 +15,18 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr, aws_ecr_assets as ecr_assets } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { sync as findup } from 'find-up'
+import path from 'path'
 
 export interface GraphhopperSetupProps {
 	readonly vpc: ec2.IVpc
 	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly ecsCluster: ecs.ICluster
-	readonly dockerRepoName: string
+	readonly osmPbfMapFileUrl: string
+	readonly javaOpts?: string
+	readonly containerName: string
 }
 
 export class GraphhopperSetup extends Construct {
@@ -35,10 +39,20 @@ export class GraphhopperSetup extends Construct {
 			vpc,
 			dmzSecurityGroup,
 			ecsCluster,
-			dockerRepoName,
+			osmPbfMapFileUrl,
+			javaOpts,
+			containerName,
 		} = props
 
-		const dockerRepo = ecr.Repository.fromRepositoryName(this, 'GraphhopperDockerRepo', dockerRepoName)
+		const graphhopperImage = new ecr_assets.DockerImageAsset(this, 'GraphhopperDockerImage', {
+			directory: path.join(
+				findup('dispatch-setup', { cwd: __dirname, type: 'directory' }) || '../../',
+				'src', 'GraphhopperSetup', 'docker'),
+			buildArgs: {
+				MAPFILE_URL: osmPbfMapFileUrl,
+			},
+			target: 'prod',
+		})
 
 		const graphhopperTask = new ecs.FargateTaskDefinition(this, 'GraphhopperTaskDef', {
 			family: namespaced(this, 'graphhopper-task'),
@@ -51,10 +65,10 @@ export class GraphhopperSetup extends Construct {
 		})
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const container = graphhopperTask.addContainer('graphhopper-indonesia', {
-			image: ecs.ContainerImage.fromEcrRepository(dockerRepo),
-			containerName: namespaced(this, 'graphhopper-indonesia'),
+			image: ecs.ContainerImage.fromDockerImageAsset(graphhopperImage),
+			containerName: namespaced(this, containerName),
 			environment: {
-				JAVA_OPTS: '-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80',
+				JAVA_OPTS: javaOpts || '-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80',
 			},
 			portMappings: [{
 				containerPort: 80,
