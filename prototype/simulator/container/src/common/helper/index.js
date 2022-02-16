@@ -18,7 +18,7 @@ const aws = require('../lib/aws-sdk')
 const userData = require('../lib/userData')
 const amplify = require('../lib/amplify')
 const cognito = require('../lib/cognito')
-const { loadRemoteConfig } = require('../lib/s3')
+const { loadRemoteFile } = require('../lib/s3')
 const logger = require('../utils/logger')
 const config = require('../config')
 
@@ -164,7 +164,7 @@ module.exports = {
 	refreshCredentials,
 	initialiseUser,
 	setupIdentity,
-	loadRemoteConfig,
+	loadRemoteFile,
 	terminateUser,
 	publishMessage,
 	generateRandomPoint,

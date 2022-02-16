@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
+import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks, aws_s3 as s3 } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement } from '@prototype/lambda-common'
@@ -29,6 +29,7 @@ export interface DestinationStarterStepFunctionProps {
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
+	readonly simulatorConfigBucket: s3.Bucket
 }
 
 export class DestinationStarterStepFunction extends Construct {
@@ -48,6 +49,7 @@ export class DestinationStarterStepFunction extends Construct {
 			cluster,
 			vpc,
 			securityGroup,
+			simulatorConfigBucket,
 		} = props
 
 		this.environmentVariables = {
@@ -58,6 +60,7 @@ export class DestinationStarterStepFunction extends Construct {
 			SUBNETS: vpc.publicSubnets.map(q => q.subnetId).join(','),
 			SECURITY_GROUP: securityGroup.securityGroupId,
 			CONTAINER_NAME: destinationSimulatorContainer.containerDefinition.containerName,
+			SIMULATOR_CONFIG_BUCKET: simulatorConfigBucket.bucketName,
 		}
 		this.lambda = new lambda.Function(this, 'DestinationStarterHelper', {
 			functionName: namespaced(this, 'DestinationStarterHelper'),

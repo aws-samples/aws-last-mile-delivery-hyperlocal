@@ -15,11 +15,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const AwsIot = require('aws-iot-device-sdk')
+const dayjs = require('dayjs')
 const logger = require('../common/utils/logger')
 const helper = require('../common/helper')
 const ddb = require('../common/lib/dynamoDB')
 const requestHelper = require('./helper/request')
 const utils = require('./utils')
+const { sleep } = require('../common/utils')
 const commandHandler = require('./commands').default
 
 class Destination {
@@ -44,9 +46,58 @@ class Destination {
 		this.cognitoUser = usr
 		this.userData.creds = creds
 		this.userData.clientId = `${this.userData.identity}:` + Date.now()
-		this.orderInterval = setInterval(
-			this.sendOrder.bind(this),
-			utils.getMsFromParams(this.params))
+
+		// if event file is not present would generate orders based on the time interval
+		if (!this.params.eventsFilePath) {
+			this.orderInterval = setInterval(
+				this.sendOrder.bind(this),
+				utils.getMsFromParams(this.params),
+			)
+		} else {
+			// otherwise replay the events after waiting 2 seconds
+			setTimeout(
+				this.replayEvents.bind(this),
+				2000,
+			)
+		}
+	}
+
+	async replayEvents () {
+		logger.info('Replaying event file')
+		const events = await helper.loadRemoteFile(this.config.simulatorConfigBucket, this.params.eventsFilePath)
+
+		logger.debug('Events: ', events)
+
+		for (const order of events.orders) {
+			try {
+				const { origin, destination, payload } = order
+				const nowTime = dayjs().format('HHmmss')
+				const bookedTime = dayjs(payload.bookedAt).format('HHmmss')
+				const timeDiff = (nowTime - bookedTime)
+
+				// give 10 seconds tollerance
+				if (timeDiff <= 10) {
+					// otherwise the event occurred too far in the past, we skip it
+					continue
+				}
+
+				// wait until we reach the time of the event (if timeDiff negative, means we've to wait)
+				if (timeDiff < 0) {
+					await sleep(timeDiff * -1000)
+				}
+
+				const res = await requestHelper.createOrder(
+					origin,
+					destination,
+					payload,
+					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
+				)
+
+				logger.info('Order submitted: ', res)
+			} catch (err) {
+				logger.error('Error submitting the order: ', err.toString())
+			}
+		}
 	}
 
 	async sendOrder () {

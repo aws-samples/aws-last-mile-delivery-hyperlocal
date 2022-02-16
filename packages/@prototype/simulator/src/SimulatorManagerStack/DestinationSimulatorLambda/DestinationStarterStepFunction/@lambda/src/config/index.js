@@ -24,4 +24,5 @@ module.exports = {
 	securityGroup: process.env.SECURITY_GROUP,
 	containerName: process.env.CONTAINER_NAME,
 	simulatorApi: process.env.SIMULATOR_API,
+	simulatorConfigBucket: process.env.SIMULATOR_CONFIG_BUCKET,
 }

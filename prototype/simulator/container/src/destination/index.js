@@ -25,6 +25,7 @@ class DestinationApp {
 			orderRate: config.orderRate || options.orderRate,
 			orderInterval: config.orderInterval || options.orderInterval,
 			rejectionRate: config.rejectionRate || options.rejectionRate,
+			eventsFilePath: config.eventsFilePath || options.eventsFilePath,
 		}
 		logger.debug('Starting the Destination App with params: ', JSON.stringify(params))
 
@@ -38,7 +39,8 @@ class DestinationApp {
 		const data = await ddb.query(this.config.destinationTable, this.config.destinationExecutionIdIndex, {
 			executionId: this.params.executionId,
 		})
-		const users = data.Items
+		// in case we replay an existing file we need just one destination object to perform the order submission
+		const users = this.params.eventsFilePath ? [data.Items[0]] : data.Items
 		const destinations = users.map(u => new Destination(this.config, this.params, u, this))
 		logger.log('Initialising destinations')
 

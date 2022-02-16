@@ -25,7 +25,7 @@ const execute = async (input) => {
 	logger.info('Starting the simulation')
 
 	try {
-		const { orderRate, orderInterval, rejectionRate } = input
+		const { orderRate, orderInterval, rejectionRate, eventsFilePath } = input
 		const data = await ddb.scan(config.destinationStatsTable)
 		const stats = data.Items
 		const simulationId = uuidv4()
@@ -59,6 +59,7 @@ const execute = async (input) => {
 			orderRate,
 			orderInterval,
 			rejectionRate,
+			eventsFilePath,
 		})
 
 		const res = await step.startExecution({
