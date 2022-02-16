@@ -1,4 +1,4 @@
-THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THE WORKSPACE AGGREGATOR 9AE222B5 4C2E 43BB 97A4 E78BA718CACC PRODUCT.
+THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THE WORKSPACE AGGREGATOR 0A6E92E3 847C 4CE4 A8D1 A531F17294DF PRODUCT.
 
 -----
 
@@ -28506,7 +28506,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----
 
-The following software may be included in this product: workspace-aggregator-9ae222b5-4c2e-43bb-97a4-e78ba718cacc. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-0a6e92e3-847c-4ce4-a8d1-a531f17294df. This software contains the following license and notice below:
 
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
