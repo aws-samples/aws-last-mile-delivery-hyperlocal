@@ -28,7 +28,8 @@ export interface DispatchSetupProps {
     readonly dispatchEngineBucket: s3.IBucket
     readonly dispatcherConfigPath: string
     readonly dispatcherVersion: string
-	readonly dispatcherAppDockerRepoName: string
+	readonly dispatcherDockerOsmPbfMapFileUrl: string
+	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
 }
@@ -51,7 +52,8 @@ export class DispatchSetup extends Construct {
 			dispatchEngineBucket,
 			dispatcherConfigPath,
 			dispatcherVersion,
-			dispatcherAppDockerRepoName,
+			dispatcherDockerContainerName,
+			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 		} = props
@@ -93,7 +95,8 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			dockerRepoName: dispatcherAppDockerRepoName,
+			containerName: dispatcherDockerContainerName,
+			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 		})

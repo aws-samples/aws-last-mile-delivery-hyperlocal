@@ -330,7 +330,7 @@
             "DispatchSetupDispatchEcsServiceDispatcherALBDispatcherListener2E971289"
           ],
           "line_numbers": [
-            875
+            866
           ],
           "element_types": [
             "resource"
@@ -347,7 +347,7 @@
           ],
           "line_numbers": [
             236,
-            683
+            674
           ],
           "element_types": [
             "resource",
@@ -363,7 +363,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            967
+            958
           ],
           "element_types": [
             "resource"
@@ -378,7 +378,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            967
+            958
           ],
           "element_types": [
             "resource"
@@ -393,7 +393,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            967
+            958
           ],
           "element_types": [
             "resource"
@@ -408,7 +408,7 @@
             "DispatchSetupDispatchEcsServiceorderdispatchertaskloggroup8F6998C0"
           ],
           "line_numbers": [
-            740
+            731
           ],
           "element_types": [
             "resource"
@@ -425,7 +425,7 @@
             "DispatchSetupDispatchEcsServiceDispatcherTaskRoleFB87E9FF"
           ],
           "line_numbers": [
-            822,
+            813,
             173,
             430
           ],
@@ -830,7 +830,7 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzpari69CustomResourcePolicyF51E76F8",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzpeqoanCustomResourcePolicy2BE1EB66",
             "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
           ],
@@ -2015,7 +2015,7 @@
             "SimulatorManagerOriginSimulatorLambdaOriginEventHandlerServiceRoleDefaultPolicy70005689",
             "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
-            "UpdateLambdaConfigurationkzparigtCustomResourcePolicy659A9F5D"
+            "UpdateLambdaConfigurationkzpeqoheCustomResourcePolicy867F7DDC"
           ],
           "line_numbers": [
             5,

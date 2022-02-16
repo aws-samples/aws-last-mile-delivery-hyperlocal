@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr as ecr, aws_ecr_assets as ecr_assets } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { sync as findup } from 'find-up'
 import path from 'path'

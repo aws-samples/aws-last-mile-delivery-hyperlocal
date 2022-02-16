@@ -9,7 +9,8 @@
   },
   "scripts": {
     "generate-deployment": "rm -rf build && mkdir -p build/config/instant/sequential && ./mvnw package && cp target/dispatcher-runner.jar build/ && cp deploy/application.properties build/config/ && cp src/main/resources/instant/sequentialdispatchSolverConfig.xml build/config/instant/sequential",
-    "build": "yarn generate-deployment && cd build && zip -FSrq dispatcher.zip *",
+    "build:instant:sequential": "rm -rf build/* && mkdir -p build/config/instant/sequential && ./mvnw package && cp target/dispatcher-runner.jar build && cp -r src/main/docker/instant/sequential/* build/ && cp src/main/resources/instant/sequential/dispatchSolverConfig.xml build/config/instant/sequential/",
+    "build": "yarn build:instant:sequential",
     "build:ec2": "sudo rm -rf build && mkdir -p build/config && ./mvnw package && cp target/dispatcher-runner.jar build/ && cp src/main/resources/application.properties build/config/ && cp src/main/resources/instant/sequential/dispatchSolverConfig.xml build/",
     "start": "cd build && sudo java -jar dispatcher-runner.jar",
     "build:docker": "./build-docker.sh",
