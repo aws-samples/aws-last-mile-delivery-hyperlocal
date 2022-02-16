@@ -41,7 +41,7 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly instantDeliveryProviderOrdersStatusIndex: string
 	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly backendEcsCluster: ecs.ICluster
-	readonly graphhopperDockerRepoName: string
+	readonly graphhopperSettings: Record<string, string>
 	readonly iotEndpointAddress: string
 }
 
@@ -73,7 +73,7 @@ export class ProviderStack extends NestedStack {
 			providersConfig,
 			dispatchEngineLB,
 			backendEcsCluster,
-			graphhopperDockerRepoName,
+			graphhopperSettings,
 			iotEndpointAddress,
 		} = props
 
@@ -118,7 +118,9 @@ export class ProviderStack extends NestedStack {
 			vpc,
 			dmzSecurityGroup: securityGroups.dmz,
 			ecsCluster: backendEcsCluster,
-			dockerRepoName: graphhopperDockerRepoName,
+			osmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl,
+			javaOpts: graphhopperSettings.javaOpts,
+			containerName: graphhopperSettings.containerName,
 		})
 
 		const graphhopperLB = graphhopperSetup.loadBalancer

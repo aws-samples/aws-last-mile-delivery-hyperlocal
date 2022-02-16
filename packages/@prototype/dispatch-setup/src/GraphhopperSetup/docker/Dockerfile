@@ -1,3 +1,5 @@
+##
+# Build stage for generating graphhopper cache
 FROM maven:3.6.3-jdk-11 as build
 
 ARG MAPFILE_URL=set_MAPFILE_URL_env_var
@@ -18,17 +20,16 @@ RUN mkdir -p /map && wget -O /map/mapfile.osm.pbf ${MAPFILE_URL}
 
 # add the config file
 COPY config-docker.yml /build/config.yml
-COPY ./gh-script/graphhopper.sh ./graphhopper
+COPY ./graphhopper.sh ./graphhopper
 
 # build the mapfile cache with graphhopper
 RUN \
     mkdir -p /graphhopper-cache \
     && cd graphhopper \
-    && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /map/mapfile.osm.pbf \
-    && sleep 2
-    # && java -Ddw.graphhopper.datareader.file=/map/mapfile.osm.pbf -Ddw.graphhopper.graph.location=/graphhopper-cache -Xmx16g -Xms16g -jar web/target/graphhopper-web-*.jar server /build/config.yml
+    && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /map/mapfile.osm.pbf
 
-FROM openjdk:11.0-jre
+# Stage to create graphhopper image with the map and pre-generated gh cache in it
+FROM openjdk:11.0-jre as prod
 
 ENV JAVA_OPTS "-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80"
 WORKDIR /graphhopper
@@ -46,7 +47,7 @@ COPY --from=build /build/graphhopper/pom.xml ./
 COPY --from=build /build/graphhopper/web/target/*.jar ./web/target/
 
 # graphhopper script
-COPY ./gh-script/graphhopper.sh ./
+COPY ./graphhopper.sh ./
 
 # config file
 COPY ./config-docker.yml ./config.yml
