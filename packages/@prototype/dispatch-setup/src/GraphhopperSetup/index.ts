@@ -44,6 +44,10 @@ export class GraphhopperSetup extends Construct {
 			family: namespaced(this, 'graphhopper-task'),
 			cpu: 4096,
 			memoryLimitMiB: 8192,
+			runtimePlatform: {
+				cpuArchitecture: ecs.CpuArchitecture.ARM64,
+				operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+			},
 		})
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const container = graphhopperTask.addContainer('graphhopper-indonesia', {
