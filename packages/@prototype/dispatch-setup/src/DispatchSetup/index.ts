@@ -35,8 +35,6 @@ export interface DispatchSetupProps {
 }
 
 export class DispatchSetup extends Construct {
-	// readonly dispatchInstance: ec2.IInstance
-
 	readonly dispatcherEcsCluster: ecs.ICluster
 
 	readonly loadBalancer: elb.IApplicationLoadBalancer
@@ -68,19 +66,6 @@ export class DispatchSetup extends Construct {
 			dispatcherAssignmentTableName: dispatcherAssignmentsTable.tableName,
 			demographicAreaDispatcherSettingsTableName: demAreaDispatchEngineSettingsTable.tableName,
 		})
-
-		// const dispatcherInstanceConstr = new DispatchInstance(this, 'DispatchInstance', {
-		// 	vpc,
-		// 	dmzSecurityGroup,
-		// 	dispatchEngineBucket,
-		// 	driverApiKeySecretName,
-		// 	demAreaDispatchEngineSettingsTable,
-		// 	dispatcherAssignmentsTable,
-		// })
-		// this.dispatchInstance = dispatcherInstanceConstr.instance
-
-		// const instanceTarget = new elbt.InstanceIdTarget(dispatcherInstanceConstr.instance.instanceId, 80)
-		// dispatchLBTargetGroup.addTarget(instanceTarget)
 
 		const dispatchEcsCluster = new DispatchEcsCluster(this, 'DispatchEcsCluster', {
 			dispatchEngineBucket,
