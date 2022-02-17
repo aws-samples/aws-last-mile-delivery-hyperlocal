@@ -97,7 +97,7 @@ class Destination {
 
 		// start to send orders every
 		this.orderInterval = setInterval(async () => {
-			const nowInSeconds = dayjs().format('HHmmss')
+			const nowInSeconds = Number(dayjs().format('HHmmss'))
 
 			// if there are orders to send during this "second", will send them altogether
 			if (validOrders[nowInSeconds]) {
