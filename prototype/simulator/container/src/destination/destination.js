@@ -64,40 +64,53 @@ class Destination {
 
 	async replayEvents () {
 		logger.info('Replaying event file')
+
+		const nowTime = dayjs().format('HHmmss') - 2 // seconds tolerance for the preparation phase
 		const events = await helper.loadRemoteFile(this.config.simulatorConfigBucket, this.params.eventsFilePath)
+		const validOrders = events.orders.filter(q => {
+			const bookedTime = dayjs(q.payload.bookedAt).format('HHmmss')
 
-		logger.debug('Events: ', events)
+			return bookedTime > nowTime
+		}).sort((a, b) => {
+			return dayjs(a.payload.bookedAt).format('HHmmssSSS') - dayjs(b.payload.bookedAt).format('HHmmssSSS')
+		}).reduce((acc, curr) => {
+			const bookedTmeSec = dayjs(curr.payload.bookedAt).format('HHmmss')
 
-		for (const order of events.orders) {
-			try {
-				const { origin, destination, payload } = order
-				const nowTime = dayjs().format('HHmmss')
-				const bookedTime = dayjs(payload.bookedAt).format('HHmmss')
-				const timeDiff = (nowTime - bookedTime)
+			if (!acc[bookedTmeSec]) {
+				acc[bookedTmeSec] = [curr]
+			} else {
+				acc[bookedTmeSec].push(curr)
+			}
 
-				// give 10 seconds tollerance
-				if (timeDiff <= 10) {
-					// otherwise the event occurred too far in the past, we skip it
-					continue
-				}
+			return acc
+		}, {})
 
-				// wait until we reach the time of the event (if timeDiff negative, means we've to wait)
-				if (timeDiff < 0) {
-					await sleep(timeDiff * -1000)
-				}
+		logger.debug('Original Events: ', events)
+		logger.debug('Events to play: ', validOrders)
 
-				const res = await requestHelper.createOrder(
+		// start to send orders every
+		this.orderInterval = setInterval(async () => {
+			const nowInSeconds = dayjs().format('HHmmss')
+
+			// if there are orders to send during this "second", will send them altogether
+			if (validOrders[nowInSeconds]) {
+				const promises = validOrders[nowInSeconds].map(({ origin, destination, payload }) => requestHelper.createOrder(
 					origin,
 					destination,
 					payload,
 					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
-				)
+				))
+				const results = await Promise.all(promises.map(p => p.catch(e => e)))
+				const errors = results.filter(result => result instanceof Error)
 
-				logger.info('Order submitted: ', res)
-			} catch (err) {
-				logger.error('Error submitting the order: ', err.toString())
+				logger.info(`Batch ${nowInSeconds} sent with ${validOrders[nowInSeconds].length} orders`)
+
+				if (errors) {
+					logger.error(`Errors on batch ${nowInSeconds}, ${errors.length} orders were not sent (total ${validOrders[nowInSeconds].length})`)
+					logger.error(errors)
+				}
 			}
-		}
+		}, 1000)
 	}
 
 	async sendOrder () {
@@ -131,9 +144,6 @@ class Destination {
 				logger.error(err.response.status)
 				logger.error(err.response.headers)
 			}
-		} finally {
-			clearInterval(this.orderInterval)
-			this.orderInterval = setInterval(this.sendOrder.bind(this), utils.getMsFromParams(this.params))
 		}
 	}
 
@@ -196,6 +206,7 @@ class Destination {
 		await ddb.removeField(this.config.destinationTable, this.userData.ID, 'executionId')
 		await ddb.updateItem(this.config.destinationTable, this.userData.ID, {})
 
+		clearInterval(this.orderInterval)
 		clearInterval(this.interval)
 	}
 
