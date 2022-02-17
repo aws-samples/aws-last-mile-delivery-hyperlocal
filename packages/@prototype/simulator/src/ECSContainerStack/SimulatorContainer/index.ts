@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Stack, aws_ecs as ecs, aws_ecr as ecr, aws_iam as iam, aws_s3 as s3, aws_iot as iot, aws_ec2 as ec2, aws_cognito as cognito } from 'aws-cdk-lib'
+import { Stack, aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_iam as iam, aws_s3 as s3, aws_iot as iot, aws_ec2 as ec2, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface SimulatorContainerProps {
@@ -23,7 +23,7 @@ export interface SimulatorContainerProps {
 	readonly cpu: number
 	readonly memoryMiB: number
 	readonly baseUsername: string
-	readonly repository: ecr.Repository
+	readonly simulatorContainerImageAsset: ecr_assets.DockerImageAsset
 
 	readonly userPool: cognito.UserPool
 	readonly identityPool: cognito.CfnIdentityPool
@@ -112,7 +112,7 @@ export class SimulatorContainer extends Construct {
 
 		// enable getting docker image
 		this.taskExecutionRole.addToPolicy(new iam.PolicyStatement({
-			resources: [props.repository.repositoryArn],
+			resources: [props.simulatorContainerImageAsset.repository.repositoryArn],
 			actions: [
 				'ecr:BatchCheckLayerAvailability',
 				'ecr:GetDownloadUrlForLayer',
@@ -142,7 +142,7 @@ export class SimulatorContainer extends Construct {
 
 		// containerDef
 		this.containerDefinition = this.taskDefinition.addContainer(`ECSContainerDef-${name}`, {
-			image: ecs.ContainerImage.fromEcrRepository(props.repository),
+			image: ecs.ContainerImage.fromDockerImageAsset(props.simulatorContainerImageAsset),
 			cpu,
 			memoryReservationMiB: memoryMiB,
 			logging: ecs.LogDriver.awsLogs({ streamPrefix: 'ecs' }),

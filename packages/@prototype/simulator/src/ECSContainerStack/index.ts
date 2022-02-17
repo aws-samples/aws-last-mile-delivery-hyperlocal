@@ -15,9 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ecs as ecs, aws_ecr as ecr, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
+import { aws_ecs as ecs, aws_ecr as ecr, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { SimulatorContainer } from './SimulatorContainer'
+import { sync as findup } from 'find-up'
+import path from 'path'
 
 interface ECSContainerStackProps {
 	readonly userPool: cognito.UserPool
@@ -86,11 +88,19 @@ export class ECSContainerStack extends Construct {
 
 		const iotEndpointAddress = getIoTEndpoint.getResponseField('endpointAddress')
 
+		const simulatorContainerImageAsset = new ecr_assets.DockerImageAsset(this, 'SimulatorImage', {
+			directory: path.join(
+				findup('packages', { cwd: __dirname, type: 'directory' }) || '../../../../',
+				'..',
+				'prototype', 'simulator', 'container',
+			),
+		})
+
 		this.driverSimulator = new SimulatorContainer(this, 'DriverSimulatorContainer', {
 			name: 'driver',
 			cpu: 256,
 			memoryMiB: 512,
-			repository: this.repository,
+			simulatorContainerImageAsset,
 			baseUsername: props.simulatorConfig.driverBaseUsername as string,
 			iotEndpointAddress,
 			...props,
@@ -100,7 +110,7 @@ export class ECSContainerStack extends Construct {
 			name: 'destination',
 			cpu: 256,
 			memoryMiB: 512,
-			repository: this.repository,
+			simulatorContainerImageAsset,
 			baseUsername: props.simulatorConfig.destinationBaseUsername as string,
 			iotEndpointAddress,
 			...props,
@@ -131,7 +141,7 @@ export class ECSContainerStack extends Construct {
 			name: 'origin',
 			cpu: 256,
 			memoryMiB: 512,
-			repository: this.repository,
+			simulatorContainerImageAsset,
 			baseUsername: props.simulatorConfig.originBaseUsername as string,
 			iotEndpointAddress,
 			...props,
