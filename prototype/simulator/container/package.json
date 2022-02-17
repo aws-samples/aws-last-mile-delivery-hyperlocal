@@ -1,8 +1,35 @@
 {
   "name": "simulator-container",
+  "private": "true",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "workspaces": {
+    "nohoist": [
+      "**/@mapbox/polyline",
+      "**/@mapbox/polyline/**",
+      "**/aws-amplify",
+      "**/aws-amplify/**",
+      "**/aws-iot-device-sdk",
+      "**/aws-iot-device-sdk/**",
+      "**/aws-sdk",
+      "**/aws-sdk/**",
+      "**/axios",
+      "**/axios/**",
+      "**/commander",
+      "**/commander/**",
+      "**/console-log-level",
+      "**/console-log-level/**",
+      "**/dayjs",
+      "**/dayjs/**",
+      "**/dotenv",
+      "**/dotenv/**",
+      "**/glob",
+      "**/glob/**",
+      "**/nanoid",
+      "**/nanoid/**"
+    ]
+  },
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
     "start:origin": "node -r dotenv/config src/originApp.js",
