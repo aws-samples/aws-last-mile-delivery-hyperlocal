@@ -29138,7 +29138,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----
 
-The following software may be included in this product: workspace-aggregator-1721a5fb-08b0-4e06-9a2b-5a91743d9bbc. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-5ebc0e2e-d536-4b0e-a91b-4be1306921a9. This software contains the following license and notice below:
 
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
