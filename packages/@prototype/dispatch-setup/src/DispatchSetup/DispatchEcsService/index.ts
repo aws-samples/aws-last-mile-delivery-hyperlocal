@@ -158,8 +158,7 @@ export class DispatchEcsService extends Construct {
 			securityGroups: [dmzSecurityGroup],
 			serviceName: namespaced(this, 'Order-Dispatcher'),
 			taskDefinition: dispatcherTask,
-			// assignPublicIp: true,
-			vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE },
+			vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_NAT },
 		})
 
 		// setup an application load balancer
