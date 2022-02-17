@@ -39,7 +39,7 @@ class DriverApp {
 
 	async init () {
 		const [identity, user] = await helper.setupIdentity(this.config.iotPolicyName, this.config.baseUsername)
-		const remoteConfig = await helper.loadRemoteConfig(this.config.updateConfigBucket, this.config.updateConfigPath)
+		const remoteConfig = await helper.loadRemoteFile(this.config.updateConfigBucket, this.config.updateConfigPath)
 
 		stateManager.setState('updatesConfig', remoteConfig, false)
 		stateManager.setState('updates', remoteConfig.passiveState, false)

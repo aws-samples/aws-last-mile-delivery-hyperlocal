@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_memorydb as memorydb, aws_events as events } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_memorydb as memorydb, aws_events as events, aws_s3 as s3 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -41,6 +41,7 @@ export interface DestinationSimulatorProps {
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
+	readonly simulatorConfigBucket: s3.Bucket
 
 	readonly eventBus: events.EventBus
 	readonly privateVpc: ec2.IVpc
@@ -88,6 +89,7 @@ export class DestinationSimulatorLambda extends Construct {
 			lambdaLayers,
 			eventBus,
 			iotEndpointAddress,
+			simulatorConfigBucket,
 		} = props
 
 		const generator = new DestinationGeneratorStepFunction(this, 'DestinationGeneratorStepFunction', {
@@ -111,6 +113,7 @@ export class DestinationSimulatorLambda extends Construct {
 			cluster,
 			vpc,
 			securityGroup,
+			simulatorConfigBucket,
 		})
 
 		this.starterStepFunction = this.starter.stepFunction

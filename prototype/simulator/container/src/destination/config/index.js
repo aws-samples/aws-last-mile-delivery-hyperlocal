@@ -21,6 +21,8 @@ module.exports = {
 	destinationExecutionIdIndex: process.env.DESTINATION_EXECUTIONID_INDEX,
 	destinationStatusUpdateRule: process.env.DESTINATION_STATUS_UPDATE_RULE_NAME,
 	executionId: process.env.EXECUTION_ID,
+	simulatorConfigBucket: process.env.SIMULATOR_CONFIG_BUCKET,
+	eventsFilePath: process.env.EVENTS_FILE_PATH,
 	orderRate: parseInt(process.env.ORDER_RATE),
 	orderInterval: process.env.ORDER_INTERVAL,
 	rejectionRate: parseFloat(process.env.REJECTION_RATE),

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_memorydb as memorydb, aws_s3 as s3 } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
 import { Networking } from '@prototype/networking'
 import { SimulatorManagerLambda } from './SimulatorManagerLambda'
@@ -28,6 +28,7 @@ import { EventSimulatorLambda } from './EventSimulatorLambda'
 import { StatisticsLambda } from './StatisticsLambda'
 import { SimulatorContainer } from '../ECSContainerStack/SimulatorContainer'
 import { DispatcherAssignmentQueryLambda } from './DispatcherAssignmentQueryLambda'
+import { namespacedBucket } from '@aws-play/cdk-core'
 
 export interface SimulatorManagerStackProps {
 	readonly vpc: ec2.IVpc
@@ -127,6 +128,18 @@ export class SimulatorManagerStack extends Construct {
 			iotEndpointAddress,
 		} = props
 
+		const simulatorConfigBucket = new s3.Bucket(this, 'SimulatorConfig', {
+			bucketName: namespacedBucket(this, 'simulator-config'),
+			versioned: true,
+			encryption: s3.BucketEncryption.S3_MANAGED,
+			blockPublicAccess: {
+				blockPublicAcls: true,
+				blockPublicPolicy: true,
+				ignorePublicAcls: true,
+				restrictPublicBuckets: true,
+			},
+		})
+
 		const simulatorManager = new SimulatorManagerLambda(this, 'SimulatorManagerLambda', {
 			vpc,
 			securityGroup,
@@ -195,6 +208,7 @@ export class SimulatorManagerStack extends Construct {
 			memoryDBCluster,
 			eventBus,
 			iotEndpointAddress,
+			simulatorConfigBucket,
 		})
 
 		const orderSimulator = new OrderSimulatorLambda(this, 'OrderSimulatorLambda', {

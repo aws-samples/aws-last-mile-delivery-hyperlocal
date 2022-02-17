@@ -20,7 +20,7 @@ const logger = require('../utils/logger')
 
 const s3 = new aws.S3()
 
-const loadRemoteConfig = async (Bucket, Key) => {
+const loadRemoteFile = async (Bucket, Key) => {
 	const params = {
 		Bucket,
 		Key,
@@ -36,4 +36,4 @@ const loadRemoteConfig = async (Bucket, Key) => {
 	return remoteConfigContent.data
 }
 
-module.exports.loadRemoteConfig = loadRemoteConfig
+module.exports.loadRemoteFile = loadRemoteFile

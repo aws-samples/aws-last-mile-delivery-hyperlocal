@@ -43,10 +43,11 @@ const getRandomOrigin = async (area, jwt) => {
 	}
 }
 
-const createOrder = async (origin, destination, jwt) => {
+const createOrder = async (origin, destination, jwt, payload) => {
 	const res = await axios.default.post(`${config.simulatorApiEndpoint}/order`, {
 		origin,
 		destination,
+		payload,
 		quantity: 1,
 	}, {
 		headers: {

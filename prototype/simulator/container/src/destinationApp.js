@@ -31,6 +31,7 @@ program
 .option('-or, --order-rate <number orders>', 'Number of order to submit')
 .option('-oi, --order-interval <s/m/h>', 'Interval to use for order submission; hour (h), minute (m) or seconds (s)')
 .option('-rr, --rejection-rate <percentage>', 'Reject a subset of orders (in %)')
+.action('-ef, --events-file-path [configuration-file]', 'Replay a set of events in the order they appear in the configuration file')
 program.parse(process.argv)
 const options = program.opts();
 

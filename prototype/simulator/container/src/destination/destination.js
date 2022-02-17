@@ -15,11 +15,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const AwsIot = require('aws-iot-device-sdk')
+const dayjs = require('dayjs')
 const logger = require('../common/utils/logger')
 const helper = require('../common/helper')
 const ddb = require('../common/lib/dynamoDB')
 const requestHelper = require('./helper/request')
 const utils = require('./utils')
+const { sleep } = require('../common/utils')
 const commandHandler = require('./commands').default
 
 class Destination {
@@ -44,9 +46,78 @@ class Destination {
 		this.cognitoUser = usr
 		this.userData.creds = creds
 		this.userData.clientId = `${this.userData.identity}:` + Date.now()
-		this.orderInterval = setInterval(
-			this.sendOrder.bind(this),
-			utils.getMsFromParams(this.params))
+
+		// if event file is not present would generate orders based on the time interval
+		if (!this.params.eventsFilePath) {
+			this.orderInterval = setInterval(
+				this.sendOrder.bind(this),
+				utils.getMsFromParams(this.params),
+			)
+		} else {
+			// otherwise replay the events after waiting 2 seconds
+			setTimeout(
+				this.replayEvents.bind(this),
+				2000,
+			)
+		}
+	}
+
+	async replayEvents () {
+		logger.info('Replaying event file')
+
+		const nowTime = Number(dayjs().format('HHmmss')) - 2 // seconds tolerance for the preparation phase
+		const events = await helper.loadRemoteFile(this.config.simulatorConfigBucket, this.params.eventsFilePath)
+		const validOrders = events.orders.map((q) => ({
+			...q,
+			payload: {
+				...q.payload,
+				bookedAt: Number(dayjs(q.payload.bookedAt).format('HHmmssSSS')),
+			},
+		}))
+		.filter(q => {
+			const bookedTimeSec = Math.floor(q.payload.bookedAt / 1000)
+
+			return bookedTimeSec > nowTime
+		}).sort((a, b) => {
+			return a.payload.bookedAt - b.payload.bookedAt
+		}).reduce((acc, curr) => {
+			const bookedTimeSec = Math.floor(curr.payload.bookedAt / 1000)
+
+			if (!acc[bookedTimeSec]) {
+				acc[bookedTimeSec] = [curr]
+			} else {
+				acc[bookedTimeSec].push(curr)
+			}
+
+			return acc
+		}, {})
+
+		logger.debug('Original Events: ', events.length)
+		logger.debug('Events to play: ', validOrders.length)
+
+		// start to send orders every
+		this.orderInterval = setInterval(async () => {
+			const nowInSeconds = Number(dayjs().format('HHmmss'))
+
+			// if there are orders to send during this "second", will send them altogether
+			if (validOrders[nowInSeconds]) {
+				const promises = validOrders[nowInSeconds].map(({ origin, destination, payload }) => requestHelper.createOrder(
+					origin,
+					destination,
+					payload,
+					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
+				))
+				const results = await Promise.all(promises.map(p => p.catch(e => e)))
+				const errors = results.filter(result => result instanceof Error)
+
+				logger.info(`Batch ${nowInSeconds} sent with ${validOrders[nowInSeconds].length} orders`)
+
+				if (errors) {
+					logger.error(`Errors on batch ${nowInSeconds}, ${errors.length} orders were not sent (total ${validOrders[nowInSeconds].length})`)
+					logger.error(errors)
+				}
+			}
+		}, 1000)
 	}
 
 	async sendOrder () {
@@ -80,9 +151,6 @@ class Destination {
 				logger.error(err.response.status)
 				logger.error(err.response.headers)
 			}
-		} finally {
-			clearInterval(this.orderInterval)
-			this.orderInterval = setInterval(this.sendOrder.bind(this), utils.getMsFromParams(this.params))
 		}
 	}
 
@@ -145,6 +213,7 @@ class Destination {
 		await ddb.removeField(this.config.destinationTable, this.userData.ID, 'executionId')
 		await ddb.updateItem(this.config.destinationTable, this.userData.ID, {})
 
+		clearInterval(this.orderInterval)
 		clearInterval(this.interval)
 	}
 
