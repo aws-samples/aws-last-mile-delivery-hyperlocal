@@ -1,4 +1,4 @@
-THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THE WORKSPACE AGGREGATOR D87973F1 CDCA 462F A6C0 B8D7AC5CDA85 PRODUCT.
+THE FOLLOWING SETS FORTH ATTRIBUTION NOTICES FOR THIRD PARTY SOFTWARE THAT MAY BE CONTAINED IN PORTIONS OF THE WORKSPACE AGGREGATOR B0E95709 E8D9 4BAE 9056 602D1A5B709B PRODUCT.
 
 -----
 
@@ -29124,7 +29124,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 -----
 
-The following software may be included in this product: workspace-aggregator-d87973f1-cdca-462f-a6c0-b8d7ac5cda85. This software contains the following license and notice below:
+The following software may be included in this product: workspace-aggregator-b0e95709-e8d9-4bae-9056-602d1a5b709b. This software contains the following license and notice below:
 
 Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
