@@ -30,9 +30,11 @@ const createOrder = (destination: ILatLong, origin: ILatLong, quantity: number):
 const getOrders = (nextToken?: string): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
-	return common.commonGetRequest('/order', nextToken ? {
-		startFrom: nextToken,
-	} : {})
+	return common.commonGetRequest('/order', nextToken
+		? {
+			startFrom: nextToken,
+		}
+		: {})
 }
 
 const getOrder = (id: string): Promise<any> => {
@@ -44,9 +46,11 @@ const getOrder = (id: string): Promise<any> => {
 const getDispatchAssignmentsAll = (nextToken?: string): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
-	return common.commonGetRequest('/assignment/all', nextToken ? {
-		nextToken,
-	} : {})
+	return common.commonGetRequest('/assignment/all', nextToken
+		? {
+			nextToken,
+		}
+		: {})
 }
 
 const getDispatchAssignmentById = (id: string): Promise<any> => {

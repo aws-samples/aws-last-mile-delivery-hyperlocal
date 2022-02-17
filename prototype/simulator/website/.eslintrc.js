@@ -25,6 +25,8 @@ module.exports = {
 		// turn on errors for missing imports
 		'import/no-unresolved': 'error',
 		'@typescript-eslint/no-unused-vars': 'off',
+		'no-use-before-define': 'off',
+		'@typescript-eslint/no-use-before-define': ['error'],
 		'no-console': 0,
 	},
 	settings: {

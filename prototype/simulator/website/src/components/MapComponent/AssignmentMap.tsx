@@ -99,19 +99,21 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 	}, [assignmentData])
 
 	useEffect(() => {
-		const data = assignment == null ? [] : assignment.assigned.map((d: any) => {
-			if (selectedOption.value === 'all' || d.driverId === selectedOption.value) {
-				let color = getRandomColor()
+		const data = assignment == null
+			? []
+			: assignment.assigned.map((d: any) => {
+				if (selectedOption.value === 'all' || d.driverId === selectedOption.value) {
+					let color = getRandomColor()
 
-				if (d.orders.length === 0) {
-					color = UNASSIGNEDCOLOR
+					if (d.orders.length === 0) {
+						color = UNASSIGNEDCOLOR
+					}
+
+					return { ...d, color }
+				} else {
+					return null
 				}
-
-				return { ...d, color }
-			} else {
-				return null
-			}
-		})
+			})
 
 		setAssignmentData(data.filter((q: any) => q !== null))
 	}, [assignment, selectedOption])
@@ -164,20 +166,22 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 	}, [assignmentData, orderRoutes, selectedOption])
 
 	useEffect(() => {
-		const _options = assignment == null ? [] : assignment.assigned.map((d: any) => {
-			let u = ''
+		const _options = assignment == null
+			? []
+			: assignment.assigned.map((d: any) => {
+				let u = ''
 
-			if (d.orders.length === 0) {
-				u = ' [U]'
-			}
+				if (d.orders.length === 0) {
+					u = ' [U]'
+				}
 
-			return ({
-				label: `Driver ${d.driverId.substr(0, 8)}${u}`,
-				value: d.driverId,
-			})
-		},
+				return ({
+					label: `Driver ${d.driverId.substr(0, 8)}${u}`,
+					value: d.driverId,
+				})
+			},
 
-		).flat()
+			).flat()
 		const _selectOptions = [SELECTALL, DESELECTALL, ..._options]
 		setSelectOptions(_selectOptions)
 	}, [assignment, setSelectOptions])
