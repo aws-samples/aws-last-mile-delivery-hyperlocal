@@ -16,7 +16,8 @@
     "packages/@prototype/*",
     "packages/**/@lambda",
     "prototype/infra",
-    "prototype/simulator/website"
+    "prototype/simulator/website",
+    "prototype/simulator/container"
   ],
   "private": true,
   "description": "Last Mile Logistics - Instant Delivery (for food, grocery delivery & instant courier)",
