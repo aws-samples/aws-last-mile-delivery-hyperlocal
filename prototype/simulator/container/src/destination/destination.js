@@ -65,28 +65,35 @@ class Destination {
 	async replayEvents () {
 		logger.info('Replaying event file')
 
-		const nowTime = dayjs().format('HHmmss') - 2 // seconds tolerance for the preparation phase
+		const nowTime = Number(dayjs().format('HHmmss')) - 2 // seconds tolerance for the preparation phase
 		const events = await helper.loadRemoteFile(this.config.simulatorConfigBucket, this.params.eventsFilePath)
-		const validOrders = events.orders.filter(q => {
-			const bookedTime = dayjs(q.payload.bookedAt).format('HHmmss')
+		const validOrders = events.orders.map((q) => ({
+			...q,
+			payload: {
+				...q.payload,
+				bookedAt: Number(dayjs(q.payload.bookedAt).format('HHmmssSSS')),
+			},
+		}))
+		.filter(q => {
+			const bookedTimeSec = Math.floor(q.payload.bookedAt / 1000)
 
-			return bookedTime > nowTime
+			return bookedTimeSec > nowTime
 		}).sort((a, b) => {
-			return dayjs(a.payload.bookedAt).format('HHmmssSSS') - dayjs(b.payload.bookedAt).format('HHmmssSSS')
+			return a.payload.bookedAt - b.payload.bookedAt
 		}).reduce((acc, curr) => {
-			const bookedTmeSec = dayjs(curr.payload.bookedAt).format('HHmmss')
+			const bookedTimeSec = Math.floor(curr.payload.bookedAt / 1000)
 
-			if (!acc[bookedTmeSec]) {
-				acc[bookedTmeSec] = [curr]
+			if (!acc[bookedTimeSec]) {
+				acc[bookedTimeSec] = [curr]
 			} else {
-				acc[bookedTmeSec].push(curr)
+				acc[bookedTimeSec].push(curr)
 			}
 
 			return acc
 		}, {})
 
-		logger.debug('Original Events: ', events)
-		logger.debug('Events to play: ', validOrders)
+		logger.debug('Original Events: ', events.length)
+		logger.debug('Events to play: ', validOrders.length)
 
 		// start to send orders every
 		this.orderInterval = setInterval(async () => {
