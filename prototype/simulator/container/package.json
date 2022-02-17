@@ -5,30 +5,7 @@
   "description": "",
   "main": "index.js",
   "workspaces": {
-    "nohoist": [
-      "**/@mapbox/polyline",
-      "**/@mapbox/polyline/**",
-      "**/aws-amplify",
-      "**/aws-amplify/**",
-      "**/aws-iot-device-sdk",
-      "**/aws-iot-device-sdk/**",
-      "**/aws-sdk",
-      "**/aws-sdk/**",
-      "**/axios",
-      "**/axios/**",
-      "**/commander",
-      "**/commander/**",
-      "**/console-log-level",
-      "**/console-log-level/**",
-      "**/dayjs",
-      "**/dayjs/**",
-      "**/dotenv",
-      "**/dotenv/**",
-      "**/glob",
-      "**/glob/**",
-      "**/nanoid",
-      "**/nanoid/**"
-    ]
+    "nohoist": ["**"]
   },
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
