@@ -18,6 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
+import { DefaultWaf } from '@prototype/common'
 import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@prototype/lambda-common'
 import path from 'path'
 import { sync as findup } from 'find-up'
@@ -168,6 +169,9 @@ export class DispatchEcsService extends Construct {
 			securityGroup: dmzSecurityGroup,
 			loadBalancerName: namespaced(this, 'Dispatcher'),
 			vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
+		})
+		new DefaultWaf(this, 'DispatcherALBWaf', {
+			resourceArn: loadBalancer.loadBalancerArn,
 		})
 
 		loadBalancer.logAccessLogs(dispatchEngineBucket, 'logs/alb-access-logs')
