@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.aws.proto</groupId>
+    <artifactId>delivery-dispatch-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>AWS Last Mile Delivery Hyperlocal multiproject parent</name>
+    <description>
+        Dispatcher engine to solve multiple types of delivery problems:
+
+        1. Instant delivery
+            1.1 Sequential - orders (pickup-dropoff) assigned to drivers sequentially
+            1.2 Mixed Pickup-Dropoff - PU and DO visits assigned to drivers in a mixed fashion
+        2. Same day delivery
+            2.1 Direct Pickup-Dropoff - Time-windowed Vehicle Routing Problem with constraints
+            2.2 With warehouse concept - Time-windowed Vehicle Routing Problem with additional warehouses
+        3. TBA
+    </description>
+    <url>https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal</url>
+    <licenses>
+        <license>
+            <name>MIT-0</name>
+            <url>https://github.com/aws/mit-0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:aws-samples/aws-last-mile-delivery-hyperlocal.git</connection>
+        <developerConnection>scm:git:git@github.com:aws-samples/aws-last-mile-delivery-hyperlocal.git</developerConnection>
+        <url>https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>ASEAN Prototyping</name>
+            <organization>Amazon Web Services</organization>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>core</module>
+        <module>apps</module>
+    </modules>
+
+</project>
