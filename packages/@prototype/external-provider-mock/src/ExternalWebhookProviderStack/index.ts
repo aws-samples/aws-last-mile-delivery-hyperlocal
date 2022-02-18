@@ -18,6 +18,7 @@ import { Construct } from 'constructs'
 import { aws_apigateway as apigw } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
+import { DefaultWaf } from '@prototype/common'
 import { ExternalWebhookDataStack } from './DataStack'
 import { ExternalWebhookServiceLambda } from './ServiceLambda'
 import { ExternalWebhookInvokerStack } from './WebhookInvoker'
@@ -57,6 +58,9 @@ export class ExternalWebhookProviderStack extends Construct {
 				allowOrigins: apigw.Cors.ALL_ORIGINS,
 				allowMethods: apigw.Cors.ALL_METHODS,
 			},
+		})
+		new DefaultWaf(this, 'ExternalWebhookProviderApiWaf', {
+			resourceArn: externalProviderApi.deploymentStage.stageArn,
 		})
 
 		this.apiKey = externalProviderApi.addApiKeyWithUsagePlanAndStage('ApiKey-ExternalWebhook')

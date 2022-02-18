@@ -17,6 +17,7 @@
 import { Construct } from 'constructs'
 import { aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { DefaultWaf } from '@prototype/common'
 import { sync as findup } from 'find-up'
 import path from 'path'
 
@@ -96,7 +97,9 @@ export class GraphhopperSetup extends Construct {
 			loadBalancerName: namespaced(this, 'GraphhopperLoadBalancer'),
 			vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
 		})
-
+		new DefaultWaf(this, 'GraphhopperALBWaf', {
+			resourceArn: loadBalancer.loadBalancerArn,
+		})
 		const albListener = loadBalancer.addListener('GHListener', {
 			open: false,
 			port: 80,

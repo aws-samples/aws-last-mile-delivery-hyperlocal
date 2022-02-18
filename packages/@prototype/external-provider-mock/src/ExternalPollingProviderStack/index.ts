@@ -17,6 +17,7 @@
 import { Construct } from 'constructs'
 import { aws_apigateway as apigw } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { DefaultWaf } from '@prototype/common'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { ExternalPollingDataStack } from './DataStack'
 import { ExternalPollingServiceLambda } from './ServiceLambda'
@@ -46,6 +47,9 @@ export class ExternalPollingProviderStack extends Construct {
 				allowOrigins: apigw.Cors.ALL_ORIGINS,
 				allowMethods: apigw.Cors.ALL_METHODS,
 			},
+		})
+		new DefaultWaf(this, 'ExternalPollingProviderApiWaf', {
+			resourceArn: externalProviderApi.deploymentStage.stageArn,
 		})
 
 		this.apiKey = externalProviderApi.addApiKeyWithUsagePlanAndStage('ApiKey-ExternalPolling')
