@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>delivery-dispatch-parent</artifactId>
+        <groupId>dev.aws.proto</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>delivery-dispatch-apps-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <description>
+        App implementations for different dispatch concepts
+    </description>
+
+    <properties>
+    </properties>
+
+    <modules>
+        <module>app-core</module>
+        <module>instant-sequential</module>
+        <module>instant-mixedpudo</module>
+        <module>sameday-directpudo</module>
+    </modules>
+
+</project>
