@@ -22,6 +22,7 @@ import { PersistentBackendStack } from '../PersistentBackendStack'
 import { SimulatorManagerStack, IoTPolicyStack, IoTRuleStack } from '@prototype/simulator'
 import { SharedLayer } from '@prototype/lambda-common'
 import { RestApi } from '@aws-play/cdk-apigateway'
+import { DefaultWaf } from '@prototype/common'
 import { WebsiteHostingStack } from '../../nested/WebsiteHostingStack'
 import { SimulatorPersistentStack } from '../SimulatorPersistentStack'
 import { BackendStack } from '../BackendStack'
@@ -116,6 +117,9 @@ export class SimulatorMainStack extends Stack {
 				allowOrigins: apigw.Cors.ALL_ORIGINS,
 				allowMethods: apigw.Cors.ALL_METHODS,
 			},
+		})
+		new DefaultWaf(this, 'SimulatorRestApiWaf', {
+			resourceArn: simulatorRestApi.deploymentStage.stageArn,
 		})
 
 		const lambdaLayerRefs = {

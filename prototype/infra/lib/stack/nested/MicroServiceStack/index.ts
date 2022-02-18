@@ -23,6 +23,7 @@ import { LambdaUtilsLayer, OpenSearchClientLayer, RedisClientLayer, LambdaInsigh
 import { Networking } from '@prototype/networking'
 import { ApiGeoTracking, ApiGeofencing } from '@prototype/api-geotracking'
 import { LambdaFunctions } from '@prototype/lambda-functions'
+import { DefaultWaf } from '@prototype/common'
 
 export interface MicroServiceStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
@@ -83,6 +84,9 @@ export class MicroServiceStack extends NestedStack {
 				allowOrigins: apigw.Cors.ALL_ORIGINS,
 				allowMethods: apigw.Cors.ALL_METHODS,
 			},
+		})
+		new DefaultWaf(this, 'GeoTrackingRestApiWaf', {
+			resourceArn: geoTrackingRestApi.deploymentStage.stageArn,
 		})
 		this.geoTrackingRestApi = geoTrackingRestApi
 

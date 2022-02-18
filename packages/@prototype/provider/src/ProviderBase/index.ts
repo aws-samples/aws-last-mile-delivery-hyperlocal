@@ -18,6 +18,7 @@ import { Construct } from 'constructs'
 import { aws_apigateway as apigw, aws_lambda as lambda, aws_wafv2 as waf } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
+import { DefaultWaf } from '@prototype/common'
 
 export interface ProviderBaseProps {
 	readonly name: string
@@ -54,6 +55,9 @@ export class ProviderBase extends Construct {
 				allowOrigins: apigw.Cors.ALL_ORIGINS,
 				allowMethods: apigw.Cors.ALL_METHODS,
 			},
+		})
+		new DefaultWaf(this, `ProviderApiGwInstance-${name}-waf`, {
+			resourceArn: this.apiGwInstance.deploymentStage.stageArn,
 		})
 
 		this.apiKey = this.apiGwInstance.addApiKeyWithUsagePlanAndStage(`ApiKey-${name}`)
