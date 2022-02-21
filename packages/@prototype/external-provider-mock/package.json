@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@aws-play/cdk-core": "^0.0.0-alpha.14",
-    "@aws-play/cdk-lambda": "^0.0.0-alpha.1"
+    "@aws-play/cdk-lambda": "^0.0.0-alpha.1",
+    "@prototype/common": "^0.0.0-alpha.0"
   }
 }

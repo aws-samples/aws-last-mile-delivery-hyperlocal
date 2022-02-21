@@ -23,7 +23,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@prototype/common": "0.0.0-alpha.0",
+    "@prototype/common": "^0.0.0-alpha.0",
     "@aws-play/cdk-core": "^0.0.0-alpha.14",
     "@aws-sdk/types": "^3.20.0",
     "@aws-sdk/util-dynamodb": "^3.21.0"
