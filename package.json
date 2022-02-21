@@ -23,7 +23,7 @@
   "description": "Last Mile Logistics - Instant Delivery (for food, grocery delivery & instant courier)",
   "scripts": {
     "build": "yarn build:packages && yarn build:lambdas",
-    "build:all": "yarn build && yarn build:simulator:web",
+    "build:all": "yarn build && yarn build:simulator:web && yarn build:order-dispatcher",
     "build:packages": "yarn build:play-packages && yarn build:proto-packages",
     "build:play-packages": "lerna run --stream 'build' --ignore @lambda/* --scope @aws-play/*",
     "build:proto-packages": "lerna run --stream 'build' --ignore @lambda/* --scope @prototype/*",
