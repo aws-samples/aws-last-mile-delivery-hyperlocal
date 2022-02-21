@@ -15,5 +15,5 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 export * from './DefaultWaf'
-export * from './HyperlocalBucket'
-export * from './HyperlocalTable'
+export * as hyperlocal_s3 from './S3'
+export * as hyperlocal_ddb from './DynamoDB'

@@ -14,15 +14,4 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from 'constructs'
-import { aws_dynamodb as ddb } from 'aws-cdk-lib'
-
-export class HyperlocalTable extends ddb.Table {
-	constructor (scope: Construct, id: string, props: ddb.TableProps) {
-		super(scope, id, {
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
-			...props,
-		})
-	}
-}
+export * from './Table'
