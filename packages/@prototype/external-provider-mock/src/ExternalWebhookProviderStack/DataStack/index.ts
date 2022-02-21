@@ -17,7 +17,7 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
-import { HyperlocalTable } from '@prototype/common'
+import { hyperlocal_ddb } from '@prototype/common'
 
 type ExternalWebhookDataStackProps = NestedStackProps
 
@@ -29,7 +29,7 @@ export class ExternalWebhookDataStack extends NestedStack {
 	constructor (scope: Construct, id: string, props: ExternalWebhookDataStackProps) {
 		super(scope, id)
 
-		this.externalOrderTable = new HyperlocalTable(this, 'ExampleWebhookOrders', {
+		this.externalOrderTable = new hyperlocal_ddb.Table(this, 'ExampleWebhookOrders', {
 			tableName: namespaced(this, 'example-webhook-orders'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {

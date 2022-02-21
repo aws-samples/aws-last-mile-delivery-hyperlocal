@@ -17,7 +17,7 @@
 import { Construct } from 'constructs'
 import { aws_s3 as s3 } from 'aws-cdk-lib'
 
-export class HyperlocalBucket extends s3.Bucket {
+export class Bucket extends s3.Bucket {
 	constructor (scope: Construct, id: string, props: s3.BucketProps) {
 		super(scope, id, {
 			enforceSSL: true,

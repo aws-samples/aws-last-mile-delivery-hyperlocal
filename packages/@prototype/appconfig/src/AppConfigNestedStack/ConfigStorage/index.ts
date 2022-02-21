@@ -17,7 +17,7 @@
 import { Construct } from 'constructs'
 import { namespacedBucket } from '@aws-play/cdk-core'
 import { aws_s3 as s3 } from 'aws-cdk-lib'
-import { HyperlocalBucket } from '@prototype/common'
+import { hyperlocal_s3 } from '@prototype/common'
 
 export class ConfigStorage extends Construct {
 	public readonly configBucket: s3.IBucket
@@ -25,7 +25,7 @@ export class ConfigStorage extends Construct {
 	constructor (scope: Construct, id: string) {
 		super(scope, id)
 
-		this.configBucket = new HyperlocalBucket(this, 'ConfigBucket', {
+		this.configBucket = new hyperlocal_s3.Bucket(this, 'ConfigBucket', {
 			bucketName: namespacedBucket(this, 'config'),
 			versioned: true,
 		})

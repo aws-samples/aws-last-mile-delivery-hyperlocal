@@ -17,7 +17,7 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
-import { HyperlocalTable } from '@prototype/common'
+import { hyperlocal_ddb } from '@prototype/common'
 
 type SimulatorDataStackProps = NestedStackProps
 
@@ -51,7 +51,7 @@ export class SimulatorDataStack extends NestedStack {
 	constructor (scope: Construct, id: string, props: SimulatorDataStackProps) {
 		super(scope, id)
 
-		this.simulatorTable = new HyperlocalTable(this, 'SimulatorTable', {
+		this.simulatorTable = new hyperlocal_ddb.Table(this, 'SimulatorTable', {
 			tableName: namespaced(this, 'simulator'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -60,7 +60,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.eventTable = new HyperlocalTable(this, 'EventTable', {
+		this.eventTable = new hyperlocal_ddb.Table(this, 'EventTable', {
 			tableName: namespaced(this, 'event'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -83,7 +83,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.originTable = new HyperlocalTable(this, 'OriginTable', {
+		this.originTable = new hyperlocal_ddb.Table(this, 'OriginTable', {
 			tableName: namespaced(this, 'origin'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -110,7 +110,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.originStatsTable = new HyperlocalTable(this, 'OriginStatsTable', {
+		this.originStatsTable = new hyperlocal_ddb.Table(this, 'OriginStatsTable', {
 			tableName: namespaced(this, 'origin-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -119,7 +119,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.originSimulationsTable = new HyperlocalTable(this, 'OriginSimulationsTable', {
+		this.originSimulationsTable = new hyperlocal_ddb.Table(this, 'OriginSimulationsTable', {
 			tableName: namespaced(this, 'origin-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -128,7 +128,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.destinationTable = new HyperlocalTable(this, 'DestinationTable', {
+		this.destinationTable = new hyperlocal_ddb.Table(this, 'DestinationTable', {
 			tableName: namespaced(this, 'destination'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -155,7 +155,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.destinationStatsTable = new HyperlocalTable(this, 'DestinationStatsTable', {
+		this.destinationStatsTable = new hyperlocal_ddb.Table(this, 'DestinationStatsTable', {
 			tableName: namespaced(this, 'destination-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -164,7 +164,7 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.destinationSimulationsTable = new HyperlocalTable(this, 'DestinationSimulationsTable', {
+		this.destinationSimulationsTable = new hyperlocal_ddb.Table(this, 'DestinationSimulationsTable', {
 			tableName: namespaced(this, 'destination-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {

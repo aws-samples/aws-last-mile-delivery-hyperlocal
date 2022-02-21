@@ -17,7 +17,7 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3 } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
-import { HyperlocalTable, HyperlocalBucket } from '@prototype/common'
+import { hyperlocal_ddb, hyperlocal_s3 } from '@prototype/common'
 import { DatabaseSeeder } from './DatabaseSeeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -49,15 +49,15 @@ export class DataStoragePersistent extends NestedStack {
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
 
-		this.dispatchEngineBucket = new HyperlocalBucket(this, 'DispatchEngineBucket', {
+		this.dispatchEngineBucket = new hyperlocal_s3.Bucket(this, 'DispatchEngineBucket', {
 			bucketName: namespacedBucket(this, 'dispatch-engine'),
 		})
 
-		this.driversTelemetryBucket = new HyperlocalBucket(this, 'DriversTelemetryBucket', {
+		this.driversTelemetryBucket = new hyperlocal_s3.Bucket(this, 'DriversTelemetryBucket', {
 			bucketName: namespacedBucket(this, 'drivers-telemetry'),
 		})
 
-		this.geoPolygonTable = new HyperlocalTable(this, 'GeoPolygonTable', {
+		this.geoPolygonTable = new hyperlocal_ddb.Table(this, 'GeoPolygonTable', {
 			tableName: namespaced(this, 'geoPolygon'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -66,7 +66,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		this.orderTable = new HyperlocalTable(this, 'OrderTable', {
+		this.orderTable = new hyperlocal_ddb.Table(this, 'OrderTable', {
 			tableName: namespaced(this, 'order'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -75,7 +75,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		const instantDeliveryProviderOrders = new HyperlocalTable(this, 'InstantDeliveryProviderOrders', {
+		const instantDeliveryProviderOrders = new hyperlocal_ddb.Table(this, 'InstantDeliveryProviderOrders', {
 			tableName: namespaced(this, 'instant-delivery-provider-orders'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -100,7 +100,7 @@ export class DataStoragePersistent extends NestedStack {
 		this.instantDeliveryProviderOrdersStatusIndex = instantDeliveryProviderOrdersStatusIndex
 		this.instantDeliveryProviderOrders = instantDeliveryProviderOrders
 
-		this.demographicAreaDispatchSettings = new HyperlocalTable(this, 'DemographicAreaDispatchSettings', {
+		this.demographicAreaDispatchSettings = new hyperlocal_ddb.Table(this, 'DemographicAreaDispatchSettings', {
 			tableName: namespaced(this, 'demographic-area-dispatch-settings'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -109,7 +109,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		this.demographicAreaProviderEngineSettings = new HyperlocalTable(this, 'DemographicAreaProviderEngineSettings', {
+		this.demographicAreaProviderEngineSettings = new hyperlocal_ddb.Table(this, 'DemographicAreaProviderEngineSettings', {
 			tableName: namespaced(this, 'demographic-area-provider-engine-settings'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -118,7 +118,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		this.instantDeliveryProviderLocks = new HyperlocalTable(this, 'InstantDeliveryProviderLocks', {
+		this.instantDeliveryProviderLocks = new hyperlocal_ddb.Table(this, 'InstantDeliveryProviderLocks', {
 			tableName: namespaced(this, 'inteinstant-delivery-provider-locks'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -133,7 +133,7 @@ export class DataStoragePersistent extends NestedStack {
 			geoPolygonTable: this.geoPolygonTable,
 		})
 
-		this.dispatcherAssignmentsTable = new HyperlocalTable(this, 'DispatcherAssignments', {
+		this.dispatcherAssignmentsTable = new hyperlocal_ddb.Table(this, 'DispatcherAssignments', {
 			tableName: namespaced(this, 'dispatcher-assignments'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {

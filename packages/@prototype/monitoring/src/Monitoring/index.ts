@@ -19,7 +19,7 @@ import * as path from 'path'
 import { Construct } from 'constructs'
 import { aws_ec2 as ec2, aws_iam as iam, aws_s3 as s3, custom_resources as cr } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
-import { HyperlocalBucket } from '@prototype/common'
+import { hyperlocal_s3 } from '@prototype/common'
 
 export interface MonitoringProps {
     readonly esEndpoint: string
@@ -38,7 +38,7 @@ export class Monitoring extends Construct {
 			securityGroup,
 		} = props
 
-		const debugInstanceBucket = new HyperlocalBucket(this, 'DebugInstanceBucket', {
+		const debugInstanceBucket = new hyperlocal_s3.Bucket(this, 'DebugInstanceBucket', {
 			bucketName: namespacedBucket(this, 'debug-instance-config'),
 		})
 
