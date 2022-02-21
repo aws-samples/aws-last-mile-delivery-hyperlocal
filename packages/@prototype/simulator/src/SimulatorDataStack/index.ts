@@ -17,6 +17,7 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { HyperlocalTable } from '@prototype/common'
 
 type SimulatorDataStackProps = NestedStackProps
 
@@ -50,26 +51,22 @@ export class SimulatorDataStack extends NestedStack {
 	constructor (scope: Construct, id: string, props: SimulatorDataStackProps) {
 		super(scope, id)
 
-		this.simulatorTable = new ddb.Table(this, 'SimulatorTable', {
+		this.simulatorTable = new HyperlocalTable(this, 'SimulatorTable', {
 			tableName: namespaced(this, 'simulator'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.eventTable = new ddb.Table(this, 'EventTable', {
+		this.eventTable = new HyperlocalTable(this, 'EventTable', {
 			tableName: namespaced(this, 'event'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'id',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 			timeToLiveAttribute: 'ttl',
 		})
 
@@ -86,15 +83,13 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.originTable = new ddb.Table(this, 'OriginTable', {
+		this.originTable = new HyperlocalTable(this, 'OriginTable', {
 			tableName: namespaced(this, 'origin'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.originAreaIndex = namespaced(this, 'idx-origin-area')
@@ -115,37 +110,31 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.originStatsTable = new ddb.Table(this, 'OriginStatsTable', {
+		this.originStatsTable = new HyperlocalTable(this, 'OriginStatsTable', {
 			tableName: namespaced(this, 'origin-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.originSimulationsTable = new ddb.Table(this, 'OriginSimulationsTable', {
+		this.originSimulationsTable = new HyperlocalTable(this, 'OriginSimulationsTable', {
 			tableName: namespaced(this, 'origin-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.destinationTable = new ddb.Table(this, 'DestinationTable', {
+		this.destinationTable = new HyperlocalTable(this, 'DestinationTable', {
 			tableName: namespaced(this, 'destination'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		this.destinationAreaIndex = namespaced(this, 'idx-destination-area')
@@ -166,26 +155,22 @@ export class SimulatorDataStack extends NestedStack {
 			},
 		})
 
-		this.destinationStatsTable = new ddb.Table(this, 'DestinationStatsTable', {
+		this.destinationStatsTable = new HyperlocalTable(this, 'DestinationStatsTable', {
 			tableName: namespaced(this, 'destination-stats'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.destinationSimulationsTable = new ddb.Table(this, 'DestinationSimulationsTable', {
+		this.destinationSimulationsTable = new HyperlocalTable(this, 'DestinationSimulationsTable', {
 			tableName: namespaced(this, 'destination-simulations'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 	}
 }

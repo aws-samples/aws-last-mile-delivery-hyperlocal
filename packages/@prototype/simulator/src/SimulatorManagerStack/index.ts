@@ -29,6 +29,7 @@ import { StatisticsLambda } from './StatisticsLambda'
 import { SimulatorContainer } from '../ECSContainerStack/SimulatorContainer'
 import { DispatcherAssignmentQueryLambda } from './DispatcherAssignmentQueryLambda'
 import { namespacedBucket } from '@aws-play/cdk-core'
+import { HyperlocalBucket } from '@prototype/common'
 
 export interface SimulatorManagerStackProps {
 	readonly vpc: ec2.IVpc
@@ -128,16 +129,9 @@ export class SimulatorManagerStack extends Construct {
 			iotEndpointAddress,
 		} = props
 
-		const simulatorConfigBucket = new s3.Bucket(this, 'SimulatorConfig', {
+		const simulatorConfigBucket = new HyperlocalBucket(this, 'SimulatorConfig', {
 			bucketName: namespacedBucket(this, 'simulator-config'),
 			versioned: true,
-			encryption: s3.BucketEncryption.S3_MANAGED,
-			blockPublicAccess: {
-				blockPublicAcls: true,
-				blockPublicPolicy: true,
-				ignorePublicAcls: true,
-				restrictPublicBuckets: true,
-			},
 		})
 
 		const simulatorManager = new SimulatorManagerLambda(this, 'SimulatorManagerLambda', {

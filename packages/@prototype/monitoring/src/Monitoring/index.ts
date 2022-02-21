@@ -14,11 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+import * as fs from 'fs'
+import * as path from 'path'
 import { Construct } from 'constructs'
 import { aws_ec2 as ec2, aws_iam as iam, aws_s3 as s3, custom_resources as cr } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
-import * as fs from 'fs'
-import * as path from 'path'
+import { HyperlocalBucket } from '@prototype/common'
 
 export interface MonitoringProps {
     readonly esEndpoint: string
@@ -37,15 +38,8 @@ export class Monitoring extends Construct {
 			securityGroup,
 		} = props
 
-		const debugInstanceBucket = new s3.Bucket(this, 'DebugInstanceBucket', {
+		const debugInstanceBucket = new HyperlocalBucket(this, 'DebugInstanceBucket', {
 			bucketName: namespacedBucket(this, 'debug-instance-config'),
-			encryption: s3.BucketEncryption.S3_MANAGED,
-			blockPublicAccess: {
-				blockPublicAcls: true,
-				blockPublicPolicy: true,
-				ignorePublicAcls: true,
-				restrictPublicBuckets: true,
-			},
 		})
 
 		this.setupCustomResources(debugInstanceBucket, props)

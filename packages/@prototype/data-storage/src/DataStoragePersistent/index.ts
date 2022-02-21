@@ -17,6 +17,7 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3 } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
+import { HyperlocalTable, HyperlocalBucket } from '@prototype/common'
 import { DatabaseSeeder } from './DatabaseSeeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -48,60 +49,39 @@ export class DataStoragePersistent extends NestedStack {
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
 
-		this.dispatchEngineBucket = new s3.Bucket(this, 'DispatchEngineBucket', {
+		this.dispatchEngineBucket = new HyperlocalBucket(this, 'DispatchEngineBucket', {
 			bucketName: namespacedBucket(this, 'dispatch-engine'),
-			encryption: s3.BucketEncryption.S3_MANAGED,
-			blockPublicAccess: {
-				blockPublicAcls: true,
-				blockPublicPolicy: true,
-				ignorePublicAcls: true,
-				restrictPublicBuckets: true,
-			},
 		})
 
-		this.driversTelemetryBucket = new s3.Bucket(this, 'DriversTelemetryBucket', {
+		this.driversTelemetryBucket = new HyperlocalBucket(this, 'DriversTelemetryBucket', {
 			bucketName: namespacedBucket(this, 'drivers-telemetry'),
-			encryption: s3.BucketEncryption.S3_MANAGED,
-			blockPublicAccess: {
-				blockPublicAcls: true,
-				blockPublicPolicy: true,
-				ignorePublicAcls: true,
-				restrictPublicBuckets: true,
-			},
 		})
 
-		this.geoPolygonTable = new ddb.Table(this, 'GeoPolygonTable', {
+		this.geoPolygonTable = new HyperlocalTable(this, 'GeoPolygonTable', {
 			tableName: namespaced(this, 'geoPolygon'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			readCapacity: 5,
-			writeCapacity: 5,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.orderTable = new ddb.Table(this, 'OrderTable', {
+		this.orderTable = new HyperlocalTable(this, 'OrderTable', {
 			tableName: namespaced(this, 'order'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		const instantDeliveryProviderOrders = new ddb.Table(this, 'InstantDeliveryProviderOrders', {
+		const instantDeliveryProviderOrders = new HyperlocalTable(this, 'InstantDeliveryProviderOrders', {
 			tableName: namespaced(this, 'instant-delivery-provider-orders'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		const instantDeliveryProviderOrdersStatusIndex = 'idx-instant-delivery-provider-orders-status'
@@ -120,37 +100,31 @@ export class DataStoragePersistent extends NestedStack {
 		this.instantDeliveryProviderOrdersStatusIndex = instantDeliveryProviderOrdersStatusIndex
 		this.instantDeliveryProviderOrders = instantDeliveryProviderOrders
 
-		this.demographicAreaDispatchSettings = new ddb.Table(this, 'DemographicAreaDispatchSettings', {
+		this.demographicAreaDispatchSettings = new HyperlocalTable(this, 'DemographicAreaDispatchSettings', {
 			tableName: namespaced(this, 'demographic-area-dispatch-settings'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.demographicAreaProviderEngineSettings = new ddb.Table(this, 'DemographicAreaProviderEngineSettings', {
+		this.demographicAreaProviderEngineSettings = new HyperlocalTable(this, 'DemographicAreaProviderEngineSettings', {
 			tableName: namespaced(this, 'demographic-area-provider-engine-settings'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
-		this.instantDeliveryProviderLocks = new ddb.Table(this, 'InstantDeliveryProviderLocks', {
+		this.instantDeliveryProviderLocks = new HyperlocalTable(this, 'InstantDeliveryProviderLocks', {
 			tableName: namespaced(this, 'inteinstant-delivery-provider-locks'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 
 		new DatabaseSeeder(this, 'DatabaseSeeder', {
@@ -159,7 +133,7 @@ export class DataStoragePersistent extends NestedStack {
 			geoPolygonTable: this.geoPolygonTable,
 		})
 
-		this.dispatcherAssignmentsTable = new ddb.Table(this, 'DispatcherAssignments', {
+		this.dispatcherAssignmentsTable = new HyperlocalTable(this, 'DispatcherAssignments', {
 			tableName: namespaced(this, 'dispatcher-assignments'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
@@ -170,8 +144,6 @@ export class DataStoragePersistent extends NestedStack {
 				name: 'createdAt',
 				type: ddb.AttributeType.NUMBER,
 			},
-			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
-			encryption: ddb.TableEncryption.AWS_MANAGED,
 		})
 	}
 }
