@@ -22,6 +22,7 @@
     "dev:deploy:sim": "yarn dev:cdk deploy --require-approval never Simulator-Backend",
     "dev:deploy:all": "yarn dev:cdk deploy --require-approval never '*'",
     "dev:DESTROY:backend": "yarn dev:cdk destroy Dev-Backend",
+    "dev:DESTROY:simbackend": "yarn dev:cdk destroy Simulator-Backend",
     "dev:DESTROY:all": "yarn dev:cdk destroy Dev-PeristentBackend",
     "dev:synth": "yarn dev:cdk synth",
     "postdev:synth": "yarn cfn-nag",
