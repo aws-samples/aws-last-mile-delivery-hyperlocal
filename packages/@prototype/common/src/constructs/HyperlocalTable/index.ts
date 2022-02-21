@@ -15,25 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
-import { HyperlocalTable } from '@prototype/common'
-import { namespaced } from '@aws-play/cdk-core'
+import { aws_dynamodb as ddb } from 'aws-cdk-lib'
 
-type ExternalPollingDataStackProps = NestedStackProps
-
-export class ExternalPollingDataStack extends NestedStack {
-	public readonly externalOrderTable: ddb.Table
-
-	constructor (scope: Construct, id: string, props: ExternalPollingDataStackProps) {
-		super(scope, id)
-
-		this.externalOrderTable = new HyperlocalTable(this, 'ExamplePollingOrders', {
-			tableName: namespaced(this, 'example-polling-orders'),
-			removalPolicy: props.removalPolicy,
-			partitionKey: {
-				name: 'ID',
-				type: ddb.AttributeType.STRING,
-			},
+export class HyperlocalTable extends ddb.Table {
+	constructor (scope: Construct, id: string, props: ddb.TableProps) {
+		super(scope, id, {
+			billingMode: ddb.BillingMode.PAY_PER_REQUEST,
+			encryption: ddb.TableEncryption.AWS_MANAGED,
+			...props,
 		})
 	}
 }

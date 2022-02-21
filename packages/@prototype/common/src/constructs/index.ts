@@ -15,3 +15,5 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 export * from './DefaultWaf'
+export * from './HyperlocalBucket'
+export * from './HyperlocalTable'
