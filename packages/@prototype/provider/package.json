@@ -25,7 +25,8 @@
   "dependencies": {
     "@aws-play/cdk-core": "^0.0.0-alpha.14",
     "@aws-play/cdk-apigateway": "0.0.0-alpha.4",
-    "@aws-play/cdk-lambda": "^0.0.0-alpha.1"
+    "@aws-play/cdk-lambda": "^0.0.0-alpha.1",
+    "@prototype/common": "^0.0.0-alpha.0"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.10.0",

@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@prototype/lambda-common": "0.0.0-alpha.0",
+    "@prototype/common": "^0.0.0-alpha.0",
     "mustache": "^4.2.0"
   },
   "devDependencies": {
