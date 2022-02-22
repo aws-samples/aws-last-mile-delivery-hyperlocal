@@ -119,7 +119,7 @@ export class DataStoragePersistent extends NestedStack {
 		})
 
 		this.instantDeliveryProviderLocks = new hyperlocal_ddb.Table(this, 'InstantDeliveryProviderLocks', {
-			tableName: namespaced(this, 'inteinstant-delivery-provider-locks'),
+			tableName: namespaced(this, 'instant-delivery-provider-locks'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
