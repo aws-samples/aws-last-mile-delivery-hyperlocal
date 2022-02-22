@@ -52,7 +52,7 @@ export class RequestOrderFulfillmentLambda extends DeclaredLambdaFunction<Enviro
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'InstantDeliveryProvider-RequestOrderFulfillment'),
-			description: 'Internal webhook provider - RequestOrderFulfillment lambda function',
+			description: 'Instant Delivery webhook provider - RequestOrderFulfillment lambda function',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/instant-delivery-provider-requestorderfulfillment.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
