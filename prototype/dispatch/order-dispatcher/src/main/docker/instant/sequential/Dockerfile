@@ -1,6 +1,6 @@
 ##
 # Build stage for generating graphhopper cache
-FROM maven:3.6.3-jdk-11 as gh-build
+FROM --platform=linux/arm64 maven:3.6.3-jdk-11 as gh-build
 
 ARG MAPFILE_URL=set_MAPFILE_URL_env_var
 

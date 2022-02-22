@@ -138,6 +138,10 @@ export class SimulatorContainer extends Construct {
 			compatibility: ecs.Compatibility.FARGATE,
 			cpu: `${cpu}`,
 			memoryMiB: `${memoryMiB}`,
+			runtimePlatform: {
+				cpuArchitecture: ecs.CpuArchitecture.ARM64,
+				operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+			},
 		})
 
 		// containerDef
