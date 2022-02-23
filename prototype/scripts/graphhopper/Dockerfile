@@ -28,7 +28,7 @@ RUN \
     && sleep 2
     # && java -Ddw.graphhopper.datareader.file=/map/mapfile.osm.pbf -Ddw.graphhopper.graph.location=/graphhopper-cache -Xmx16g -Xms16g -jar web/target/graphhopper-web-*.jar server /build/config.yml
 
-FROM openjdk:11.0-jre
+FROM --platform=linux/arm64 openjdk:11.0-jre
 
 ENV JAVA_OPTS "-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80"
 WORKDIR /graphhopper
