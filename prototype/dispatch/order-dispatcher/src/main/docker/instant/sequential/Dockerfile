@@ -30,7 +30,7 @@ RUN \
 
 
 ### Stage for instant delivery dispatcher
-FROM openjdk:11.0-jre as prod
+FROM --platform=linux/arm64 openjdk:11.0-jre as prod
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 

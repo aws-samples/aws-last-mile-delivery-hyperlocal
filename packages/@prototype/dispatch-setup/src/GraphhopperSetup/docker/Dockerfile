@@ -29,7 +29,7 @@ RUN \
     && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /map/mapfile.osm.pbf
 
 # Stage to create graphhopper image with the map and pre-generated gh cache in it
-FROM openjdk:11.0-jre as prod
+FROM --platform=linux/arm64 openjdk:11.0-jre as prod
 
 ENV JAVA_OPTS "-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80"
 WORKDIR /graphhopper
