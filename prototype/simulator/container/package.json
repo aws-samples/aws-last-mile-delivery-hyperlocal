@@ -4,9 +4,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "workspaces": {
-    "nohoist": ["**"]
-  },
   "scripts": {
     "start": "node -r dotenv/config src/index.js",
     "start:origin": "node -r dotenv/config src/originApp.js",
