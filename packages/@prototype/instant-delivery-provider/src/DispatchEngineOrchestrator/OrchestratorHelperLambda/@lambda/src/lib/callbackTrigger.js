@@ -22,7 +22,7 @@ let apiKey
 
 const sendCallback = async (orderId, status) => {
 	if (!apiKey) {
-		apiKey = await secret.getSecretValue(config.instandDeliveryProviderApiSecretName)
+		apiKey = await secret.getSecretValue(config.instantDeliveryProviderApiSecretName)
 	}
 
 	const req = await axios.post(

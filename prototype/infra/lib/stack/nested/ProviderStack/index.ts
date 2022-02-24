@@ -143,7 +143,7 @@ export class ProviderStack extends NestedStack {
 		new DriverEventHandler(this, 'DriverEventHandler', {
 			orderBatchStream: this.instantDeliveryWebhookProvider.orderBatchStream,
 			instantDeliveryProviderApi: this.instantDeliveryWebhookProvider.apiGwInstance,
-			instandDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
+			instantDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 			instantDeliveryProviderOrdersStatusIndex,
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderOrders,

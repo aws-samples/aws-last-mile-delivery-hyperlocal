@@ -22,7 +22,7 @@ module.exports = {
 	eventBusName: process.env.EVENT_BUS,
 	streamName: process.env.KINESIS_STREAM,
 	serviceName: process.env.SERVICE_NAME,
-	instandDeliveryProviderApiSecretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
+	instantDeliveryProviderApiSecretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
 	instantDeliveryProviderApiUrl: process.env.INSTANT_DELIVERY_CALLBACK_API_URL,
 	graphhopperElbDNS: process.env.GRAPH_HOPPER_ELB_DNS,
 	dispatchEngineElbDNS: process.env.DISPATCH_ENGINE_ELB_DNS,

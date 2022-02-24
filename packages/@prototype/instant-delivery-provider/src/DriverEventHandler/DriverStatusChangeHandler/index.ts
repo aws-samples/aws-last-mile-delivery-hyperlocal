@@ -32,7 +32,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly instantDeliveryProviderOrders: ddb.ITable
 	readonly instantDeliveryProviderApi: RestApi
 	readonly eventBus: events.IEventBus
-	readonly instandDeliveryProviderApiSecretName: string
+	readonly instantDeliveryProviderApiSecretName: string
 	readonly iotEndpointAddress: string
 }
 
@@ -43,12 +43,12 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 		const {
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderApi,
-			instandDeliveryProviderApiSecretName,
+			instantDeliveryProviderApiSecretName,
 			eventBus,
 			iotEndpointAddress,
 		} = props.dependencies
 
-		const instantDeliveryProviderApiSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'DriverStatusInstantDeliveryProviderSecret', instandDeliveryProviderApiSecretName)
+		const instantDeliveryProviderApiSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'DriverStatusInstantDeliveryProviderSecret', instantDeliveryProviderApiSecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'InstantDeliveryProviderDriverStatusHandler'),
@@ -61,7 +61,7 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 				PROVIDER_ORDERS_TABLE: instantDeliveryProviderOrders.tableName,
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.INSTANT_DELIVERY_PROVIDER_SERVICE,
-				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: instandDeliveryProviderApiSecretName,
+				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: instantDeliveryProviderApiSecretName,
 				INSTANT_DELIVERY_CALLBACK_API_URL: instantDeliveryProviderApi.url,
 			},
 			initialPolicy: [

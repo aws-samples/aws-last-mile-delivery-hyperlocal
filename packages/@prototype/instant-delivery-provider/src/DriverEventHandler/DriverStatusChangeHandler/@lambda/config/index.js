@@ -19,6 +19,6 @@ module.exports = {
 	instantDeliveryProviderOrders: process.env.PROVIDER_ORDERS_TABLE,
 	eventBusName: process.env.EVENT_BUS,
 	serviceName: process.env.SERVICE_NAME,
-	instandDeliveryProviderApiSecretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
+	instantDeliveryProviderApiSecretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
 	instantDeliveryProviderApiUrl: process.env.INSTANT_DELIVERY_CALLBACK_API_URL,
 }
