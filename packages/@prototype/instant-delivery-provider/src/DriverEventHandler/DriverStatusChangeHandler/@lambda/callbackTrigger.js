@@ -24,7 +24,7 @@ const sendCallback = async (data) => {
 	const { driverId, driverIdentity, orderId, status } = data
 
 	if (!apiKey) {
-		apiKey = await secret.getSecretValue(config.instandDeliveryProviderApiSecretName)
+		apiKey = await secret.getSecretValue(config.instantDeliveryProviderApiSecretName)
 	}
 
 	const req = await axios.post(

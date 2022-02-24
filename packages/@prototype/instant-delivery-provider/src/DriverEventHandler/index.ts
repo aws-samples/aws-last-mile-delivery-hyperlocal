@@ -29,7 +29,7 @@ export interface DriverEventHandlerProps {
 	readonly orderBatchStream: kinesis.IStream
 	readonly eventBus: events.IEventBus
 	readonly instantDeliveryProviderApi: RestApi
-	readonly instandDeliveryProviderApiSecretName: string
+	readonly instantDeliveryProviderApiSecretName: string
 	readonly instantDeliveryProviderOrdersStatusIndex: string
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly iotEndpointAddress: string
@@ -51,7 +51,7 @@ export class DriverEventHandler extends Construct {
 			instantDeliveryProviderApi,
 			instantDeliveryProviderOrdersStatusIndex,
 			instantDeliveryProviderSettings,
-			instandDeliveryProviderApiSecretName,
+			instantDeliveryProviderApiSecretName,
 			iotEndpointAddress,
 		} = props
 
@@ -59,7 +59,7 @@ export class DriverEventHandler extends Construct {
 			dependencies: {
 				instantDeliveryProviderOrders,
 				instantDeliveryProviderApi,
-				instandDeliveryProviderApiSecretName,
+				instantDeliveryProviderApiSecretName,
 				eventBus,
 				iotEndpointAddress,
 			},
