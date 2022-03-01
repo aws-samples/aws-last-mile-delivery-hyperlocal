@@ -54,7 +54,7 @@ export class StatisticsLambda extends Construct {
 			timeout: Duration.seconds(120),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				DISPATCH_ENGINE_SERVICE: SERVICE_NAME.DISPATCH_ENGINE,
 				ORDER_SERVICE_NAME: SERVICE_NAME.ORDER_SERVICE,
 				DRIVER_SERVICE_NAME: SERVICE_NAME.DRIVER_SERVICE,

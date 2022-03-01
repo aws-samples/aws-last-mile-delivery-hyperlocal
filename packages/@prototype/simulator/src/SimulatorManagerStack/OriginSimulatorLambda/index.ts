@@ -132,7 +132,7 @@ export class OriginSimulatorLambda extends Construct {
 			timeout: Duration.seconds(120),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				ORIGIN_TABLE: originTable.tableName,
 				ORIGIN_SIMULATIONS_TABLE_NAME: originSimulationsTable.tableName,
 				ORIGIN_STATS_TABLE_NAME: originStatsTable.tableName,

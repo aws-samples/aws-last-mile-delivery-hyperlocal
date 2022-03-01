@@ -58,7 +58,7 @@ export class RequestOrderFulfillmentLambda extends DeclaredLambdaFunction<Enviro
 
 		const environmentVariables = {
 			MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-			MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+			MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 			EXTERNAL_PROVIDER_URL: externalProviderMockUrl,
 			EXTERNAL_PROVIDER_SECRETNAME: externalProviderSecretName,
 			EVENT_BUS: eventBus.eventBusName,

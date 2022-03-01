@@ -63,7 +63,6 @@ export class MemoryDBCluster extends Construct {
 			// eslint-disable-next-line max-len
 			// https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion
 			nodeType: nodeType || 'cache.t3.medium',
-
 			autoMinorVersionUpgrade: true,
 			description: 'MemDB for Hyperlocal',
 			numReplicasPerShard: numReplicasPerShard || 1,
@@ -72,6 +71,7 @@ export class MemoryDBCluster extends Construct {
 			securityGroupIds: securityGroups.map(group => group.securityGroupId),
 			subnetGroupName: subnetGroup.ref,
 			tlsEnabled: true,
+			port: 6379,
 		})
 
 		cluster.node.addDependency(subnetGroup)

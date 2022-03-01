@@ -56,7 +56,7 @@ export class DestinationStatusUpdateLambda extends DeclaredLambdaFunction<Enviro
 			timeout: Duration.seconds(30),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				EVENT_BUS_NAME: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.DESTINATION_SERVICE,
 			},

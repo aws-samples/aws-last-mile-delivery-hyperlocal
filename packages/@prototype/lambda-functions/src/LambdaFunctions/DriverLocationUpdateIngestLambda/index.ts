@@ -66,7 +66,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 			timeout: Duration.seconds(30),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 			},

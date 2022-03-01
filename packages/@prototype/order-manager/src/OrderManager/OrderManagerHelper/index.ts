@@ -56,7 +56,7 @@ export class OrderManagerHelperLambda extends DeclaredLambdaFunction<Environment
 			timeout: Duration.seconds(120),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				ORDER_TABLE: orderTable.tableName,
 				EVENT_BUS: eventBus.eventBusArn,
 				SERVICE_NAME: SERVICE_NAME.ORDER_MANAGER,
