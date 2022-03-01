@@ -65,7 +65,7 @@ export class GetOrderStatusLambda extends DeclaredLambdaFunction<Environment, De
 				SERVICE_NAME: SERVICE_NAME.EXAMPLE_WEBHOOK_PROVIDER_SERVICE,
 				PROVIDER_NAME: PROVIDER_NAME.EXAMPLE_WEBHOOK_PROVIDER,
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				EXTERNAL_PROVIDER_URL: externalProviderMockUrl,
 				EXTERNAL_PROVIDER_SECRETNAME: externalProviderSecretName,
 			},

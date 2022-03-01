@@ -56,7 +56,7 @@ export class ExampleCallbackLambda extends DeclaredLambdaFunction<Environment, D
 			timeout: Duration.seconds(30),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.EXAMPLE_WEBHOOK_PROVIDER_SERVICE,
 				PROVIDER_NAME: PROVIDER_NAME.EXAMPLE_WEBHOOK_PROVIDER,

@@ -57,7 +57,7 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 			timeout: Duration.seconds(30),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 				POLYGON_TABLE: geoPolygonTable.tableName,
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
 

@@ -51,7 +51,7 @@ export class QueryDriversLambda extends DeclaredLambdaFunction<Environment, Depe
 			timeout: Duration.seconds(30),
 			environment: {
 				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: `${memoryDBCluster.attrClusterEndpointPort}`,
+				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
 
 			},
 			layers: lambdaLayers,
