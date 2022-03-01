@@ -5,8 +5,8 @@
   "private": "true",
   "main": "index.js",
   "scripts": {
-    "mkdir": "mkdir -p ../../../dist/@lambda && mkdir -p ../tmp/$npm_package_name && cp -r ./* ../tmp/$npm_package_name/",
-    "zipasset": "cd ../tmp && zip -rXq ../../../dist/$npm_package_name.zip $npm_package_name/ && rm -rf ../tmp/",
+    "mkdir": "mkdir -p ../../../dist/@lambda && mkdir -p ../tmp/opensearch-client && cp -r ./* ../tmp/opensearch-client/",
+    "zipasset": "cd ../tmp && zip -rXq ../../../dist/$npm_package_name.zip opensearch-client/ && rm -rf ../tmp/",
     "build": "yarn mkdir &&  yarn zipasset"
   },
   "author": "Amazon Web Services - ASEAN Prototying",
