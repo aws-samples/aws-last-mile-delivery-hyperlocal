@@ -22,8 +22,8 @@
       "**/uuid/**",
       "**/aws-amplify",
       "**/aws-amplify/**",
-      "**/shortid",
-      "**/shortid/**"
+      "**/nanoid",
+      "**/nanoid/**"
     ]
   }
 }
