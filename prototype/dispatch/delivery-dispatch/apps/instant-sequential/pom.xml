@@ -18,4 +18,12 @@
     <properties>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>dev.aws.proto</groupId>
+            <artifactId>app-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

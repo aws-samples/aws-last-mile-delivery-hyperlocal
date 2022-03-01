@@ -27,4 +27,18 @@
         <module>sameday-directpudo</module>
     </modules>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.github.bijukunjummen/aws-sdk2-dynamo-json-helper -->
+        <dependency>
+            <groupId>com.github.bijukunjummen</groupId>
+            <artifactId>aws-sdk2-dynamo-json-helper</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>dev.aws.proto</groupId>
+            <artifactId>delivery-dispatch-routing</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

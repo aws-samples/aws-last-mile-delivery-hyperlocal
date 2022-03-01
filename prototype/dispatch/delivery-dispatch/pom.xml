@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
+  ~ this software and associated documentation files (the "Software"), to deal in
+  ~ the Software without restriction, including without limitation the rights to
+  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  ~ the Software, and to permit persons to whom the Software is furnished to do so.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  ~ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  ~ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  ~ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  ~ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,11 +31,11 @@
         Dispatcher engine to solve multiple types of delivery problems:
 
         1. Instant delivery
-            1.1 Sequential - orders (pickup-dropoff) assigned to drivers sequentially
-            1.2 Mixed Pickup-Dropoff - PU and DO visits assigned to drivers in a mixed fashion
+        1.1 Sequential - orders (pickup-dropoff) assigned to drivers sequentially
+        1.2 Mixed Pickup-Dropoff - PU and DO visits assigned to drivers in a mixed fashion
         2. Same day delivery
-            2.1 Direct Pickup-Dropoff - Time-windowed Vehicle Routing Problem with constraints
-            2.2 With warehouse concept - Time-windowed Vehicle Routing Problem with additional warehouses
+        2.1 Direct Pickup-Dropoff - Time-windowed Vehicle Routing Problem with constraints
+        2.2 With warehouse concept - Time-windowed Vehicle Routing Problem with additional warehouses
         3. TBA
     </description>
     <url>https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal</url>
@@ -34,11 +51,23 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <graphhopper-core.version>4.0</graphhopper-core.version>
+        <graphhopper-reader-osm.version>3.0-pre3</graphhopper-reader-osm.version>
+
+        <quarkus.platform.version>2.7.1.Final</quarkus.platform.version>
+
+        <awssdk.version>2.17.138</awssdk.version>
+        <jobrunr.version>4.0.9</jobrunr.version>
+        <sqlite.version>3.36.0.3</sqlite.version>
+        <lombok.version>1.18.22</lombok.version>
+        <awssdk2-dynamo-json-helper.version>0.13.0</awssdk2-dynamo-json-helper.version>
     </properties>
 
     <scm>
         <connection>scm:git:git@github.com:aws-samples/aws-last-mile-delivery-hyperlocal.git</connection>
-        <developerConnection>scm:git:git@github.com:aws-samples/aws-last-mile-delivery-hyperlocal.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:aws-samples/aws-last-mile-delivery-hyperlocal.git
+        </developerConnection>
         <url>https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal</url>
     </scm>
 
@@ -53,5 +82,80 @@
         <module>core</module>
         <module>apps</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-universe-bom</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.graphhopper</groupId>
+                <artifactId>graphhopper-reader-osm</artifactId>
+                <version>${graphhopper-reader-osm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.graphhopper</groupId>
+                <artifactId>graphhopper-core</artifactId>
+                <version>${graphhopper-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${awssdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jobrunr</groupId>
+                <artifactId>jobrunr</artifactId>
+                <version>${jobrunr.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.github.bijukunjummen/aws-sdk2-dynamo-json-helper -->
+            <dependency>
+                <groupId>com.github.bijukunjummen</groupId>
+                <artifactId>aws-sdk2-dynamo-json-helper</artifactId>
+                <version>${awssdk2-dynamo-json-helper.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- logging -->
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>commons-logging-jboss-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.slf4j</groupId>
+            <artifactId>slf4j-jboss-logmanager</artifactId>
+        </dependency>
+        <!-- /logging -->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
