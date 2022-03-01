@@ -25,7 +25,8 @@ export const LambdaInsightsLayer = (scope: Construct, id: string): lambda.LayerV
 	const stack = Stack.of(scope)
 	// note: the layer is deployed in a different account for some regions; eg. (HK, Cape Town, Milan, Beijing, Ningxia)
 	// see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versions.html
-	const layerArn = `arn:aws:lambda:${stack.region}:580247275435:layer:LambdaInsightsExtension:14`
+	// see: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versionsARM.html
+	const layerArn = `arn:aws:lambda:${stack.region}:580247275435:layer:LambdaInsightsExtension-Arm64:1`
 
 	return lambda.LayerVersion.fromLayerVersionArn(scope, id, layerArn) as lambda.LayerVersion
 }
