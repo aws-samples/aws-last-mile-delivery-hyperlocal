@@ -30,6 +30,7 @@ exports.getRedisClient = async () => {
 			rootNodes: [{
 				url: `rediss://${process.env.MEMORYDB_HOST}:${process.env.MEMORYDB_PORT}`,
 			}],
+			useReplicas: true,
 			defaults: {
 				socket: {
 					tls: true,
