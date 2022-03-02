@@ -35,7 +35,7 @@ exports.getRedisClient = async () => {
 					tls: true,
 				},
 				username: process.env.MEMORYDB_ADMIN_USERNAME,
-				password: adminPassword,
+				password: adminPassword.SecretString,
 			},
 		})
 
