@@ -9,11 +9,12 @@ WORKDIR /build
 
 # fetch graphhopper, make some finetune in the pom.xml and build it
 RUN \
-    git clone --depth 2 https://github.com/graphhopper/graphhopper.git \
+    git clone --depth 1 --branch 4.0 https://github.com/graphhopper/graphhopper.git \
     && cd graphhopper \
     && sed -i 's/nodeVersion>v12.3.1/nodeVersion>v17.2.0/' web-bundle/pom.xml \
-    && sed -i 's/npmVersion>6.14.5/npmVersion>8.1.4/' web-bundle/pom.xml \
-    && mvn clean package --quiet
+    && sed -i 's/npmVersion>6.14.5/npmVersion>8.1.4/' web-bundle/pom.xml
+
+RUN cd graphhopper && mvn clean package --quiet -DskipTests=true
 
 # fetch the mapfile
 RUN mkdir -p /map && wget -O /map/mapfile.osm.pbf ${MAPFILE_URL}
