@@ -15,9 +15,9 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_dynamodb as ddb } from 'aws-cdk-lib'
-import { namespaced } from '@aws-play/cdk-core'
-import { hyperlocal_ddb } from '@prototype/common'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3 } from 'aws-cdk-lib'
+import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
+import { hyperlocal_ddb, hyperlocal_s3 } from '@prototype/common'
 
 type SimulatorDataStackProps = NestedStackProps
 
@@ -48,8 +48,15 @@ export class SimulatorDataStack extends NestedStack {
 
 	public readonly destinationSimulationsTable: ddb.Table
 
+	public readonly simulatorConfigBucket: s3.IBucket
+
 	constructor (scope: Construct, id: string, props: SimulatorDataStackProps) {
 		super(scope, id)
+
+		this.simulatorConfigBucket = new hyperlocal_s3.Bucket(this, 'SimulatorConfig', {
+			bucketName: namespacedBucket(this, 'simulator-config'),
+			versioned: true,
+		})
 
 		this.simulatorTable = new hyperlocal_ddb.Table(this, 'SimulatorTable', {
 			tableName: namespaced(this, 'simulator'),

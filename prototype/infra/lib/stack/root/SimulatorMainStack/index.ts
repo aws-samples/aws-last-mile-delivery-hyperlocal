@@ -177,6 +177,7 @@ export class SimulatorMainStack extends Stack {
 			instantDeliveryProviderOrdersTable: instantDeliveryProviderOrders,
 
 			iotEndpointAddress,
+			simulatorConfigBucket: dataStack.simulatorConfigBucket,
 		})
 
 		const iotRules = new IoTRuleStack(this, 'IoTSimulatorRule', {

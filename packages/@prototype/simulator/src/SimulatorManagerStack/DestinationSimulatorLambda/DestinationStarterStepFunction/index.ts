@@ -29,7 +29,7 @@ export interface DestinationStarterStepFunctionProps {
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
-	readonly simulatorConfigBucket: s3.Bucket
+	readonly simulatorConfigBucket: s3.IBucket
 }
 
 export class DestinationStarterStepFunction extends Construct {

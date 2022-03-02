@@ -28,8 +28,6 @@ import { EventSimulatorLambda } from './EventSimulatorLambda'
 import { StatisticsLambda } from './StatisticsLambda'
 import { SimulatorContainer } from '../ECSContainerStack/SimulatorContainer'
 import { DispatcherAssignmentQueryLambda } from './DispatcherAssignmentQueryLambda'
-import { namespacedBucket } from '@aws-play/cdk-core'
-import { hyperlocal_s3 } from '@prototype/common'
 
 export interface SimulatorManagerStackProps {
 	readonly vpc: ec2.IVpc
@@ -78,6 +76,8 @@ export interface SimulatorManagerStackProps {
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
 	readonly iotEndpointAddress: string
+
+	readonly simulatorConfigBucket: s3.IBucket
 }
 
 export class SimulatorManagerStack extends Construct {
@@ -127,12 +127,8 @@ export class SimulatorManagerStack extends Construct {
 			dispatcherAssignmentsTable,
 			instantDeliveryProviderOrdersTable,
 			iotEndpointAddress,
+			simulatorConfigBucket,
 		} = props
-
-		const simulatorConfigBucket = new hyperlocal_s3.Bucket(this, 'SimulatorConfig', {
-			bucketName: namespacedBucket(this, 'simulator-config'),
-			versioned: true,
-		})
 
 		const simulatorManager = new SimulatorManagerLambda(this, 'SimulatorManagerLambda', {
 			vpc,
