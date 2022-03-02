@@ -64,8 +64,8 @@ export class MemoryDBCluster extends Construct {
 			/// access to everything by default. see https://redis.io/topics/acl for more details
 			accessString: adminAccessString || 'on ~* &* +@all',
 			authenticationMode: {
-				passwords: [adminPasswordSecret.secretValue.toString()],
-				type: 'password',
+				Passwords: [adminPasswordSecret.secretValue.toString()],
+				Type: 'password',
 			},
 			userName: adminUsername,
 		})
@@ -74,6 +74,7 @@ export class MemoryDBCluster extends Construct {
 			aclName: commonName,
 			userNames: [adminUser.userName],
 		})
+		acl.addDependsOn(adminUser)
 
 		const cluster = new memorydb.CfnCluster(this, 'MemoryDBCluster', {
 			aclName: acl.ref,
