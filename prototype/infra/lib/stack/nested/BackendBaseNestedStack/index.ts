@@ -19,7 +19,6 @@ import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { LiveDataCache } from '@prototype/live-data-cache'
-import { PersistentBackendStack } from '../../root/PersistentBackendStack'
 
 export interface BackendBaseNestedStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
@@ -75,6 +74,8 @@ export class BackendBaseNestedStack extends NestedStack {
 				adminRole,
 			},
 			memoryDBClusterProps: {
+				adminUsername: memoryDBConfig.adminUsername as string,
+				adminAccessString: memoryDBConfig.adminAccessString as string,
 				numShards: memoryDBConfig.numShards as number,
 				numReplicasPerShard: memoryDBConfig.numReplicasPerShard as number,
 				nodeType: memoryDBConfig.instanceType as string,

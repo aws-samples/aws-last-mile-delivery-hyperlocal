@@ -15,8 +15,9 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, Stack, aws_ec2 as ec2, aws_events as events, aws_events_targets as events_targets, aws_memorydb as memorydb, aws_lambda as lambda } from 'aws-cdk-lib'
+import { Duration, Stack, aws_ec2 as ec2, aws_events as events, aws_events_targets as events_targets, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
@@ -24,7 +25,7 @@ import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 export interface StatisticsProps {
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly eventBus: events.EventBus
 }
@@ -53,8 +54,10 @@ export class StatisticsLambda extends Construct {
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				DISPATCH_ENGINE_SERVICE: SERVICE_NAME.DISPATCH_ENGINE,
 				ORDER_SERVICE_NAME: SERVICE_NAME.ORDER_SERVICE,
 				DRIVER_SERVICE_NAME: SERVICE_NAME.DRIVER_SERVICE,
@@ -66,6 +69,17 @@ export class StatisticsLambda extends Construct {
 				INSTANT_DELIVERY_PROVIDER_SERVICE_NAME: SERVICE_NAME.INSTANT_DELIVERY_PROVIDER_SERVICE,
 				INSTANT_DELIVERY_PROVIDER_NAME: PROVIDER_NAME.INSTANT_DELIVERY_PROVIDER,
 			},
+			initialPolicy: [
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
+				}),
+			],
 			layers: [
 				lambdaLayers.lambdaUtilsLayer,
 				lambdaLayers.redisClientLayer,

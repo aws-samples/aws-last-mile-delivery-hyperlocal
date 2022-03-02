@@ -15,10 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_memorydb as memorydb, aws_events as events, aws_s3 as s3 } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_events as events, aws_s3 as s3 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
 import { DestinationGeneratorStepFunction } from './DestinationGeneratorStepFunction'
 import { DestinationStarterStepFunction } from './DestinationStarterStepFunction'
@@ -46,7 +47,7 @@ export interface DestinationSimulatorProps {
 	readonly eventBus: events.EventBus
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
 	readonly iotEndpointAddress: string

@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw, aws_cognito as cognito, aws_events as events, aws_ec2 as ec2, aws_memorydb as memorydb, aws_lambda as lambda } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import HTTPMethod from 'http-method-enum'
@@ -29,7 +30,7 @@ export interface ApiGeofencingProps {
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 }
 
 export class ApiGeofencing extends Construct {

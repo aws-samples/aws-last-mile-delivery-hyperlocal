@@ -15,8 +15,9 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { Duration, aws_kinesis as kinesis, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
@@ -25,13 +26,15 @@ import { SERVICE_NAME } from '@prototype/common'
 export interface DriverGeofencingtLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly openSearchDomain: opensearchservice.IDomain
 	readonly eventBus: events.EventBus
 }
 
 interface Environment extends DeclaredLambdaEnvironment {
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
 	readonly MEMORYDB_HOST: string
 	readonly MEMORYDB_PORT: string
 }
@@ -63,8 +66,10 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.GEOFENCING_SERVICE,
 			},
@@ -88,6 +93,15 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 						'kinesis:SubscribeToShard',
 					],
 					resources: [ingestDataStream.streamArn],
+				}),
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
 				}),
 			],
 			layers: lambdaLayers,

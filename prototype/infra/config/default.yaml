@@ -79,6 +79,15 @@ memoryDBConfig:
   # timeout in MS for driverLocationUpdate TTL in DDB
   driverLocationUpdateTTLInMS: 120000
 
+  # admin username used by the application for authenticating to Redis (required)
+  # the password will be generated automatically by the CDK deployment
+  adminUsername: memory-db-admin
+
+  # access string  (optional)
+  # define what the user can access to, by default has full access
+  # https://docs.aws.amazon.com/memorydb/latest/devguide/clusters.acls.html#access-string
+  adminAccessString: on ~* &* +@all
+
 # simulator configuration
 simulatorConfig:
   # base name for driver usernames generated for driver simulator

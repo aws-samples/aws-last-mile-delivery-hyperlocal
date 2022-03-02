@@ -15,12 +15,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_memorydb as memorydb, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_iam as iam, aws_ecs as ecs, aws_ec2 as ec2, aws_lambda as lambda, aws_cognito as cognito, aws_iot as iot, aws_stepfunctions as stepfunctions, aws_events as events, aws_events_targets as events_targets } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { OriginGeneratorStepFunction } from './OriginGeneratorStepFunction'
 import { OriginStarterStepFunction } from './OriginStarterStepFunction'
 import { OriginEraserStepFunction } from './OriginEraserStepFunction'
@@ -47,7 +48,7 @@ export interface OriginSimulatorProps {
 	readonly eventBus: events.EventBus
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly iotEndpointAddress: string
 }
@@ -131,8 +132,10 @@ export class OriginSimulatorLambda extends Construct {
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				ORIGIN_TABLE: originTable.tableName,
 				ORIGIN_SIMULATIONS_TABLE_NAME: originSimulationsTable.tableName,
 				ORIGIN_STATS_TABLE_NAME: originStatsTable.tableName,
@@ -175,6 +178,15 @@ export class OriginSimulatorLambda extends Construct {
 					],
 					effect: iam.Effect.ALLOW,
 					resources: ['*'],
+				}),
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
 				}),
 			],
 		})

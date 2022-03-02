@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const aws = require('aws-sdk')
 const axios = require('axios')
 const config = require('./config')
@@ -23,12 +22,10 @@ const secrets = require('./lib/secretsManager')
 const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 
-const client = getRedisClient()
-client.hset = promisify(client.hset)
-
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
+	const client = await getRedisClient()
 	console.debug(JSON.stringify(event))
 
 	if (event.body === undefined) {
@@ -69,7 +66,7 @@ const handler = async (event, context) => {
 
 		const { orderId: externalOrderId } = res.data
 
-		await client.hset(`provider:${config.providerName}:order`, body.orderId, externalOrderId)
+		await client.hSet(`provider:${config.providerName}:order`, body.orderId, externalOrderId)
 
 		await eventBridge.putEvents({
 			Entries: [{

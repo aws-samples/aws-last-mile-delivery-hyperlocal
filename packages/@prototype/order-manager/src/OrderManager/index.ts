@@ -15,9 +15,10 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_apigateway as apigw, aws_ec2 as ec2, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { aws_events as events, aws_events_targets as events_targets, aws_dynamodb as ddb, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_apigateway as apigw, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { SERVICE_NAME } from '@prototype/common'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { OrderManagerHandlerLambda } from './OrderManagerHandler'
 import { namespaced } from '@aws-play/cdk-core'
 import { OrderManagerStepFunction } from './OrderManagerStepFunction'
@@ -32,7 +33,7 @@ export interface OrderManagerStackProps {
 	readonly providerApiUrls: {[key: string]: apigw.RestApi, }
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }

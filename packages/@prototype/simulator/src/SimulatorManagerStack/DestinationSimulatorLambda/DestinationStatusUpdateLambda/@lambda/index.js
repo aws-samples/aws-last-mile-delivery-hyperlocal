@@ -16,21 +16,15 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 const aws = require('aws-sdk')
-const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH, hashCode } = require('/opt/lambda-utils')
 
 const { DESTINATION_STATUS, DESTINATION_BY_AREA } = REDIS_HASH
 
-const client = getRedisClient()
 const eventBridge = new aws.EventBridge()
 
-client.keys = promisify(client.keys)
-client.sadd = promisify(client.sadd)
-client.hset = promisify(client.hset)
-client.hdel = promisify(client.hdel)
-
 const handler = async (event, context) => {
+	const client = await getRedisClient()
 	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	try {
@@ -63,7 +57,7 @@ const handler = async (event, context) => {
 	const { destinationId, status, area, timestamp } = event
 	const areaCode = hashCode(area)
 	try {
-		let statusList = await client.keys(`${DESTINATION_STATUS}:*`)
+		let statusList = await client.sendCommand(['KEYS', `${DESTINATION_STATUS}:*`])
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -75,15 +69,15 @@ const handler = async (event, context) => {
 		}
 
 		// update id by area in REDIS
-		await client.sadd(`${DESTINATION_BY_AREA}:${areaCode}`, destinationId)
+		await client.sAdd(`${DESTINATION_BY_AREA}:${areaCode}`, destinationId)
 
 		// update id by area in REDIS
 		const promises = statusList.map(s => {
 			if (s === status) {
-				return client.hset(`${DESTINATION_STATUS}:${s}`, destinationId, timestamp)
+				return client.hSet(`${DESTINATION_STATUS}:${s}`, destinationId, timestamp)
 			}
 
-			return client.hdel(`${DESTINATION_STATUS}:${s}`, destinationId)
+			return client.hDel(`${DESTINATION_STATUS}:${s}`, destinationId)
 		})
 
 		await Promise.all(promises)

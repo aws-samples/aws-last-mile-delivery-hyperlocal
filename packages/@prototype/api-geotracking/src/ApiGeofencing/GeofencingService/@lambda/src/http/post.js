@@ -16,13 +16,14 @@
  *********************************************************************************************************************/
 const { v4: uuidv4 } = require('uuid')
 const { success, fail, REDIS_HASH } = require('/opt/lambda-utils')
+const { getRedisClient } = require('/opt/redis-client')
 const logger = require('../utils/logger')
-const redis = require('../lib/redis').default
 const eventBridge = require('../lib/eventBridge')
 
 const { GEOFENCE_LOCATION, GEOFENCE_DRIVER, GEOFENCE_LOCATION_STATUS } = REDIS_HASH
 
 module.exports.default = async (event) => {
+	const redis = await getRedisClient()
 	let { body } = event
 
 	if (typeof body === 'string' || body instanceof String) {
@@ -38,7 +39,7 @@ module.exports.default = async (event) => {
 	try {
 		const geofenceId = `${prefix}::${uuidv4()}`
 
-		const geofences = await redis.hget(GEOFENCE_DRIVER, driverId)
+		const geofences = await redis.hGet(GEOFENCE_DRIVER, driverId)
 		// scomma separated list of geofenceId
 		let geofenceCommaSeparatedList = geofenceId
 
@@ -49,14 +50,14 @@ module.exports.default = async (event) => {
 			geofenceCommaSeparatedList = list.join(',')
 		}
 
-		await redis.hset(GEOFENCE_DRIVER, driverId, geofenceCommaSeparatedList)
+		await redis.hSet(GEOFENCE_DRIVER, driverId, geofenceCommaSeparatedList)
 		// [state],[radious],[driverId]
 		// state:
 		//   - 0 = not close to geofence
 		//   - 1 = enter geofence
 		//   - 2 = exit geofence
-		await redis.hset(GEOFENCE_LOCATION_STATUS, geofenceId, `0,${radius},${driverId}`)
-		await redis.geoadd(GEOFENCE_LOCATION, long, lat, geofenceId)
+		await redis.hSet(GEOFENCE_LOCATION_STATUS, geofenceId, `0,${radius},${driverId}`)
+		await redis.geoAdd(GEOFENCE_LOCATION, long, lat, geofenceId)
 
 		await eventBridge.putEvent('GEOFENCE_START', {
 			id: geofenceId,

@@ -14,11 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+import HTTPMethod from 'http-method-enum'
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_memorydb as memorydb, aws_dynamodb as ddb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_cognito as cognito, aws_lambda as lambda, aws_ec2 as ec2, aws_dynamodb as ddb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
-import HTTPMethod from 'http-method-enum'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { GetDriverLocationLambda } from './GetDriverLocation'
 import { QueryDriversLambda } from './QueryDrivers'
 import { ListDriversForPolygonLambda } from './ListDriversForPolygon'
@@ -31,7 +32,7 @@ export interface ApiGeoTrackingProps {
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly geoPolygonTable: ddb.ITable
 	readonly demographicAreaDispatchSettings: ddb.ITable
 	readonly openSearchDomain: opensearchservice.IDomain

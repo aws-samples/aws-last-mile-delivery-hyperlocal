@@ -15,11 +15,12 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_memorydb as memorydb, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { ExamplePollingProvider, ExampleWebhookProvider, InstantDeliveryProvider } from '@prototype/provider-impl'
 import { DispatchEngineOrchestrator, DriverEventHandler } from '@prototype/instant-delivery-provider'
 import { GraphhopperSetup } from '@prototype/dispatch-setup'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { ExternalProviderType } from '../../root/ExternalProviderStack'
 
 export interface ProviderStackProps extends NestedStackProps {
@@ -29,7 +30,7 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly instantDeliveryProviderOrders: ddb.ITable
 	readonly instantDeliveryProviderLocks: ddb.ITable
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly pollingProviderSettings: { [key: string]: string | number, }
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }

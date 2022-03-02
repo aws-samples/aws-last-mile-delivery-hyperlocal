@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH } = require('/opt/lambda-utils')
@@ -23,17 +22,14 @@ const {
 	ORDER_MANAGER,
 } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.hset = promisify(client.hset)
-
 const execute = async (payload) => {
+	const client = await getRedisClient()
 	logger.info('Executing get order status with the following payload')
 	logger.info(payload)
 	const { orderId, token } = payload
 
-	await client.hset(`${ORDER_MANAGER}:token`, orderId, token)
-	await client.hset(`${ORDER_MANAGER}:state`, orderId, 'ORDER_STATUS')
+	await client.hSet(`${ORDER_MANAGER}:token`, orderId, token)
+	await client.hSet(`${ORDER_MANAGER}:state`, orderId, 'ORDER_STATUS')
 
 	// this is an async tasks that will eventually be handled by
 	// order manager handler whenever the provider will return a result from

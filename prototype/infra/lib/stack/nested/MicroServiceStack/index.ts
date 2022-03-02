@@ -16,11 +16,12 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { LambdaUtilsLayer, OpenSearchClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
 import { Networking } from '@prototype/networking'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { ApiGeoTracking, ApiGeofencing } from '@prototype/api-geotracking'
 import { LambdaFunctions } from '@prototype/lambda-functions'
 import { DefaultWaf } from '@prototype/common'
@@ -31,7 +32,7 @@ export interface MicroServiceStackProps extends NestedStackProps {
 	readonly demographicAreaDispatchSettings: ddb.ITable
 	readonly userPool: cognito.IUserPool
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly openSearchDomain: opensearchservice.IDomain
 	readonly driverDataIngestStream: kinesis.IStream
 	readonly memoryDBConfig: { [key: string]: string | number, }

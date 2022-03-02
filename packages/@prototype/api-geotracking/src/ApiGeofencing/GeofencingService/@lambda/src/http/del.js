@@ -15,13 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const { fail, success, REDIS_HASH } = require('/opt/lambda-utils')
+const { getRedisClient } = require('/opt/redis-client')
 const logger = require('../utils/logger')
-const redis = require('../lib/redis').default
 const eventBridge = require('../lib/eventBridge')
 
 const { GEOFENCE_LOCATION, GEOFENCE_DRIVER, GEOFENCE_LOCATION_STATUS } = REDIS_HASH
 
 module.exports.default = async (event) => {
+	const redis = await getRedisClient()
 	const geofencingId = event.pathParameters ? event.pathParameters.geofencingId : undefined
 
 	if (!geofencingId) {
@@ -29,11 +30,11 @@ module.exports.default = async (event) => {
 	}
 
 	try {
-		const status = await redis.hget(GEOFENCE_LOCATION_STATUS, geofencingId)
+		const status = await redis.hGet(GEOFENCE_LOCATION_STATUS, geofencingId)
 		logger.debug('Saved status: ', status)
 		// state,radius,driverId
 		const driverId = status.split(',')[2]
-		const geofencingForDriver = await redis.hget(GEOFENCE_DRIVER, driverId)
+		const geofencingForDriver = await redis.hGet(GEOFENCE_DRIVER, driverId)
 		logger.debug('geofences for driver: ', geofencingForDriver)
 
 		// comma separated geofencing Ids for driverX
@@ -48,16 +49,16 @@ module.exports.default = async (event) => {
 			if (geofenceIds.length > 0) {
 				// if there are still active geofence, then save it inside
 				logger.debug('Updating index for driver', driverId, geofenceIds.join(','))
-				await redis.hset(GEOFENCE_DRIVER, driverId, geofenceIds.join(','))
+				await redis.hSet(GEOFENCE_DRIVER, driverId, geofenceIds.join(','))
 			} else {
 				// if the remaining list is empty, delete the geofence list for driver
 				logger.debug('Deleting index for driver', driverId)
-				await redis.hdel(GEOFENCE_DRIVER, driverId)
+				await redis.hDel(GEOFENCE_DRIVER, driverId)
 			}
 		}
 
-		await redis.hdel(GEOFENCE_LOCATION_STATUS, geofencingId)
-		await redis.zrem(GEOFENCE_LOCATION, geofencingId)
+		await redis.hDel(GEOFENCE_LOCATION_STATUS, geofencingId)
+		await redis.zRem(GEOFENCE_LOCATION, geofencingId)
 
 		await eventBridge.putEvent('GEOFENCE_DELETE', {
 			id: geofencingId,

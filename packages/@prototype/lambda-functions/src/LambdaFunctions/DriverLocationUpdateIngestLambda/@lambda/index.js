@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { getOpenSearchClient } = require('/opt/opensearch-client')
 const { success, fail, REDIS_HASH, DRIVERAPP_MESSAGE_TYPE, OPENSEARCH } = require('/opt/lambda-utils')
@@ -23,14 +22,11 @@ const { success, fail, REDIS_HASH, DRIVERAPP_MESSAGE_TYPE, OPENSEARCH } = requir
 const { DRIVER_LOCATION, DRIVER_LOCATION_TTLS, DRIVER_LOCATION_RAW } = REDIS_HASH
 const TTL = parseInt(process.env.DRIVER_LOCATION_UPDATE_TTL_MS, 10) // 2 * 60 * 1000 // 2 minutes == 120000ms
 
-const redisClient = getRedisClient()
-redisClient.geoadd = promisify(redisClient.geoadd)
-redisClient.zadd = promisify(redisClient.zadd)
-redisClient.hset = promisify(redisClient.hset)
-
 const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 const handler = async (event, context) => {
+	const redisClient = await getRedisClient()
+
 	if (event.Records === undefined) {
 		return context.fail(`'Records' not found in event object: ${JSON.stringify(event)}`)
 	}
@@ -93,15 +89,15 @@ const handler = async (event, context) => {
 		// update driver locations in redis
 		const geoaddParams = dataArr.flatMap(data =>
 			[data.latestLocation.longitude, data.latestLocation.latitude, data.driverId])
-		result = await redisClient.geoadd(DRIVER_LOCATION, geoaddParams)
+		result = await redisClient.geoAdd(DRIVER_LOCATION, geoaddParams)
 
 		// update driver update TTL in redis
 		const zaddParams = dataArr.flatMap(data => [data.latestLocation.timestamp + TTL, data.driverId])
-		result = await redisClient.zadd(DRIVER_LOCATION_TTLS, zaddParams)
+		result = await redisClient.zAdd(DRIVER_LOCATION_TTLS, zaddParams)
 
 		// update raw update data in redis
 		const hsetParams = dataArr.flatMap(data => [data.driverId, JSON.stringify(data.raw)])
-		result = await redisClient.hset(DRIVER_LOCATION_RAW, hsetParams)
+		result = await redisClient.hSet(DRIVER_LOCATION_RAW, hsetParams)
 	} catch (err) {
 		console.error(`Error updating Elasticache :: ${JSON.stringify(err)}`)
 		console.error(err)

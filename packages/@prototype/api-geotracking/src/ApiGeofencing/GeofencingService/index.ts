@@ -15,21 +15,24 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_lambda as lambda, aws_iam as iam, aws_events as events, aws_ec2 as ec2, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { Duration, aws_lambda as lambda, aws_iam as iam, aws_events as events, aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
-    readonly MEMORYDB_HOST: string
-    readonly MEMORYDB_PORT: string
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly eventBus: events.EventBus
 }
@@ -53,8 +56,10 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(120),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				EVENT_BUS_NAME: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.GEOFENCING_SERVICE,
 			},
@@ -66,6 +71,15 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 					],
 					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
+				}),
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
 				}),
 			],
 			vpc,

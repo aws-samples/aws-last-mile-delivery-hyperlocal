@@ -12,7 +12,7 @@
   "author": "Amazon Web Services - ASEAN Prototying",
   "license": "MIT-0",
   "dependencies": {
-    "redis": "^3.0.2"
+    "redis": "^4.0.4"
   },
   "workspaces": {
     "nohoist": [

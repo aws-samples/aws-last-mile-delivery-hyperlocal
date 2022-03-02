@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const { getRedisClient } = require('/opt/redis-client')
@@ -22,18 +21,13 @@ const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const { ORDER_TO_PROVIDER } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.keys = promisify(client.keys)
-client.hset = promisify(client.hset)
-client.hdel = promisify(client.hdel)
-
 const mapper = {
 	PROVIDER_FOUND: async (detail) => {
+		const client = await getRedisClient()
 		const timestamp = Date.now()
 		const { orderId, provider } = detail
 
-		await client.hset(`${ORDER_TO_PROVIDER}:${provider}`, orderId, timestamp)
+		await client.hSet(`${ORDER_TO_PROVIDER}:${provider}`, orderId, timestamp)
 	},
 }
 

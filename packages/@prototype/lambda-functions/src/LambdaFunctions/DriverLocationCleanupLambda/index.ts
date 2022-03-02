@@ -15,14 +15,17 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb, aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_opensearchservice as opensearchservice, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { AllowOpenSearchDelete, AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
-    readonly MEMORYDB_HOST: string
-    readonly MEMORYDB_PORT: string
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 	readonly DRIVER_LOCATION_UPDATE_TTL_MS: string
 	readonly DOMAIN_ENDPOINT: string
 }
@@ -30,7 +33,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: lambda.ILayerVersion[]
 	readonly driverLocationUpdateTTLInMs: number
 	readonly openSearchDomain: opensearchservice.IDomain
@@ -56,16 +59,26 @@ export class DriverLocationCleanupLambda extends DeclaredLambdaFunction<Environm
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				DRIVER_LOCATION_UPDATE_TTL_MS: `${driverLocationUpdateTTLInMs}`,
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,
-
 			},
 			layers: lambdaLayers,
 			initialPolicy: [
 				AllowOpenSearchWrite(openSearchDomain.domainArn),
 				AllowOpenSearchDelete(openSearchDomain.domainArn),
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
+				}),
 			],
 			vpc,
 			vpcSubnets: {

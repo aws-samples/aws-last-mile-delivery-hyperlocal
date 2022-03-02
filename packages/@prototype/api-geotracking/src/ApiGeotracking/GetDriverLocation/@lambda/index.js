@@ -15,18 +15,13 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { success, fail, REDIS_HASH } = require('/opt/lambda-utils')
-
-const redisClient = getRedisClient()
-redisClient.geopos = promisify(redisClient.geopos)
-redisClient.zscore = promisify(redisClient.zscore)
-redisClient.hget = promisify(redisClient.hget)
 
 const { DRIVER_LOCATION, DRIVER_LOCATION_RAW } = REDIS_HASH
 
 const handler = async (event) => {
+	const redisClient = await getRedisClient()
 	const driverId = event.pathParameters ? event.pathParameters.driverId : undefined
 
 	console.log(`:: get-driver-location :: GET :: driverId = ${driverId}`)
@@ -38,7 +33,7 @@ const handler = async (event) => {
 	}
 
 	try {
-		// const driverLocation = await redisClient.geopos(DRIVER_LOCATION, driverId)
+		// const driverLocation = await redisClient.geoPos(DRIVER_LOCATION, driverId)
 
 		// if (driverLocation == null) {
 		// 	return fail({ message: 'Driver not found' }, 404)
@@ -47,7 +42,7 @@ const handler = async (event) => {
 
 		// return success({ lat: driverLocation[1], long: driverLocation[0], driverId })
 
-		const driverData = await redisClient.hget(DRIVER_LOCATION_RAW, driverId)
+		const driverData = await redisClient.hGet(DRIVER_LOCATION_RAW, driverId)
 
 		if (driverData == null) {
 			return fail({ message: 'Driver not found' }, 404)
