@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const events = require('../lib/eventBridge')
@@ -25,17 +24,14 @@ const {
 	ORDER_MANAGER,
 } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.hset = promisify(client.hset)
-
 const execute = async (payload) => {
+	const client = await getRedisClient()
 	logger.info('Executing notify origin with the following payload')
 	logger.info(payload)
 	const { orderId, destinationId, originId, token } = payload
 
-	await client.hset(`${ORDER_MANAGER}:token`, orderId, token)
-	await client.hset(`${ORDER_MANAGER}:state`, orderId, 'NOTIFY_ORIGIN')
+	await client.hSet(`${ORDER_MANAGER}:token`, orderId, token)
+	await client.hSet(`${ORDER_MANAGER}:state`, orderId, 'NOTIFY_ORIGIN')
 
 	await events.putEvent('NOTIFY_ORIGIN',
 		{

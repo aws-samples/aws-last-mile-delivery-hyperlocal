@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const steps = require('../lib/steps')
 const config = require('../config')
@@ -25,19 +24,15 @@ const {
 	ORDER_MANAGER,
 } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.hget = promisify(client.hget)
-client.hdel = promisify(client.hdel)
-
 const mapper = {
 	ORIGIN_ORDER_ACK: async (detail) => {
+		const client = await getRedisClient()
 		const { orderId, status } = detail
 
 		logger.info('Sending task success with the following status:', status)
 
-		const token = await client.hget(`${ORDER_MANAGER}:token`, orderId)
-		const state = await client.hget(`${ORDER_MANAGER}:state`, orderId)
+		const token = await client.hGet(`${ORDER_MANAGER}:token`, orderId)
+		const state = await client.hGet(`${ORDER_MANAGER}:state`, orderId)
 
 		if (!token) {
 			logger.error('CRITICAL! Missing token for orderId: ', orderId)
@@ -59,8 +54,8 @@ const mapper = {
 
 		// no longer required as they have been used
 
-		await client.hdel(`${ORDER_MANAGER}:token`, orderId)
-		await client.hdel(`${ORDER_MANAGER}:state`, orderId)
+		await client.hDel(`${ORDER_MANAGER}:token`, orderId)
+		await client.hDel(`${ORDER_MANAGER}:state`, orderId)
 
 		return { success: true }
 	},

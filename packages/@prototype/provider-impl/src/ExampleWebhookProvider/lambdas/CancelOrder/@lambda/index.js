@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const axios = require('axios').default
 const aws = require('aws-sdk')
 const config = require('./config')
@@ -23,12 +22,10 @@ const secrets = require('./lib/secretsManager')
 const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 
-const client = getRedisClient()
-client.hget = promisify(client.hget)
-
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
+	const client = await getRedisClient()
 	const orderId = event.pathParameters ? event.pathParameters.orderId : undefined
 
 	if (!orderId) {
@@ -40,7 +37,7 @@ const handler = async (event, context) => {
 	try {
 		const apiKey = await secrets.getSecretValue(config.externalProviderSecretName)
 
-		const externalOrderId = await client.hget(`provider:${config.providerName}:order`, orderId)
+		const externalOrderId = await client.hGet(`provider:${config.providerName}:order`, orderId)
 
 		await axios.delete(`${config.externalProviderMockUrl}/order/${externalOrderId}`, {
 			headers: {

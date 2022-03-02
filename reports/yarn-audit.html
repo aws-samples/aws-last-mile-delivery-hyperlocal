@@ -80,9 +80,9 @@
             <h1>Yarn Audit Report</h1>
 
             <h3>
-                12 unique from
+                13 unique from
                 53 known vulnerabilities |
-                7397 dependencies
+                6001 dependencies
             </h3>
         </div>
     </div>
@@ -162,6 +162,164 @@
                     <div class="card-body">
                         <h1 class="card-title">
                             <span class="badge badge-warning">high</span>
+                            Cross-site Scripting in Prism
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/prismjs" target="_blank">prismjs</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.26.0</li>
+                                    
+                                    <li>Published: 2/26/2022, 10:00:41 AM</li>
+                                    
+                                    <li>CWE-79</li>
+                                    
+                                        <li>CVE-2022-23647</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=1.14.0 &lt;1.27.0</li>
+                                    <li>Patched: &gt;=1.27.0</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><h3 id="impact">Impact</h3>
+<p>Prism&#39;s <a href="https://prismjs.com/plugins/command-line/">Command line plugin</a> can be used by attackers to achieve an XSS attack. The Command line plugin did not properly escape its output, leading to the input text being inserted into the DOM as HTML code.</p>
+<p>Server-side usage of Prism is not impacted. Websites that do not use the Command Line plugin are also not impacted.</p>
+<h3 id="patches">Patches</h3>
+<p>This bug has been fixed in v1.27.0.</p>
+<h3 id="workarounds">Workarounds</h3>
+<p>Do not use the Command line plugin on untrusted inputs, or sanitized all code blocks (remove all HTML code text) from all code blocks that use the Command line plugin.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://github.com/PrismJS/prism/pull/3341">https://github.com/PrismJS/prism/pull/3341</a></li>
+</ul>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.27.0 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://github.com/PrismJS/prism/security/advisories/GHSA-3949-f494-cm99">https://github.com/PrismJS/prism/security/advisories/GHSA-3949-f494-cm99</a></li>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-23647">https://nvd.nist.gov/vuln/detail/CVE-2022-23647</a></li>
+<li><a href="https://github.com/PrismJS/prism/pull/3341">https://github.com/PrismJS/prism/pull/3341</a></li>
+<li><a href="https://github.com/PrismJS/prism/commit/e002e78c343154e1c0ddf9d6a0bb85689e1a5c7c">https://github.com/PrismJS/prism/commit/e002e78c343154e1c0ddf9d6a0bb85689e1a5c7c</a></li>
+<li><a href="https://github.com/advisories/GHSA-3949-f494-cm99">https://github.com/advisories/GHSA-3949-f494-cm99</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-1" type="checkbox">
+                            <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;aws-northstar&gt;react-syntax-highlighter&gt;prismjs</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3949-f494-cm99" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
+                            Cross-site Scripting in Prism
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/prismjs" target="_blank">prismjs</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.25.0</li>
+                                    
+                                    <li>Published: 2/26/2022, 10:00:41 AM</li>
+                                    
+                                    <li>CWE-79</li>
+                                    
+                                        <li>CVE-2022-23647</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=1.14.0 &lt;1.27.0</li>
+                                    <li>Patched: &gt;=1.27.0</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><h3 id="impact">Impact</h3>
+<p>Prism&#39;s <a href="https://prismjs.com/plugins/command-line/">Command line plugin</a> can be used by attackers to achieve an XSS attack. The Command line plugin did not properly escape its output, leading to the input text being inserted into the DOM as HTML code.</p>
+<p>Server-side usage of Prism is not impacted. Websites that do not use the Command Line plugin are also not impacted.</p>
+<h3 id="patches">Patches</h3>
+<p>This bug has been fixed in v1.27.0.</p>
+<h3 id="workarounds">Workarounds</h3>
+<p>Do not use the Command line plugin on untrusted inputs, or sanitized all code blocks (remove all HTML code text) from all code blocks that use the Command line plugin.</p>
+<h3 id="references">References</h3>
+<ul>
+<li><a href="https://github.com/PrismJS/prism/pull/3341">https://github.com/PrismJS/prism/pull/3341</a></li>
+</ul>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.27.0 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://github.com/PrismJS/prism/security/advisories/GHSA-3949-f494-cm99">https://github.com/PrismJS/prism/security/advisories/GHSA-3949-f494-cm99</a></li>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-23647">https://nvd.nist.gov/vuln/detail/CVE-2022-23647</a></li>
+<li><a href="https://github.com/PrismJS/prism/pull/3341">https://github.com/PrismJS/prism/pull/3341</a></li>
+<li><a href="https://github.com/PrismJS/prism/commit/e002e78c343154e1c0ddf9d6a0bb85689e1a5c7c">https://github.com/PrismJS/prism/commit/e002e78c343154e1c0ddf9d6a0bb85689e1a5c7c</a></li>
+<li><a href="https://github.com/advisories/GHSA-3949-f494-cm99">https://github.com/advisories/GHSA-3949-f494-cm99</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-2" type="checkbox">
+                            <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;aws-northstar&gt;react-syntax-highlighter&gt;refractor&gt;prismjs</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3949-f494-cm99" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
                             Prototype Pollution in immer
                         </h1>
                         <div class="row">
@@ -209,8 +367,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-1" type="checkbox">
-                            <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-3" type="checkbox">
+                            <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -279,8 +437,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-2" type="checkbox">
-                            <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-4" type="checkbox">
+                            <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -350,8 +508,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-3" type="checkbox">
-                            <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-5" type="checkbox">
+                            <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -421,8 +579,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-4" type="checkbox">
-                            <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-6" type="checkbox">
+                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -492,8 +650,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-5" type="checkbox">
-                            <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-7" type="checkbox">
+                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -571,8 +729,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-6" type="checkbox">
-                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-8" type="checkbox">
+                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -639,8 +797,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-7" type="checkbox">
-                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-9" type="checkbox">
+                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -651,6 +809,78 @@
                         
 
                         <a href="https://github.com/advisories/GHSA-pw2r-vq6v-hr8c" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-secondary">moderate</span>
+                            Authorization bypass in url-parse
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/url-parse" target="_blank">url-parse</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.5.4</li>
+                                    
+                                    <li>Published: 2/24/2022, 11:00:44 PM</li>
+                                    
+                                    <li>CWE-639</li>
+                                    
+                                        <li>CVE-2022-0512</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &lt;1.5.6</li>
+                                    <li>Patched: &gt;=1.5.6</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>Authorization Bypass Through User-Controlled Key in NPM url-parse prior to 1.5.6.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.5.6 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0512">https://nvd.nist.gov/vuln/detail/CVE-2022-0512</a></li>
+<li><a href="https://github.com/unshiftio/url-parse/commit/9be7ee88afd2bb04e4d5a1a8da9a389ac13f8c40">https://github.com/unshiftio/url-parse/commit/9be7ee88afd2bb04e4d5a1a8da9a389ac13f8c40</a></li>
+<li><a href="https://huntr.dev/bounties/6d1bc51f-1876-4f5b-a2c2-734e09e8e05b">https://huntr.dev/bounties/6d1bc51f-1876-4f5b-a2c2-734e09e8e05b</a></li>
+<li><a href="https://github.com/advisories/GHSA-rqff-837h-mm52">https://github.com/advisories/GHSA-rqff-837h-mm52</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-10" type="checkbox">
+                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;webpack-dev-server&gt;sockjs-client&gt;url-parse</code>
+                                    </div>
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;webpack-dev-server&gt;sockjs-client&gt;eventsource&gt;original&gt;url-parse</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-rqff-837h-mm52" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
@@ -707,8 +937,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-8" type="checkbox">
-                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-11" type="checkbox">
+                            <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -723,160 +953,6 @@
                         
 
                         <a href="https://github.com/advisories/GHSA-rp65-9cf3-cjxr" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                            Regular Expression Denial of Service in postcss
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/postcss" target="_blank">postcss</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 7.0.39</li>
-                                    
-                                    <li>Published: 1/7/2022, 9:00:41 AM</li>
-                                    
-                                    <li>CWE-400</li>
-                                    
-                                        <li>CVE-2021-23382</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;8.2.13</li>
-                                    <li>Patched: &gt;=8.2.13</li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 8.2.13 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a></li>
-<li><a href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a></li>
-<li><a href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-9" type="checkbox">
-                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;icss-utils&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;css-loader&gt;postcss-modules-local-by-default&gt;icss-utils&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;css-declaration-sorter&gt;postcss</code>
-                                    </div>
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;optimize-css-assets-webpack-plugin&gt;cssnano&gt;cssnano-preset-default&gt;postcss-merge-longhand&gt;stylehacks&gt;postcss</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                            Regular Expression Denial of Service in postcss
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/postcss" target="_blank">postcss</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 7.0.36</li>
-                                    
-                                    <li>Published: 1/7/2022, 9:00:41 AM</li>
-                                    
-                                    <li>CWE-400</li>
-                                    
-                                        <li>CVE-2021-23382</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;8.2.13</li>
-                                    <li>Patched: &gt;=8.2.13</li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>The package postcss before 8.2.13 are vulnerable to Regular Expression Denial of Service (ReDoS) via getAnnotationURL() and loadAnnotation() in lib/previous-map.js. The vulnerable regexes are caused mainly by the sub-pattern /*\s* sourceMappingURL=(.*).</p>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 8.2.13 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-23382">https://nvd.nist.gov/vuln/detail/CVE-2021-23382</a></li>
-<li><a href="https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956">https://github.com/postcss/postcss/commit/2b1d04c867995e55124e0a165b7c6622c1735956</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641">https://snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-1255641</a></li>
-<li><a href="https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640">https://snyk.io/vuln/SNYK-JS-POSTCSS-1255640</a></li>
-<li><a href="https://github.com/advisories/GHSA-566m-qj78-rww5">https://github.com/advisories/GHSA-566m-qj78-rww5</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-10" type="checkbox">
-                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;postcss</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-566m-qj78-rww5" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
@@ -933,8 +1009,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-11" type="checkbox">
-                            <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-12" type="checkbox">
+                            <h3><label for="vulnerability-reasons-12">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -951,7 +1027,7 @@
         
         
 
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 2/17/2022, 2:15:54 PM</h6>
+        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 3/2/2022, 3:54:57 PM</h6>
     </div>
 </div>
 </body>

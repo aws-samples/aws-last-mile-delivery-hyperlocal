@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, aws_sqs as sqs, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { aws_events as events, aws_sqs as sqs } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { PollingProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExamplePollingLambda } from './lambdas/ExamplePolling'
@@ -28,7 +29,7 @@ export interface ExamplePollingProviderProps extends VpcLambdaProps {
 	readonly eventBus: events.IEventBus
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 }
 
 export class ExamplePollingProvider extends PollingProviderBase {

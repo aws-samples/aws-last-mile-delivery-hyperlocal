@@ -15,21 +15,24 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
-    readonly MEMORYDB_HOST: string
-    readonly MEMORYDB_PORT: string
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
-    readonly lambdaLayers: lambda.ILayerVersion[]
+	readonly memoryDBCluster: MemoryDBCluster
+	readonly lambdaLayers: lambda.ILayerVersion[]
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -50,12 +53,23 @@ export class GetDriverLocationLambda extends DeclaredLambdaFunction<Environment,
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
-
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 			},
 			layers: lambdaLayers,
-			initialPolicy: [],
+			initialPolicy: [
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
+				}),
+			],
 			vpc,
 			vpcSubnets: {
 				subnetType: ec2.SubnetType.PRIVATE_WITH_NAT,

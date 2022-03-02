@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const aws = require('aws-sdk')
 const { getOpenSearchClient } = require('/opt/opensearch-client')
 const { success, fail, OPENSEARCH } = require('/opt/lambda-utils')

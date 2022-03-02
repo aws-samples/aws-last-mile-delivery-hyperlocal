@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_lambda as lambda, aws_iam as iam, aws_stepfunctions as stepfunctions, aws_ec2 as ec2, aws_memorydb as memorydb, aws_dynamodb as ddb } from 'aws-cdk-lib'
+import { Duration, aws_lambda as lambda, aws_iam as iam, aws_stepfunctions as stepfunctions, aws_ec2 as ec2, aws_dynamodb as ddb } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -23,7 +24,17 @@ import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
-    readonly ORDER_TABLE: string
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
+	readonly MEMORYDB_HOST: string
+	readonly MEMORYDB_PORT: string
+	readonly ORDER_TABLE: string
+	readonly ORDER_ORCHESTRATOR_STATE_MACHINE: string
+	readonly ORDER_SERVICE_NAME: string
+	readonly ORIGIN_SERVICE_NAME: string
+	readonly EXAMPLE_WEBHOOK_PROVIDER_SERVICE_NAME: string
+	readonly EXAMPLE_POLLING_PROVIDER_SERVICE_NAME: string
+	readonly INSTANT_DELIVERY_PROVIDER_SERVICE_NAME: string
 }
 
 interface Dependencies extends DeclaredLambdaDependencies {
@@ -31,7 +42,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly orderOrchestrator: stepfunctions.IStateMachine
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 }
 
@@ -55,8 +66,10 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(120),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				ORDER_TABLE: orderTable.tableName,
 				ORDER_ORCHESTRATOR_STATE_MACHINE: orderOrchestrator.stateMachineArn,
 				ORDER_SERVICE_NAME: SERVICE_NAME.ORDER_SERVICE,
@@ -85,6 +98,15 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 					actions: ['states:SendTaskSuccess', 'states:SendTaskFailure'],
 					resources: ['*'],
 					effect: iam.Effect.ALLOW,
+				}),
+				new iam.PolicyStatement({
+					actions: [
+						'secretsmanager:GetSecretValue',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
+					],
 				}),
 			],
 			vpc: privateVpc,

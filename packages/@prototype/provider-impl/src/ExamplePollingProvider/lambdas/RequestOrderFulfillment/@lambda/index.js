@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const axios = require('axios')
 const aws = require('aws-sdk')
 const config = require('./config')
@@ -23,14 +22,11 @@ const secrets = require('./lib/secretsManager')
 const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 
-const client = getRedisClient()
-client.hset = promisify(client.hset)
-client.hlen = promisify(client.hlen)
-
 const eventBridge = new aws.EventBridge()
 const sqs = new aws.SQS()
 
 const handler = async (event, context) => {
+	const client = await getRedisClient()
 	console.debug(JSON.stringify(event))
 
 	if (event.body === undefined) {
@@ -69,10 +65,10 @@ const handler = async (event, context) => {
 
 		const { orderId: externalOrderId } = res.data
 
-		await client.hset(`provider:${config.providerName}:order`, body.orderId, externalOrderId)
-		await client.hset(`provider:${config.providerName}:orderStatus`, body.orderId, 'NEW')
+		await client.hSet(`provider:${config.providerName}:order`, body.orderId, externalOrderId)
+		await client.hSet(`provider:${config.providerName}:orderStatus`, body.orderId, 'NEW')
 
-		const hashLength = await client.hlen(`provider:${config.providerName}:order`)
+		const hashLength = await client.hLen(`provider:${config.providerName}:order`)
 		// build a simple message group Id based on number of orders for this provider
 		// plus the hour of the day. This will build up a scenario where you'd have
 		// a different message group ID for every 100 messages hour

@@ -16,3 +16,5 @@
  *********************************************************************************************************************/
 export * from './LiveDataCache'
 export * from './LiveDataCache/OpenSearchCluster/OpenSearchInitialSetup'
+// export for type reference
+export * from './LiveDataCache/MemoryDBCluster'

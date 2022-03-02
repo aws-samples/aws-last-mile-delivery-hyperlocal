@@ -15,16 +15,17 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Stack, NestedStack, NestedStackProps, aws_ec2 as ec2, aws_opensearchservice as opensearchservice, aws_memorydb as memorydb, aws_cognito as cognito } from 'aws-cdk-lib'
+import { Stack, NestedStack, NestedStackProps, aws_ec2 as ec2, aws_opensearchservice as opensearchservice, aws_cognito as cognito } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { Networking } from '@prototype/networking'
 import { Monitoring } from '@prototype/monitoring'
 
 export interface MonitoringNestedStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-    readonly openSearchDomain: opensearchservice.IDomain
-    readonly memoryDBCluster: memorydb.CfnCluster
-    readonly internalUserPoolDomain: cognito.IUserPoolDomain
+	readonly openSearchDomain: opensearchservice.IDomain
+	readonly memoryDBCluster: MemoryDBCluster
+	readonly internalUserPoolDomain: cognito.IUserPoolDomain
 }
 
 export class MonitoringNestedStack extends NestedStack {
@@ -47,7 +48,7 @@ export class MonitoringNestedStack extends NestedStack {
 			vpc,
 			securityGroup: securityGroups.dmz,
 			esEndpoint: openSearchDomain.domainEndpoint,
-			memoryDBEndpoint: memoryDBCluster.attrClusterEndpointAddress,
+			memoryDBEndpoint: memoryDBCluster.cluster.attrClusterEndpointAddress,
 			cognitoEndpoint: `${internalUserPoolDomain.domainName}.auth.${region}.amazoncognito.com`,
 		})
 	}

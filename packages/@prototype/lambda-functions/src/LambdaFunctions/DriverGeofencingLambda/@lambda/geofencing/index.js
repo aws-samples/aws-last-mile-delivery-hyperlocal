@@ -15,21 +15,15 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const { REDIS_HASH } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 const eventBridge = require('../lib/eventBridge')
 
 const { GEOFENCE_LOCATION, GEOFENCE_DRIVER, GEOFENCE_LOCATION_STATUS } = REDIS_HASH
 
-const redisClient = getRedisClient()
-redisClient.hget = promisify(redisClient.hget)
-redisClient.hset = promisify(redisClient.hset)
-redisClient.geoadd = promisify(redisClient.geoadd)
-redisClient.geodist = promisify(redisClient.geodist)
-
 const evaluateGeofence = async (driverId, location, geofenceId) => {
-	const geofenceStatus = await redisClient.hget(GEOFENCE_LOCATION_STATUS, geofenceId)
+	const redisClient = await getRedisClient()
+	const geofenceStatus = await redisClient.hGet(GEOFENCE_LOCATION_STATUS, geofenceId)
 
 	if (!geofenceStatus) {
 		console.debug('Missing status for geofence: ', geofenceId)
@@ -52,8 +46,8 @@ const evaluateGeofence = async (driverId, location, geofenceId) => {
 		throw new Error('Mismatch between location driver and geofence driver, skipping')
 	}
 
-	await redisClient.geoadd(GEOFENCE_LOCATION, longitude, latitude, driverId)
-	const dst = await redisClient.geodist(GEOFENCE_LOCATION, geofenceId, driverId)
+	await redisClient.geoAdd(GEOFENCE_LOCATION, longitude, latitude, driverId)
+	const dst = await redisClient.geoDist(GEOFENCE_LOCATION, geofenceId, driverId)
 	const distance = Number(dst)
 
 	console.log(`Distance between ${geofenceId} and ${driverId} = ${distance}m compared to ${radius}`)
@@ -66,7 +60,7 @@ const evaluateGeofence = async (driverId, location, geofenceId) => {
 
 			// means the driver was far from geofence earlier, thus it just entered
 			// change status to 1=enter geofence
-			await redisClient.hset(GEOFENCE_LOCATION_STATUS, geofenceId, `1,${radius},${driver}`)
+			await redisClient.hSet(GEOFENCE_LOCATION_STATUS, geofenceId, `1,${radius},${driver}`)
 			await eventBridge.putEvent('GEOFENCE_ENTER', {
 				id: geofenceId,
 				driverId,
@@ -79,7 +73,7 @@ const evaluateGeofence = async (driverId, location, geofenceId) => {
 		console.log('Driver exited the geofence, updating status and fire eventbridge event')
 
 		// change status to 1=exit geofence
-		await redisClient.hset(GEOFENCE_LOCATION_STATUS, geofenceId, `2,${radius},${driver}`)
+		await redisClient.hSet(GEOFENCE_LOCATION_STATUS, geofenceId, `2,${radius},${driver}`)
 		await eventBridge.putEvent('GEOFENCE_EXIT', {
 			id: geofenceId,
 			driverId,
@@ -89,8 +83,9 @@ const evaluateGeofence = async (driverId, location, geofenceId) => {
 }
 
 const performGeofencing = async (data) => {
+	const redisClient = await getRedisClient()
 	const { driverId, locations } = data
-	const activeGeofencesIds = await redisClient.hget(GEOFENCE_DRIVER, driverId)
+	const activeGeofencesIds = await redisClient.hGet(GEOFENCE_DRIVER, driverId)
 
 	if (!activeGeofencesIds) {
 		console.warn(`No active geofence for driver ${driverId}, skipping`)

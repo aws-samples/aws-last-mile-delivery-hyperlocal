@@ -15,19 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const { REDIS_HASH, OPENSEARCH } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 const { getOpenSearchClient } = require('/opt/opensearch-client')
 
-const redisClient = getRedisClient()
 const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
-
-redisClient.zrangebyscore = promisify(redisClient.zrangebyscore)
-redisClient.zremrangebyscore = promisify(redisClient.zremrangebyscore)
-redisClient.zrem = promisify(redisClient.zrem)
-redisClient.hset = promisify(redisClient.hset)
-redisClient.hdel = promisify(redisClient.hdel)
 
 const {
 	DRIVER_LOCATION, DRIVER_LOCATION_TTLS, DRIVER_LOCATION_RAW,
@@ -37,13 +29,14 @@ const {
 const OFFLINE = 'OFFLINE'
 
 const handler = async () => {
+	const redisClient = await getRedisClient()
 	// ZRANGEBYSCORE
 	let driverIds = []
 	const now = Date.now()
 
 	try {
 		console.debug('Retreiving all drivers who have not updated their status until TTL', now)
-		driverIds = await redisClient.zrangebyscore(DRIVER_LOCATION_TTLS, '-inf', now)
+		driverIds = await redisClient.zRangeByScore(DRIVER_LOCATION_TTLS, '-inf', now)
 
 		// console.debug(`Drivers who expired: ${JSON.stringify(driverIds)}`)
 		console.debug(`${driverIds.length} drivers expired`)
@@ -60,7 +53,7 @@ const handler = async () => {
 	try {
 		// ZREMRANGEBYSCORE
 		// remove them from the TTLS
-		await redisClient.zremrangebyscore(DRIVER_LOCATION_TTLS, '-inf', now)
+		await redisClient.zRemRangeByScore(DRIVER_LOCATION_TTLS, '-inf', now)
 
 		const chunks = 200
 
@@ -69,10 +62,10 @@ const handler = async () => {
 			const tmpIds = driverIds.slice(i * chunks, (i + 1) * chunks)
 			// ZREM
 			// remove drivers from DRIVER_LOCATION sorted set
-			await redisClient.zrem(DRIVER_LOCATION, tmpIds) // driverIds)
+			await redisClient.zRem(DRIVER_LOCATION, tmpIds) // driverIds)
 
 			// remove drivers from DRIVER_LOCATION_RAW hash
-			await redisClient.hdel(DRIVER_LOCATION_RAW, tmpIds) // driverIds)
+			await redisClient.hDel(DRIVER_LOCATION_RAW, tmpIds) // driverIds)
 
 			// -------------------------------------------------------------------------------------------------------------
 			// // this section updates the driver status to OFFLINE and also the status timestamp
@@ -84,13 +77,13 @@ const handler = async () => {
 			// const driverStatusUpdatedAtParam = driverIds.reduce((prev, curr) => ([...prev, curr, Date.now()]), [])
 
 			// // update driver status and timestamp
-			// await redisClient.hset(DRIVER_STATUS, driverStatusParam)
-			// await redisClient.hset(DRIVER_STATUS_UPDATED_AT, driverStatusUpdatedAtParam)
+			// await redisClient.hSet(DRIVER_STATUS, driverStatusParam)
+			// await redisClient.hSet(DRIVER_STATUS_UPDATED_AT, driverStatusUpdatedAtParam)
 
 			// now we remove them from status hashes as well
 			// remove driver status and timestamp
-			await redisClient.hdel(DRIVER_STATUS, tmpIds) // driverIds)
-			await redisClient.hdel(DRIVER_STATUS_UPDATED_AT, tmpIds) // driverIds)
+			await redisClient.hDel(DRIVER_STATUS, tmpIds) // driverIds)
+			await redisClient.hDel(DRIVER_STATUS_UPDATED_AT, tmpIds) // driverIds)
 			// -------------------------------------------------------------------------------------------------------------
 
 			console.log(`Removed ${tmpIds.length} items from redis. Iteration ${i + 1} with chunk size of ${chunks}`)

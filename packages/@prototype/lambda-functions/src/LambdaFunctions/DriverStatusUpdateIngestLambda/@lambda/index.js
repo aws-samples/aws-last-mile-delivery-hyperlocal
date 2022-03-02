@@ -16,21 +16,17 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 const aws = require('aws-sdk')
-const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { getOpenSearchClient } = require('/opt/opensearch-client')
 const { REDIS_HASH, OPENSEARCH } = require('/opt/lambda-utils')
 
 const { DRIVER_STATUS, DRIVER_STATUS_UPDATED_AT } = REDIS_HASH
 
-const client = getRedisClient()
 const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 const eventBridge = new aws.EventBridge()
 
-client.hget = promisify(client.hget)
-client.hset = promisify(client.hset)
-
 const handler = async (event, context) => {
+	const client = await getRedisClient()
 	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	if (event.type !== 'STATUS_CHANGE') {
@@ -49,8 +45,8 @@ const handler = async (event, context) => {
 
 	try {
 		// update status in REDIS
-		await client.hset(DRIVER_STATUS, driverId, status)
-		await client.hset(DRIVER_STATUS_UPDATED_AT, driverId, timestamp)
+		await client.hSet(DRIVER_STATUS, driverId, status)
+		await client.hSet(DRIVER_STATUS_UPDATED_AT, driverId, timestamp)
 		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully updated Redis`)
 	} catch (err) {
 		console.error(`Error updating Redis :: ${event.type} :: ${JSON.stringify(err)}`)

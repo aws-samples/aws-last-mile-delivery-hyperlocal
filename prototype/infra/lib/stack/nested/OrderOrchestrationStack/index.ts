@@ -16,10 +16,11 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_events as events, aws_ec2 as ec2, aws_lambda as lambda } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
+import { OrderManagerStack } from '@prototype/order-manager'
 import * as api from '@aws-play/cdk-apigateway'
 import * as net from '@prototype/networking'
-import { OrderManagerStack } from '@prototype/order-manager'
 
 export interface OrderOrchestrationStackProps extends NestedStackProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
@@ -30,7 +31,7 @@ export interface OrderOrchestrationStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: net.Networking
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 }
 

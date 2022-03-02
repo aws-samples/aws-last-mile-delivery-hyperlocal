@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const { getRedisClient } = require('/opt/redis-client')
@@ -22,16 +21,11 @@ const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const { DRIVER_STATUS_STATISTICS } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.keys = promisify(client.keys)
-client.hset = promisify(client.hset)
-client.hdel = promisify(client.hdel)
-
 const mapper = {
 	DRIVER_STATUS_CHANGE: async (detail) => {
+		const client = await getRedisClient()
 		const { driverId, status, timestamp } = detail
-		let statusList = await client.keys(`${DRIVER_STATUS_STATISTICS}:*`)
+		let statusList = await client.sendCommand(['KEYS', `${DRIVER_STATUS_STATISTICS}:*`])
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -44,10 +38,10 @@ const mapper = {
 
 		const promises = statusList.filter(q => q !== 'all').map((s) => {
 			if (s === status) {
-				return client.hset(`${DRIVER_STATUS_STATISTICS}:${s}`, driverId, timestamp)
+				return client.hSet(`${DRIVER_STATUS_STATISTICS}:${s}`, driverId, timestamp)
 			}
 
-			return client.hdel(`${DRIVER_STATUS_STATISTICS}:${s}`, driverId)
+			return client.hDel(`${DRIVER_STATUS_STATISTICS}:${s}`, driverId)
 		})
 
 		await Promise.all(promises)

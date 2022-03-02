@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const utils = require('../utils')
@@ -33,47 +32,44 @@ const {
 	DISPATCH_ENGINE_STATS,
 } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.hget = promisify(client.hget)
-client.hlen = promisify(client.hlen)
-client.keys = promisify(client.keys)
-client.hkeys = promisify(client.hkeys)
-
 const getStatusCount = async (hashKey) => {
-	const statusList = await client.keys(`${hashKey}:*`)
+	const client = await getRedisClient()
+	const statusList = await client.sendCommand(['KEYS', `${hashKey}:*`])
 	const result = {}
 
 	for (let i = 0; i < statusList.length; i++) {
 		const s = statusList[i].split(':').pop()
 
-		result[s.toLocaleLowerCase()] = await client.hlen(`${hashKey}:${s}`)
+		result[s.toLocaleLowerCase()] = await client.hLen(`${hashKey}:${s}`)
 	}
 
 	return result
 }
 
 const getAverageOrderExecutionTime = async (hashKey) => {
-	const orders = await client.hget(hashKey, 'orders')
-	const time = await client.hget(hashKey, 'duration')
+	const client = await getRedisClient()
+	const orders = await client.hGet(hashKey, 'orders')
+	const time = await client.hGet(hashKey, 'duration')
 
 	return (orders && orders !== 0) ? (time / orders) : 0
 }
 
 const getCounter = async (hashKey, type) => {
-	const errors = await client.hget(hashKey, type)
+	const client = await getRedisClient()
+	const errors = await client.hGet(hashKey, type)
 
 	return errors
 }
 
 const getOrdersPerDriverGroup = async (hash) => {
-	const keys = await client.hkeys(hash)
+	const client = await getRedisClient()
+	const keys = await client.hKeys(hash)
 	const result = {}
 
 	for (let i = 0; i < keys.length; i++) {
 		const key = keys[i]
 
-		result[key] = await client.hget(hash, key)
+		result[key] = await client.hGet(hash, key)
 	}
 
 	return result

@@ -14,40 +14,35 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const { PROVIDER_DISTRIBUTION, PROVIDER_ERRORS } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.keys = promisify(client.keys)
-client.hset = promisify(client.hset)
-client.hdel = promisify(client.hdel)
-client.hincrby = promisify(client.hincrby)
-
 const mapper = {
 	UNEXPECTED_ERROR: async (providerName, detail) => {
+		const client = await getRedisClient()
 		const { type } = detail
 
 		if (type) {
-			await client.hincrby(`${PROVIDER_ERRORS}:${providerName}`, type, 1)
+			await client.hIncrBy(`${PROVIDER_ERRORS}:${providerName}`, type, 1)
 		}
 
-		await client.hincrby(`${PROVIDER_ERRORS}:${providerName}`, 'all', 1)
+		await client.hIncrBy(`${PROVIDER_ERRORS}:${providerName}`, 'all', 1)
 	},
 	ORDER_FULFILLMENT_REQUESTED: async (providerName, detail) => {
+		const client = await getRedisClient()
 		const timestamp = Date.now()
 		const { orderId } = detail
 
-		await client.hset(`${PROVIDER_DISTRIBUTION}:${providerName}:REQUESTED`, orderId, timestamp)
+		await client.hSet(`${PROVIDER_DISTRIBUTION}:${providerName}:REQUESTED`, orderId, timestamp)
 	},
 	ORDER_UPDATE: async (providerName, detail) => {
+		const client = await getRedisClient()
 		const timestamp = Date.now()
 		const { orderId, status } = detail
-		let statusList = await client.keys(`${PROVIDER_DISTRIBUTION}:${providerName}:*`)
+		let statusList = await client.sendCommand(['KEYS', `${PROVIDER_DISTRIBUTION}:${providerName}:*`])
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -60,10 +55,10 @@ const mapper = {
 
 		const promises = statusList.map((s) => {
 			if (s === status) {
-				return client.hset(`${PROVIDER_DISTRIBUTION}:${providerName}:${s}`, orderId, timestamp)
+				return client.hSet(`${PROVIDER_DISTRIBUTION}:${providerName}:${s}`, orderId, timestamp)
 			}
 
-			return client.hdel(`${PROVIDER_DISTRIBUTION}:${providerName}:${s}`, orderId)
+			return client.hDel(`${PROVIDER_DISTRIBUTION}:${providerName}:${s}`, orderId)
 		})
 
 		await Promise.all(promises)

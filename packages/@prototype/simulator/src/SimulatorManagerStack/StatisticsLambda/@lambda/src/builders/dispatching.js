@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const { getRedisClient } = require('/opt/redis-client')
@@ -22,23 +21,19 @@ const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const { DISPATCH_ENGINE_STATS } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.hset = promisify(client.hset)
-client.hincrby = promisify(client.hincrby)
-
 const mapper = {
 	ORDER_FULFILLED: async (detail) => {
+		const client = await getRedisClient()
 		const { driverId } = detail
 
-		const ordersPerDriver = await client.hincrby(`${DISPATCH_ENGINE_STATS}:ordersPerDriver`, driverId, 1)
+		const ordersPerDriver = await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:ordersPerDriver`, driverId, 1)
 
-		await client.hincrby(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver, 1)
+		await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver, 1)
 
 		if (ordersPerDriver > 1) {
 			/// decrease the driver counter
 			/// in the previous group
-			await client.hincrby(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver - 1, -1)
+			await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver - 1, -1)
 		}
 	},
 }

@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const utils = require('../utils')
 const logger = require('../utils/logger')
 const { getRedisClient } = require('/opt/redis-client')
@@ -23,12 +22,9 @@ const ddb = require('../lib/dynamoDB')
 const config = require('../config')
 
 const { ORIGIN_BY_AREA, ORIGIN_STATUS } = REDIS_HASH
-const client = getRedisClient()
-
-client.srandmember = promisify(client.srandmember)
-client.hget = promisify(client.hget)
 
 const execute = async (area) => {
+	const client = await getRedisClient()
 	logger.info('Getting a random origin by area: ', area)
 
 	if (!area) {
@@ -36,7 +32,7 @@ const execute = async (area) => {
 	}
 
 	const areaCode = hashCode(area)
-	const randomId = await client.srandmember(`${ORIGIN_BY_AREA}:${areaCode}`)
+	const randomId = await client.sRandMember(`${ORIGIN_BY_AREA}:${areaCode}`)
 
 	logger.info('Random origin Id retrieved from redis: ', randomId)
 
@@ -48,7 +44,7 @@ const execute = async (area) => {
 
 	logger.info('Verifying if the origin is online')
 
-	const origin = await client.hget(`${ORIGIN_STATUS}:ONLINE`, randomId)
+	const origin = await client.hGet(`${ORIGIN_STATUS}:ONLINE`, randomId)
 
 	if (!origin) {
 		logger.warn('Origin is offline, returning 400')

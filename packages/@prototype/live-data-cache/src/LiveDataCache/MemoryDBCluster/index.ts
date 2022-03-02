@@ -16,10 +16,12 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 import { Construct } from 'constructs'
-import { aws_memorydb as memorydb, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { aws_memorydb as memorydb, aws_ec2 as ec2, aws_secretsmanager as secrets } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface MemoryDBClusterProps {
+	readonly adminUsername: string
+	readonly adminAccessString?: string
 	readonly numShards?: number
 	readonly numReplicasPerShard?: number
 	readonly nodeType?: string
@@ -30,12 +32,21 @@ export interface MemoryDBClusterProps {
 export class MemoryDBCluster extends Construct {
 	readonly cluster: memorydb.CfnCluster
 
+	readonly adminUsername: string
+
+	readonly adminPasswordSecret: secrets.Secret
+
 	constructor (scope: Construct, id: string, props: MemoryDBClusterProps) {
 		super(scope, id)
 
 		const {
-			vpc, securityGroups,
-			nodeType, numShards, numReplicasPerShard,
+			vpc,
+			securityGroups,
+			nodeType,
+			numShards,
+			numReplicasPerShard,
+			adminUsername,
+			adminAccessString,
 		} = props
 
 		const commonName = namespaced(this, 'live-data', { lowerCase: true }) // NOTE: lowercase
@@ -45,17 +56,24 @@ export class MemoryDBCluster extends Construct {
 			description: 'Subnet for LiveData MemoryDBCluster',
 			subnetIds: vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_ISOLATED }).subnetIds,
 		})
+		const adminPasswordSecret = new secrets.Secret(this, 'MemoryDBClusterPassword', {
+			description: `The password used by the memorydb user: ${adminUsername}`,
+		})
+
+		const adminUser = new memorydb.CfnUser(this, 'MemoryDBAdminUser', {
+			/// access to everything by default. see https://redis.io/topics/acl for more details
+			accessString: adminAccessString || 'on ~* &* +@all',
+			authenticationMode: {
+				passwords: [adminPasswordSecret.secretValue.toString()],
+				type: 'password',
+			},
+			userName: adminUsername,
+		})
 
 		const acl = new memorydb.CfnACL(this, 'MemoryDBACL', {
 			aclName: commonName,
+			userNames: [adminUser.userName],
 		})
-
-		// const parameterGroup = new memorydb.CfnParameterGroup(this, 'MemoryDBParameterGroup', {
-		// 	family: 'memorydb_redis6', // magic string
-		// 	parameterGroupName: commonName,
-		// 	description: 'ParameterGroup for LiveData MemoryDBCluster',
-		// 	parameters: { ?? },
-		// })
 
 		const cluster = new memorydb.CfnCluster(this, 'MemoryDBCluster', {
 			aclName: acl.ref,
@@ -77,5 +95,9 @@ export class MemoryDBCluster extends Construct {
 		cluster.node.addDependency(subnetGroup)
 
 		this.cluster = cluster
+		this.adminUsername = adminUsername
+		this.adminPasswordSecret = adminPasswordSecret
 	}
 }
+
+export type MemoryDBClusterType = typeof MemoryDBCluster

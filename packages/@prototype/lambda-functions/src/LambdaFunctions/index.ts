@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb, aws_events as events, aws_opensearchservice as opensearchservice, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_opensearchservice as opensearchservice, aws_events_targets as events_targets, aws_kinesis as kinesis } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { KinesisConsumer } from '@prototype/lambda-common'
 import { DriverLocationCleanupLambda } from './DriverLocationCleanupLambda'
 import { namespaced } from '@aws-play/cdk-core'
@@ -27,7 +28,7 @@ import { OpenSearchInitialSetupLambda } from './OpenSearchInitialSetupLambda'
 export interface LambdaFunctionsProps {
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly cleanupScheduleMins: number
 	readonly driverDataIngestStream: kinesis.IStream

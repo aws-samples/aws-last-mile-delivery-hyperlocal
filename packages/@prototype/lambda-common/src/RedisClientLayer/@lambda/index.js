@@ -15,11 +15,31 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const redis = require('redis')
+const awsSdk = require('aws-sdk')
 
+const secrets = new awsSdk.SecretsManager()
 let client = null
-exports.getRedisClient = () => {
+
+exports.getRedisClient = async () => {
 	if (client == null) {
-		client = redis.createClient(process.env.MEMORYDB_PORT, process.env.MEMORYDB_HOST, { no_ready_check: true })
+		const adminPassword = await secrets.getSecretValue({
+			SecretId: process.env.MEMORYDB_ADMIN_SECRET,
+		}).promise()
+
+		client = redis.createCluster({
+			rootNodes: [{
+				url: `rediss://${process.env.MEMORYDB_HOST}:${process.env.MEMORYDB_PORT}`,
+			}],
+			defaults: {
+				socket: {
+					tls: true,
+				},
+				username: process.env.MEMORYDB_ADMIN_USERNAME,
+				password: adminPassword,
+			},
+		})
+
+		await client.connect()
 	}
 
 	return client

@@ -15,7 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_events as events, custom_resources as cr, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { aws_events as events, custom_resources as cr } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { WebhookProviderBase } from '@prototype/provider'
 import { VpcLambdaProps } from '@prototype/lambda-common'
 import { ExampleCallbackLambda } from './lambdas/ExampleCallback'
@@ -26,7 +27,7 @@ import { GetOrderStatusLambda } from './lambdas/GetOrderStatus'
 export interface ExampleWebhookProviderProps extends VpcLambdaProps {
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly eventBus: events.IEventBus
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
 }

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_opensearchservice as opensearchservice, aws_memorydb as memorydb } from 'aws-cdk-lib'
+import { aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { OpenSearchCluster, OpenSearchClusterProps } from './OpenSearchCluster'
 import { MemoryDBCluster, MemoryDBClusterProps } from './MemoryDBCluster'
 // import { memoryDBCluster, memoryDBClusterProps } from './memoryDBCluster'
@@ -29,7 +29,7 @@ export interface LiveDataCacheProps {
 export class LiveDataCache extends Construct {
 	readonly openSearchDomain: opensearchservice.IDomain
 
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 
 	// readonly memoryDBCluster: memorydb.CfnCluster
 
@@ -42,7 +42,7 @@ export class LiveDataCache extends Construct {
 		this.openSearchDomain = openSearchCluster.domain
 
 		const memoryDBCluster = new MemoryDBCluster(this, 'MemoryDBCluster', memoryDBClusterProps)
-		this.memoryDBCluster = memoryDBCluster.cluster
+		this.memoryDBCluster = memoryDBCluster
 
 		// const ecCluster = new memoryDBCluster(this, 'memoryDBCluster', memoryDBClusterProps)
 		// this.memoryDBCluster = ecCluster.memoryDBCluster

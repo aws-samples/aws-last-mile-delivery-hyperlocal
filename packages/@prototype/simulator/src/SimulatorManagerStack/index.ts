@@ -15,9 +15,10 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_memorydb as memorydb, aws_s3 as s3 } from 'aws-cdk-lib'
+import { aws_ec2 as ec2, aws_ecs as ecs, aws_events as events, aws_dynamodb as ddb, aws_cognito as cognito, aws_iot as iot, aws_lambda as lambda, aws_s3 as s3 } from 'aws-cdk-lib'
 import * as api from '@aws-play/cdk-apigateway'
 import { Networking } from '@prototype/networking'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { SimulatorManagerLambda } from './SimulatorManagerLambda'
 import { OrderSimulatorLambda } from './OrderSimulatorLambda'
 import { OriginSimulatorLambda } from './OriginSimulatorLambda'
@@ -72,7 +73,7 @@ export interface SimulatorManagerStackProps {
 
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
 	readonly iotEndpointAddress: string

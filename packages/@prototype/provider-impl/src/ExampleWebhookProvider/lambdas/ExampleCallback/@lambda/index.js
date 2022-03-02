@@ -15,14 +15,10 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const aws = require('aws-sdk')
 const config = require('./config')
 const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
-
-const client = getRedisClient()
-client.hdel = promisify(client.hdel)
 
 const eventBridge = new aws.EventBridge()
 
@@ -36,6 +32,8 @@ const mapStateToOrderStatus = (state) => {
 }
 
 const handler = async (event, context) => {
+	const client = await getRedisClient()
+
 	if (event.body === undefined) {
 		console.error(` :: WebhookProvider-ExampleCallback :: POST :: 'body' not found in event object: ${JSON.stringify(event)}`)
 
@@ -59,7 +57,7 @@ const handler = async (event, context) => {
 
 	try {
 		if (status === 'DELIVERED' || status === 'CANCELLED') {
-			await client.hdel(`provider:${config.providerName}:order`, body.inputData.orderId)
+			await client.hDel(`provider:${config.providerName}:order`, body.inputData.orderId)
 		}
 
 		console.debug('Sending order update event on event bridge with status: ', status)

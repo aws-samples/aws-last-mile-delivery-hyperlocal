@@ -14,7 +14,6 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { promisify } = require('util')
 const logger = require('../utils/logger')
 const config = require('../config')
 const { getRedisClient } = require('/opt/redis-client')
@@ -22,25 +21,20 @@ const { REDIS_HASH } = require('/opt/lambda-utils')
 
 const { ORDER_STATUS, PROVIDER_TIME } = REDIS_HASH
 
-const client = getRedisClient()
-
-client.keys = promisify(client.keys)
-client.hset = promisify(client.hset)
-client.hincrby = promisify(client.hincrby)
-client.hdel = promisify(client.hdel)
-
 const mapper = {
 	NEW_ORDER: async (detail) => {
+		const client = await getRedisClient()
 		const timestamp = Date.now()
 		const { ID, state } = detail
 
-		await client.hset(`${ORDER_STATUS}:all`, ID, timestamp)
-		await client.hset(`${ORDER_STATUS}:${state}`, ID, timestamp)
+		await client.hSet(`${ORDER_STATUS}:all`, ID, timestamp)
+		await client.hSet(`${ORDER_STATUS}:${state}`, ID, timestamp)
 	},
 	ORDER_UPDATE: async (detail) => {
+		const client = await getRedisClient()
 		const timestamp = Date.now()
 		const { ID, state, provider, assignedAt, updatedAt } = detail
-		let statusList = await client.keys(`${ORDER_STATUS}:*`)
+		let statusList = await client.sendCommand(['KEYS', `${ORDER_STATUS}:*`])
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -53,18 +47,18 @@ const mapper = {
 
 		const promises = statusList.filter(q => q !== 'all').map((s) => {
 			if (s === state) {
-				return client.hset(`${ORDER_STATUS}:${s}`, ID, timestamp)
+				return client.hSet(`${ORDER_STATUS}:${s}`, ID, timestamp)
 			}
 
-			return client.hdel(`${ORDER_STATUS}:${s}`, ID)
+			return client.hDel(`${ORDER_STATUS}:${s}`, ID)
 		})
 
 		await Promise.all(promises)
 
 		// If order has been delivered then add the count and sum duration
 		if (state === 'DELIVERED') {
-			await client.hincrby(`${PROVIDER_TIME}:${provider}`, 'orders', 1)
-			await client.hincrby(`${PROVIDER_TIME}:${provider}`, 'duration', (updatedAt - assignedAt))
+			await client.hIncrBy(`${PROVIDER_TIME}:${provider}`, 'orders', 1)
+			await client.hIncrBy(`${PROVIDER_TIME}:${provider}`, 'duration', (updatedAt - assignedAt))
 		}
 	},
 }

@@ -15,13 +15,16 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_ec2 as ec2, aws_secretsmanager as secretsmanager, aws_lambda as lambda, aws_events as events, aws_memorydb as memorydb, aws_sqs as sqs, aws_iam as iam } from 'aws-cdk-lib'
+import { Duration, aws_ec2 as ec2, aws_secretsmanager as secretsmanager, aws_lambda as lambda, aws_events as events, aws_sqs as sqs, aws_iam as iam } from 'aws-cdk-lib'
+import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
 import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
+	readonly MEMORYDB_ADMIN_USERNAME: string
+	readonly MEMORYDB_ADMIN_SECRET: string
 	readonly MEMORYDB_HOST: string
 	readonly MEMORYDB_PORT: string
 	readonly EXTERNAL_PROVIDER_URL: string
@@ -40,7 +43,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly pendingOrdersQueue: sqs.IQueue
 	readonly externalProviderMockUrl: string
 	readonly externalProviderSecretName: string
-	readonly memoryDBCluster: memorydb.CfnCluster
+	readonly memoryDBCluster: MemoryDBCluster
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -67,8 +70,10 @@ export class ExamplePollingLambda extends DeclaredLambdaFunction<Environment, De
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
 			environment: {
-				MEMORYDB_HOST: memoryDBCluster.attrClusterEndpointAddress,
-				MEMORYDB_PORT: memoryDBCluster.port?.toString() || '',
+				MEMORYDB_HOST: memoryDBCluster.cluster.attrClusterEndpointAddress,
+				MEMORYDB_PORT: memoryDBCluster.cluster.port?.toString() || '',
+				MEMORYDB_ADMIN_USERNAME: memoryDBCluster.adminUsername,
+				MEMORYDB_ADMIN_SECRET: memoryDBCluster.adminPasswordSecret.secretArn,
 				EXTERNAL_PROVIDER_URL: externalProviderMockUrl,
 				EXTERNAL_PROVIDER_SECRETNAME: externalProviderSecretName,
 				EVENT_BUS: eventBus.eventBusName,
@@ -100,6 +105,7 @@ export class ExamplePollingLambda extends DeclaredLambdaFunction<Environment, De
 					effect: iam.Effect.ALLOW,
 					resources: [
 						`${externalProviderSecret.secretArn}*`,
+						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
 			],

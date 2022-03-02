@@ -15,17 +15,9 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const { getRedisClient } = require('/opt/redis-client')
 const { success, fail, REDIS_HASH } = require('/opt/lambda-utils')
 const geocluster = require('geocluster')
-
-const redisClient = getRedisClient()
-
-redisClient.geosearch = promisify(redisClient.geosearch)
-redisClient.georadius = promisify(redisClient.georadius)
-redisClient.hget = promisify(redisClient.hget)
-redisClient.hmget = promisify(redisClient.hmget)
 
 const { DRIVER_LOCATION, DRIVER_LOCATION_RAW } = REDIS_HASH
 
@@ -40,6 +32,7 @@ const handler = async (event) => {
 }
 
 const handleGET = async (event) => {
+	const redisClient = await getRedisClient()
 	const { distance, distanceUnit = 'm', lat, long, shape = 'circle', status, count } = event.queryStringParameters
 
 	try {
@@ -49,22 +42,22 @@ const handleGET = async (event) => {
 		// const fromlonlat = ['FROMLONLAT', long, lat]
 		// const byshape = shape === 'circle' ?
 		// 							 ['BYRADIUS', distance, distanceUnit] : ['BYBOX', distance, distance, distanceUnit]
-		// const searchResult = await redisClient.geosearch(DRIVER_LOCATION, [...fromlonlat, ...byshape, 'ASC', 'WITHDIST'])
+		// const searchResult = await redisClient.geoSearch(DRIVER_LOCATION, [...fromlonlat, ...byshape, 'ASC', 'WITHDIST'])
 		// -------------------------------------------------------------------------------------------------------------------
 		// return maximum 25 items if not specified differently
 		const maxResult = count || 25
-		const searchResult = await redisClient.georadius(
+		const searchResult = await redisClient.sendCommand([
+			'GEORADIUS',
 			DRIVER_LOCATION,
-			[
-				long,
-				lat,
-				distance,
-				distanceUnit,
-				'WITHDIST',
-				'COUNT',
-				maxResult,
-				'ASC',
-			])
+			long,
+			lat,
+			distance,
+			distanceUnit,
+			'WITHDIST',
+			'COUNT',
+			maxResult,
+			'ASC',
+		])
 		const driverIds = searchResult.map(res => res[0])
 
 		if (driverIds.length === 0) {
@@ -74,7 +67,7 @@ const handleGET = async (event) => {
 		const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr[0]]: curr[1] }), {})
 
 		// drivers --> raw string[]
-		let drivers = await redisClient.hmget(DRIVER_LOCATION_RAW, driverIds)
+		let drivers = await redisClient.hmGet(DRIVER_LOCATION_RAW, driverIds)
 
 		// remove nils if any
 		drivers = drivers.filter(d => d != null)
@@ -99,6 +92,7 @@ const handleGET = async (event) => {
 }
 
 const handlePOST = async (event) => {
+	const redisClient = await getRedisClient()
 	let { body } = event
 
 	if (typeof body === 'string' || body instanceof String) {
@@ -120,18 +114,17 @@ const handlePOST = async (event) => {
 			let driversPerLocation = []
 			let iteration = 0
 			do {
-				const searchResult = await redisClient.georadius(
+				const searchResult = await redisClient.sendCommand(
+					'GEORADIUS',
 					DRIVER_LOCATION,
-					[
-						centroid[1], // location.long,
-						centroid[0], // location.lat,
-						distance + (iteration * distance),
-						distanceUnit,
-						'WITHDIST',
-						'COUNT',
-						elements.length + 5,
-						'ASC',
-					],
+					centroid[1], // location.long,
+					centroid[0], // location.lat,
+					distance + (iteration * distance),
+					distanceUnit,
+					'WITHDIST',
+					'COUNT',
+					elements.length + 5,
+					'ASC',
 				)
 				const driverIds = searchResult.map(res => res[0])
 
@@ -141,7 +134,7 @@ const handlePOST = async (event) => {
 				}
 
 				const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr[0]]: curr[1] }), {})
-				driversPerLocation = await redisClient.hmget(DRIVER_LOCATION_RAW, driverIds)
+				driversPerLocation = await redisClient.hmGet(DRIVER_LOCATION_RAW, driverIds)
 
 				// remove nils if any
 				driversPerLocation = driversPerLocation.filter(d => d != null)

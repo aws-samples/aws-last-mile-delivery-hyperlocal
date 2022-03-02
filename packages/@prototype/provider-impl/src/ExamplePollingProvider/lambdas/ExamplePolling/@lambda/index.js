@@ -15,19 +15,12 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 /* eslint-disable no-console */
-const { promisify } = require('util')
 const axios = require('axios')
 const aws = require('aws-sdk')
 const config = require('./config')
 const secrets = require('./lib/secretsManager')
 const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
-
-const client = getRedisClient()
-client.hget = promisify(client.hget)
-client.hset = promisify(client.hset)
-client.hlen = promisify(client.hlen)
-client.hdel = promisify(client.hdel)
 
 const eventBridge = new aws.EventBridge()
 const sqs = new aws.SQS()
@@ -42,6 +35,8 @@ const mapStateToOrderStatus = (state) => {
 }
 
 const processRecord = async (record, apiKey) => {
+	const client = await getRedisClient()
+
 	console.log('Processing record: ', record.body)
 	const body = JSON.parse(record.body)
 	const { orderId, externalOrderId } = body
@@ -51,7 +46,7 @@ const processRecord = async (record, apiKey) => {
 
 		throw new Error('Record not valid')
 	}
-	const previousStatus = await client.hget(`provider:${config.providerName}:orderStatus`, orderId)
+	const previousStatus = await client.hGet(`provider:${config.providerName}:orderStatus`, orderId)
 
 	if (!previousStatus) {
 		console.warn('Order with ID ', orderId, ' is not in the hash table, it may have been processed already. Skipping')
@@ -83,10 +78,10 @@ const processRecord = async (record, apiKey) => {
 				}],
 			}).promise()
 
-			await client.hset(`provider:${config.providerName}:orderStatus`, orderId, newStatus)
+			await client.hSet(`provider:${config.providerName}:orderStatus`, orderId, newStatus)
 		}
 
-		const hashLength = await client.hlen(`provider:${config.providerName}:order`)
+		const hashLength = await client.hLen(`provider:${config.providerName}:order`)
 		// build a simple message group Id based on number of orders for this provider
 		// plus the hour of the day. This will build up a scenario where you'd have
 		// a different message group ID for every 100 messages hour
@@ -114,8 +109,8 @@ const processRecord = async (record, apiKey) => {
 		} else {
 			console.log(`Order ${orderId} is in a final state, cleaning up the hash`)
 
-			await client.hdel(`provider:${config.providerName}:orderStatus`, orderId)
-			await client.hdel(`provider:${config.providerName}:order`, orderId)
+			await client.hDel(`provider:${config.providerName}:orderStatus`, orderId)
+			await client.hDel(`provider:${config.providerName}:order`, orderId)
 		}
 	} catch (err) {
 		console.error('Error processing the record from the queue: ', JSON.stringify(record))
