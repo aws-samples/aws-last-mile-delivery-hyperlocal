@@ -63,7 +63,7 @@ const handleCreate = async () => {
 		result = await openSearchClient.indices.putMapping(mappingObj)
 		console.log(`Successfully updated index ${DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
 	} catch (err) {
-		console.log(`Error while creating index ${DRIVER_LOCATION_INDEX}. Updating instead. Error: ${JSON.stringify(err)}`)
+		console.log(`Error while creating index ${DRIVER_LOCATION_INDEX}. Updating instead. Error: `, err)
 
 		await handleUpdate()
 	}
@@ -74,7 +74,7 @@ const handleUpdate = async () => {
 		const result = await openSearchClient.indices.putMapping(mappingObj)
 		console.log(`Successfully updated index ${DRIVER_LOCATION_INDEX}. Result: ${JSON.stringify(result)}`)
 	} catch (err) {
-		console.log(`Error while updating index ${DRIVER_LOCATION_INDEX}. Error: ${JSON.stringify(err)}`)
+		console.log(`Error while updating index ${DRIVER_LOCATION_INDEX}. Error: `, err)
 	}
 }
 

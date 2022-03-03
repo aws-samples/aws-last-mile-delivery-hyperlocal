@@ -24,8 +24,9 @@ const { DRIVER_STATUS_STATISTICS } = REDIS_HASH
 const mapper = {
 	DRIVER_STATUS_CHANGE: async (detail) => {
 		const client = await getRedisClient()
+		const keyClient = await getRedisClient({ clusterMode: false })
 		const { driverId, status, timestamp } = detail
-		let statusList = await client.sendCommand(['KEYS', `${DRIVER_STATUS_STATISTICS}:*`])
+		let statusList = await keyClient.keys(`${DRIVER_STATUS_STATISTICS}:*`)
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {

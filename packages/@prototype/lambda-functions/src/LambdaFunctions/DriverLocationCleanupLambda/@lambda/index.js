@@ -35,13 +35,13 @@ const handler = async () => {
 	const now = Date.now()
 
 	try {
-		console.debug('Retreiving all drivers who have not updated their status until TTL', now)
+		console.debug('retrieving all drivers who have not updated their status until TTL', now)
 		driverIds = await redisClient.zRangeByScore(DRIVER_LOCATION_TTLS, '-inf', now)
 
 		// console.debug(`Drivers who expired: ${JSON.stringify(driverIds)}`)
 		console.debug(`${driverIds.length} drivers expired`)
 	} catch (err) {
-		console.error(`Error while retreiving expired drivers: ${JSON.stringify(err)}`)
+		console.error('Error while retrieving expired drivers: ', err)
 
 		return
 	}
@@ -124,7 +124,7 @@ const handler = async () => {
 		})
 		// -------------------------------------------------------------------------------------------------------------
 	} catch (err) {
-		console.error(`Error removing key from Elasticache: ${JSON.stringify(err)}`)
+		console.error('Error removing key from MemoryDB: ', err)
 	}
 	console.debug(`Successfully removed all expired drivers from ${DRIVER_LOCATION}/${DRIVER_LOCATION_RAW}/${DRIVER_LOCATION_TTLS}`)
 }

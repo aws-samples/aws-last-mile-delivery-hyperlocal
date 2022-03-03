@@ -52,9 +52,9 @@ const handler = async (event) => {
 
 		return success(JSON.parse(driverData))
 	} catch (err) {
-		console.error(`Error while retreiving driver location: ${JSON.stringify(err)}`)
+		console.error('Error while retrieving driver location:', err)
 
-		return fail({ message: `Error while retreiving driver location: ${JSON.stringify(err)}` })
+		return fail({ message: 'Error while retrieving driver location' })
 	}
 }
 

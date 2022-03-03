@@ -29,10 +29,10 @@ const onEvent = async (event) => {
 	}
 
 	try {
-		const resp = await lambda.invoke(params).promise()
+		await lambda.invoke(params).promise()
 		console.log(`Successfully called ${SETUP_LAMBDA_ARN}`)
 	} catch (err) {
-		console.error(`Error while calling ${SETUP_LAMBDA_ARN}: ${JSON.stringify(err)}`)
+		console.error(`Error while calling ${SETUP_LAMBDA_ARN}: `, err)
 	}
 }
 

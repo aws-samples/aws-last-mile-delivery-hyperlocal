@@ -24,13 +24,13 @@ const success = body => {
 	}
 }
 
-const fail = (err, statusCode) => {
+const fail = (errorObj, statusCode) => {
 	return {
 		statusCode: statusCode || 500,
 		headers: {
 			'Access-Control-Allow-Origin': '*',
 		},
-		body: JSON.stringify(err),
+		body: JSON.stringify(errorObj),
 	}
 }
 

@@ -34,7 +34,8 @@ const {
 
 const getStatusCount = async (hashKey) => {
 	const client = await getRedisClient()
-	const statusList = await client.sendCommand(['KEYS', `${hashKey}:*`])
+	const keyClient = await getRedisClient({ clusterMode: false })
+	const statusList = await keyClient.keys(`${hashKey}:*`)
 	const result = {}
 
 	for (let i = 0; i < statusList.length; i++) {

@@ -38,7 +38,7 @@ const handler = async (event, context) => {
 
 		console.debug(`STATUS_CHANGE :: ${event.originId} :: Successfully sent to Event Bridge`)
 	} catch (err) {
-		console.error(`Error sending message to Event Bridge :: ${event.type} :: ${JSON.stringify(err)}`)
+		console.error(`Error sending message to Event Bridge :: ${event.type} :: `, err)
 	}
 
 	if (event.type !== 'STATUS_CHANGE') {
@@ -58,7 +58,8 @@ const handler = async (event, context) => {
 	const client = await getRedisClient()
 
 	try {
-		let statusList = await client.sendCommand(['KEYS', `${ORIGIN_STATUS}:*`])
+		const keyClient = await getRedisClient({ clusterMode: false })
+		let statusList = await keyClient.keys(`${ORIGIN_STATUS}:*`)
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {
@@ -85,7 +86,7 @@ const handler = async (event, context) => {
 
 		console.debug(`STATUS_CHANGE :: ${originId} :: Successfully updated Redis`)
 	} catch (err) {
-		console.error(`Error updating Redis :: ${event.type} :: ${JSON.stringify(err)}`)
+		console.error(`Error updating Redis :: ${event.type} :: `, err)
 		console.error(err)
 	}
 }

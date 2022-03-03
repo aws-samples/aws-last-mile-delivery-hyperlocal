@@ -33,9 +33,9 @@ const handler = async (event) => {
 
 		return success(result.Items)
 	} catch (err) {
-		console.error(`Error while retrieving demographic area settings: ${JSON.stringify(err)}`)
+		console.error('Error while retrieving demographic area settings', err)
 
-		return fail({ message: JSON.stringify(err) })
+		return fail({ message: 'Error retrieving demographic area settings' })
 	}
 }
 

@@ -46,7 +46,7 @@ const handleGET = async (event) => {
 	}
 
 	try {
-		console.debug(`retreiving polygon :: ${JSON.stringify(params)}`)
+		console.debug(`retrieving polygon :: ${JSON.stringify(params)}`)
 		let result = await ddbClient.get(params).promise()
 		console.debug(`ddb polygon result :: ${JSON.stringify(result)}`)
 		const { vertices } = result.Item
@@ -54,9 +54,9 @@ const handleGET = async (event) => {
 
 		return success(result)
 	} catch (err) {
-		console.error(`Error while searching for drivers by polygonId: ${JSON.stringify(err)}`)
+		console.error('Error while searching for drivers by polygonId: ', err)
 
-		return fail({ message: JSON.stringify(err) })
+		return fail({ message: `Error while searching for drivers by polygonId: ${polygonId}` })
 	}
 }
 

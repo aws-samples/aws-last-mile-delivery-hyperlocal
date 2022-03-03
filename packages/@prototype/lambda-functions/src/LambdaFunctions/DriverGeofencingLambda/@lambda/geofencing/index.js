@@ -46,7 +46,7 @@ const evaluateGeofence = async (driverId, location, geofenceId) => {
 		throw new Error('Mismatch between location driver and geofence driver, skipping')
 	}
 
-	await redisClient.geoAdd(GEOFENCE_LOCATION, longitude, latitude, driverId)
+	await redisClient.geoAdd(GEOFENCE_LOCATION, { longitude, latitude, member: driverId })
 	const dst = await redisClient.geoDist(GEOFENCE_LOCATION, geofenceId, driverId)
 	const distance = Number(dst)
 

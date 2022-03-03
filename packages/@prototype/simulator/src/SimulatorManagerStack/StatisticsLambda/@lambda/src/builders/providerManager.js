@@ -40,9 +40,10 @@ const mapper = {
 	},
 	ORDER_UPDATE: async (providerName, detail) => {
 		const client = await getRedisClient()
+		const keyClient = await getRedisClient({ clusterMode: false })
 		const timestamp = Date.now()
 		const { orderId, status } = detail
-		let statusList = await client.sendCommand(['KEYS', `${PROVIDER_DISTRIBUTION}:${providerName}:*`])
+		let statusList = await keyClient.keys(`${PROVIDER_DISTRIBUTION}:${providerName}:*`)
 		statusList = (statusList || []).map(q => q.split(':').pop())
 
 		if (statusList.length === 0) {

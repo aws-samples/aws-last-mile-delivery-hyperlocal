@@ -59,9 +59,9 @@ const handler = async (event) => {
 
 		return success({ data })
 	} catch (err) {
-		console.error(`:: ${NAME}-manager :: There was an error while creating a ${NAME} record: ${JSON.stringify(err)}`)
+		console.error(`:: ${NAME}-manager :: There was an error while creating a ${NAME} record: `, err)
 
-		return fail({ error: err })
+		return fail({ error: `There was an error while creating a ${NAME} record` })
 	}
 }
 

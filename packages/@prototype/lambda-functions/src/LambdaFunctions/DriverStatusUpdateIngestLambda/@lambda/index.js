@@ -49,7 +49,7 @@ const handler = async (event, context) => {
 		await client.hSet(DRIVER_STATUS_UPDATED_AT, driverId, timestamp)
 		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully updated Redis`)
 	} catch (err) {
-		console.error(`Error updating Redis :: ${event.type} :: ${JSON.stringify(err)}`)
+		console.error(`Error updating MemoryDB :: ${event.type} :: `, err)
 	}
 
 	try {
@@ -65,7 +65,7 @@ const handler = async (event, context) => {
 		})
 		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully updated OPENSEARCH`)
 	} catch (err) {
-		console.error(`Error updating Elasticache :: ${event.type} :: ${JSON.stringify(err)}`)
+		console.error(`Error updating OpenSearch :: ${event.type} :: `, err)
 	}
 
 	try {
@@ -80,7 +80,7 @@ const handler = async (event, context) => {
 
 		console.debug(`STATUS_CHANGE :: ${event.driverId} :: Successfully sent to Event Bridge`)
 	} catch (err) {
-		console.error(`Error sending message to Event Bridge :: ${event.type} :: ${JSON.stringify(err)}`)
+		console.error(`Error sending message to Event Bridge :: ${event.type} :: `, err)
 	}
 }
 
