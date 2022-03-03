@@ -27,6 +27,8 @@ const execute = async (payload) => {
 	logger.info(JSON.stringify(payload))
 	const { driverId, driverIdentity, driverLocation, orders } = payload
 
+	// TODO: this has to be changed to reflect this changes:
+	// https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal/issues/51
 	for (const order of orders) {
 		try {
 			const routes = await routing.getRoutingDetails(driverLocation, order)
