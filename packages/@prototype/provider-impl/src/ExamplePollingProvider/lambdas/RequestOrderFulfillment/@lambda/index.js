@@ -26,7 +26,6 @@ const eventBridge = new aws.EventBridge()
 const sqs = new aws.SQS()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	console.debug(JSON.stringify(event))
 
 	if (event.body === undefined) {
@@ -64,6 +63,7 @@ const handler = async (event, context) => {
 		console.debug('Response from provider: ', res.data)
 
 		const { orderId: externalOrderId } = res.data
+		const client = await getRedisClient()
 
 		await client.hSet(`provider:${config.providerName}:order`, body.orderId, externalOrderId)
 		await client.hSet(`provider:${config.providerName}:orderStatus`, body.orderId, 'NEW')

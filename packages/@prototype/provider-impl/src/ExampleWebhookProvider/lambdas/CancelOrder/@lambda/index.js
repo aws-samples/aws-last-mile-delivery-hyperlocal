@@ -25,7 +25,6 @@ const { getRedisClient } = require('/opt/redis-client')
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	const orderId = event.pathParameters ? event.pathParameters.orderId : undefined
 
 	if (!orderId) {
@@ -35,8 +34,8 @@ const handler = async (event, context) => {
 	}
 
 	try {
+		const client = await getRedisClient()
 		const apiKey = await secrets.getSecretValue(config.externalProviderSecretName)
-
 		const externalOrderId = await client.hGet(`provider:${config.providerName}:order`, orderId)
 
 		await axios.delete(`${config.externalProviderMockUrl}/order/${externalOrderId}`, {

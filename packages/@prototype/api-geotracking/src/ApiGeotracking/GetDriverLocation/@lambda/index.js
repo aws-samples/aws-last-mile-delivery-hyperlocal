@@ -21,7 +21,6 @@ const { success, fail, REDIS_HASH } = require('/opt/lambda-utils')
 const { DRIVER_LOCATION, DRIVER_LOCATION_RAW } = REDIS_HASH
 
 const handler = async (event) => {
-	const redisClient = await getRedisClient()
 	const driverId = event.pathParameters ? event.pathParameters.driverId : undefined
 
 	console.log(`:: get-driver-location :: GET :: driverId = ${driverId}`)
@@ -32,6 +31,7 @@ const handler = async (event) => {
 		return fail({ message: 'No driverId set' }, 404)
 	}
 
+	const redisClient = await getRedisClient()
 	try {
 		// const driverLocation = await redisClient.geoPos(DRIVER_LOCATION, driverId)
 

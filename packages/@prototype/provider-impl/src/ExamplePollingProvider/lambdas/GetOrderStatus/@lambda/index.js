@@ -22,8 +22,6 @@ const { success, fail } = require('/opt/lambda-utils')
 const { getRedisClient } = require('/opt/redis-client')
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
-
 	try {
 		const orderId = event.pathParameters ? event.pathParameters.orderId : undefined
 
@@ -33,6 +31,7 @@ const handler = async (event, context) => {
 			})
 		}
 
+		const client = await getRedisClient()
 		const apiKey = await secrets.getSecretValue(config.externalProviderSecretName)
 		const externalOrderId = await client.hGet(`provider:${config.providerName}:order`, orderId)
 

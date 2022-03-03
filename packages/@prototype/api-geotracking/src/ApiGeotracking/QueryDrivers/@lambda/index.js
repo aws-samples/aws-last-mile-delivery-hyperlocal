@@ -92,7 +92,6 @@ const handleGET = async (event) => {
 }
 
 const handlePOST = async (event) => {
-	const redisClient = await getRedisClient()
 	let { body } = event
 
 	if (typeof body === 'string' || body instanceof String) {
@@ -107,6 +106,7 @@ const handlePOST = async (event) => {
 	console.log(`${locations.length} locations split to ${clustered.length} clusters.`)
 
 	const driversById = {}
+	const redisClient = await getRedisClient()
 
 	try {
 		for (const cluster of clustered) {

@@ -35,8 +35,6 @@ const mapStateToOrderStatus = (state) => {
 }
 
 const processRecord = async (record, apiKey) => {
-	const client = await getRedisClient()
-
 	console.log('Processing record: ', record.body)
 	const body = JSON.parse(record.body)
 	const { orderId, externalOrderId } = body
@@ -46,6 +44,8 @@ const processRecord = async (record, apiKey) => {
 
 		throw new Error('Record not valid')
 	}
+
+	const client = await getRedisClient()
 	const previousStatus = await client.hGet(`provider:${config.providerName}:orderStatus`, orderId)
 
 	if (!previousStatus) {
