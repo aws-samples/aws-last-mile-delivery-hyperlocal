@@ -57,7 +57,7 @@ module.exports.default = async (event) => {
 		//   - 1 = enter geofence
 		//   - 2 = exit geofence
 		await redis.hSet(GEOFENCE_LOCATION_STATUS, geofenceId, `0,${radius},${driverId}`)
-		await redis.geoAdd(GEOFENCE_LOCATION, long, lat, geofenceId)
+		await redis.geoAdd(GEOFENCE_LOCATION, { longitude: long, latitude: lat, member: geofenceId })
 
 		await eventBridge.putEvent('GEOFENCE_START', {
 			id: geofenceId,

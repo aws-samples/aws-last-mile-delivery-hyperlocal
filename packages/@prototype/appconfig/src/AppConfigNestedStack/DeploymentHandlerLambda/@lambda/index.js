@@ -83,7 +83,7 @@ exports.handler = async (event) => {
 					qos: 1,
 				}).promise()
 			} catch (err) {
-				console.error(`Error :: ${JSON.stringify(err)}`)
+				console.error('Deployment Error :: ', err)
 			}
 		}
 	}

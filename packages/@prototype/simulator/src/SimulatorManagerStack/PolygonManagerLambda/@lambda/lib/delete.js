@@ -47,9 +47,9 @@ const handler = async (event) => {
 
 			return success({ data })
 		} catch (err) {
-			console.error(`:: ${NAME}-manager :: DELETE :: There was an error while deleting ${NAME} with id ${entityId}: ${JSON.stringify(err)}`)
+			console.error(`:: ${NAME}-manager :: DELETE :: There was an error while deleting ${NAME} with id ${entityId}: `, err)
 
-			return fail({ error: err })
+			return fail({ error: `There was an error while deleting ${NAME} with id ${entityId}: ` })
 		}
 	}
 }

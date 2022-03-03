@@ -56,7 +56,7 @@ const handleRequest = async (apiKeySecretNameList) => {
 				includeValue: true,
 			}).promise()
 		} catch (err) {
-			console.error(`Error while retreiveing apiKey with ID ${apiKeySecretName.keyId}: ${JSON.stringify(err)}`)
+			console.error(`Error while retreiveing apiKey with ID ${apiKeySecretName.keyId}: `, err)
 			console.error(`Skipping ${JSON.stringify(apiKeySecretName)}`)
 			continue
 		}
@@ -66,7 +66,7 @@ const handleRequest = async (apiKeySecretNameList) => {
 				SecretId: apiKeySecretName.secret,
 			}).promise()
 		} catch (err) {
-			console.warn(`Error while retreiving secret ${apiKeySecretName.secret} from secretsManager: ${JSON.stringify(err)}`)
+			console.warn(`Error while retrieving secret ${apiKeySecretName.secret} from secretsManager: `, err)
 		}
 
 		// secret doesn't exist, create it
@@ -77,7 +77,7 @@ const handleRequest = async (apiKeySecretNameList) => {
 					SecretString: apiKey.value,
 				}).promise()
 			} catch (err) {
-				console.error(`Error while creating secret ${apiKeySecretName.secret} in secretsManager: ${JSON.stringify(err)}`)
+				console.error(`Error while creating secret ${apiKeySecretName.secret} in secretsManager:`, err)
 			}
 		// secret exists, update it
 		} else {
@@ -87,7 +87,7 @@ const handleRequest = async (apiKeySecretNameList) => {
 					SecretString: apiKey.value,
 				}).promise()
 			} catch (err) {
-				console.error(`Error while updating secret ${apiKeySecretName.secret} in secretsManager: ${JSON.stringify(err)}`)
+				console.error(`Error while updating secret ${apiKeySecretName.secret} in secretsManager: `, err)
 			}
 		}
 	}

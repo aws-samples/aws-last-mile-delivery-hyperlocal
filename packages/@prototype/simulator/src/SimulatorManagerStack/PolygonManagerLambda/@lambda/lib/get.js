@@ -50,9 +50,9 @@ const handler = async (event) => {
 
 		return success({ data: result })
 	} catch (err) {
-		console.error(`There was an error while retrieving ${NAME}s: ${JSON.stringify(err)}`)
+		console.error(`There was an error while retrieving ${NAME}s: `, err)
 
-		return fail({ error: err })
+		return fail({ error: `There was an error while retrieving ${NAME}s` })
 	}
 }
 

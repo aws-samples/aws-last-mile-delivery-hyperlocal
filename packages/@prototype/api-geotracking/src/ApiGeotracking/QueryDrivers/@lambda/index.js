@@ -20,6 +20,10 @@ const { success, fail, REDIS_HASH } = require('/opt/lambda-utils')
 const geocluster = require('geocluster')
 
 const { DRIVER_LOCATION, DRIVER_LOCATION_RAW } = REDIS_HASH
+const SHAPES = {
+	CIRCLE: 'circle',
+	BOX: 'box',
+}
 
 const handler = async (event) => {
 	switch (event.httpMethod) {
@@ -32,39 +36,46 @@ const handler = async (event) => {
 }
 
 const handleGET = async (event) => {
-	const redisClient = await getRedisClient()
-	const { distance, distanceUnit = 'm', lat, long, shape = 'circle', status, count } = event.queryStringParameters
+	const { distance, distanceUnit = 'm', lat, long, shape = SHAPES.CIRCLE, width, height, status, count } = event.queryStringParameters
+
+	if (![SHAPES.CIRCLE, SHAPES.BOX].includes(shape)) {
+		return fail({ error: 'Only circle and box shapes are supported' })
+	}
+
+	if (shape === SHAPES.CIRCLE && !distance) {
+		return fail({ error: 'Distance parameter must be provided for circle shape' })
+	}
+
+	if (shape === SHAPES.BOX && (!width || !height)) {
+		return fail({ error: 'Both Width and Height parameter must be provided for box shape' })
+	}
 
 	try {
-		// geosearch only works with Redis engine 6.2 and above
-		// 2021-03-31 :: current engine in Elasticache is 6.0.5
-		// -------------------------------------------------------------------------------------------------------------------
-		// const fromlonlat = ['FROMLONLAT', long, lat]
-		// const byshape = shape === 'circle' ?
-		// 							 ['BYRADIUS', distance, distanceUnit] : ['BYBOX', distance, distance, distanceUnit]
-		// const searchResult = await redisClient.geoSearch(DRIVER_LOCATION, [...fromlonlat, ...byshape, 'ASC', 'WITHDIST'])
-		// -------------------------------------------------------------------------------------------------------------------
-		// return maximum 25 items if not specified differently
-		const maxResult = count || 25
-		const searchResult = await redisClient.sendCommand([
-			'GEORADIUS',
+		const redisClient = await getRedisClient()
+		const byshape = shape === SHAPES.CIRCLE
+			? { radius: distance, unit: distanceUnit }
+			: { unit: distanceUnit, height, width }
+		const maxResult = Number(count) || 25
+		const searchResult = await redisClient.geoSearchWith(
 			DRIVER_LOCATION,
-			long,
-			lat,
-			distance,
-			distanceUnit,
-			'WITHDIST',
-			'COUNT',
-			maxResult,
-			'ASC',
-		])
-		const driverIds = searchResult.map(res => res[0])
+			{
+				latitude: lat,
+				longitude: long,
+			},
+			byshape,
+			['WITHDIST'],
+			{
+				COUNT: maxResult,
+				SORT: 'ASC',
+			},
+		)
+		const driverIds = searchResult.map(res => res.member)
 
 		if (driverIds.length === 0) {
 			return success([])
 		}
 
-		const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr[0]]: curr[1] }), {})
+		const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr.member]: curr.distance }), {})
 
 		// drivers --> raw string[]
 		let drivers = await redisClient.hmGet(DRIVER_LOCATION_RAW, driverIds)
@@ -85,9 +96,9 @@ const handleGET = async (event) => {
 
 		return success(drivers)
 	} catch (err) {
-		console.error(`Error while querying drivers: ${JSON.stringify(err)}`)
+		console.error('Error while querying drivers', err)
 
-		return fail({ message: `Error while querying drivers: ${JSON.stringify(err)}` })
+		return fail({ message: 'Error while querying drivers' })
 	}
 }
 
@@ -98,7 +109,7 @@ const handlePOST = async (event) => {
 		body = JSON.parse(body)
 	}
 
-	const { distance, distanceUnit = 'm', locations, shape = 'circle', status, countPerLocation } = body
+	const { distance, distanceUnit = 'm', locations, status } = body
 
 	const coords = locations.map(l => [l.lat, l.long])
 	const clustered = geocluster(coords, 1.5)
@@ -114,26 +125,30 @@ const handlePOST = async (event) => {
 			let driversPerLocation = []
 			let iteration = 0
 			do {
-				const searchResult = await redisClient.sendCommand(
-					'GEORADIUS',
+				const searchResult = await redisClient.geoSearchWith(
 					DRIVER_LOCATION,
-					centroid[1], // location.long,
-					centroid[0], // location.lat,
-					distance + (iteration * distance),
-					distanceUnit,
-					'WITHDIST',
-					'COUNT',
-					elements.length + 5,
-					'ASC',
+					{
+						latitude: centroid[0],
+						longitude: centroid[1],
+					},
+					{
+						radius: distance + (iteration * distance),
+						unit: distanceUnit,
+					},
+					['WITHDIST'],
+					{
+						COUNT: elements.length + 5,
+						SORT: 'ASC',
+					},
 				)
-				const driverIds = searchResult.map(res => res[0])
+				const driverIds = searchResult.map(res => res.member)
 
 				if (driverIds.length === 0) {
 					iteration++
 					continue
 				}
 
-				const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr[0]]: curr[1] }), {})
+				const distByDriverId = searchResult.reduce((prev, curr) => ({ ...prev, [curr.member]: curr.distance }), {})
 				driversPerLocation = await redisClient.hmGet(DRIVER_LOCATION_RAW, driverIds)
 
 				// remove nils if any
@@ -163,10 +178,9 @@ const handlePOST = async (event) => {
 
 		return success(drivers)
 	} catch (err) {
-		console.error(`Error while querying drivers: ${JSON.stringify(err)}`)
-		console.error(err)
+		console.error('Error while querying drivers: ', err)
 
-		return fail({ message: `Error while querying drivers: ${JSON.stringify(err)}` })
+		return fail({ message: 'Error while querying drivers' })
 	}
 }
 

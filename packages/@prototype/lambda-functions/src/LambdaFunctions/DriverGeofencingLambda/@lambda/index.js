@@ -61,7 +61,7 @@ const handler = async (event, context) => {
 					break
 			}
 		} catch (err) {
-			console.error(`Error updating Elasticache :: ${data.type} :: ${JSON.stringify(err)}`)
+			console.error(`Error updating MemoryDB :: ${data.type} ::`, err)
 		}
 	}
 }

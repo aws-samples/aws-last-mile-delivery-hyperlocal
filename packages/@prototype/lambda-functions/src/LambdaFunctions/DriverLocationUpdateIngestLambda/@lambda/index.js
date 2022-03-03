@@ -86,19 +86,22 @@ const handler = async (event, context) => {
 		let result
 
 		// update driver locations in redis
-		const geoaddParams = dataArr.flatMap(data =>
-			[data.latestLocation.longitude, data.latestLocation.latitude, data.driverId])
+		const geoaddParams = dataArr.flatMap(data => ({
+			longitude: data.latestLocation.longitude,
+			latitude: data.latestLocation.latitude,
+			member: data.driverId,
+		}))
 		result = await redisClient.geoAdd(DRIVER_LOCATION, geoaddParams)
 
 		// update driver update TTL in redis
-		const zaddParams = dataArr.flatMap(data => [data.latestLocation.timestamp + TTL, data.driverId])
+		const zaddParams = dataArr.flatMap(data => ({ score: data.latestLocation.timestamp + TTL, value: data.driverId }))
 		result = await redisClient.zAdd(DRIVER_LOCATION_TTLS, zaddParams)
 
 		// update raw update data in redis
 		const hsetParams = dataArr.flatMap(data => [data.driverId, JSON.stringify(data.raw)])
 		result = await redisClient.hSet(DRIVER_LOCATION_RAW, hsetParams)
 	} catch (err) {
-		console.error(`Error updating Elasticache :: ${JSON.stringify(err)}`)
+		console.error('Error updating MemoryDB :: ', err)
 		console.error(err)
 	}
 
@@ -140,7 +143,7 @@ const handler = async (event, context) => {
 			console.error(erroredDocuments)
 		}
 	} catch (err) {
-		console.error(`Error updating ElasticSearch :: ${JSON.stringify(err)}`)
+		console.error('Error updating OpenSearch :: ', err)
 		console.error(err)
 	}
 }

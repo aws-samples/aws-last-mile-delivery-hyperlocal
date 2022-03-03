@@ -56,7 +56,7 @@ const handler = async (event, context) => {
 
 		return success()
 	} catch (err) {
-		console.error(`Error sending ORDER_CANCELLED message to Event Bridge :: ${orderId} :: ${JSON.stringify(err)}`)
+		console.error(`Error sending ORDER_CANCELLED message to Event Bridge :: ${orderId} :: `, err)
 	}
 }
 

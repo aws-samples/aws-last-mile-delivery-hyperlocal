@@ -39,9 +39,9 @@ const handler = async (event, context) => {
 			return fail({ message: `Unable to find order with ID ${orderId}` }, 404)
 		}
 	} catch (err) {
-		console.error(`Error :: ${JSON.stringify(err)}`)
+		console.error('Get order status error :: ', err)
 
-		return fail({ error: err })
+		return fail({ error: 'Error retrieving the order status' })
 	}
 }
 
