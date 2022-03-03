@@ -24,7 +24,6 @@ const { DESTINATION_STATUS, DESTINATION_BY_AREA } = REDIS_HASH
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	try {
@@ -56,6 +55,8 @@ const handler = async (event, context) => {
 
 	const { destinationId, status, area, timestamp } = event
 	const areaCode = hashCode(area)
+	const client = await getRedisClient()
+
 	try {
 		let statusList = await client.sendCommand(['KEYS', `${DESTINATION_STATUS}:*`])
 		statusList = (statusList || []).map(q => q.split(':').pop())

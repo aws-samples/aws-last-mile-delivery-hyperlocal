@@ -25,8 +25,6 @@ const TTL = parseInt(process.env.DRIVER_LOCATION_UPDATE_TTL_MS, 10) // 2 * 60 * 
 const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
 const handler = async (event, context) => {
-	const redisClient = await getRedisClient()
-
 	if (event.Records === undefined) {
 		return context.fail(`'Records' not found in event object: ${JSON.stringify(event)}`)
 	}
@@ -83,6 +81,7 @@ const handler = async (event, context) => {
 		})
 	}
 
+	const redisClient = await getRedisClient()
 	try {
 		let result
 

@@ -28,7 +28,7 @@ exports.getRedisClient = async () => {
 
 		client = redis.createCluster({
 			rootNodes: [{
-				url: `rediss://${process.env.MEMORYDB_HOST}:${process.env.MEMORYDB_PORT}`,
+				url: `redis://${process.env.MEMORYDB_HOST}:${process.env.MEMORYDB_PORT}`,
 			}],
 			useReplicas: true,
 			defaults: {

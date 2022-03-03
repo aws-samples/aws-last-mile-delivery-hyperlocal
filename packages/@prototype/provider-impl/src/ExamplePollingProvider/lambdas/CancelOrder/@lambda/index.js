@@ -25,7 +25,6 @@ const { getRedisClient } = require('/opt/redis-client')
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	const orderId = event.pathParameters ? event.pathParameters.orderId : undefined
 
 	if (!orderId) {
@@ -34,6 +33,7 @@ const handler = async (event, context) => {
 		})
 	}
 
+	const client = await getRedisClient()
 	try {
 		const apiKey = await secrets.getSecretValue(config.externalProviderSecretName)
 

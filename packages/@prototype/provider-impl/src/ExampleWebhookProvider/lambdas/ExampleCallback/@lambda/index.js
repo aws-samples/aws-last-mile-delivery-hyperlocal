@@ -32,8 +32,6 @@ const mapStateToOrderStatus = (state) => {
 }
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
-
 	if (event.body === undefined) {
 		console.error(` :: WebhookProvider-ExampleCallback :: POST :: 'body' not found in event object: ${JSON.stringify(event)}`)
 
@@ -54,6 +52,7 @@ const handler = async (event, context) => {
 	}
 
 	const status = mapStateToOrderStatus(body.state)
+	const client = await getRedisClient()
 
 	try {
 		if (status === 'DELIVERED' || status === 'CANCELLED') {

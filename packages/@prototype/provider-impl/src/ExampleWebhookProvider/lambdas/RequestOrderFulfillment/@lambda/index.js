@@ -25,7 +25,6 @@ const { getRedisClient } = require('/opt/redis-client')
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	console.debug(JSON.stringify(event))
 
 	if (event.body === undefined) {
@@ -48,8 +47,8 @@ const handler = async (event, context) => {
 	}
 
 	try {
+		const client = await getRedisClient()
 		const apiKey = await secrets.getSecretValue(config.externalProviderSecretName)
-
 		const res = await axios.post(
 			`${config.externalProviderMockUrl}/order`,
 			{

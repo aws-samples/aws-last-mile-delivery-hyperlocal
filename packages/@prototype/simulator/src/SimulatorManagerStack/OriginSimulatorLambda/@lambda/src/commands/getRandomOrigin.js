@@ -24,13 +24,13 @@ const config = require('../config')
 const { ORIGIN_BY_AREA, ORIGIN_STATUS } = REDIS_HASH
 
 const execute = async (area) => {
-	const client = await getRedisClient()
 	logger.info('Getting a random origin by area: ', area)
 
 	if (!area) {
 		return utils.fail({ message: 'Missing required parameter, area' }, 400)
 	}
 
+	const client = await getRedisClient()
 	const areaCode = hashCode(area)
 	const randomId = await client.sRandMember(`${ORIGIN_BY_AREA}:${areaCode}`)
 

@@ -22,13 +22,13 @@ const eventBridge = require('../lib/eventBridge')
 const { GEOFENCE_LOCATION, GEOFENCE_DRIVER, GEOFENCE_LOCATION_STATUS } = REDIS_HASH
 
 module.exports.default = async (event) => {
-	const redis = await getRedisClient()
 	const geofencingId = event.pathParameters ? event.pathParameters.geofencingId : undefined
 
 	if (!geofencingId) {
 		return fail({ error: 'Missing geofencingId parameter' })
 	}
 
+	const redis = await getRedisClient()
 	try {
 		const status = await redis.hGet(GEOFENCE_LOCATION_STATUS, geofencingId)
 		logger.debug('Saved status: ', status)

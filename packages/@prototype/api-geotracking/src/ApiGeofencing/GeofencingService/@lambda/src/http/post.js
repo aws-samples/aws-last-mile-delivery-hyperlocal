@@ -23,7 +23,6 @@ const eventBridge = require('../lib/eventBridge')
 const { GEOFENCE_LOCATION, GEOFENCE_DRIVER, GEOFENCE_LOCATION_STATUS } = REDIS_HASH
 
 module.exports.default = async (event) => {
-	const redis = await getRedisClient()
 	let { body } = event
 
 	if (typeof body === 'string' || body instanceof String) {
@@ -36,6 +35,7 @@ module.exports.default = async (event) => {
 		return fail({ error: 'lat/long/radius/driverId/prefix are all required fields' }, 400)
 	}
 
+	const redis = await getRedisClient()
 	try {
 		const geofenceId = `${prefix}::${uuidv4()}`
 

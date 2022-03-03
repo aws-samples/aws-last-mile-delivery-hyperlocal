@@ -26,7 +26,6 @@ const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPO
 const eventBridge = new aws.EventBridge()
 
 const handler = async (event, context) => {
-	const client = await getRedisClient()
 	console.debug(`Event payload: ${JSON.stringify(event, null, 2)}`) // PROD: remove this
 
 	if (event.type !== 'STATUS_CHANGE') {
@@ -42,6 +41,7 @@ const handler = async (event, context) => {
 	}
 
 	const { driverId, status, timestamp } = event
+	const client = await getRedisClient()
 
 	try {
 		// update status in REDIS
