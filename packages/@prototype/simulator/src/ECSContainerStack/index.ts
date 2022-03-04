@@ -147,7 +147,7 @@ export class ECSContainerStack extends Construct {
 			...props,
 			additionalENVs: {
 				ORIGIN_TABLE_NAME: props.originTable.tableName,
-				ORIGN_EXECUTIONID_INDEX: props.originExecutionIdIndex,
+				ORIGIN_EXECUTIONID_INDEX: props.originExecutionIdIndex,
 				ORIGIN_AREA_INDEX: props.originAreaIndex,
 				ORIGIN_PASSWORD: props.originUserPassword,
 				ORIGIN_STATUS_UPDATE_RULE_NAME: props.iotOriginStatusRuleName,
