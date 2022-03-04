@@ -47,6 +47,11 @@ const boxStyle = {
 	background: '#ededed',
 }
 
+const shapeOptions = [
+	{ label: 'circle', value: 'circle' },
+	{ label: 'box', value: 'box' },
+]
+
 const unitOptions = [
 	{ label: 'm', value: 'm' },
 	{ label: 'km', value: 'km' },
@@ -73,9 +78,12 @@ const DriverQuery: React.FC = () => {
 	const [latLong, setLatLong] = useState<ILatLong>()
 	const [apiResult, setApiResult] = useState<string>('')
 	const [radius, setRadius] = useState<number>(200)
+	const [width, setWidth] = useState<number>(200)
+	const [height, setHeight] = useState<number>(200)
 	const [count, setCount] = useState<number>(25)
 	const [startFrom, setStartFrom] = useState<number>(0)
 	const [duOption, setDuOption] = useState<SelectOption>(unitOptions[0])
+	const [shape, setShape] = useState<SelectOption>(shapeOptions[0])
 	const [statusOption, setStatusOption] = useState<SelectOption>(statusOptions[0])
 	const [polygonIdOption, setPolygonIdOption] = useState<SelectOption>()
 	const [polygons, setPolygons] = useState<any>([])
@@ -143,6 +151,9 @@ const DriverQuery: React.FC = () => {
 				distanceUnit: duOption.value,
 				status: statusOption.value === '' ? undefined : statusOption.value,
 				count,
+				shape: shape.value,
+				width: shape.value !== 'circle' ? width : undefined,
+				height: shape.value !== 'circle' ? height : undefined,
 			})
 
 			setApiResult(JSON.stringify(drivers, null, 2))
@@ -222,14 +233,18 @@ const DriverQuery: React.FC = () => {
 			</Box>
 			<Box display='flex' flexDirection='row' width='100%'>
 				<FormField
-					label='Radius'
-					controlId='radius'
+					label='Shape'
+					controlId='shape'
 				>
-					<Input
-						type='number'
-						controlId='radius'
-						onChange={(r) => setRadius(Number(r))}
-						value={radius}
+					<Select
+						placeholder='Type of shape'
+						options={shapeOptions}
+						selectedOption={shape}
+						onChange={e => {
+							const value = e.target.value as string
+							setShape(shapeOptions.find(o => o.value === value) || shapeOptions[0])
+						}
+						}
 					/>
 				</FormField>
 				<FormField
@@ -273,6 +288,47 @@ const DriverQuery: React.FC = () => {
 						value={count}
 					/>
 				</FormField>
+			</Box>
+			<Box display='flex' flexDirection='row'>
+				{shape.value === 'circle' &&
+					<FormField
+						label='Radius'
+						controlId='radius'
+					>
+						<Input
+							type='number'
+							controlId='radius'
+							onChange={(r) => setRadius(Number(r))}
+							value={radius}
+						/>
+					</FormField>
+				}
+				{shape.value === 'box' &&
+				(<>
+					<FormField
+						label='Width'
+						controlId='width'
+					>
+						<Input
+							type='number'
+							controlId='width'
+							onChange={(r) => setWidth(Number(r))}
+							value={width}
+						/>
+					</FormField>
+					<FormField
+						label='Height'
+						controlId='height'
+					>
+						<Input
+							type='number'
+							controlId='height'
+							onChange={(r) => setHeight(Number(r))}
+							value={height}
+						/>
+					</FormField>
+				</>
+				)}
 			</Box>
 
 			<Box display='flex' flexDirection='row' width='100%' p={1}>

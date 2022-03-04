@@ -23,6 +23,9 @@ export type IQuery = {
   distanceUnit?: string
   status?: string
 	count?: number
+	shape?: string
+	width?: number
+	height?: number
 }
 export type IPolygonJson = {
 	polygon: [{ lat: number, long: number, }]
@@ -34,7 +37,7 @@ const getDriverById = (id: string): Promise<any> => {
 	return common.commonGetRequest(`/api/geotracking/driver-location/id/${id}`)
 }
 
-const queryDrivers = ({ lat, long, distance, distanceUnit = 'm', status, count }: IQuery): Promise<any> => {
+const queryDrivers = ({ lat, long, distance, distanceUnit = 'm', status, count, shape, width, height }: IQuery): Promise<any> => {
 	common.setApiName(APIS.SEARCH)
 
 	const params: any = {
@@ -42,7 +45,9 @@ const queryDrivers = ({ lat, long, distance, distanceUnit = 'm', status, count }
 		long,
 		distance,
 		distanceUnit,
-		shape: 'circle',
+		width,
+		height,
+		shape: shape || 'circle',
 		count: count || 25,
 	}
 
