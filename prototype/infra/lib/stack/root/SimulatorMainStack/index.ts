@@ -135,8 +135,8 @@ export class SimulatorMainStack extends Stack {
 			cluster: ecsContainerStack.cluster,
 
 			driverSimulatorContainer: ecsContainerStack.driverSimulator,
-			originSimulatorContainer: ecsContainerStack.destinationSimulator,
-			destinationSimulatorContainer: ecsContainerStack.originSimulator,
+			originSimulatorContainer: ecsContainerStack.originSimulator,
+			destinationSimulatorContainer: ecsContainerStack.destinationSimulator,
 
 			originTable: dataStack.originTable,
 			originAreaIndex: dataStack.originAreaIndex,
