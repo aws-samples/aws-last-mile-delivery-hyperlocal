@@ -18,7 +18,7 @@
 const { getOpenSearchClient } = require('/opt/opensearch-client')
 const { OPENSEARCH } = require('/opt/lambda-utils')
 
-const DRIVER_LOCATION_INDEX = { OPENSEARCH }
+const { DRIVER_LOCATION_INDEX } = OPENSEARCH
 
 const openSearchClient = getOpenSearchClient(`https://${process.env.DOMAIN_ENDPOINT}`)
 
