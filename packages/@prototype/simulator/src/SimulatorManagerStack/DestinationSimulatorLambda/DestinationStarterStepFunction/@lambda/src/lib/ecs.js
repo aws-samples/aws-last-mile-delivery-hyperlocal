@@ -56,7 +56,7 @@ const runTask = (
 						{ name: 'REJECTION_RATE', value: `${rejectionRate}` },
 						{ name: 'SIMULATOR_API', value: `${config.simulatorApi}` },
 						{ name: 'SIMULATOR_CONFIG_BUCKET', value: `${config.simulatorConfigBucket}` },
-						{ name: 'EVENTS_FILE_PATH', value: `${eventsFilePath}` },
+						{ name: 'EVENTS_FILE_PATH', value: eventsFilePath ? `${eventsFilePath}` : '' },
 						// TODO: change in prod
 						{ name: 'LOG_LEVEL', value: 'verbose' },
 					],
