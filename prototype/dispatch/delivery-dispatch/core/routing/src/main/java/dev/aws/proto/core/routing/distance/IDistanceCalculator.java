@@ -14,16 +14,29 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.core.routing.interfaces;
+package dev.aws.proto.core.routing.distance;
 
-import dev.aws.proto.core.routing.Distance;
+import dev.aws.proto.core.routing.location.Coordinate;
+import dev.aws.proto.core.routing.distance.Distance;
+import dev.aws.proto.core.routing.exception.DistanceCalculationException;
 
-public interface IDistanceMatrixRow {
+import java.util.function.Function;
+
+public interface IDistanceCalculator {
+
+    static <TRouterResponse, TResult>
+    TResult travelDistanceSelector(
+            TRouterResponse response, Function<TRouterResponse, TResult> selector) {
+        return selector.apply(response);
+    }
+
     /**
-     * Distance from this row's location to the given location.
+     * Calculate travel distance.
      *
-     * @param location target location
-     * @return distance in units of the implemented class
+     * @param origin      origin
+     * @param destination destination
+     * @return travel distance
+     * @throws DistanceCalculationException when the distance between given coordinates cannot be calculated
      */
-    Distance distanceTo(ILocation location);
+    Distance travelDistance(Coordinate origin, Coordinate destination);
 }

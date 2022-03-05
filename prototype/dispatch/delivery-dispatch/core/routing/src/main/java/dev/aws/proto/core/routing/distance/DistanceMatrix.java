@@ -14,11 +14,10 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.core.routing;
+package dev.aws.proto.core.routing.distance;
 
-import dev.aws.proto.core.routing.interfaces.IDistanceCalculator;
-import dev.aws.proto.core.routing.interfaces.IDistanceMatrixRow;
-import dev.aws.proto.core.routing.interfaces.ILocation;
+import dev.aws.proto.core.routing.route.GraphhopperRouter;
+import dev.aws.proto.core.routing.location.ILocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DistanceMatrix {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrix.class);
 
-    private Map<ILocation, Map<ILocation, Distance>> matrix;
-    private long generatedTime;
+    private final Map<ILocation, Map<ILocation, Distance>> matrix;
+    private final long generatedTime;
 
     private DistanceMatrix(Map<ILocation, Map<ILocation, Distance>> matrix, long generatedTime) {
         this.matrix = matrix;
@@ -39,7 +38,7 @@ public class DistanceMatrix {
 
     public static <TLocation extends ILocation> DistanceMatrix generate(List<TLocation> locations, GraphhopperRouter router) {
         logger.debug(":: DistanceMatrix :: build with {} locations", locations.size());
-        Long start = System.currentTimeMillis();
+        long start = System.currentTimeMillis();
 
         Builder builder = new Builder(router);
 
@@ -50,7 +49,7 @@ public class DistanceMatrix {
         long generatedTime = System.currentTimeMillis() - start;
         logger.debug(":: DistanceMatrix :: calculation time = {}ms :: dimension = {}", generatedTime, builder.getMatrix().size());
         logger.debug(":: DistanceMatrix :: router errors: {}", router.errors().size());
-        router.errors().stream().forEach(logger::info);
+        router.errors().forEach(logger::info);
         router.clearErrors();
 
         DistanceMatrix distMatrix = new DistanceMatrix(builder.getMatrix(), generatedTime);
@@ -59,9 +58,8 @@ public class DistanceMatrix {
 
     public Distance distanceBetween(ILocation origin, ILocation destination) {
         Map<ILocation, Distance> distanceRow = matrix.get(origin);
-        Distance distance = distanceRow.get(destination);
 
-        return distance;
+        return distanceRow.get(destination);
     }
 
     public int dimension() {
@@ -81,7 +79,7 @@ public class DistanceMatrix {
 
     static class Builder {
         private final IDistanceCalculator distanceCalculator;
-        private Map<ILocation, Map<ILocation, Distance>> matrix;
+        private final Map<ILocation, Map<ILocation, Distance>> matrix;
 
         Builder(IDistanceCalculator distanceCalculator) {
             this.distanceCalculator = distanceCalculator;
@@ -96,8 +94,8 @@ public class DistanceMatrix {
          * @return the new calculated distance row
          */
         IDistanceMatrixRow addLocation(ILocation newLocation) {
-            logger.trace("Adding location {}", newLocation.coordinates());
-            Long start = System.currentTimeMillis();
+            logger.trace("Adding location {}", newLocation.coordinate());
+            long start = System.currentTimeMillis();
 
             Map<ILocation, Distance> distancesToOthers = new ConcurrentHashMap<>();
             distancesToOthers.put(newLocation, Distance.ZERO);
@@ -132,8 +130,8 @@ public class DistanceMatrix {
          * @return the distance between origin and destination
          */
         private Distance calculateDistance(ILocation origin, ILocation destination) {
-            logger.trace("Calculating distance between {},{}\t{},{}", origin.coordinates().getLatitude(), origin.coordinates().getLongitude(), destination.coordinates().getLatitude(), destination.coordinates().getLongitude());
-            Distance distance = distanceCalculator.travelDistance(origin.coordinates(), destination.coordinates());
+            logger.trace("Calculating distance between {},{}\t{},{}", origin.coordinate().getLatitude(), origin.coordinate().getLongitude(), destination.coordinate().getLatitude(), destination.coordinate().getLongitude());
+            Distance distance = distanceCalculator.travelDistance(origin.coordinate(), destination.coordinate());
             return distance;
         }
 
