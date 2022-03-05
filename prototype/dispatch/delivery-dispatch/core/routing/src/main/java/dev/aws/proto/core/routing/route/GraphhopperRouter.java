@@ -14,7 +14,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.core.routing;
+package dev.aws.proto.core.routing.route;
 
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
@@ -22,12 +22,14 @@ import com.graphhopper.GraphHopper;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.routing.util.FlagEncoderFactory;
 import com.graphhopper.util.PointList;
-import dev.aws.proto.core.routing.interfaces.IDistanceCalculator;
-import dev.aws.proto.core.routing.interfaces.IRouter;
+import dev.aws.proto.core.routing.distance.Distance;
+import dev.aws.proto.core.routing.distance.IDistanceCalculator;
+import dev.aws.proto.core.routing.location.Coordinate;
 import io.vertx.core.impl.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -61,10 +63,10 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
     @Override
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
         GHRequest ghRequest = new GHRequest(
-                origin.latitude().doubleValue(),
-                origin.longitude().doubleValue(),
-                destination.latitude().doubleValue(),
-                destination.longitude().doubleValue());
+                origin.getLatitude().doubleValue(),
+                origin.getLongitude().doubleValue(),
+                destination.getLatitude().doubleValue(),
+                destination.getLongitude().doubleValue());
 
         // TODO: in prod, this must be a parameter :: based on current weather conditions, package size, etc.
         ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
@@ -72,16 +74,16 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
 
         PointList points = graphhopper.route(ghRequest).getBest().getPoints();
         return StreamSupport.stream(points.spliterator(), false)
-                .map(ghPoint3D -> Coordinate.valueOf(ghPoint3D.lat, ghPoint3D.lon))
+                .map(ghPoint3D -> new Coordinate(ghPoint3D.lat, ghPoint3D.lon))
                 .collect(toList());
     }
 
     private GHResponse getRoute(Coordinate origin, Coordinate destination) {
         GHRequest ghRequest = new GHRequest(
-                origin.latitude().doubleValue(),
-                origin.longitude().doubleValue(),
-                destination.latitude().doubleValue(),
-                destination.longitude().doubleValue());
+                origin.getLatitude().doubleValue(),
+                origin.getLongitude().doubleValue(),
+                destination.getLatitude().doubleValue(),
+                destination.getLongitude().doubleValue());
 
         // TODO: in prod, this must be a parameter
         ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
