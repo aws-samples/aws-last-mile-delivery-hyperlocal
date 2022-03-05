@@ -14,10 +14,8 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.core.routing.interfaces;
-
-import dev.aws.proto.core.routing.Coordinate;
+package dev.aws.proto.core.routing.location;
 
 public interface ILocation {
-    Coordinate coordinates();
+    Coordinate coordinate();
 }
