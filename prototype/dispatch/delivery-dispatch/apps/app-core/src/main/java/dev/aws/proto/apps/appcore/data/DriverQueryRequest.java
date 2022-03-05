@@ -25,7 +25,7 @@
  */
 package dev.aws.proto.apps.appcore.data;
 
-import dev.aws.proto.core.routing.Coordinate;
+import dev.aws.proto.core.routing.location.Coordinate;
 import lombok.Data;
 
 import java.util.List;

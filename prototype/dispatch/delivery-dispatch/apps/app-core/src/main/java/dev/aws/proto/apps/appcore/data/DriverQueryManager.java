@@ -26,7 +26,7 @@
 package dev.aws.proto.apps.appcore.data;
 
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
-import dev.aws.proto.core.routing.Coordinate;
+import dev.aws.proto.core.routing.location.Coordinate;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
