@@ -25,6 +25,7 @@
  */
 package dev.aws.proto.apps.instant.sequential.data;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
@@ -38,10 +39,7 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @ApplicationScoped
 public class DdbAssignmentService extends DdbServiceBase {
@@ -55,7 +53,7 @@ public class DdbAssignmentService extends DdbServiceBase {
     DdbAssignmentService(DdbProperties ddbProperties) {
         this.ddbProperties = ddbProperties;
 
-        dbClient = DynamoDbClient.builder()
+        this.dbClient = DynamoDbClient.builder()
           .credentialsProvider(CredentialsHelper.getCredentialsProvider())
           .region(CredentialsHelper.getRegion())
           .build();
@@ -96,35 +94,44 @@ public class DdbAssignmentService extends DdbServiceBase {
 
         Map<String, AttributeValue> dbItem = dbItems.get(0);
         ObjectMapper mapper = new ObjectMapper();
-////        List<AssignedOrders> assigned = dbItem.get("assigned").l().stream().map(av -> {
-////            JsonNode node = JsonAttributeValueUtil.fromAttributeValue(av);
-////            try {
-////                return mapper.treeToValue(node, AssignedOrders.class);
-////            } catch (JsonProcessingException e) {
-////                e.printStackTrace();
-////            }
-////            return null;
-////        }).collect(Collectors.toList());
-//
+
+        // TODO: assemble segments and unassigned
+//        List<AssignedOrders> assigned = dbItem.get("assigned").l().stream().map(av -> {
+//            JsonNode node = JsonAttributeValueUtil.fromAttributeValue(av);
+//            try {
+//                return mapper.treeToValue(node, AssignedOrders.class);
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }).collect(Collectors.toList());
+
 //        List<String> unassigned = dbItem.get("unassigned").l().stream().map(AttributeValue::s).collect(Collectors.toList());
-//        Long createdAt = Long.parseLong(dbItem.get("createdAt").n());
-//        String executionId = dbItem.get("executionId").s();
-//        String state = dbItem.get("state").s();
-//        String score = dbItem.get("score").s();
-//
+        Long createdAt = Long.parseLong(dbItem.get("createdAt").n());
+        String executionId = dbItem.get("executionId").s();
+        String state = dbItem.get("state").s();
+        String score = dbItem.get("score").s();
+
 //        DispatchResult result = new DispatchResult(problemId, executionId, createdAt, assigned, unassigned, state, score);
-//        result.executionId = dbItem.get("executionId").s();
-//        result.solverDurationInMs = Long.parseLong(dbItem.get("solverDurationInMs").n());
-//        try {
-//            result.distanceMatrixMetrics = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("distanceMatrixMetrics")), DispatcherResult.DistanceMatrixMetrics.class);
-//        } catch(JsonProcessingException e) {
-//            logger.error("Error parsing ddbItem :: distanceMatrixMetrics", e);
-//        }
+        DispatchResult result = DispatchResult.builder()
+                .problemId(problemId)
+                .executionId(executionId)
+                .createdAt(createdAt)
+                .segments(new ArrayList<>())
+                .unassigned(new ArrayList<>())
+                .state(state)
+                .score(score)
+                .executionId(dbItem.get("executionId").s())
+                .solverDurationInMs(Long.parseLong(dbItem.get("solverDurationInMs").n()))
+                .build();
 
-//        return result;
+        try {
+            result.setDistanceMatrixMetrics(mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("distanceMatrixMetrics")), DispatchResult.DistanceMatrixMetrics.class));
+        } catch (JsonProcessingException e) {
+            logger.error("Error parsing ddbItem :: distanceMatrixMetrics", e);
+        }
 
-
-        return null;
+        return result;
     }
 
     public void saveAssignment(DispatchResult assignment) {

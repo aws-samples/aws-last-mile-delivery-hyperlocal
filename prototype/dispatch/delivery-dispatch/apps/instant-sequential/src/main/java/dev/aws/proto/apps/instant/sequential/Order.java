@@ -1,6 +1,6 @@
 package dev.aws.proto.apps.instant.sequential;
 
-import dev.aws.proto.core.routing.CoordinateWithId;
+import dev.aws.proto.core.routing.location.CoordinateWithId;
 import lombok.Data;
 
 import java.util.List;
@@ -16,4 +16,8 @@ public class Order extends dev.aws.proto.core.Order {
 
     private CoordinateWithId destination;
     private Origin origin;
+
+    public String getShortId() {
+        return this.getOrderId().substring(0,8);
+    }
 }
