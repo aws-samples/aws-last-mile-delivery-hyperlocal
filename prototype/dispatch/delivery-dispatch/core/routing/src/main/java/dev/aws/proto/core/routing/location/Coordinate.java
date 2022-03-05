@@ -15,9 +15,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.core.routing;
+package dev.aws.proto.core.routing.location;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.json.bind.annotation.JsonbProperty;
 import java.io.IOException;
@@ -29,56 +30,20 @@ import java.util.Objects;
 /**
  * Horizontal geographical coordinates consisting of latitude and longitude.
  */
+@Data
+@NoArgsConstructor
 public class Coordinate {
-
-    private final BigDecimal latitude;
-    private final BigDecimal longitude;
-
-    public Coordinate(BigDecimal latitude, BigDecimal longitude) {
-        this.latitude = Objects.requireNonNull(latitude);
-        this.longitude = Objects.requireNonNull(longitude);
-    }
-
-    /**
-     * Create coordinates from the given latitude in longitude.
-     *
-     * @param latitude  latitude
-     * @param longitude longitude
-     * @return coordinates with the given latitude and longitude
-     */
-    public static Coordinate valueOf(double latitude, double longitude) {
-        return new Coordinate(BigDecimal.valueOf(latitude), BigDecimal.valueOf(longitude));
-    }
-
-    public static Coordinate buildFrom(ObjectInputStream inputStream) throws IOException {
-        return Coordinate.valueOf(inputStream.readDouble(), inputStream.readDouble());
-    }
-
-    public void writeTo(ObjectOutputStream outputStream) throws IOException {
-        outputStream.writeDouble(this.latitude.doubleValue());
-        outputStream.writeDouble(this.longitude.doubleValue());
-    }
-
-    /**
-     * Latitude.
-     *
-     * @return latitude (never {@code null})
-     */
     @JsonProperty("lat")
     @JsonbProperty("lat")
-    public BigDecimal latitude() {
-        return latitude;
-    }
+    private BigDecimal latitude;
 
-    /**
-     * Longitude.
-     *
-     * @return longitude (never {@code null})
-     */
     @JsonProperty("long")
     @JsonbProperty("long")
-    public BigDecimal longitude() {
-        return longitude;
+    private BigDecimal longitude;
+
+    public Coordinate(double lat, double lon) {
+        this.latitude = BigDecimal.valueOf(lat);
+        this.longitude = BigDecimal.valueOf(lon);
     }
 
     @Override
@@ -97,20 +62,5 @@ public class Coordinate {
     @Override
     public int hashCode() {
         return Objects.hash(latitude.doubleValue(), longitude.doubleValue());
-    }
-
-    @Override
-    public String toString() {
-        return "[" + latitude.toPlainString() +
-                ", " + longitude.toPlainString() +
-                ']';
-    }
-
-    public BigDecimal getLatitude() {
-        return latitude;
-    }
-
-    public BigDecimal getLongitude() {
-        return longitude;
     }
 }
