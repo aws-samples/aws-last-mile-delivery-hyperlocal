@@ -16,7 +16,7 @@
  *
  */
 
-package dev.aws.proto.core.routing;
+package dev.aws.proto.core.routing.distance;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
