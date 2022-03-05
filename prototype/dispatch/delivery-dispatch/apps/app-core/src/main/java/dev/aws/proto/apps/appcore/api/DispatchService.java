@@ -1,9 +1,11 @@
 package dev.aws.proto.apps.appcore.api;
 
+import dev.aws.proto.apps.appcore.api.request.DispatchRequest;
 import dev.aws.proto.apps.appcore.config.SolutionConfig;
 import dev.aws.proto.apps.appcore.planner.solution.DispatchSolutionBase;
 import dev.aws.proto.apps.appcore.planner.solution.SolutionState;
-import dev.aws.proto.core.routing.GraphhopperRouter;
+import dev.aws.proto.core.Order;
+import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import dev.aws.proto.core.routing.config.RoutingConfig;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -16,15 +18,19 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class DispatchService {
+public abstract class DispatchService<
+        TOrder extends Order,
+        TDispatchRequest extends DispatchRequest<TOrder>,
+        TDispatchSolution extends DispatchSolutionBase
+        > {
 
     private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);
 
-    RoutingConfig routingConfig;
-    SolutionConfig solutionConfig;
-    GraphhopperRouter graphhopperRouter;
-    SolverManager<DispatchSolutionBase<HardMediumSoftLongScore>, UUID> solverManager;
-    private final Map<UUID, SolutionState<DispatchSolutionBase<HardMediumSoftLongScore>, UUID>> solutionMap;
+    protected RoutingConfig routingConfig;
+    protected SolutionConfig solutionConfig;
+    protected GraphhopperRouter graphhopperRouter;
+    protected SolverManager<TDispatchSolution, UUID> solverManager;
+    protected final Map<UUID, SolutionState<TDispatchSolution, UUID>> solutionMap;
 
     protected DispatchService(RoutingConfig routingConfig, SolutionConfig solutionConfig) {
         this.routingConfig = routingConfig;
@@ -37,4 +43,13 @@ public abstract class DispatchService {
 //        this.solverManager = new DefaultSolverManager<>(solverFactory, new SolverManagerConfig());
         this.solutionMap = new ConcurrentHashMap<>();
     }
+
+    protected abstract void solveDispatchProblem(UUID problemId, TDispatchRequest request);
+    protected abstract void finalBestSolutionConsumer(TDispatchSolution solution);
+
+    protected TDispatchSolution problemFinder(UUID problemId) {
+        return this.solutionMap.get(problemId).problem;
+    }
+
+
 }
