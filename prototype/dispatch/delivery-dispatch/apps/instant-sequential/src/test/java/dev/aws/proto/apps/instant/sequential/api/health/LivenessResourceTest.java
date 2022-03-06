@@ -15,23 +15,24 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.appcore.planner.solution;
+package dev.aws.proto.apps.instant.sequential.api.health;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.optaplanner.core.api.score.AbstractScore;
+import io.quarkus.test.junit.QuarkusTest;
+import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
-@Data
-@NoArgsConstructor
-public abstract class DispatchSolutionBase<TScore extends AbstractScore> {
-    @JsonProperty("dispatchingSolutionId")
-    protected UUID id;
+@QuarkusTest
+public class LivenessResourceTest {
 
-    protected String name;
-    protected long createdAt;
-    protected String executionId;
-    protected TScore score;
+    @Test
+    public void testHealthEndpoint() {
+        given()
+                .when().get("/q/health")
+                .then()
+                .statusCode(200)
+                .assertThat()
+                .body("status", equalTo("UP"));
+    }
 }
