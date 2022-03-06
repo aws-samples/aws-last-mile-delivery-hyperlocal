@@ -59,9 +59,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <quarkus-plugin.version>2.7.1.Final</quarkus-plugin.version>
+        <quarkus-plugin.version>2.7.3.Final</quarkus-plugin.version>
         <quarkus.package.type>uber-jar</quarkus.package.type>
-        <quarkus.platform.version>2.7.1.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.7.3.Final</quarkus.platform.version>
         <sqlite.version>3.36.0.3</sqlite.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     </properties>
