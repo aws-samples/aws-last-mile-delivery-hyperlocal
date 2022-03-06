@@ -48,20 +48,22 @@
     </licenses>
 
     <properties>
+        <awssdk.version>2.17.138</awssdk.version>
+        <awssdk2-dynamo-json-helper.version>0.13.0</awssdk2-dynamo-json-helper.version>
+        <compiler-plugin.version>3.10.0</compiler-plugin.version>
+        <graphhopper-core.version>4.0</graphhopper-core.version>
+        <graphhopper-reader-osm.version>3.0-pre3</graphhopper-reader-osm.version>
+        <jobrunr.version>4.0.9</jobrunr.version>
+        <lombok.version>1.18.22</lombok.version>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <graphhopper-core.version>4.0</graphhopper-core.version>
-        <graphhopper-reader-osm.version>3.0-pre3</graphhopper-reader-osm.version>
-
+        <quarkus-plugin.version>2.7.1.Final</quarkus-plugin.version>
+        <quarkus.package.type>uber-jar</quarkus.package.type>
         <quarkus.platform.version>2.7.1.Final</quarkus.platform.version>
-
-        <awssdk.version>2.17.138</awssdk.version>
-        <jobrunr.version>4.0.9</jobrunr.version>
         <sqlite.version>3.36.0.3</sqlite.version>
-        <lombok.version>1.18.22</lombok.version>
-        <awssdk2-dynamo-json-helper.version>0.13.0</awssdk2-dynamo-json-helper.version>
+        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     </properties>
 
     <scm>
@@ -157,5 +159,50 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler-plugin.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <release>${maven.compiler.target}</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire-plugin.version}</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                        <maven.home>${maven.home}</maven.home>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>instantSeq</id>
+            <modules>
+                <module>apps/instant-sequential</module>
+            </modules>
+            <build>
+                <defaultGoal>clean compile quarkus:dev</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>sameday</id>
+            <modules>
+                <module>apps/sameday-directpudo</module>
+            </modules>
+            <build>
+                <defaultGoal>clean compile quarkus:dev</defaultGoal>
+            </build>
+        </profile>
+    </profiles>
 
 </project>
