@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
+  ~ this software and associated documentation files (the "Software"), to deal in
+  ~ the Software without restriction, including without limitation the rights to
+  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  ~ the Software, and to permit persons to whom the Software is furnished to do so.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  ~ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  ~ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  ~ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  ~ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+<solver>
+    <!-- Scan the solution for annotations instead of explicitly define them here -->
+    <!--    <scanAnnotatedClasses/>-->
+    <!--<environmentMode>FULL_ASSERT</environmentMode>--><!-- To slowly prove there are no bugs in this code -->
+    <!--    To solve faster by saturating multiple CPU cores-->
+    <moveThreadCount>AUTO</moveThreadCount>
+
+    <solutionClass>dev.aws.proto.apps.instant.sequential.planner.solution.DispatchSolution</solutionClass>
+    <entityClass>dev.aws.proto.apps.instant.sequential.domain.planning.DeliveryOrDriver</entityClass>
+    <entityClass>dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDelivery</entityClass>
+
+    <scoreDirectorFactory>
+        <constraintProviderClass>
+            dev.aws.proto.apps.instant.sequential.planner.solution.DispatchConstraintProvider
+        </constraintProviderClass>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+    </scoreDirectorFactory>
+    <!--    <termination>-->
+    <!--        <secondsSpentLimit>150</secondsSpentLimit>-->
+    <!--    </termination>-->
+    <constructionHeuristic>
+        <!--        <constructionHeuristicType>ALLOCATE_TO_VALUE_FROM_QUEUE</constructionHeuristicType>-->
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    </constructionHeuristic>
+    <localSearch>
+        <unionMoveSelector>
+            <changeMoveSelector/>
+            <swapMoveSelector/>
+            <subChainChangeMoveSelector>
+                <selectReversingMoveToo>true</selectReversingMoveToo>
+            </subChainChangeMoveSelector>
+            <subChainSwapMoveSelector>
+                <selectReversingMoveToo>true</selectReversingMoveToo>
+            </subChainSwapMoveSelector>
+            <!-- TODO use nearby selection to scale out -->
+        </unionMoveSelector>
+        <acceptor>
+            <lateAcceptanceSize>400</lateAcceptanceSize>
+            <!--            <entityTabuSize>64</entityTabuSize>-->
+        </acceptor>
+        <forager>
+            <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+        <termination>
+            <bestScoreFeasible>true</bestScoreFeasible>
+            <secondsSpentLimit>45</secondsSpentLimit>
+            <unimprovedSecondsSpentLimit>20</unimprovedSecondsSpentLimit>
+        </termination>
+    </localSearch>
+</solver>
