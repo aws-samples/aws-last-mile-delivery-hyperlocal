@@ -91,6 +91,7 @@ export class DriverEventHandler extends Construct {
 			targetLambda: this.driverCleanupFunction,
 			timeoutInSeconds: instantDeliveryProviderSettings.driverCleanupIntervalInSeconds as number,
 			stepFunctionIntervalInMinutes: instantDeliveryProviderSettings.subMinuteStepFunctionIntervalInMinutes as number,
+			stepFunctionTimeoutInMinutes: instantDeliveryProviderSettings.subMinuteStepFunctionTimeoutInMinutes as number,
 		})
 
 		new events.Rule(this, 'InstantDeliveryProviderCleanupFunction', {

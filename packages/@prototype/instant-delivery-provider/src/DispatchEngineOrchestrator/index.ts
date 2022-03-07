@@ -57,7 +57,7 @@ export class DispatchEngineOrchestrator extends Construct {
 			iotEndpointAddress,
 		} = props
 
-		const ochestratorHelper = new OrchestratorHelperLambda(this, 'OrchestratorHelperLambda', {
+		const orchestratorHelper = new OrchestratorHelperLambda(this, 'OrchestratorHelperLambda', {
 			dependencies: {
 				instantDeliveryProviderOrders,
 				instantDeliveryProviderLocks,
@@ -75,11 +75,12 @@ export class DispatchEngineOrchestrator extends Construct {
 		})
 
 		const dispatchEngineOrchestratorManager = new DispatchEngineOrchestratorManager(this, 'DispatchEngineOrchestratorManager', {
-			ochestratorHelper,
+			orchestratorHelper,
+			orderDispatchTimeoutInMinutes: instantDeliveryProviderSettings.orderDispatchTimeoutInMinutes as number,
 		})
 
 		const geoClusteringManager = new GeoClusteringManager(this, 'GeoClusteringManager', {
-			ochestratorHelper,
+			orchestratorHelper,
 			dispatchEngineStepFunction: dispatchEngineOrchestratorManager.stepFunction,
 		})
 

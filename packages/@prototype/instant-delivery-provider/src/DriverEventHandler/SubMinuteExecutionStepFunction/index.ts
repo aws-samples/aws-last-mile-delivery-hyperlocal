@@ -22,6 +22,7 @@ import { namespaced } from '@aws-play/cdk-core'
 export interface SubMinuteExecutionStepFunctionProps {
   readonly timeoutInSeconds: number
   readonly stepFunctionIntervalInMinutes: number
+	readonly stepFunctionTimeoutInMinutes: number
   readonly targetLambda: lambda.IFunction
 }
 
@@ -33,6 +34,7 @@ export class SubMinuteExecutionStepFunction extends Construct {
 
 		const {
 			stepFunctionIntervalInMinutes,
+			stepFunctionTimeoutInMinutes,
 			timeoutInSeconds,
 			targetLambda,
 		} = props
@@ -122,6 +124,7 @@ export class SubMinuteExecutionStepFunction extends Construct {
 		this.stepFunction = new stepfunctions.StateMachine(this, 'SubminuteLambdaExecution', {
 			stateMachineName: namespaced(this, 'SubminuteLambdaExecution'),
 			definition,
+			timeout: Duration.minutes(stepFunctionTimeoutInMinutes),
 		})
 	}
 }

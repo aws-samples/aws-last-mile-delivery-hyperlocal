@@ -71,7 +71,7 @@ memoryDBConfig:
   instanceType: db.r6g.xlarge
 
   # number of shards
-  numShards: 3
+  numShards: 1
 
   # number of read replicas per shard
   numReplicasPerShard: 2
@@ -228,6 +228,11 @@ orderManagerSettings:
   # if a reject/accept event doesn't come by then, the order will be automaticall rejected
   originTimeoutInMinutes: 5
 
+  # timeout for the order execution. if the order has not been 
+  # elaborate within this timeout the execution would be aborted. 
+  # default: 5 hours
+  orderTimeoutInMinutes: 300
+
 # settigns for the example instant delivery provider implementation
 instantDeliveryProviderSettings:
   # shard count for the order batch stream
@@ -260,8 +265,15 @@ instantDeliveryProviderSettings:
   # interval in mins for subMinuteStepFunction helper
   subMinuteStepFunctionIntervalInMinutes: 10
 
+  # subMinuteStepFunction timeout
+  subMinuteStepFunctionTimeoutInMinutes: 12
+
   # cancel orders after XX seconds if not assigned
   orderCancellationTimeoutInSeconds: 1500
+
+  # define the max timeout for dispatching orders to drivers
+  # executions that take longer than this will be aborted
+  orderDispatchTimeoutInMinutes: 30
 
   # bias for geocluster algo
   # see https://github.com/yetzt/node-geocluster

@@ -286,6 +286,7 @@ export class OrderManagerStepFunction extends Construct {
 			stateMachineName: namespaced(this, 'OrderManagerStepFunction'),
 			definition,
 			role: stepFunctionRole,
+			timeout: Duration.minutes(orderManagerSettings.orderTimeoutInMinutes as number),
 		})
 	}
 }
