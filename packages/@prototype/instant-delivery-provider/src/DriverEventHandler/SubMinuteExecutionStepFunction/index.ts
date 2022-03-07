@@ -20,10 +20,10 @@ import { Duration, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface SubMinuteExecutionStepFunctionProps {
-  readonly timeoutInSeconds: number
-  readonly stepFunctionIntervalInMinutes: number
+	readonly timeoutInSeconds: number
+	readonly stepFunctionIntervalInMinutes: number
 	readonly stepFunctionTimeoutInMinutes: number
-  readonly targetLambda: lambda.IFunction
+	readonly targetLambda: lambda.IFunction
 }
 
 export class SubMinuteExecutionStepFunction extends Construct {
