@@ -19,7 +19,8 @@ import { Duration, aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as st
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface DispatchEngineOrchestratorManagerProps {
-  readonly ochestratorHelper: lambda.IFunction
+  readonly orchestratorHelper: lambda.IFunction
+	readonly orderDispatchTimeoutInMinutes: number
 }
 
 export class DispatchEngineOrchestratorManager extends Construct {
@@ -29,7 +30,8 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		super(scope, id)
 
 		const {
-			ochestratorHelper,
+			orderDispatchTimeoutInMinutes,
+			orchestratorHelper,
 		} = props
 
 		const stepFunctionRole = new iam.Role(
@@ -41,7 +43,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		)
 
 		const dispatchEngineInvoke = new tasks.LambdaInvoke(this, 'InvokeDispatchEngine', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.dispatchEngineInvoke',
 			payloadResponseOnly: true,
 			payload: {
@@ -58,7 +60,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		})
 
 		const dispachEngineQuery = new tasks.LambdaInvoke(this, 'QueryDispachEngine', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.dispatchEngine',
 			payloadResponseOnly: true,
 			payload: {
@@ -78,7 +80,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		// the fact that these are inside different maps/parallel and cant' be shared across
 
 		const sendUnassignedOrderToKinesis = new tasks.LambdaInvoke(this, 'SendUnassignedOrderToKinesis', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
 				type: stepfunctions.InputType.OBJECT,
@@ -92,7 +94,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		})
 
 		const sendConflictOrdersToKinesis = new tasks.LambdaInvoke(this, 'SendConflictOrdersToKinesis', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
 				type: stepfunctions.InputType.OBJECT,
@@ -109,7 +111,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		// end sendToKinesis cmd tasks
 
 		const sendAssignedOrderToDriver = new tasks.LambdaInvoke(this, 'SendAssignedOrderToDriver', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			payloadResponseOnly: true,
 			payload: {
 				type: stepfunctions.InputType.OBJECT,
@@ -126,7 +128,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 		})
 
 		const updateOrdersStatus = new tasks.LambdaInvoke(this, 'UpdateOrdersStatus', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.orderUpdated',
 			payloadResponseOnly: true,
 			payload: {
@@ -142,7 +144,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 			},
 		})
 		const lockDriver = new tasks.LambdaInvoke(this, 'LockDriver', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.driverStatus',
 			payloadResponseOnly: true,
 			payload: {
@@ -158,7 +160,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 			},
 		})
 		const releaseDriverLock = new tasks.LambdaInvoke(this, 'ReleaseDriverLock', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.releaseDriverLock',
 			payloadResponseOnly: true,
 			payload: {
@@ -173,7 +175,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 			},
 		})
 		const releaseOrdersLock = new tasks.LambdaInvoke(this, 'ReleaseOrdersLock', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.releaseOrdersLock',
 			payloadResponseOnly: true,
 			payload: {
@@ -269,6 +271,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 			stateMachineName: namespaced(this, 'DispatchEngineOrchestratorStepFunction'),
 			definition,
 			role: stepFunctionRole,
+			timeout: Duration.minutes(orderDispatchTimeoutInMinutes),
 		})
 	}
 }

@@ -15,11 +15,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks } from 'aws-cdk-lib'
+import { aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as stepfunctions, aws_stepfunctions_tasks as tasks, Duration } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface GeoClusteringManagerProps {
-  readonly ochestratorHelper: lambda.IFunction
+  readonly orchestratorHelper: lambda.IFunction
   readonly dispatchEngineStepFunction: stepfunctions.StateMachine
 }
 
@@ -30,7 +30,7 @@ export class GeoClusteringManager extends Construct {
 		super(scope, id)
 
 		const {
-			ochestratorHelper,
+			orchestratorHelper,
 			dispatchEngineStepFunction,
 		} = props
 
@@ -43,7 +43,7 @@ export class GeoClusteringManager extends Construct {
 		)
 
 		const geoClustering = new tasks.LambdaInvoke(this, 'GeoClustering', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.geoClustering',
 			payloadResponseOnly: true,
 			payload: {
@@ -58,7 +58,7 @@ export class GeoClusteringManager extends Construct {
 		})
 
 		const cancelOrders = new tasks.LambdaInvoke(this, 'CancelOrders', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.cancelled',
 			payloadResponseOnly: true,
 			payload: {
@@ -73,7 +73,7 @@ export class GeoClusteringManager extends Construct {
 		})
 
 		const filterExpiredOrders = new tasks.LambdaInvoke(this, 'FilterExpiredOrders', {
-			lambdaFunction: ochestratorHelper,
+			lambdaFunction: orchestratorHelper,
 			resultPath: '$.filterExpiredOrders',
 			payloadResponseOnly: true,
 			payload: {
@@ -125,6 +125,8 @@ export class GeoClusteringManager extends Construct {
 			stateMachineName: namespaced(this, 'GeoClusteringManagerStepFunction'),
 			definition,
 			role: stepFunctionRole,
+			// usually takes a few seconds
+			timeout: Duration.minutes(5),
 		})
 	}
 }
