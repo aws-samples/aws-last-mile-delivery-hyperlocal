@@ -54,6 +54,9 @@ COPY ./config/instant/sequential/dispatchSolverConfig.xml /app/config/instant/se
 # executables
 COPY ./*.jar /app
 
+RUN chown -R 1001 /app
+WORKDIR /app
+
 EXPOSE 80 8080
 VOLUME [ "/app/config-external" ]
 USER 1001
