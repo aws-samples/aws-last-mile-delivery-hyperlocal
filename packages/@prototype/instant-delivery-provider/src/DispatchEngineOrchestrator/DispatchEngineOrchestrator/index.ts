@@ -19,7 +19,7 @@ import { Duration, aws_iam as iam, aws_lambda as lambda, aws_stepfunctions as st
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface DispatchEngineOrchestratorManagerProps {
-  readonly orchestratorHelper: lambda.IFunction
+	readonly orchestratorHelper: lambda.IFunction
 	readonly orderDispatchTimeoutInMinutes: number
 }
 
