@@ -46,7 +46,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 	const [uploading, setUploading] = useState<boolean>(false)
 	const [rejectionRate, setRejectionRate] = useState<number>(3)
 	const [selectedOption, setSeletedOption] = useState<any>()
-	const [filename, setFilename] = useState<string>()
+	const [eventsFilePath, setEventsFilePath] = useState<string>()
 	const [errorMessage, setErrorMessage] = useState<string>()
 
 	const options = [
@@ -69,7 +69,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 			orders,
 			rejectionRate,
 			orderInterval: selectedOption.value,
-			eventsFilePath: filename,
+			eventsFilePath: eventsFilePath,
 		})
 	}
 
@@ -88,19 +88,19 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 							filename: name,
 						})
 
-						await axios.put(signedUrl.url, content, {
+						await axios.put(signedUrl.signedUrl, content, {
 							headers: {
 								'Content-Type': type,
 							},
 						})
 
-						setFilename(name)
+						setEventsFilePath(signedUrl.key)
 					}
 				} catch (err) {
 					console.error('Error uploading file: ', err)
 
 					setErrorMessage('Unable to upload the file, try again')
-					setFilename('')
+					setEventsFilePath('')
 				} finally {
 					setUploading(false)
 				}
