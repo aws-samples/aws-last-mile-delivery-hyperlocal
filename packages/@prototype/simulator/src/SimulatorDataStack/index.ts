@@ -56,6 +56,15 @@ export class SimulatorDataStack extends NestedStack {
 		this.simulatorConfigBucket = new hyperlocal_s3.Bucket(this, 'SimulatorConfig', {
 			bucketName: namespacedBucket(this, 'simulator-config'),
 			versioned: true,
+			enforceSSL: true,
+			cors: [
+				{
+					// TODO: restrict to have allowed origins strictly defined
+					allowedOrigins: ['*'],
+					allowedHeaders: ['*'],
+					allowedMethods: [s3.HttpMethods.PUT, s3.HttpMethods.GET],
+				},
+			],
 		})
 
 		this.simulatorTable = new hyperlocal_ddb.Table(this, 'SimulatorTable', {

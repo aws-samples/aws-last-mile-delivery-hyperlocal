@@ -26,6 +26,7 @@ import { DestinationStarterStepFunction } from './DestinationStarterStepFunction
 import { DestinationEraserStepFunction } from './DestinationEraserStepFunction'
 import { SimulatorContainer } from '../../ECSContainerStack/SimulatorContainer'
 import { DestinationStatusUpdateLambda } from './DestinationStatusUpdateLambda'
+import { S3PresignedUrlLambda } from './S3PresignedUrlLambda'
 
 export interface DestinationSimulatorProps {
 	readonly destinationTable: ddb.ITable
@@ -55,6 +56,8 @@ export interface DestinationSimulatorProps {
 
 export class DestinationSimulatorLambda extends Construct {
 	public readonly lambda: lambda.Function
+
+	public readonly s3PresignedUrlLambda: lambda.Function
 
 	public readonly destinationStatusUpdateLambda: lambda.Function
 
@@ -181,6 +184,15 @@ export class DestinationSimulatorLambda extends Construct {
 					lambdaLayers.lambdaUtilsLayer,
 					lambdaLayers.redisClientLayer,
 					lambdaLayers.lambdaInsightsLayer,
+				],
+			},
+		})
+
+		this.s3PresignedUrlLambda = new S3PresignedUrlLambda(this, 'S3PresignedUrlLambda', {
+			dependencies: {
+				simulatorConfigBucket,
+				lambdaLayers: [
+					lambdaLayers.lambdaUtilsLayer,
 				],
 			},
 		})

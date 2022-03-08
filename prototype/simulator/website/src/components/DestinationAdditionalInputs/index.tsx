@@ -14,18 +14,23 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
+import axios from 'axios'
 import Modal from 'aws-northstar/components/Modal'
 import Button from 'aws-northstar/components/Button'
 import FormField from 'aws-northstar/components/FormField'
 import Input from 'aws-northstar/components/Input'
 import Select from 'aws-northstar/components/Select'
+import Text from 'aws-northstar/components/Text'
+import FileUpload from 'aws-northstar/components/FileUpload'
 import PlayArrow from '@material-ui/icons/PlayArrow'
+import api from '../../api/Destination'
 
 export type IAdditionalInputResults = {
 	orders: number
 	orderInterval: string
 	rejectionRate: number
+	eventsFilePath?: string
 }
 
 export type IAdditionalInput = {
@@ -38,8 +43,11 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 ({ visible, onClose, onAccept }): React.ReactElement => {
 	const [orders, setOrders] = useState<number>()
 	const [errorText, setErrorText] = useState<string>()
+	const [uploading, setUploading] = useState<boolean>(false)
 	const [rejectionRate, setRejectionRate] = useState<number>(3)
 	const [selectedOption, setSeletedOption] = useState<any>()
+	const [filename, setFilename] = useState<string>()
+	const [errorMessage, setErrorMessage] = useState<string>()
 
 	const options = [
 		{ label: 'Second', value: 's' },
@@ -59,10 +67,47 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 
 		onAccept({
 			orders,
-			orderInterval: selectedOption.value,
 			rejectionRate,
+			orderInterval: selectedOption.value,
+			eventsFilePath: filename,
 		})
 	}
+
+	const handleOnChange = useCallback(
+		async (files) => {
+			if (files && files.length > 0) {
+				try {
+					setErrorMessage('')
+					setUploading(true)
+
+					const content = await files[0].text()
+					const { name, size, type } = files[0]
+
+					if (content && name && size > 0) {
+						const signedUrl = await api.signedUrl({
+							filename: name,
+						})
+
+						await axios.put(signedUrl.url, content, {
+							headers: {
+								'Content-Type': type,
+							},
+						})
+
+						setFilename(name)
+					}
+				} catch (err) {
+					console.error('Error uploading file: ', err)
+
+					setErrorMessage('Unable to upload the file, try again')
+					setFilename('')
+				} finally {
+					setUploading(false)
+				}
+			}
+		},
+		[],
+	)
 
 	return (
 		<Modal
@@ -70,7 +115,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 			visible={visible}
 			onClose={onClose}
 			footer={
-				<Button type='button' icon={PlayArrow} onClick={onStart}>
+				<Button type='button' icon={PlayArrow} onClick={onStart} loading={uploading}>
 					Start
 				</Button>
 			}
@@ -112,6 +157,16 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 					value={rejectionRate}
 				/>
 			</FormField>
+			<hr />
+			<FileUpload
+				controlId="simulationFile"
+				label="Simulation file"
+				description="File to be used during the siulation, it will ignore the previous input"
+				hintText="You can only upload JSON files"
+				accept='application/json'
+				onChange={handleOnChange}
+			></FileUpload>
+			{errorMessage && <Text color='error'>{errorMessage}</Text>}
 		</Modal>
 	)
 }

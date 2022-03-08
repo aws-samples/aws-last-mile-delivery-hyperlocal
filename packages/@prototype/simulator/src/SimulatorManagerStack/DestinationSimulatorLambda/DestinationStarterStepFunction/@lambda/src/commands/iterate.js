@@ -21,11 +21,19 @@ const config = require('../config')
 
 const execute = async (payload) => {
 	const executionId = uuidv4()
-	const count = Number(payload.count)
 	const lastEvaluatedKey = payload.lastEvaluatedKey
+	const fileBasedSimulation = payload.fileBasedSimulation
+	let count = Number(payload.count)
+
+	// if is a file based simulation we'd need only one destination item to simulate the full flow
+	// as it would playback the file as provided by the user
+	if (fileBasedSimulation) {
+		count = 1
+	}
+
 	const items = await ddb.scan(config.destinationTable, lastEvaluatedKey, count)
 
-	console.log(`Items retrieved with following params: lastEvaluatedKey=${lastEvaluatedKey},count=${count}`)
+	console.log(`Items retrieved with following params: lastEvaluatedKey=${lastEvaluatedKey},count=${count},fileBasedSimulation=${fileBasedSimulation}`)
 	console.warn(items.Count, items.LastEvaluatedKey, items.ScannedCount, items.ConsumedCapacity)
 
 	console.log('Updating items with executionId')
@@ -38,7 +46,8 @@ const execute = async (payload) => {
 	return {
 		executionId,
 		lastEvaluatedKey: items.LastEvaluatedKey ? items.LastEvaluatedKey.ID : '',
-		continue: !!items.LastEvaluatedKey,
+		// run only one iteration to get one item in case of fileBasedSimulation
+		continue: fileBasedSimulation ? false : !!items.LastEvaluatedKey,
 		evaluatedItems: items.Count,
 	}
 }

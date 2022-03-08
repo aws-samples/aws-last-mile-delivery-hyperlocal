@@ -29,6 +29,7 @@ export interface APIGatewayResourceStackProps {
 	readonly destinationSimulatorLambda: lambda.Function
 	readonly statisticSimulatorLambda: lambda.Function
 	readonly dispatcherAssignmentQueryLambda: lambda.Function
+	readonly s3PresignedUrlLambda: lambda.Function
 	readonly simulatorRestApi: api.RestApi
 }
 
@@ -46,6 +47,7 @@ export class APIGatewayResourceStack extends Construct {
 			destinationSimulatorLambda,
 			statisticSimulatorLambda,
 			dispatcherAssignmentQueryLambda,
+			s3PresignedUrlLambda,
 			userPool,
 		} = props
 
@@ -265,6 +267,16 @@ export class APIGatewayResourceStack extends Construct {
 
 		simulatorRestApi.addFunctionToResource(destinations, {
 			function: destinationSimulatorLambda,
+			httpMethod: 'POST',
+			methodOptions: {
+				authorizer: cognitoAuth,
+			},
+		})
+
+		const destinationsSignedUrl = simulatorRestApi.addResourceWithAbsolutePath('destination/signed-url')
+
+		simulatorRestApi.addFunctionToResource(destinationsSignedUrl, {
+			function: s3PresignedUrlLambda,
 			httpMethod: 'POST',
 			methodOptions: {
 				authorizer: cognitoAuth,

@@ -18,6 +18,11 @@ import { IEntity } from '../components/GenerateEntityComponent'
 import { IAdditionalInputResults } from '../components/DestinationAdditionalInputs'
 import common, { APIS } from './Common'
 
+export interface ISignedUrl {
+	filename: string
+	action?: string
+}
+
 const getDestinationsStats = (): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
@@ -64,6 +69,10 @@ const stopSimulator = (simulationId: string): Promise<any> => {
 	return common.commonDeleteRequest(`/destination/simulations/${simulationId}`)
 }
 
+const signedUrl = (data: ISignedUrl): Promise<any> => {
+	return common.commonPostRequest('/destination/signed-url', data)
+}
+
 export default {
 	getDestinationsStats,
 	deleteDestinationStats,
@@ -71,4 +80,5 @@ export default {
 	generateDestinations,
 	startSimulator,
 	stopSimulator,
+	signedUrl,
 }
