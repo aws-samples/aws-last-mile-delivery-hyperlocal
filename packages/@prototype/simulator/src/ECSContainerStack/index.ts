@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ecs as ecs, aws_ecr as ecr, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
+import { aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { SimulatorContainer } from './SimulatorContainer'
 import { sync as findup } from 'find-up'
@@ -47,8 +47,6 @@ interface ECSContainerStackProps {
 }
 
 export class ECSContainerStack extends Construct {
-	public readonly repository: ecr.Repository
-
 	public readonly cluster: ecs.Cluster
 
 	public readonly driverSimulator: SimulatorContainer
@@ -64,12 +62,6 @@ export class ECSContainerStack extends Construct {
 			clusterName: namespaced(this, 'simulator'),
 			vpc: props.ecsVpc,
 			containerInsights: true,
-		})
-
-		// repo to store docker image
-		this.repository = new ecr.Repository(this, 'SimulatorCommonRepository', {
-			repositoryName: namespaced(this, 'simulator-repository'),
-			imageScanOnPush: true,
 		})
 
 		const getIoTEndpoint = new cr.AwsCustomResource(this, 'IoTEndpoint', {
