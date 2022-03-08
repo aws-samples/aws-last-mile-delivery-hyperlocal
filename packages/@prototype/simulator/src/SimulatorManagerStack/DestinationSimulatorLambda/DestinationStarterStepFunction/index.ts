@@ -133,6 +133,7 @@ export class DestinationStarterStepFunction extends Construct {
 						cmd: 'iterate',
 						payload: {
 							'count.$': '$$.Execution.Input.batchSize',
+							'fileBasedSimulation.$': '$$.Execution.Input.fileBasedSimulation',
 							'lastEvaluatedKey.$': '$.iterator.lastEvaluatedKey',
 						},
 					},

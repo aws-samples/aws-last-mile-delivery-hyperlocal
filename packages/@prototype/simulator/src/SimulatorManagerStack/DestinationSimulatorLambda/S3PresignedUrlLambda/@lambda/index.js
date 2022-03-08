@@ -14,74 +14,56 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { v4: uuidv4 } = require('uuid')
-const utils = require('../utils')
-const logger = require('../utils/logger')
-const ddb = require('../lib/dynamoDB')
-const step = require('../lib/steps')
-const config = require('../config')
 
-const execute = async (input) => {
-	logger.info('Starting the simulation')
+/* eslint-disable no-console */
+const aws = require('aws-sdk')
+const utils = require('/opt/lambda-utils')
 
-	try {
-		const { orderRate, orderInterval, rejectionRate, eventsFilePath } = input
-		const data = await ddb.scan(config.destinationStatsTable)
-		const stats = data.Items
-		const simulationId = uuidv4()
-		const isRunning = await ddb.scan(config.destinationSimulationTable, {
-			state: 'RUNNING',
-		})
+const s3 = new aws.S3()
 
-		if (isRunning.Count > 0) {
-			return utils.fail({
-				error: 'Another simulation is still running, please stop it before starting a new one',
-			}, 400)
-		}
+const SIMULATOR_CONFIG_BUCKET = process.env.SIMULATOR_CONFIG_BUCKET
+const SIMULATOR_CONFIG_FILE_PREFIX = process.env.SIMULATOR_CONFIG_FILE_PREFIX
 
-		if (stats.filter(q => q.state !== 'READY').length > 0) {
-			return utils.fail({
-				error: 'Destinations are still generating, wait the operation to complete before starting the simulator',
-			}, 400)
-		}
+const getSignedUrl = (bucket, key, action) =>
+	s3.getSignedUrlPromise(action, {
+		ContentType: 'application/json',
+		Bucket: bucket,
+		Key: key,
+		Expires: 300, // 5 minutes
+	})
 
-		if (stats.length === 0) {
-			return utils.fail({
-				error: 'There are not destinations in the system, please start by generating them',
-			}, 400)
-		}
+const handler = async (event) => {
+	if (event.body === undefined) {
+		console.error(`Property 'body' not found in event object: ${JSON.stringify(event)}`)
 
-		await ddb.putItem(config.destinationSimulationTable, {
-			ID: simulationId,
-			stats,
-			state: 'STARTING',
-			containerBatchSize: Number(config.destinationContainerBatchSize),
-			orderRate,
-			orderInterval,
-			rejectionRate,
-			eventsFilePath,
-		})
-
-		const res = await step.startExecution({
-			simulationId,
-			batchSize: Number(config.destinationContainerBatchSize),
-			fileBasedSimulation: !!eventsFilePath,
-		}, config.destinationStarterStepFunctions)
-
-		await ddb.updateItem(config.destinationSimulationTable, simulationId, {
-			stepFunctionExecution: res.executionArn,
-		})
-
-		return utils.success({
-			id: simulationId,
-		})
-	} catch (err) {
-		return utils.fail({
-			error: 'Error starting the simulation',
-		}, 400)
+		return utils.fail({ error: 'Unrecognized message format' })
 	}
+
+	let { body } = event
+
+	if (typeof body === 'string' || body instanceof String) {
+		body = JSON.parse(body)
+	}
+
+	let { filename, action } = body
+
+	if (!filename) {
+		return utils.fail({ error: 'The body must contain the filename property' }, 400)
+	}
+
+	if (!action) {
+		action = 'putObject'
+	}
+
+	if (!['putObject', 'getObject'].includes(action)) {
+		return utils.fail({ message: `The action ${action} is not recognized` }, 400)
+	}
+
+	const url = await getSignedUrl(SIMULATOR_CONFIG_BUCKET, `${SIMULATOR_CONFIG_FILE_PREFIX}/${filename}`, action)
+
+	return utils.success({
+		url,
+	})
 }
 
-module.exports = {
-	execute,
-}
+exports.handler = handler

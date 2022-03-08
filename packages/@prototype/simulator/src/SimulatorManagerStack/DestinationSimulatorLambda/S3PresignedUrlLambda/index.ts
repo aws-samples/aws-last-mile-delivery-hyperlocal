@@ -14,74 +14,51 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const { v4: uuidv4 } = require('uuid')
-const utils = require('../utils')
-const logger = require('../utils/logger')
-const ddb = require('../lib/dynamoDB')
-const step = require('../lib/steps')
-const config = require('../config')
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_s3 as s3, aws_iam as iam } from 'aws-cdk-lib'
+import { namespaced } from '@aws-play/cdk-core'
+import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 
-const execute = async (input) => {
-	logger.info('Starting the simulation')
-
-	try {
-		const { orderRate, orderInterval, rejectionRate, eventsFilePath } = input
-		const data = await ddb.scan(config.destinationStatsTable)
-		const stats = data.Items
-		const simulationId = uuidv4()
-		const isRunning = await ddb.scan(config.destinationSimulationTable, {
-			state: 'RUNNING',
-		})
-
-		if (isRunning.Count > 0) {
-			return utils.fail({
-				error: 'Another simulation is still running, please stop it before starting a new one',
-			}, 400)
-		}
-
-		if (stats.filter(q => q.state !== 'READY').length > 0) {
-			return utils.fail({
-				error: 'Destinations are still generating, wait the operation to complete before starting the simulator',
-			}, 400)
-		}
-
-		if (stats.length === 0) {
-			return utils.fail({
-				error: 'There are not destinations in the system, please start by generating them',
-			}, 400)
-		}
-
-		await ddb.putItem(config.destinationSimulationTable, {
-			ID: simulationId,
-			stats,
-			state: 'STARTING',
-			containerBatchSize: Number(config.destinationContainerBatchSize),
-			orderRate,
-			orderInterval,
-			rejectionRate,
-			eventsFilePath,
-		})
-
-		const res = await step.startExecution({
-			simulationId,
-			batchSize: Number(config.destinationContainerBatchSize),
-			fileBasedSimulation: !!eventsFilePath,
-		}, config.destinationStarterStepFunctions)
-
-		await ddb.updateItem(config.destinationSimulationTable, simulationId, {
-			stepFunctionExecution: res.executionArn,
-		})
-
-		return utils.success({
-			id: simulationId,
-		})
-	} catch (err) {
-		return utils.fail({
-			error: 'Error starting the simulation',
-		}, 400)
-	}
+interface Environment extends DeclaredLambdaEnvironment {
+	readonly SIMULATOR_CONFIG_BUCKET: string
 }
 
-module.exports = {
-	execute,
+interface Dependencies extends DeclaredLambdaDependencies {
+	readonly simulatorConfigBucket: s3.IBucket
+}
+
+type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
+
+export class S3PresignedUrlLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
+	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
+		const {
+			simulatorConfigBucket,
+			lambdaLayers,
+		} = props.dependencies
+
+		const declaredProps: TDeclaredProps = {
+			functionName: namespaced(scope, 'S3PresignedUrl'),
+			description: 'Lambda used to generate pre-signed url for the file event upload',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/s3-presigned-url.zip')),
+			dependencies: props.dependencies,
+			timeout: Duration.seconds(30),
+			environment: {
+				SIMULATOR_CONFIG_BUCKET: simulatorConfigBucket.bucketName,
+				SIMULATOR_CONFIG_FILE_PREFIX: 'uploads/',
+			},
+			initialPolicy: [
+				new iam.PolicyStatement({
+					actions: [
+						's3:PutObject',
+						's3:GetObject',
+					],
+					effect: iam.Effect.ALLOW,
+					resources: [`${simulatorConfigBucket.bucketArn}/*`],
+				}),
+			],
+			layers: lambdaLayers,
+		}
+
+		super(scope, id, declaredProps)
+	}
 }

@@ -229,6 +229,7 @@ export class SimulatorManagerStack extends Construct {
 			eventSimulatorLambda: eventSimulator.lambda,
 			originSimulatorLambda: this.originSimulator.lambda,
 			destinationSimulatorLambda: this.destinationSimulator.lambda,
+			s3PresignedUrlLambda: this.destinationSimulator.s3PresignedUrlLambda,
 			statisticSimulatorLambda: statisticsLambdaSimulator.lambda,
 			polygonManagerLambda,
 			dispatcherAssignmentQueryLambda,
