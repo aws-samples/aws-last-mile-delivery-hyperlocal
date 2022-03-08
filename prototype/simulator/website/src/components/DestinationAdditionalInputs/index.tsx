@@ -84,17 +84,17 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 					const { name, size, type } = files[0]
 
 					if (content && name && size > 0) {
-						const signedUrl = await api.signedUrl({
+						const signedUrlResponse = await api.signedUrl({
 							filename: name,
 						})
 
-						await axios.put(signedUrl.signedUrl, content, {
+						await axios.put(signedUrlResponse.signedUrl, content, {
 							headers: {
 								'Content-Type': type,
 							},
 						})
 
-						setEventsFilePath(signedUrl.key)
+						setEventsFilePath(signedUrlResponse.key)
 					}
 				} catch (err) {
 					console.error('Error uploading file: ', err)
