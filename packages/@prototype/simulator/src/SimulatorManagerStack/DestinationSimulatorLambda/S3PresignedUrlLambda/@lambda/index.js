@@ -59,10 +59,12 @@ const handler = async (event) => {
 		return utils.fail({ message: `The action ${action} is not recognized` }, 400)
 	}
 
-	const url = await getSignedUrl(SIMULATOR_CONFIG_BUCKET, `${SIMULATOR_CONFIG_FILE_PREFIX}/${filename}`, action)
+	const key = `${SIMULATOR_CONFIG_FILE_PREFIX}/${filename}`
+	const signedUrl = await getSignedUrl(SIMULATOR_CONFIG_BUCKET, key, action)
 
 	return utils.success({
-		url,
+		signedUrl,
+		key,
 	})
 }
 

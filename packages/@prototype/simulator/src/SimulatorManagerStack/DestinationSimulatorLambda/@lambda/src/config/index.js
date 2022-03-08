@@ -24,5 +24,4 @@ module.exports = {
 	destinationContainerBatchSize: Number(process.env.DESTINATION_CONTAINER_BATCH_SIZE) || 10,
 	// 25 is the max value
 	destinationDeleteBatchSize: Number(process.env.DESTINATION_DELETE_BATCH_SIZE) || 25,
-	simulatorConfigBucket: process.env.SIMULATOR_CONFIG_BUCKET,
 }
