@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 import React from 'react'
 import Amplify from 'aws-amplify'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
@@ -54,7 +54,7 @@ Amplify.configure({
 	/* eslint-enable no-undef */
 })
 
-ReactDOM.render(
+render(
 	<React.StrictMode>
 		<BrowserRouter>
 			<App />

@@ -20,7 +20,8 @@ import { AlertType } from 'aws-northstar/components/Alert'
 import LatLongPair, { ILatLong } from '../../components/LatLongPairComponent'
 import GeotrackingAPI from '../../api/GeotrackingAPI'
 import SimulatorAPI from '../../api/SimulatorAPI'
-import { Alert, Box, Button, ColumnLayout, Container, Heading, Input, Inline, Stack, Textarea, FormField, Select, Tabs, LoadingIndicator } from 'aws-northstar'
+import utils from '../../utils'
+import { Alert, Box, Button, ColumnLayout, Container, Input, Stack, Textarea, FormField, Select, Tabs, LoadingIndicator } from 'aws-northstar'
 import { SelectOption } from 'aws-northstar/components/Select'
 import MarkdownViewer from 'aws-northstar/components/MarkdownViewer'
 
@@ -28,20 +29,6 @@ declare type IMyAlert ={
 	type: AlertType
 	message: string
 }
-
-const defaultLocation = [{
-	lat: -6.183084,
-	long: 106.80352,
-}, {
-	lat: -6.173728,
-	long: 106.796824,
-}, {
-	lat: -6.185903,
-	long: 106.841798,
-}, {
-	lat: -6.211713,
-	long: 106.82524,
-}]
 
 const boxStyle = {
 	background: '#ededed',
@@ -108,7 +95,7 @@ const DriverQuery: React.FC = () => {
 	}, [])
 
 	const setLocation = (idx: number) => {
-		const location = defaultLocation[idx]
+		const location = utils.DEFAULT_AREAS[idx]
 		setLatLong(location)
 	}
 
@@ -228,7 +215,6 @@ const DriverQuery: React.FC = () => {
 					<Button variant='link' size='small' onClick={() => setLocation(0)}>Loc 1</Button>
 					<Button variant='link' size='small' onClick={() => setLocation(1)}>Loc 2</Button>
 					<Button variant='link' size='small' onClick={() => setLocation(2)}>Loc 3</Button>
-					<Button variant='link' size='small' onClick={() => setLocation(3)}>Loc 4</Button>
 				</Box>
 			</Box>
 			<Box display='flex' flexDirection='row' width='100%'>

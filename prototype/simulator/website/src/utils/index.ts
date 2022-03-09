@@ -16,6 +16,15 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-this-alias */
 
+declare interface ILatLong {
+	lat: number
+	long: number
+}
+
+declare let appVariables: {
+	DEFAULT_AREAS: ILatLong[]
+}
+
 const groupAreas = (areas: any[], maxGroup = 0): any[] => {
 	const groups = []
 
@@ -133,11 +142,7 @@ const generatePolygonGEOJSON = (vertices: any[]): any => {
 	}
 }
 
-const DEFAULT_AREAS = [
-	{ lat: -6.1813448922772185, long: 106.8372344970703 },
-	{ lat: -6.154038052480653, long: 106.7270278930664 },
-	{ lat: -6.22981105782168, long: 106.73372268676758 },
-]
+const DEFAULT_AREAS = appVariables.DEFAULT_AREAS
 
 const getAreaCodeFromCoords = (lat: number, long: number): string|undefined => {
 	const idx = DEFAULT_AREAS.findIndex((q) => q.lat === lat && q.long === long)

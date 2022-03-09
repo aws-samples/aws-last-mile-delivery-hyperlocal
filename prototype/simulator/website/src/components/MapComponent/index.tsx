@@ -36,6 +36,10 @@ mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
 
 declare let appVariables: {
 	MAP_BOX_TOKEN: string
+	BASE_LOCATION: {
+		lat: number
+		long: number
+	}
 }
 
 const navControlStyle = {
@@ -44,9 +48,9 @@ const navControlStyle = {
 }
 
 const baseLocation = {
-	latitude: -6.177427115234792,
-	longitude: 106.8265913307582,
-	zoom: 14,
+	latitude: appVariables.BASE_LOCATION.lat,
+	longitude: appVariables.BASE_LOCATION.long,
+	zoom: 12,
 }
 
 export type MapInputProps = {

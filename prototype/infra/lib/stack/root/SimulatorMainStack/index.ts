@@ -20,9 +20,9 @@ import { Stack, StackProps, custom_resources as cr, aws_apigateway as apigw, aws
 import { namespaced, setNamespace } from '@aws-play/cdk-core'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { SimulatorManagerStack, IoTPolicyStack, IoTRuleStack } from '@prototype/simulator'
+import { CENTROID, BASE_LOCATION, COUNTRIES, AREAS, DefaultWaf } from '@prototype/common'
 import { SharedLayer } from '@prototype/lambda-common'
 import { RestApi } from '@aws-play/cdk-apigateway'
-import { DefaultWaf } from '@prototype/common'
 import { WebsiteHostingStack } from '../../nested/WebsiteHostingStack'
 import { SimulatorPersistentStack } from '../SimulatorPersistentStack'
 import { BackendStack } from '../BackendStack'
@@ -39,6 +39,27 @@ export interface SimulatorMainStackProps extends StackProps {
 	readonly backend: BackendStack
 	readonly simulatorPersistent: SimulatorPersistentStack
 	readonly simulatorConfig: { [key: string]: string | number, }
+	readonly country: string
+}
+
+const getCentroidArea = (country: string, area: string): string => {
+	switch (country) {
+		case COUNTRIES.PHILIPPINES:
+			return (CENTROID.PHILIPPINES.MANILA as any)[area]
+		case COUNTRIES.INDONESIA:
+		default:
+			return (CENTROID.INDONESIA.JAKARTA as any)[area]
+	}
+}
+
+const getBaseLocation = (country: string): { lat: number, long: number, } | undefined => {
+	switch (country) {
+		case COUNTRIES.PHILIPPINES:
+			return BASE_LOCATION.PHILIPPINES.MANILA
+		case COUNTRIES.INDONESIA:
+		default:
+			return BASE_LOCATION.INDONESIA.JAKARTA
+	}
 }
 
 export class SimulatorMainStack extends Stack {
@@ -90,6 +111,7 @@ export class SimulatorMainStack extends Stack {
 			},
 			env,
 			simulatorConfig,
+			country,
 		} = props
 
 		setNamespace(this, namespace)
@@ -190,6 +212,7 @@ export class SimulatorMainStack extends Stack {
 		// simulatorWeb hosting
 		const websiteBucketRef = s3.Bucket.fromBucketArn(this, 'SimulatorWebsiteBucket', simulatorWebsiteBucket.bucketArn)
 
+		const supportedCountry = country.toUpperCase()
 		const appVars = {
 			SEARCH_API_URL: geoTrackingRestApi.url,
 			SIMULATOR_API_URL: simulatorRestApi.url,
@@ -197,6 +220,12 @@ export class SimulatorMainStack extends Stack {
 			USERPOOL_ID: userPool.userPoolId,
 			USERPOOL_CLIENT_ID: webAppClientId,
 			MAP_BOX_TOKEN: (env as Env).mapBoxToken,
+			DEFAULT_AREAS: [
+				getCentroidArea(supportedCountry, AREAS.AREA1),
+				getCentroidArea(supportedCountry, AREAS.AREA2),
+				getCentroidArea(supportedCountry, AREAS.AREA3),
+			],
+			BASE_LOCATION: getBaseLocation(supportedCountry),
 		}
 
 		const websiteHostingNestedStack = new WebsiteHostingStack(this, 'SimulatorWebsiteHosting', {

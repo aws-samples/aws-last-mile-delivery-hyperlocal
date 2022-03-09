@@ -293,3 +293,7 @@ graphhopperSettings:
 
 # name for dispatcher app docker repo
 dispatcherAppDockerRepoName: order-dispatcher
+
+# country to configure the simulator for. Allowed values: Philippines and Indonesia
+# default: Indonesia
+country: Indonesia

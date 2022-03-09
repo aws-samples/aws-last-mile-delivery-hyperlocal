@@ -30,6 +30,7 @@ export interface PersistentBackendStackProps extends StackProps {
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
 	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly memoryDBConfig: { [key: string]: string | number, }
+	readonly country: string
 }
 
 /**
@@ -54,6 +55,7 @@ export class PersistentBackendStack extends Stack {
 		const {
 			namespace, administratorEmail, administratorName,
 			vpcNetworkConfig, openSearchConfig, memoryDBConfig,
+			country,
 		} = props
 
 		setNamespace(this, namespace)
@@ -82,7 +84,9 @@ export class PersistentBackendStack extends Stack {
 			administratorName,
 		})
 
-		const dataStorage = new DataStoragePersistent(this, 'DataStoragePersistent', {})
+		const dataStorage = new DataStoragePersistent(this, 'DataStoragePersistent', {
+			country,
+		})
 
 		const backendEcsCluster = new BackendEcsCluster(this, 'BackendEcsCluster', {
 			vpc: vpcPersistent.vpc,
