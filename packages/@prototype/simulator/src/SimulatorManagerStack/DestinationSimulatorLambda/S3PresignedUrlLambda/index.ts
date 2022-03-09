@@ -44,7 +44,7 @@ export class S3PresignedUrlLambda extends DeclaredLambdaFunction<Environment, De
 			timeout: Duration.seconds(30),
 			environment: {
 				SIMULATOR_CONFIG_BUCKET: simulatorConfigBucket.bucketName,
-				SIMULATOR_CONFIG_FILE_PREFIX: 'uploads/',
+				SIMULATOR_CONFIG_FILE_PREFIX: 'uploads',
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({

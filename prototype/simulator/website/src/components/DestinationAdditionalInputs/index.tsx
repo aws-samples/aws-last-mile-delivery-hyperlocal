@@ -69,7 +69,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 			orders,
 			rejectionRate,
 			orderInterval: selectedOption.value,
-			eventsFilePath: eventsFilePath,
+			eventsFilePath,
 		})
 	}
 

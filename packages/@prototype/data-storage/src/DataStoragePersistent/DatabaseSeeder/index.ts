@@ -17,12 +17,33 @@
 import { Construct } from 'constructs'
 import { aws_dynamodb as ddb, custom_resources } from 'aws-cdk-lib'
 import * as utils from '@aws-sdk/util-dynamodb'
-import { DEMOGRAPHIC_AREA, STATIC_AREAS_POLYGON } from '@prototype/common'
+import { DEMOGRAPHIC_AREA, STATIC_AREAS_POLYGON, SUPPORTED_COUNTRIES, COUNTRIES, DISTRICTS, AREAS } from '@prototype/common'
 
 export interface DatabaseSeederProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
 	readonly demographicAreaDispatcherEngineSettings: ddb.ITable
 	readonly geoPolygonTable: ddb.ITable
+	readonly country: string
+}
+
+const getDemographicArea = (country: string, district: string): string => {
+	switch (country) {
+		case COUNTRIES.PHILIPPINES:
+			return (DEMOGRAPHIC_AREA.PHILIPPINES.MANILA as any)[district]
+		case COUNTRIES.INDONESIA:
+		default:
+			return (DEMOGRAPHIC_AREA.INDONESIA.JAKARTA as any)[district]
+	}
+}
+
+const getPolygonDefinition = (country: string, area: string): string => {
+	switch (country) {
+		case COUNTRIES.PHILIPPINES:
+			return (STATIC_AREAS_POLYGON.PHILIPPINES.MANILA as any)[area]
+		case COUNTRIES.INDONESIA:
+		default:
+			return (STATIC_AREAS_POLYGON.INDONESIA.JAKARTA as any)[area]
+	}
 }
 
 export class DatabaseSeeder extends Construct {
@@ -33,6 +54,7 @@ export class DatabaseSeeder extends Construct {
 			demographicAreaProviderEngineSettings,
 			demographicAreaDispatcherEngineSettings,
 			geoPolygonTable,
+			country,
 		} = props
 
 		const commonRules = [
@@ -184,6 +206,12 @@ export class DatabaseSeeder extends Construct {
 			},
 		]
 
+		const supportedCountry = country.toUpperCase()
+
+		if (!SUPPORTED_COUNTRIES.includes(supportedCountry)) {
+			throw new Error(`${country} is not a supported country`)
+		}
+
 		new custom_resources.AwsCustomResource(this, 'SeedDBDemographicAreaProviderEngineSettings', {
 			onCreate: {
 				service: 'DynamoDB',
@@ -194,7 +222,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.CENTRAL_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.CENTRAL),
 										rules: commonRules,
 									}),
 								},
@@ -202,7 +230,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.NORTH_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.NORTH),
 										rules: commonRules,
 									}),
 								},
@@ -210,7 +238,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.SOUTH_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.SOUTH),
 										rules: commonRules,
 									}),
 								},
@@ -218,7 +246,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.WEST_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.WEST),
 										rules: commonRules,
 									}),
 								},
@@ -226,7 +254,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.EAST_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.EAST),
 										rules: commonRules,
 									}),
 								},
@@ -257,7 +285,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.CENTRAL_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.CENTRAL),
 										...dispatcherCommonSettings,
 									}),
 								},
@@ -265,7 +293,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.NORTH_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.NORTH),
 										...dispatcherCommonSettings,
 									}),
 								},
@@ -273,7 +301,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.SOUTH_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.SOUTH),
 										...dispatcherCommonSettings,
 									}),
 								},
@@ -281,7 +309,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.WEST_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.WEST),
 										...dispatcherCommonSettings,
 									}),
 								},
@@ -289,7 +317,7 @@ export class DatabaseSeeder extends Construct {
 							{
 								PutRequest: {
 									Item: utils.marshall({
-										ID: DEMOGRAPHIC_AREA.EAST_JAKARTA,
+										ID: getDemographicArea(supportedCountry, DISTRICTS.EAST),
 										...dispatcherCommonSettings,
 									}),
 								},
@@ -315,7 +343,7 @@ export class DatabaseSeeder extends Construct {
 								PutRequest: {
 									Item: utils.marshall({
 										ID: 'daf8ef58-366f-4703-921b-c76ad3027011',
-										vertices: STATIC_AREAS_POLYGON.AREA1,
+										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA1),
 										name: 'Area 1',
 									}),
 								},
@@ -324,7 +352,7 @@ export class DatabaseSeeder extends Construct {
 								PutRequest: {
 									Item: utils.marshall({
 										ID: '7bd50f84-e58b-4c6d-a964-2b09d39743dc',
-										vertices: STATIC_AREAS_POLYGON.AREA2,
+										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA2),
 										name: 'Area 2',
 									}),
 								},
@@ -333,7 +361,7 @@ export class DatabaseSeeder extends Construct {
 								PutRequest: {
 									Item: utils.marshall({
 										ID: 'fae2971c-08d4-494d-b8b8-14993a0cccd3',
-										vertices: STATIC_AREAS_POLYGON.AREA3,
+										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA3),
 										name: 'Area 3',
 									}),
 								},

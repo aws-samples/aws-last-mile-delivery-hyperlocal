@@ -22,7 +22,7 @@ import { DatabaseSeeder } from './DatabaseSeeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DataStoragePersistentProps extends NestedStackProps {
-	//
+	readonly country: string
 }
 
 export class DataStoragePersistent extends NestedStack {
@@ -48,6 +48,8 @@ export class DataStoragePersistent extends NestedStack {
 
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
+
+		const { country } = props
 
 		this.dispatchEngineBucket = new hyperlocal_s3.Bucket(this, 'DispatchEngineBucket', {
 			bucketName: namespacedBucket(this, 'dispatch-engine'),
@@ -131,6 +133,7 @@ export class DataStoragePersistent extends NestedStack {
 			demographicAreaProviderEngineSettings: this.demographicAreaProviderEngineSettings,
 			demographicAreaDispatcherEngineSettings: this.demographicAreaDispatchSettings,
 			geoPolygonTable: this.geoPolygonTable,
+			country,
 		})
 
 		this.dispatcherAssignmentsTable = new hyperlocal_ddb.Table(this, 'DispatcherAssignments', {
