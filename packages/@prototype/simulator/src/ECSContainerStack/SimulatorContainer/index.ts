@@ -33,6 +33,7 @@ export interface SimulatorContainerProps {
 	readonly iotDriverPolicy: iot.CfnPolicy
 	readonly ecsVpc: ec2.IVpc
 	readonly configBucket: s3.IBucket
+	readonly simulatorConfigBucket: s3.IBucket
 	readonly configBucketKey: string
 
 	readonly iotEndpointAddress: string
@@ -91,6 +92,7 @@ export class SimulatorContainer extends Construct {
 			],
 			resources: [
 				`${props.configBucket.bucketArn}/*`,
+				`${props.simulatorConfigBucket.bucketArn}/*`,
 			],
 		}))
 
