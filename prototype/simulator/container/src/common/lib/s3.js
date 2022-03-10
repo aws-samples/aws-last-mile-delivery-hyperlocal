@@ -31,7 +31,7 @@ const loadRemoteFile = async (Bucket, Key) => {
 	logger.debug('Generated signed url', signedUrl)
 
 	const remoteConfigContent = await axios.get(signedUrl)
-	logger.debug('Pulled latest config', remoteConfigContent.data)
+	logger.debug('Pulled latest file')
 
 	return remoteConfigContent.data
 }

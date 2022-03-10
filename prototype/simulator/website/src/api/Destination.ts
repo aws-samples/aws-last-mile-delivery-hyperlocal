@@ -71,6 +71,8 @@ const stopSimulator = (simulationId: string): Promise<any> => {
 }
 
 const signedUrl = (data: ISignedUrl): Promise<any> => {
+	common.setApiName(APIS.SIMULATOR)
+
 	return common.commonPostRequest('/destination/signed-url', data)
 }
 

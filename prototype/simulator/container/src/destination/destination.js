@@ -92,8 +92,8 @@ class Destination {
 			return acc
 		}, {})
 
-		logger.debug('Original Events: ', events.length)
-		logger.debug('Events to play: ', validOrders.length)
+		logger.debug('Original Events: ', events.orders.length)
+		logger.debug('Events to play: ', Object.keys(validOrders).length)
 
 		// start to send orders every
 		this.orderInterval = setInterval(async () => {
@@ -104,8 +104,8 @@ class Destination {
 				const promises = validOrders[nowInSeconds].map(({ origin, destination, payload }) => requestHelper.createOrder(
 					origin,
 					destination,
-					payload,
 					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
+					payload,
 				))
 				const results = await Promise.all(promises.map(p => p.catch(e => e)))
 				const errors = results.filter(result => result instanceof Error)

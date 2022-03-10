@@ -44,6 +44,8 @@ interface ECSContainerStackProps {
 	readonly destinationAreaIndex: string
 	readonly destinationExecutionIdIndex: string
 	readonly destinationUserPassword: string
+
+	readonly simulatorConfigBucket: s3.IBucket
 }
 
 export class ECSContainerStack extends Construct {

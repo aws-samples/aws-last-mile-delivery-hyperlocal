@@ -15,8 +15,8 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Stack, StackProps, aws_s3 as s3, aws_iam as iam } from 'aws-cdk-lib'
-import { namespaced, setNamespace } from '@aws-play/cdk-core'
+import { Stack, StackProps, aws_s3 as s3 } from 'aws-cdk-lib'
+import { setNamespace } from '@aws-play/cdk-core'
 import { WebsiteHosting } from '@aws-play/cdk-web'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { ECSVpcStack, ECSContainerStack, SimulatorDataStack, IoTPolicyStack } from '@prototype/simulator'
@@ -86,24 +86,6 @@ export class SimulatorPersistentStack extends Stack {
 			cognitoAuthenticatedRole: externalIdentityAuthenticatedRole,
 		})
 
-		// attach policy to access S3 through cognito identity - needed for the simulator
-		externalIdentityAuthenticatedRole.attachInlinePolicy(new iam.Policy(this, 'ConfigS3AccessPolicy', {
-			document: new iam.PolicyDocument({
-				statements: [
-					new iam.PolicyStatement({
-						effect: iam.Effect.ALLOW,
-						actions: [
-							's3:GetObject',
-						],
-						resources: [
-							`${this.dataStack.simulatorConfigBucket.bucketArn}/*`,
-						],
-					}),
-				],
-			}),
-			policyName: namespaced(this, 'SimulatorConfigS3Access'),
-		}))
-
 		this.ecsContainerStack = new ECSContainerStack(this, 'SimulatorECSStack', {
 			userPool,
 			identityPool,
@@ -125,6 +107,7 @@ export class SimulatorPersistentStack extends Stack {
 			destinationAreaIndex: this.dataStack.destinationAreaIndex,
 			destinationExecutionIdIndex: this.dataStack.destinationExecutionIdIndex,
 			destinationUserPassword: (env as Env).destinationUserPassword,
+			simulatorConfigBucket: this.dataStack.simulatorConfigBucket,
 		})
 
 		const websiteHosting = new WebsiteHosting(this, 'SimulatorWebsiteHosting', {
