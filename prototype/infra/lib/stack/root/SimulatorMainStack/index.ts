@@ -200,6 +200,7 @@ export class SimulatorMainStack extends Stack {
 
 			iotEndpointAddress,
 			simulatorConfigBucket: dataStack.simulatorConfigBucket,
+			country,
 		})
 
 		const iotRules = new IoTRuleStack(this, 'IoTSimulatorRule', {

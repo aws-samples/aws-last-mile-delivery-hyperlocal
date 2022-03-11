@@ -111,6 +111,7 @@ class Destination {
 						...origin,
 						// use an existing origin ID as it's required by the simulation to send a message
 						id: randomOrigin.ID,
+						tags: randomOrigin.tags,
 					},
 					{
 						...destination,

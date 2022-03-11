@@ -19,7 +19,7 @@ import { Duration, aws_iam as iam, aws_dynamodb as ddb, aws_lambda as lambda, aw
 import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 import { updateDDBTablePolicyStatement, readDDBTablePolicyStatement, deleteFromDDBTablePolicyStatement } from '@prototype/lambda-common'
-import { DEMOGRAPHIC_AREA } from '@prototype/common'
+import { DEMOGRAPHIC_AREA, COUNTRIES } from '@prototype/common'
 
 export interface OriginGeneratorStepFunctionProps {
 	readonly originTable: ddb.ITable
@@ -30,6 +30,17 @@ export interface OriginGeneratorStepFunctionProps {
 	readonly iotPolicy: iot.CfnPolicy
 	readonly simulatorConfig: { [key: string]: string | number, }
 	readonly originUserPassword: string
+	readonly country: string
+}
+
+const getDemographicAreas = (country: string): any => {
+	switch (country) {
+		case COUNTRIES.PHILIPPINES:
+			return DEMOGRAPHIC_AREA.PHILIPPINES.MANILA
+		case COUNTRIES.INDONESIA:
+		default:
+			return DEMOGRAPHIC_AREA.INDONESIA.JAKARTA
+	}
 }
 
 export class OriginGeneratorStepFunction extends Construct {
@@ -49,6 +60,7 @@ export class OriginGeneratorStepFunction extends Construct {
 			iotPolicy,
 			simulatorConfig,
 			originUserPassword,
+			country,
 		} = props
 
 		this.lambda = new lambda.Function(this, 'OriginGeneratorHelper', {
@@ -68,7 +80,7 @@ export class OriginGeneratorStepFunction extends Construct {
 				IOT_POLICY_NAME: iotPolicy.policyName || '',
 				BASE_USERNAME: simulatorConfig.originBaseUsername as string,
 				USER_PASSWORD: originUserPassword,
-				DEMOGRAPHIC_AREAS: Object.values(DEMOGRAPHIC_AREA).join(','),
+				DEMOGRAPHIC_AREAS: Object.values(getDemographicAreas(country)).join(','),
 			},
 			initialPolicy: [
 				readDDBTablePolicyStatement(originTable.tableArn),
