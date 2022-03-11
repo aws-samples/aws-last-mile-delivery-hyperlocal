@@ -80,7 +80,7 @@ export class OriginGeneratorStepFunction extends Construct {
 				IOT_POLICY_NAME: iotPolicy.policyName || '',
 				BASE_USERNAME: simulatorConfig.originBaseUsername as string,
 				USER_PASSWORD: originUserPassword,
-				DEMOGRAPHIC_AREAS: Object.values(getDemographicAreas(country)).join(','),
+				DEMOGRAPHIC_AREAS: Object.values(getDemographicAreas(country.toUpperCase())).join(','),
 			},
 			initialPolicy: [
 				readDDBTablePolicyStatement(originTable.tableArn),
