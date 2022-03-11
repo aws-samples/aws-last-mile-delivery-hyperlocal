@@ -22,7 +22,7 @@ const ddb = require('../lib/dynamoDB')
 const events = require('../lib/eventBridge')
 
 const execute = async (body) => {
-	const { destination, origin, quantity } = body
+	const { destination, origin, quantity, payload } = body
 
 	logger.info('Creating order with configuration: ')
 	logger.info(JSON.stringify(body, null, 2))
@@ -62,12 +62,14 @@ const execute = async (body) => {
 				// in 3% of the cases, add/remove another random 5 to 10 minutes
 				preparationTimeInMins: rnd + (variance <= 3 ? (op * add) : 0),
 			},
+			payload,
 			state: 'NEW_ORDER',
 			createdAt: Date.now(),
 		}
 
 		await ddb.putItem(config.orderTableName, record)
 		await events.putEvent('NEW_ORDER', record)
+
 		orders.push(id)
 	}
 

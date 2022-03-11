@@ -101,9 +101,22 @@ class Destination {
 
 			// if there are orders to send during this "second", will send them altogether
 			if (validOrders[nowInSeconds]) {
+				const randomOrigin = await requestHelper.getRandomOrigin(
+					this.userData.area,
+					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
+				)
+
 				const promises = validOrders[nowInSeconds].map(({ origin, destination, payload }) => requestHelper.createOrder(
-					origin,
-					destination,
+					{
+						...origin,
+						// use an existing origin ID as it's required by the simulation to send a message
+						id: randomOrigin.ID,
+					},
+					{
+						...destination,
+						// use the actual destination id
+						id: this.userData.ID,
+					},
 					this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
 					payload,
 				))
