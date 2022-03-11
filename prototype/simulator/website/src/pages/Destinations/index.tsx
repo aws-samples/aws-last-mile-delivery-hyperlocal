@@ -142,7 +142,7 @@ const Destinations: React.FC = () => {
 					key={`sim-${idx}`}
 					simulation={sim}
 					onStop={stopSimulation}
-					extraProps={['rejectionRate', 'orderRate', 'orderInterval']}
+					extraProps={['rejectionRate', 'orderRate', 'orderInterval', 'eventsFilePath']}
 				/>
 			</>))}
 			<DestinationAdditionalInputs

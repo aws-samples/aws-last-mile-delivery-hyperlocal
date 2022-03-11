@@ -178,7 +178,7 @@ const NewSimulation: React.FC = () => {
 								</FormField>
 							</Column>
 							<Column key="column3">
-								<FormField label="Range" controlId="rng">
+								<FormField label="Range (m)" controlId="rng">
 									<Input
 										type="number"
 										controlId="rng"
