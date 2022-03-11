@@ -51,6 +51,7 @@ export interface OriginSimulatorProps {
 	readonly memoryDBCluster: MemoryDBCluster
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 	readonly iotEndpointAddress: string
+	readonly country: string
 }
 
 export class OriginSimulatorLambda extends Construct {
@@ -88,6 +89,7 @@ export class OriginSimulatorLambda extends Construct {
 			lambdaLayers,
 			eventBus,
 			iotEndpointAddress,
+			country,
 		} = props
 
 		const generator = new OriginGeneratorStepFunction(this, 'OriginGeneratorStepFunction', {
@@ -99,6 +101,7 @@ export class OriginSimulatorLambda extends Construct {
 			iotPolicy,
 			simulatorConfig,
 			originUserPassword,
+			country,
 		})
 
 		this.generatorStepFunction = generator.stepFunction

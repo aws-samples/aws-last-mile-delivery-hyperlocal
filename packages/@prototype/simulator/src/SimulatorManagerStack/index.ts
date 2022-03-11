@@ -79,6 +79,7 @@ export interface SimulatorManagerStackProps {
 	readonly iotEndpointAddress: string
 
 	readonly simulatorConfigBucket: s3.IBucket
+	readonly country: string
 }
 
 export class SimulatorManagerStack extends Construct {
@@ -129,6 +130,7 @@ export class SimulatorManagerStack extends Construct {
 			instantDeliveryProviderOrdersTable,
 			iotEndpointAddress,
 			simulatorConfigBucket,
+			country,
 		} = props
 
 		const simulatorManager = new SimulatorManagerLambda(this, 'SimulatorManagerLambda', {
@@ -176,6 +178,7 @@ export class SimulatorManagerStack extends Construct {
 			memoryDBCluster,
 			eventBus,
 			iotEndpointAddress,
+			country,
 		})
 
 		this.destinationSimulator = new DestinationSimulatorLambda(this, 'DestinationSimulatorLambda', {
