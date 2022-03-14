@@ -1,7 +1,6 @@
 graphhopper:
-
   # OpenStreetMap input file PBF or XML, can be changed via command line -Ddw.graphhopper.datareader.file=some.pbf
-  datareader.file: "/map/mapfile.osm.pbf"
+  datareader.file: /map/mapfile.osm.pbf
   # Local folder used by graphhopper to store its data
   graph.location: /graphhopper-cache
 
@@ -10,7 +9,7 @@ graphhopper:
 
   # More options: foot,hike,bike,bike2,mtb,racingbike,motorcycle,car4wd,wheelchair (comma separated)
   # bike2 takes elevation data into account (like up-hill is slower than down-hill) and requires enabling graph.elevation.provider below.
-  # graph.flag_encoders: car
+  graph.flag_encoders: car,motorcycle
 
   # Enable turn restrictions for car or motorcycle.
   # graph.flag_encoders: car|turn_costs=true
@@ -51,9 +50,9 @@ graphhopper:
       vehicle: car
       weighting: fastest
 
-    # - name: motorcycle
-    #   vehicle: motorcycle
-    #   weighting: fastest
+    - name: motorcycle
+      vehicle: motorcycle
+      weighting: fastest
 
   #  - name: car_with_turn_costs
   #    vehicle: car
@@ -70,7 +69,7 @@ graphhopper:
   # usage) and the routing will also be slower than with `turn_costs: false`.
   profiles_ch:
     - profile: car
-    # - profile: motorcycle
+    - profile: motorcycle
   #   - profile: car_with_turn_costs
 
   # Hybrid mode:
