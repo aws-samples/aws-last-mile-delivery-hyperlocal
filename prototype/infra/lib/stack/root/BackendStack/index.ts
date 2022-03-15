@@ -51,7 +51,6 @@ export interface BackendStackProps extends StackProps {
 	readonly graphhopperSettings: Record<string, string | number>
 	readonly dispatcherSettings: Record<string, string | number>
 	readonly parameterStoreKeys: Record<string, string>
-	readonly dispatcherAppDockerRepoName: string
 }
 
 /**
