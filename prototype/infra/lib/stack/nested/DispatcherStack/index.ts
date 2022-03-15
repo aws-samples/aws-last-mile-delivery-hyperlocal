@@ -24,7 +24,7 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly driverApiKeySecretName: string
-	readonly driverApiUrlParameterName: string
+	readonly parameterStoreKeys: Record<string, string>
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
@@ -50,7 +50,7 @@ export class DispatcherStack extends NestedStack {
 			},
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			parameterStoreKeys,
 			dispatcherConfigPath,
 			dispatcherVersion,
 			dispatcherDockerContainerName,
@@ -67,7 +67,7 @@ export class DispatcherStack extends NestedStack {
 			dispatcherConfigPath,
 			dispatcherVersion,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			parameterStoreKeys,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName,

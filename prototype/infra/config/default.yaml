@@ -55,6 +55,17 @@ vpcNetworkConfig:
 # the secret name we use to refer to the geoTrackingApiKey in SecretManager
 geoTrackingApiKeySecretName: GeoTrackingApiKeySecret
 
+# SSM ParameterStore keys
+parameterStoreKeys:
+  # the parameter name we use to refer to geoTrackingApiUrl in SSM ParameterStore
+  geoTrackingApiUrl: /Hyperlocal/Api/GeoTracking/Url
+
+  # key for assignments table name
+  assignmentsTableName: /HyperLocal/Ddb/Assigments/TableName
+
+  # key for demAreaDispatchSettings table name
+  demAreaDispatcherSettingsTableName: /HyperLocal/Ddb/DemAreaDispatcherSettings/TableName
+
 # open search service config
 # instance types:
 #   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html

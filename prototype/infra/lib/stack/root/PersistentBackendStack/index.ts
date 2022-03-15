@@ -31,6 +31,7 @@ export interface PersistentBackendStackProps extends StackProps {
 	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly memoryDBConfig: { [key: string]: string | number, }
 	readonly country: string
+	readonly parameterStoreKeys: Record<string, string>
 }
 
 /**
@@ -56,6 +57,7 @@ export class PersistentBackendStack extends Stack {
 			namespace, administratorEmail, administratorName,
 			vpcNetworkConfig, openSearchConfig, memoryDBConfig,
 			country,
+			parameterStoreKeys,
 		} = props
 
 		setNamespace(this, namespace)
@@ -86,6 +88,7 @@ export class PersistentBackendStack extends Stack {
 
 		const dataStorage = new DataStoragePersistent(this, 'DataStoragePersistent', {
 			country,
+			parameterStoreKeys,
 		})
 
 		const backendEcsCluster = new BackendEcsCluster(this, 'BackendEcsCluster', {

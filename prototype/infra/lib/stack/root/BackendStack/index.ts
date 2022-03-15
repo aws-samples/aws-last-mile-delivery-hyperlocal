@@ -50,7 +50,7 @@ export interface BackendStackProps extends StackProps {
 	readonly geoTrackingApiKeySecretName: string
 	readonly graphhopperSettings: Record<string, string | number>
 	readonly dispatcherSettings: Record<string, string | number>
-	readonly geoTrackingApiUrlParameterName: string
+	readonly parameterStoreKeys: Record<string, string>
 	readonly dispatcherAppDockerRepoName: string
 }
 
@@ -108,7 +108,7 @@ export class BackendStack extends Stack {
 			externalProviderConfig,
 			env,
 			geoTrackingApiKeySecretName,
-			geoTrackingApiUrlParameterName,
+			parameterStoreKeys,
 			orderManagerSettings,
 			graphhopperSettings,
 			dispatcherSettings,
@@ -148,7 +148,7 @@ export class BackendStack extends Stack {
 			memoryDBConfig,
 			kinesisConfig,
 			env,
-			geoTrackingApiUrlParameterName,
+			geoTrackingApiUrlParameterName: parameterStoreKeys.geoTrackingApiUrl,
 		})
 		this.microService = microServiceNestedStack
 
@@ -177,7 +177,7 @@ export class BackendStack extends Stack {
 			dispatcherConfigPath,
 			dispatcherVersion: 'v2',
 			driverApiKeySecretName: geoTrackingApiKeySecretName,
-			driverApiUrlParameterName: geoTrackingApiUrlParameterName,
+			parameterStoreKeys,
 			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName: dispatcherSettings.containerName.toString(),
