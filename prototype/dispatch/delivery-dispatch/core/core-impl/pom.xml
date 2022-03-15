@@ -33,7 +33,7 @@
         <!-- awssdk dependencies -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>secretsmanager</artifactId>
+            <artifactId>dynamodb</artifactId>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -41,12 +41,18 @@
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>sts</artifactId>
+            <artifactId>secretsmanager</artifactId>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
-            <artifactId>dynamodb</artifactId>
+            <artifactId>ssm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sts</artifactId>
+        </dependency>
+
+
         <!-- /awssdk dependencies -->
     </dependencies>
 
