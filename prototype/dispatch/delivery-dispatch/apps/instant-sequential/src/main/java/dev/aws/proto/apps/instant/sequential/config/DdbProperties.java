@@ -19,11 +19,11 @@ package dev.aws.proto.apps.instant.sequential.config;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithName;
 
-@ConfigMapping(prefix = "app.ddb")
+@ConfigMapping(prefix = "app.ddb.table")
 public interface DdbProperties {
-    @WithName("table.assignments")
-    String assignmentsTableName();
+    @WithName("assignments.parameterName")
+    String assignmentsTableParameterName();
 
-//    @WithName("table.dem-area-dispatcher-settings")
-//    String demAreaDispatcherSettingsTableName();
+    @WithName("dem-area-dispatcher-settings.parameterName")
+    String demAreaDispatcherSettingsTableParameterName();
 }

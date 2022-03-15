@@ -22,6 +22,7 @@ import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
 import dev.aws.proto.apps.instant.sequential.config.DdbProperties;
 import dev.aws.proto.core.util.aws.CredentialsHelper;
+import dev.aws.proto.core.util.aws.SsmUtility;
 import org.bk.aws.dynamo.util.JsonAttributeValueUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,19 +42,20 @@ public class DdbAssignmentService extends DdbServiceBase {
 
     DynamoDbClient dbClient;
 
+    final String tableName;
+
     DdbAssignmentService(DdbProperties ddbProperties) {
         this.ddbProperties = ddbProperties;
-
+        this.tableName = SsmUtility.getParameterValue(ddbProperties.assignmentsTableParameterName());
         this.dbClient = DynamoDbClient.builder()
                 .credentialsProvider(CredentialsHelper.getCredentialsProvider())
                 .region(CredentialsHelper.getRegion())
                 .build();
-
     }
 
     @Override
     protected String getTableName() {
-        return ddbProperties.assignmentsTableName();
+        return this.tableName;
     }
 
     @Override
