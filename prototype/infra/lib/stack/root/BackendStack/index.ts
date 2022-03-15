@@ -176,7 +176,7 @@ export class BackendStack extends Stack {
 			driverApiUrl: microServiceNestedStack.geoTrackingRestApi.url,
 			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
 			dispatcherAssignmentsTable,
-			dispatcherDockerContainerName: 'order-dispatcher',
+			dispatcherDockerContainerName: dispatcherSettings.containerName.toString(),
 			dispatcherDockerOsmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl.toString(),
 			dispatcherSettings,
 		})

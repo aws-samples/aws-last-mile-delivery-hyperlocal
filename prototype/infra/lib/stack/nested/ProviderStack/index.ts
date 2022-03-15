@@ -120,7 +120,7 @@ export class ProviderStack extends NestedStack {
 			dmzSecurityGroup: securityGroups.dmz,
 			ecsCluster: backendEcsCluster,
 			osmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl.toString(),
-			javaOpts: graphhopperSettings.javaOpts.toString(),
+			javaOpts: graphhopperSettings.javaOpts ? graphhopperSettings.javaOpts.toString() : undefined,
 			containerName: graphhopperSettings.containerName.toString(),
 			ecsTaskCount: graphhopperSettings.ecsTaskCount as number,
 		})
