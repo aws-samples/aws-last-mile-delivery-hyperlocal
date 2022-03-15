@@ -25,7 +25,8 @@
   "dependencies": {
     "@aws-play/cdk-core": "^0.0.0-alpha.14",
     "@aws-play/cdk-lambda": "^0.0.0-alpha.1",
-    "@prototype/lambda-common": "0.0.0-alpha.0",
+    "@prototype/lambda-common": "^0.0.0-alpha.0",
+    "@prototype/live-data-cache": "^0.0.0-alpha.0",
     "cdk-iam-actions": "^1.0.0"
   },
   "peerDependencies": {
