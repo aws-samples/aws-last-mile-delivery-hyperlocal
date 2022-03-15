@@ -33,6 +33,7 @@
     </description>
 
     <properties>
+        <build-jar-finalname>delivery-dispatch-instant-sequential</build-jar-finalname>
     </properties>
 
     <dependencies>

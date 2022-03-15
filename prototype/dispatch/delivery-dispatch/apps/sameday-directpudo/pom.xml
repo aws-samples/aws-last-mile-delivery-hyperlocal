@@ -33,7 +33,30 @@
     </description>
 
     <properties>
-
+        <build-jar-finalname>delivery-dispatch-sameday-directpudo</build-jar-finalname>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus-plugin.version}</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>generate-code</goal>
+                            <goal>generate-code-tests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <finalName>${build-jar-finalname}</finalName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
