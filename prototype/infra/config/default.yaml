@@ -299,6 +299,10 @@ dispatcherSettings:
   # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
   ecsTaskCount: 2
 
+  # name for dispatcher docker repo
+  containerName: order-dispatcher
+
+
 
 # country to configure the simulator for. Allowed values: Philippines and Indonesia
 # default: Indonesia
