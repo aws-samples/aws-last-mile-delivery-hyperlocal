@@ -186,7 +186,16 @@
 
     <profiles>
         <profile>
-            <id>instantSeq</id>
+            <id>build:instant:sequential</id>
+            <modules>
+                <module>apps/instant-sequential</module>
+            </modules>
+            <build>
+                <defaultGoal>clean package</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>quarkus:dev:instant:sequential</id>
             <modules>
                 <module>apps/instant-sequential</module>
             </modules>
@@ -195,7 +204,16 @@
             </build>
         </profile>
         <profile>
-            <id>sameday</id>
+            <id>build:sameday:directpudo</id>
+            <modules>
+                <module>apps/sameday-directpudo</module>
+            </modules>
+            <build>
+                <defaultGoal>clean package</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>quarkus:dev:sameday:directpudo</id>
             <modules>
                 <module>apps/sameday-directpudo</module>
             </modules>
