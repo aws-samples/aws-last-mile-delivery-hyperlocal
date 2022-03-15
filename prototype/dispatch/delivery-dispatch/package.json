@@ -1,0 +1,21 @@
+{
+  "name": "delivery-dispatch",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "Delivery dispatch - Multi-domain dispatchers",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "mvn:package": "./mvnw clean package -DskipTests=true",
+    "builddir:create": "mkdir -p build/instant/sequential/config && mkdir -p build/instant/mixedpudo/config && mkdir -p build/sameday/directpudo/config",
+    "builddir:rm": "rm -rf build/*",
+    "builddir:reset": "yarn builddir:rm && yarn builddir:create",
+    "build:instant:sequential": "cp apps/instant-sequential/target/*.jar build/instant/sequential && cp -r apps/instant-sequential/src/main/docker/* build/instant/sequential && cp apps/instant-sequential/src/main/resources/*.* build/instant/sequential/config/",
+    "build:instant:mixedpudo": "cp apps/instant-mixedpudo/target/*.jar build/instant/mixedpudo && cp -r apps/instant-mixedpudo/src/main/docker/* build/instant/mixedpudo && cp apps/instant-mixedpudo/src/main/resources/*.* build/instant/mixedpudo/config/",
+    "build:sameday:directpudo": "cp apps/sameday-directpudo/target/*.jar build/sameday/directpudo && cp -r apps/sameday-directpudo/src/main/docker/* build/sameday/directpudo && cp apps/sameday-directpudo/src/main/resources/*.* build/sameday/directpudo/config/",
+    "build": "yarn builddir:reset && yarn mvn:package && yarn build:instant:sequential"
+  },
+  "author": "Amazon Web Services - ASEAN Prototying",
+  "license": "MIT-0"
+}
