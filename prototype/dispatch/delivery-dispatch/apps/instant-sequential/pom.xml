@@ -75,7 +75,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>dispatcher</finalName>
+                    <finalName>${build-jar-finalname}</finalName>
                 </configuration>
             </plugin>
         </plugins>

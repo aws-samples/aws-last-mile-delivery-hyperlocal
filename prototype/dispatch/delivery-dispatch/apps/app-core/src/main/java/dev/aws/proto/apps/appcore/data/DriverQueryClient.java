@@ -27,7 +27,8 @@ import javax.ws.rs.Produces;
 import java.util.List;
 
 @Path("/api/geotracking/internal/driver-location")
-@RegisterRestClient(configKey = "app.client.driver-api")
+//@RegisterRestClient(configKey = "app.client.driver-api")
+@RegisterRestClient
 @RegisterClientHeaders(ApiKeyHeaderFactory.class)
 public interface DriverQueryClient<TDBDriver> {
 

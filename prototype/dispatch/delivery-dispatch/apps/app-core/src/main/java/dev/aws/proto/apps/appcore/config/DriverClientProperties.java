@@ -23,4 +23,7 @@ import io.smallrye.config.WithName;
 public interface DriverClientProperties {
     @WithName("apikey-secret-name")
     String driverApiKeySecretName();
+
+    @WithName("api-url-parameter-name")
+    String driverApiUrlParameterName();
 }
