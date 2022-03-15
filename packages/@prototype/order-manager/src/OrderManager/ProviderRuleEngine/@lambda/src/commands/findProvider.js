@@ -22,6 +22,8 @@ const engine = require('../engine')
 const eng = engine.initialiseEngine()
 let demographicAreas = null
 
+const getUnusedProviders = (providers, result) => result.length > 0 ? result.filter(x => !providers.includes(x)) : []
+
 const execute = async (payload) => {
 	console.log('Executing findProvider with payload')
 	console.log(JSON.stringify(payload))
@@ -36,7 +38,8 @@ const execute = async (payload) => {
 		console.debug(JSON.stringify(res.Items))
 	}
 
-	const { tags } = payload.origin
+	const { orderData, usedProviders } = payload
+	const { tags } = orderData.origin
 
 	if (!tags) {
 		throw new Error('No configuration available for the origin. Missing tags')
@@ -61,21 +64,27 @@ const execute = async (payload) => {
 		eng.addRule(rule)
 	}
 
-	const engineRules = await eng.run(payload)
+	const engineRules = await eng.run(orderData)
 
 	console.debug('Results from rule engine: ')
 	console.debug(JSON.stringify(engineRules))
 
 	const providers = engineRules.events.filter(q => !!q.params).map(q => q.params.provider)
 
+	console.debug('Matching providers: ', providers)
+
 	for (const rule of rules) {
 		eng.removeRule(rule.name)
 	}
 
+	const unusedProviders = getUnusedProviders(usedProviders, providers)
+	const providerToUse = unusedProviders.length > 0 ? unusedProviders[0] : null
+
 	return {
 		// take the first found, which has high-priority
 		// otherwise if empty results send null
-		provider: providers.length === 0 ? null : providers[0],
+		provider: providerToUse,
+		usedProviders: providerToUse !== null ? [...usedProviders, providerToUse] : usedProviders,
 	}
 }
 
