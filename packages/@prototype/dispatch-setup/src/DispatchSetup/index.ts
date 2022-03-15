@@ -21,13 +21,13 @@ import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
 
 export interface DispatchSetupProps {
-	readonly vpc: ec2.IVpc
-	readonly dmzSecurityGroup: ec2.ISecurityGroup
-	readonly driverApiUrl: string
-	readonly driverApiKeySecretName: string
-	readonly dispatchEngineBucket: s3.IBucket
-	readonly dispatcherConfigPath: string
-	readonly dispatcherVersion: string
+    readonly vpc: ec2.IVpc
+    readonly dmzSecurityGroup: ec2.ISecurityGroup
+	readonly driverApiUrlParameterName: string
+    readonly driverApiKeySecretName: string
+    readonly dispatchEngineBucket: s3.IBucket
+    readonly dispatcherConfigPath: string
+    readonly dispatcherVersion: string
 	readonly dispatcherDockerOsmPbfMapFileUrl: string
 	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
@@ -46,8 +46,8 @@ export class DispatchSetup extends Construct {
 		const {
 			vpc,
 			dmzSecurityGroup,
-			driverApiUrl,
 			driverApiKeySecretName,
+			driverApiUrlParameterName,
 			dispatchEngineBucket,
 			dispatcherConfigPath,
 			dispatcherVersion,
@@ -58,11 +58,12 @@ export class DispatchSetup extends Construct {
 			dispatcherSettings,
 		} = props
 
+		// this feature is not used. let's flag this as DEPRECATED and remove later
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const dispatchHosting = new DispatchHosting(this, 'DispatchHosting', {
 			dispatchEngineBucket,
-			driverApiUrl,
 			driverApiKeySecretName,
+			driverApiUrlParameterName,
 			dispatcherConfigPath,
 			dispatcherVersion,
 			dispatcherAssignmentTableName: dispatcherAssignmentsTable.tableName,
@@ -82,6 +83,7 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
+			driverApiUrlParameterName,
 			containerName: dispatcherDockerContainerName,
 			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,

@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
+import { Duration, aws_dynamodb as ddb, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_ecr as ecr, aws_iam as iam, aws_logs as logs, aws_s3 as s3, aws_secretsmanager as secretsmanager, aws_ssm as ssm } from 'aws-cdk-lib'
 import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 import { DefaultWaf } from '@prototype/common'
@@ -29,6 +29,7 @@ export interface DispatchEcsServiceProps {
 	readonly ecsCluster: ecs.ICluster
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiKeySecretName: string
+	readonly driverApiUrlParameterName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly osmPbfMapFileUrl: string
@@ -50,6 +51,7 @@ export class DispatchEcsService extends Construct {
 			ecsCluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
+			driverApiUrlParameterName,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 			osmPbfMapFileUrl,
@@ -58,6 +60,7 @@ export class DispatchEcsService extends Construct {
 		} = props
 
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
+		const driverApiUrlParameter = ssm.StringParameter.fromStringParameterName(this, 'DriverApiUrlParameter', driverApiUrlParameterName)
 
 		const dispatcherTaskRole = new iam.Role(this, 'DispatcherTaskRole', {
 			assumedBy: new iam.ServicePrincipal(cdkconsts.ServicePrincipals.ECS_TASKS),
@@ -71,6 +74,15 @@ export class DispatchEcsService extends Construct {
 								'secretsmanager:GetSecretValue',
 							],
 							resources: [`${driverApiKeySecret.secretArn}*`],
+						}),
+					],
+				}),
+				parameterStoreAccess: new iam.PolicyDocument({
+					statements: [
+						new iam.PolicyStatement({
+							effect: iam.Effect.ALLOW,
+							actions: ['ssm:GetParameter'],
+							resources: [driverApiUrlParameter.parameterArn],
 						}),
 					],
 				}),
