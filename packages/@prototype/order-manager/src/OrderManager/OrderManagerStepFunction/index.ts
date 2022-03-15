@@ -92,13 +92,13 @@ export class OrderManagerStepFunction extends Construct {
 			resultPath: '$.providerRuleEngine',
 			payloadResponseOnly: true,
 			lambdaFunction: providerRuleEngine,
-			payload: {
-				type: stepfunctions.InputType.OBJECT,
-				value: {
-					cmd: 'findProvider',
-					'payload.$': '$$.Execution.Input',
+			payload: stepfunctions.TaskInput.fromObject({
+				cmd: 'findProvider',
+				payload: {
+					orderData: stepfunctions.TaskInput.fromJsonPathAt('$$.Execution.Input').value,
+					usedProviders: stepfunctions.TaskInput.fromJsonPathAt('$.providerRuleEngine.usedProviders').value,
 				},
-			},
+			}),
 		}).addRetry({
 			maxAttempts: 5,
 			errors: [
@@ -268,16 +268,24 @@ export class OrderManagerStepFunction extends Construct {
 		)
 		.when(
 			stepfunctions.Condition.isNull('$.providerRuleEngine.provider'),
-			findProvider,
+			notifyOrderRejected,
 		)
+
+		const initialiseProviderState = new stepfunctions.Pass(this, 'InitialiseUsedProviders', {
+			resultPath: '$.providerRuleEngine',
+			result: stepfunctions.Result.fromObject({
+				usedProviders: [],
+			}),
+		})
 
 		const definition = sendOrderToOrigin
 		.next(
 			new stepfunctions.Choice(this, 'IsOrderAcceptedByOrigin')
 			.when(
 				stepfunctions.Condition.stringEquals('$.originCallback.status', 'ACCEPTED'),
-				findProvider
-				.next(providerOutputChoice),
+				initialiseProviderState.next(
+					findProvider.next(providerOutputChoice),
+				),
 			)
 			.otherwise(notifyOrderRejected),
 		)
