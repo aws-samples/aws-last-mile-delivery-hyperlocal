@@ -23,8 +23,8 @@ import { DispatchSetup, GraphhopperSetup } from '@prototype/dispatch-setup'
 export interface DispatcherStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly driverApiUrl: string
 	readonly driverApiKeySecretName: string
+	readonly driverApiUrlParameterName: string
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
@@ -50,9 +50,9 @@ export class DispatcherStack extends NestedStack {
 			},
 			dispatchEngineBucket,
 			driverApiKeySecretName,
+			driverApiUrlParameterName,
 			dispatcherConfigPath,
 			dispatcherVersion,
-			driverApiUrl,
 			dispatcherDockerContainerName,
 			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
@@ -67,7 +67,7 @@ export class DispatcherStack extends NestedStack {
 			dispatcherConfigPath,
 			dispatcherVersion,
 			driverApiKeySecretName,
-			driverApiUrl,
+			driverApiUrlParameterName,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName,

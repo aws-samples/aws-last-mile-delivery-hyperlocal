@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_opensearchservice as opensearchservice, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, Environment, aws_apigateway as apigw, aws_lambda as lambda, aws_kinesis as kinesis, aws_dynamodb as ddb, aws_cognito as cognito, aws_events as events, aws_opensearchservice as opensearchservice, aws_ec2 as ec2, aws_ssm as ssm } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { LambdaUtilsLayer, OpenSearchClientLayer, RedisClientLayer, LambdaInsightsLayer } from '@prototype/lambda-common'
@@ -38,6 +38,7 @@ export interface MicroServiceStackProps extends NestedStackProps {
 	readonly memoryDBConfig: { [key: string]: string | number, }
 	readonly kinesisConfig: { [key: string]: string | number | boolean, }
 	readonly env?: Environment
+	readonly geoTrackingApiUrlParameterName: string
 }
 
 /**
@@ -69,6 +70,7 @@ export class MicroServiceStack extends NestedStack {
 			memoryDBConfig,
 			kinesisConfig,
 			env,
+			geoTrackingApiUrlParameterName,
 		} = props
 
 		// main comm eventbus
@@ -141,6 +143,12 @@ export class MicroServiceStack extends NestedStack {
 			openSearchDomain,
 		})
 		this.geoTrackingRestApiKey = apiGeotracking.geoTrackingApiKey
+
+		// store the geoTrackingApi's URL in parameter store
+		const geoTrackingApiUrlStringParameter = new ssm.StringParameter(this, 'GeoTrackingApiUrl', {
+			parameterName: geoTrackingApiUrlParameterName,
+			stringValue: geoTrackingRestApi.url,
+		})
 
 		const apiGeofencing = new ApiGeofencing(this, 'ApiGeofencing', {
 			restApi: geoTrackingRestApi,
