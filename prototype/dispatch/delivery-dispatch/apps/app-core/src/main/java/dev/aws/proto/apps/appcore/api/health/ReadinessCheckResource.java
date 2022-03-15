@@ -23,6 +23,8 @@ import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Readiness;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -30,6 +32,8 @@ import javax.inject.Inject;
 @Readiness
 @ApplicationScoped
 public class ReadinessCheckResource implements HealthCheck {
+    Logger logger = LoggerFactory.getLogger(ReadinessCheckResource.class);
+
     @Inject
     RoutingConfig routingConfig;
 
@@ -44,6 +48,7 @@ public class ReadinessCheckResource implements HealthCheck {
                 responseBuilder.up().withData("profile", ProfileManager.getActiveProfile());
             }
         } catch (Exception e) {
+            logger.error("Health check error", e);
             responseBuilder.down();
         }
 
