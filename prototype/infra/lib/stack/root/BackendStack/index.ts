@@ -48,8 +48,8 @@ export interface BackendStackProps extends StackProps {
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 	readonly geoTrackingApiKeySecretName: string
-	readonly graphhopperSettings: Record<string, string>
-	readonly dispatcherAppDockerRepoName: string
+	readonly graphhopperSettings: Record<string, string | number>
+	readonly dispatcherSettings: Record<string, string | number>
 }
 
 /**
@@ -108,7 +108,7 @@ export class BackendStack extends Stack {
 			geoTrackingApiKeySecretName,
 			orderManagerSettings,
 			graphhopperSettings,
-			dispatcherAppDockerRepoName,
+			dispatcherSettings,
 		} = props
 
 		setNamespace(this, namespace)
@@ -177,7 +177,8 @@ export class BackendStack extends Stack {
 			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName: 'order-dispatcher',
-			dispatcherDockerOsmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl,
+			dispatcherDockerOsmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl.toString(),
+			dispatcherSettings,
 		})
 
 		const providerNestedStack = new ProviderStack(this, 'ProvidersNestedStack', {

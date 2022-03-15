@@ -28,6 +28,7 @@ export interface GraphhopperSetupProps {
 	readonly osmPbfMapFileUrl: string
 	readonly javaOpts?: string
 	readonly containerName: string
+	readonly ecsTaskCount: number
 }
 
 export class GraphhopperSetup extends Construct {
@@ -43,6 +44,7 @@ export class GraphhopperSetup extends Construct {
 			osmPbfMapFileUrl,
 			javaOpts,
 			containerName,
+			ecsTaskCount,
 		} = props
 
 		const graphhopperImage = new ecr_assets.DockerImageAsset(this, 'GraphhopperDockerImage', {
@@ -81,7 +83,7 @@ export class GraphhopperSetup extends Construct {
 
 		const graphhopperService = new ecs.FargateService(this, 'GraphhopperService', {
 			cluster: ecsCluster,
-			desiredCount: 4,
+			desiredCount: ecsTaskCount,
 			securityGroups: [dmzSecurityGroup],
 			serviceName: namespaced(this, 'Graphhopper-Indonesia'),
 			taskDefinition: graphhopperTask,

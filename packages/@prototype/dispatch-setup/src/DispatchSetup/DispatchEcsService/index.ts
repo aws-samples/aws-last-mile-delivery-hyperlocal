@@ -33,6 +33,7 @@ export interface DispatchEcsServiceProps {
 	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly osmPbfMapFileUrl: string
 	readonly containerName: string
+	readonly ecsTaskCount: number
 }
 
 export class DispatchEcsService extends Construct {
@@ -53,6 +54,7 @@ export class DispatchEcsService extends Construct {
 			dispatcherAssignmentsTable,
 			osmPbfMapFileUrl,
 			containerName,
+			ecsTaskCount,
 		} = props
 
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
@@ -155,7 +157,7 @@ export class DispatchEcsService extends Construct {
 
 		const dispatcherService = new ecs.Ec2Service(this, 'DispatcherService', {
 			cluster: ecsCluster,
-			desiredCount: 10,
+			desiredCount: ecsTaskCount,
 			securityGroups: [dmzSecurityGroup],
 			serviceName: namespaced(this, 'Order-Dispatcher'),
 			taskDefinition: dispatcherTask,
