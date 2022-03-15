@@ -50,6 +50,7 @@ COPY ./config/instant/sequential/dispatchSolverConfig.xml /app/config/instant/se
 COPY ./*.jar /app
 
 RUN chown -R 1001 /app
+RUN chown -R 1001 /app && chown -R 1001 /graphhopper-cache
 WORKDIR /app
 
 EXPOSE 80 8080
