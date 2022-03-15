@@ -21,17 +21,18 @@ import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
 
 export interface DispatchSetupProps {
-    readonly vpc: ec2.IVpc
-    readonly dmzSecurityGroup: ec2.ISecurityGroup
-    readonly driverApiUrl: string
-    readonly driverApiKeySecretName: string
-    readonly dispatchEngineBucket: s3.IBucket
-    readonly dispatcherConfigPath: string
-    readonly dispatcherVersion: string
+	readonly vpc: ec2.IVpc
+	readonly dmzSecurityGroup: ec2.ISecurityGroup
+	readonly driverApiUrl: string
+	readonly driverApiKeySecretName: string
+	readonly dispatchEngineBucket: s3.IBucket
+	readonly dispatcherConfigPath: string
+	readonly dispatcherVersion: string
 	readonly dispatcherDockerOsmPbfMapFileUrl: string
 	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
+	readonly dispatcherSettings: Record<string, string | number>
 }
 
 export class DispatchSetup extends Construct {
@@ -54,6 +55,7 @@ export class DispatchSetup extends Construct {
 			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
+			dispatcherSettings,
 		} = props
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -84,6 +86,7 @@ export class DispatchSetup extends Construct {
 			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
+			ecsTaskCount: dispatcherSettings.ecsTaskCount as number,
 		})
 
 		this.loadBalancer = dispatchEcsService.loadBalancer

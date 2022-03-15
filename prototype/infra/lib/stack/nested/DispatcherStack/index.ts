@@ -32,6 +32,7 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
+	readonly dispatcherSettings: Record<string, string | number>
 }
 
 export class DispatcherStack extends NestedStack {
@@ -56,6 +57,7 @@ export class DispatcherStack extends NestedStack {
 			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
+			dispatcherSettings,
 		} = props
 
 		const dispatchSetup = new DispatchSetup(this, 'DispatchSetup', {
@@ -70,6 +72,7 @@ export class DispatcherStack extends NestedStack {
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName,
 			dispatcherDockerOsmPbfMapFileUrl,
+			dispatcherSettings,
 		})
 
 		this.dispatcherLB = dispatchSetup.loadBalancer
