@@ -30,10 +30,4 @@ public interface RoutingProperties {
 
     @WithName("osm-file")
     String osmFile();
-
-    @WithName("s3-bucket-name")
-    String s3BucketName();
-
-    @WithName("s3-osm-keypath")
-    String s3OsmKeyPath();
 }

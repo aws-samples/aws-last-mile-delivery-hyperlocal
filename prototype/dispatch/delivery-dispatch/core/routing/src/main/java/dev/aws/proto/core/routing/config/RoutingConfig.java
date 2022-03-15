@@ -23,12 +23,12 @@ import com.graphhopper.routing.util.FlagEncoderFactory;
 import com.graphhopper.routing.util.MotorcycleFlagEncoder;
 import dev.aws.proto.core.exception.DispatcherException;
 import dev.aws.proto.core.util.PathHelper;
-import dev.aws.proto.core.util.aws.S3Utility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -69,14 +69,14 @@ public class RoutingConfig {
             }
 
             if (!this.osmFilePath.toFile().exists()) {
-                logger.info("{} local osm file doesn't exist. Downloading...", this.osmFilePath);
-                S3Utility.downloadFile(routingProperties.s3BucketName(), routingProperties.s3OsmKeyPath(), this.osmFilePath);
+                logger.error("{} local osm file doesn't exist. Quitting...", this.osmFilePath);
+                throw new FileNotFoundException("Local OSM file doesn't exist (" + this.osmFilePath + ")");
             }
 
             this.hopper = this.importAndLoad();
 
         } catch (IOException e) {
-            throw new DispatcherException("Can't create local OSM and/or Graphhopper dirs", e);
+            throw new DispatcherException("Can't find local OSM and/or Graphhopper dirs", e);
         } finally {
             initLock.unlock();
         }
