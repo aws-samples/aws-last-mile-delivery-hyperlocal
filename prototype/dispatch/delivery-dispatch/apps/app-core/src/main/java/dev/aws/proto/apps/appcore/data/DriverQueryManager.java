@@ -16,28 +16,46 @@
  */
 package dev.aws.proto.apps.appcore.data;
 
+import dev.aws.proto.apps.appcore.config.DriverClientProperties;
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
 import dev.aws.proto.core.routing.location.Coordinate;
+import dev.aws.proto.core.util.aws.SsmUtility;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 @ApplicationScoped
+//@SuppressWarnings("unchecked")
 public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
     private static final Logger logger = LoggerFactory.getLogger(DriverQueryManager.class);
 
-    @Inject
     @RestClient
     DriverQueryClient<TAPIDriver> driverQueryClient;
 
     @Inject
+    DriverClientProperties driverClientProperties;
+
+    @Inject
     DriverQueryProperties driverQueryProperties;
+
+    DriverQueryManager(DriverClientProperties driverClientProperties, DriverQueryProperties driverQueryProperties) {
+        this.driverClientProperties = driverClientProperties;
+        this.driverQueryProperties = driverQueryProperties;
+
+        String driverApiUrl = SsmUtility.getParameterValue(driverClientProperties.driverApiUrlParameterName());
+
+        this.driverQueryClient = (DriverQueryClient<TAPIDriver>) RestClientBuilder.newBuilder()
+                .baseUri(URI.create(driverApiUrl))
+                .build(DriverQueryClient.class);
+    }
 
     public List<TPlanningDriver> retrieveDriversAroundLocations(List<Coordinate> locations, Function<TAPIDriver, TPlanningDriver> converter) {
         // TODO: review this
