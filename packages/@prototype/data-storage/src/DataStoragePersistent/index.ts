@@ -15,13 +15,14 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3, aws_ssm as ssm } from 'aws-cdk-lib'
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
 import { hyperlocal_ddb, hyperlocal_s3 } from '@prototype/common'
 import { DatabaseSeeder } from './DatabaseSeeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DataStoragePersistentProps extends NestedStackProps {
+	readonly parameterStoreKeys: Record<string, string>
 	readonly country: string
 }
 
@@ -49,7 +50,7 @@ export class DataStoragePersistent extends NestedStack {
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
 
-		const { country } = props
+		const { country, parameterStoreKeys } = props
 
 		this.dispatchEngineBucket = new hyperlocal_s3.Bucket(this, 'DispatchEngineBucket', {
 			bucketName: namespacedBucket(this, 'dispatch-engine'),
@@ -110,6 +111,11 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.STRING,
 			},
 		})
+		new ssm.StringParameter(this, 'demographic-area-dispatch-settings-param', {
+			parameterName: parameterStoreKeys.demAreaDispatcherSettingsTableName,
+			stringValue: namespaced(this, 'demographic-area-dispatch-settings'),
+			description: 'DemAreaDispatchSettings tablename parameter for dispatcher',
+		})
 
 		this.demographicAreaProviderEngineSettings = new hyperlocal_ddb.Table(this, 'DemographicAreaProviderEngineSettings', {
 			tableName: namespaced(this, 'demographic-area-provider-engine-settings'),
@@ -147,6 +153,11 @@ export class DataStoragePersistent extends NestedStack {
 				name: 'createdAt',
 				type: ddb.AttributeType.NUMBER,
 			},
+		})
+		new ssm.StringParameter(this, 'dispatcher-assignments-param', {
+			parameterName: parameterStoreKeys.assignmentsTableName,
+			stringValue: namespaced(this, 'dispatcher-assignments'),
+			description: 'DispatcherAssignments tablename parameter for dispatcher',
 		})
 	}
 }

@@ -23,7 +23,7 @@ import { DispatchEcsCluster } from './DispatchEcsCluster'
 export interface DispatchSetupProps {
     readonly vpc: ec2.IVpc
     readonly dmzSecurityGroup: ec2.ISecurityGroup
-	readonly driverApiUrlParameterName: string
+	readonly parameterStoreKeys: Record<string, string>
     readonly driverApiKeySecretName: string
     readonly dispatchEngineBucket: s3.IBucket
     readonly dispatcherConfigPath: string
@@ -47,7 +47,7 @@ export class DispatchSetup extends Construct {
 			vpc,
 			dmzSecurityGroup,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			parameterStoreKeys,
 			dispatchEngineBucket,
 			dispatcherConfigPath,
 			dispatcherVersion,
@@ -63,7 +63,7 @@ export class DispatchSetup extends Construct {
 		const dispatchHosting = new DispatchHosting(this, 'DispatchHosting', {
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			driverApiUrlParameterName: parameterStoreKeys.geoTrackingApiUrl,
 			dispatcherConfigPath,
 			dispatcherVersion,
 			dispatcherAssignmentTableName: dispatcherAssignmentsTable.tableName,
@@ -83,7 +83,7 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			parameterStoreKeys,
 			containerName: dispatcherDockerContainerName,
 			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
