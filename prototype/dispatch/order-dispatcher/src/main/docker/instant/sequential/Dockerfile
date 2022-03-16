@@ -1,18 +1,27 @@
 ##
-# Build stage for generating graphhopper cache
-FROM --platform=linux/arm64 maven:3.6.3-jdk-11 as gh-build
+# Downloader stage
+## #################################################################################################################### 
+FROM --platform=linux/arm64 debian:buster-slim as downloader
 
 ARG MAPFILE_URL=set_MAPFILE_URL_env_var
+ARG GRAPHHOPPER_VERSION=3.2
 
-RUN apt-get install -y git wget
-WORKDIR /build
+WORKDIR /download
 
-# fetch graphhopper executable
-RUN wget https://github.com/graphhopper/graphhopper/releases/download/3.2/graphhopper-web-3.2.jar -O graphhopper.jar
+# fetch graphhopper
+ADD https://github.com/graphhopper/graphhopper/releases/download/${GRAPHHOPPER_VERSION}/graphhopper-web-${GRAPHHOPPER_VERSION}.jar graphhopper.jar
 
 # fetch the mapfile
-RUN mkdir -p /map && wget -O /map/mapfile.osm.pbf ${MAPFILE_URL}
-# COPY ./graphhopper/mapfile.osm.pbf /map/mapfile.osm.pbf
+ADD ${MAPFILE_URL} mapfile.osm.pbf
+
+##
+# Build stage for generating graphhopper cache
+FROM --platform=linux/arm64 public.ecr.aws/docker/library/maven:3.8.4-amazoncorretto-11 as gh-build
+
+WORKDIR /build
+
+COPY --from=downloader /download/graphhopper.jar /build/graphhopper.jar
+COPY --from=downloader /download/mapfile.osm.pbf /build/mapfile.osm.pbf
 
 # add the config file
 COPY ./graphhopper/config.yml ./
@@ -21,11 +30,11 @@ COPY ./graphhopper/graphhopper.sh ./
 # build the mapfile cache with graphhopper
 RUN \
     mkdir -p /graphhopper-cache \
-    && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /map/mapfile.osm.pbf --jar /build/graphhopper.jar
+    && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /build/mapfile.osm.pbf --jar /build/graphhopper.jar
 
 
 ### Stage for instant delivery dispatcher
-FROM --platform=linux/arm64 openjdk:11.0-jre as prod
+FROM --platform=linux/arm64 public.ecr.aws/amazoncorretto/amazoncorretto:11 as prod
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
@@ -33,7 +42,7 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
 # mapfile
-COPY --from=gh-build --chown=1001 /map/mapfile.osm.pbf /map/mapfile.osm.pbf
+COPY --from=downloader --chown=1001 /download/mapfile.osm.pbf /map/mapfile.osm.pbf
 
 # graphhopper cache
 COPY --from=gh-build --chown=1001 /graphhopper-cache /graphhopper-cache
@@ -44,12 +53,11 @@ RUN chmod +x /app/start-app.sh
 
 # settings
 COPY ./config/application-docker.properties /app/config/application.properties
-COPY ./config/instant/sequential/dispatchSolverConfig.xml /app/config/instant/sequential/dispatchSolverConfig.xml
+COPY ./config/instant/sequential/dispatchSolverConfig.xml /app/config/dispatchSolverConfig.xml
 
 # executables
 COPY ./*.jar /app
 
-RUN chown -R 1001 /app
 RUN chown -R 1001 /app && chown -R 1001 /graphhopper-cache
 WORKDIR /app
 
