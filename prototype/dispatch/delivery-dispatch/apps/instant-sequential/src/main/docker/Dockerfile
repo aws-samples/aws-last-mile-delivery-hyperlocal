@@ -48,7 +48,7 @@ ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 
 # mapfile
-COPY --from=downloader /download/mapfile.osm.pbf /map/mapfile.osm.pbf
+COPY --from=downloader --chown=1001 /download/mapfile.osm.pbf /map/mapfile.osm.pbf
 
 # graphhopper cache
 COPY --from=gh-build --chown=1001 /graphhopper-cache /graphhopper-cache
