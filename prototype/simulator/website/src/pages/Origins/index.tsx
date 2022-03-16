@@ -143,6 +143,7 @@ const Origins: React.FC = () => {
 					simulation={sim}
 					onStop={stopSimulation}
 					extraProps={['rejectionRate']}
+					entityName='Origins'
 				/>
 			</>))}
 			<OriginAdditionalInputs

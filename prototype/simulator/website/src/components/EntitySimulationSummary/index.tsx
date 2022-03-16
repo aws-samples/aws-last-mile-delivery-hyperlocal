@@ -47,6 +47,7 @@ export type ISimulation = {
 export type EntitySimulationSummaryProps = {
   simulation: ISimulation
 	extraProps?: string[]
+	entityName: string
   onStop?: (simulation: ISimulation) => void
 }
 
@@ -54,7 +55,12 @@ const mapTasksWithArn = (taskArnPrefix: string, tasks: string[]) => {
 	return (tasks || []).map(q => `${taskArnPrefix}/${q}`)
 }
 
-const EntitySimulationSummary: React.FC<EntitySimulationSummaryProps> = ({ simulation, onStop, extraProps = [] }) => {
+const EntitySimulationSummary: React.FC<EntitySimulationSummaryProps> = ({
+	entityName,
+	simulation,
+	onStop,
+	extraProps = [],
+}) => {
 	return (
 		<Container
 			key={simulation.ID}
@@ -83,7 +89,7 @@ const EntitySimulationSummary: React.FC<EntitySimulationSummaryProps> = ({ simul
 						<Heading variant='h3'>Simulation Setup</Heading>
 					</Box>
 					<EntityDetailsTableComponent
-						entityName={'Origins (eg. restaurants)'}
+						entityName={entityName}
 						entities={simulation.stats}
 						renderActions={false}
 						renderState={false}

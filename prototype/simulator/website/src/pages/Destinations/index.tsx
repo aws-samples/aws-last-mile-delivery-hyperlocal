@@ -143,6 +143,7 @@ const Destinations: React.FC = () => {
 					simulation={sim}
 					onStop={stopSimulation}
 					extraProps={['rejectionRate', 'orderRate', 'orderInterval', 'eventsFilePath']}
+					entityName='Destinations'
 				/>
 			</>))}
 			<DestinationAdditionalInputs
