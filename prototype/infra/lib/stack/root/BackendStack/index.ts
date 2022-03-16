@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { Stack, StackProps, custom_resources as cr } from 'aws-cdk-lib'
+import { Stack, StackProps, custom_resources as cr, aws_ssm as ssm } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { PersistentBackendStack } from '../PersistentBackendStack'
 import { StreamingStack } from '../../nested/StreamingStack'
@@ -90,6 +90,7 @@ export class BackendStack extends Stack {
 					instantDeliveryProviderLocks,
 					instantDeliveryProviderOrders,
 					instantDeliveryProviderOrdersStatusIndex,
+					ssmStringParameters: dataStorageSsmStringParameters,
 				},
 				backendBaseNestedStack: {
 					vpcNetworking,
@@ -169,6 +170,12 @@ export class BackendStack extends Stack {
 		const prototypeDir = findUp('prototype', { cwd: __dirname, type: 'directory' }) || '../../../../../'
 		const dispatcherConfigPath = path.join(prototypeDir, 'dispatch', 'order-dispatcher', 'deploy', 'application.properties')
 
+		// merge ssmStringParameters to one
+		const ssmStringParameters: Record<string, ssm.IStringParameter> = {
+			...dataStorageSsmStringParameters,
+			...microServiceNestedStack.ssmStringParameters,
+		}
+
 		const dispatcherStack = new DispatcherStack(this, 'DispatcherStack', {
 			vpc,
 			vpcNetworking,
@@ -176,7 +183,7 @@ export class BackendStack extends Stack {
 			dispatcherConfigPath,
 			dispatcherVersion: 'v2',
 			driverApiKeySecretName: geoTrackingApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName: dispatcherSettings.containerName.toString(),

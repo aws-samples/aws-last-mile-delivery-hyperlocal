@@ -24,7 +24,7 @@ import { namespaced } from '@aws-play/cdk-core'
 export interface DispatchHostingProps {
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiKeySecretName: string
-	readonly driverApiUrlParameterName: string
+	// readonly driverApiUrlParameterName: string
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
 	readonly demographicAreaDispatcherSettingsTableName: string
@@ -39,7 +39,7 @@ export class DispatchHosting extends Construct {
 			dispatchEngineBucket,
 			dispatcherConfigPath,
 			driverApiKeySecretName,
-			driverApiUrlParameterName,
+			// driverApiUrlParameterName,
 			dispatcherVersion,
 			demographicAreaDispatcherSettingsTableName,
 			dispatcherAssignmentTableName,
@@ -50,7 +50,7 @@ export class DispatchHosting extends Construct {
 		const applicationPropsContent = fs.readFileSync(applicationsPropsPath, { encoding: 'utf-8' })
 		const renderedContent = render(applicationPropsContent, {
 			dispatchEngineBucketName: dispatchEngineBucket.bucketName,
-			driverApiUrlParameterName,
+			// driverApiUrlParameterName,
 			driverApiKeySecretName,
 			dispatcherVersion,
 			demographicAreaDispatcherSettingsTableName,

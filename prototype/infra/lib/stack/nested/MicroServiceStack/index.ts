@@ -55,6 +55,8 @@ export class MicroServiceStack extends NestedStack {
 
 	public readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }
 
+	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
+
 	constructor (scope: Construct, id: string, props: MicroServiceStackProps) {
 		super(scope, id, props)
 
@@ -149,6 +151,9 @@ export class MicroServiceStack extends NestedStack {
 			parameterName: geoTrackingApiUrlParameterName,
 			stringValue: geoTrackingRestApi.url,
 		})
+
+		this.ssmStringParameters = {}
+		this.ssmStringParameters[geoTrackingApiUrlParameterName] = geoTrackingApiUrlStringParameter
 
 		const apiGeofencing = new ApiGeofencing(this, 'ApiGeofencing', {
 			restApi: geoTrackingRestApi,

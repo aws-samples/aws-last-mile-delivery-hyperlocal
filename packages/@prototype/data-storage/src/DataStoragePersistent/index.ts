@@ -47,10 +47,14 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly instantDeliveryProviderLocks: ddb.ITable
 
+	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
+
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
 		super(scope, id, props)
 
 		const { country, parameterStoreKeys } = props
+
+		this.ssmStringParameters = {}
 
 		this.dispatchEngineBucket = new hyperlocal_s3.Bucket(this, 'DispatchEngineBucket', {
 			bucketName: namespacedBucket(this, 'dispatch-engine'),
@@ -103,19 +107,22 @@ export class DataStoragePersistent extends NestedStack {
 		this.instantDeliveryProviderOrdersStatusIndex = instantDeliveryProviderOrdersStatusIndex
 		this.instantDeliveryProviderOrders = instantDeliveryProviderOrders
 
+		const demographicAreaDispatchSettingsTableName = namespaced(this, 'demographic-area-dispatch-settings')
 		this.demographicAreaDispatchSettings = new hyperlocal_ddb.Table(this, 'DemographicAreaDispatchSettings', {
-			tableName: namespaced(this, 'demographic-area-dispatch-settings'),
+			tableName: demographicAreaDispatchSettingsTableName,
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
 		})
-		new ssm.StringParameter(this, 'demographic-area-dispatch-settings-param', {
+		const demographicAreaDispatchSettingsTableNameParameter = new ssm.StringParameter(this, 'demographic-area-dispatch-settings-param', {
 			parameterName: parameterStoreKeys.demAreaDispatcherSettingsTableName,
-			stringValue: namespaced(this, 'demographic-area-dispatch-settings'),
+			stringValue: demographicAreaDispatchSettingsTableName,
 			description: 'DemAreaDispatchSettings tablename parameter for dispatcher',
 		})
+		this.ssmStringParameters[parameterStoreKeys.demAreaDispatcherSettingsTableName] =
+			demographicAreaDispatchSettingsTableNameParameter
 
 		this.demographicAreaProviderEngineSettings = new hyperlocal_ddb.Table(this, 'DemographicAreaProviderEngineSettings', {
 			tableName: namespaced(this, 'demographic-area-provider-engine-settings'),
@@ -142,8 +149,9 @@ export class DataStoragePersistent extends NestedStack {
 			country,
 		})
 
+		const dispatcherAssignmentsTableName = namespaced(this, 'dispatcher-assignments')
 		this.dispatcherAssignmentsTable = new hyperlocal_ddb.Table(this, 'DispatcherAssignments', {
-			tableName: namespaced(this, 'dispatcher-assignments'),
+			tableName: dispatcherAssignmentsTableName,
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -154,10 +162,11 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.NUMBER,
 			},
 		})
-		new ssm.StringParameter(this, 'dispatcher-assignments-param', {
+		const dispatcherAssignmentsTableNameParameter = new ssm.StringParameter(this, 'dispatcher-assignments-param', {
 			parameterName: parameterStoreKeys.assignmentsTableName,
-			stringValue: namespaced(this, 'dispatcher-assignments'),
+			stringValue: dispatcherAssignmentsTableName,
 			description: 'DispatcherAssignments tablename parameter for dispatcher',
 		})
+		this.ssmStringParameters[parameterStoreKeys.assignmentsTableName] = dispatcherAssignmentsTableNameParameter
 	}
 }
