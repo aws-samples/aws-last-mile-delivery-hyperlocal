@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_s3 as s3, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_dynamodb as ddb, aws_ecs as ecs } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_s3 as s3, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_dynamodb as ddb, aws_ssm as ssm } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { DispatchSetup, GraphhopperSetup } from '@prototype/dispatch-setup'
 
@@ -24,7 +24,7 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly driverApiKeySecretName: string
-	readonly parameterStoreKeys: Record<string, string>
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherConfigPath: string
 	readonly dispatcherVersion: string
@@ -50,7 +50,7 @@ export class DispatcherStack extends NestedStack {
 			},
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			dispatcherConfigPath,
 			dispatcherVersion,
 			dispatcherDockerContainerName,
@@ -67,7 +67,7 @@ export class DispatcherStack extends NestedStack {
 			dispatcherConfigPath,
 			dispatcherVersion,
 			driverApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 			dispatcherDockerContainerName,

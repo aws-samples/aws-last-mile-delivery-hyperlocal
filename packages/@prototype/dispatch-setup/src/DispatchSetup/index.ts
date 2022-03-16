@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_elasticloadbalancingv2 as elb, aws_s3 as s3 } from 'aws-cdk-lib'
+import { aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_elasticloadbalancingv2 as elb, aws_s3 as s3, aws_ssm as ssm } from 'aws-cdk-lib'
 import { DispatchHosting } from './DispatchHosting'
 import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
@@ -23,7 +23,7 @@ import { DispatchEcsCluster } from './DispatchEcsCluster'
 export interface DispatchSetupProps {
     readonly vpc: ec2.IVpc
     readonly dmzSecurityGroup: ec2.ISecurityGroup
-	readonly parameterStoreKeys: Record<string, string>
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
     readonly driverApiKeySecretName: string
     readonly dispatchEngineBucket: s3.IBucket
     readonly dispatcherConfigPath: string
@@ -47,7 +47,7 @@ export class DispatchSetup extends Construct {
 			vpc,
 			dmzSecurityGroup,
 			driverApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			dispatchEngineBucket,
 			dispatcherConfigPath,
 			dispatcherVersion,
@@ -63,7 +63,7 @@ export class DispatchSetup extends Construct {
 		const dispatchHosting = new DispatchHosting(this, 'DispatchHosting', {
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			driverApiUrlParameterName: parameterStoreKeys.geoTrackingApiUrl,
+			// driverApiUrlParameterName: ssmStringParameters[geoTrackingApiUrl].stringValue,
 			dispatcherConfigPath,
 			dispatcherVersion,
 			dispatcherAssignmentTableName: dispatcherAssignmentsTable.tableName,
@@ -83,7 +83,7 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			containerName: dispatcherDockerContainerName,
 			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,

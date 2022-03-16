@@ -29,7 +29,7 @@ export interface DispatchEcsServiceProps {
 	readonly ecsCluster: ecs.ICluster
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiKeySecretName: string
-	readonly parameterStoreKeys: Record<string, string>
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly osmPbfMapFileUrl: string
@@ -51,7 +51,7 @@ export class DispatchEcsService extends Construct {
 			ecsCluster,
 			dispatchEngineBucket,
 			driverApiKeySecretName,
-			parameterStoreKeys,
+			ssmStringParameters,
 			demAreaDispatchEngineSettingsTable,
 			dispatcherAssignmentsTable,
 			osmPbfMapFileUrl,
@@ -60,9 +60,6 @@ export class DispatchEcsService extends Construct {
 		} = props
 
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
-		const driverApiUrlParameter = ssm.StringParameter.fromStringParameterName(this, 'DriverApiUrlParameter', parameterStoreKeys.geoTrackingApiUrl)
-		const assignmentsTableParameter = ssm.StringParameter.fromStringParameterName(this, 'AssignmentsTableParameter', parameterStoreKeys.assignmentsTableName)
-		const demAreaDispatchSettingsTableParameter = ssm.StringParameter.fromStringParameterName(this, 'demAreaDispatcherSettingsTableParameter', parameterStoreKeys.demAreaDispatcherSettingsTableName)
 
 		const dispatcherTaskRole = new iam.Role(this, 'DispatcherTaskRole', {
 			assumedBy: new iam.ServicePrincipal(cdkconsts.ServicePrincipals.ECS_TASKS),
@@ -84,11 +81,7 @@ export class DispatchEcsService extends Construct {
 						new iam.PolicyStatement({
 							effect: iam.Effect.ALLOW,
 							actions: ['ssm:GetParameter'],
-							resources: [
-								driverApiUrlParameter.parameterArn,
-								assignmentsTableParameter.parameterArn,
-								demAreaDispatchSettingsTableParameter.parameterArn,
-							],
+							resources: Object.values(ssmStringParameters).map(param => param.parameterArn),
 						}),
 					],
 				}),
