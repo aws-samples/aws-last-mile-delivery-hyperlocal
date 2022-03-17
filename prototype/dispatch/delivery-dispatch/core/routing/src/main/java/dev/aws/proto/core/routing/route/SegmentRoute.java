@@ -18,9 +18,32 @@
 package dev.aws.proto.core.routing.route;
 
 import dev.aws.proto.core.routing.distance.Distance;
+import dev.aws.proto.core.routing.location.LocationBase;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SegmentRoute extends Distance {
     private String points;
+
+    public SegmentRoute(Distance dist, String points) {
+        super(dist.getDistance(), dist.getTime());
+        this.points = points;
+    }
+
+    public static SegmentRoute between(LocationBase origin, LocationBase destination) {
+        Distance dist = origin.distanceTo(destination);
+
+        return new SegmentRoute(dist, null);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(points, super.getDistance(), super.getTime());
+    }
 }

@@ -19,11 +19,15 @@ package dev.aws.proto.core.routing.route;
 
 
 import dev.aws.proto.core.routing.location.Coordinate;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DeliverySegment {
 
     public static enum SegmentType {

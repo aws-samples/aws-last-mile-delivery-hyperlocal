@@ -19,9 +19,16 @@ package dev.aws.proto.core;
 
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class Order {
     private long createdAt;
     private String orderId;
     private String state;
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.orderId);
+    }
 }
