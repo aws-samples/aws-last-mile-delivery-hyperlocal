@@ -44,6 +44,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
     private Order order;
     private OriginLocation pickup;
     private DestinationLocation dropoff;
+
     @Setter
     private long planningId;
 
@@ -65,6 +66,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
         this.dropoff = dropoff;
 
         this.planningId = Objects.hash(this.order.getOrderId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.order.getOrderId());
     }
 
     public long getOrderCreatedAt() {

@@ -24,6 +24,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +42,11 @@ public class PlanningDriver implements DeliveryOrDriver {
     @PlanningId
     public String getId() {
         return this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.id);
     }
 
     @Override
