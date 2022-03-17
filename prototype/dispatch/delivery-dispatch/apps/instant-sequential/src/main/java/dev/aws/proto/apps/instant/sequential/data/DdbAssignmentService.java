@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class DdbAssignmentService extends DdbServiceBase {
@@ -101,9 +102,9 @@ public class DdbAssignmentService extends DdbServiceBase {
                 e.printStackTrace();
             }
             return null;
-        }).toList();
+        }).collect(Collectors.toList());
 
-        List<String> unassigned = dbItem.get("unassigned").l().stream().map(AttributeValue::s).toList();
+        List<String> unassigned = dbItem.get("unassigned").l().stream().map(AttributeValue::s).collect(Collectors.toList());
         long createdAt = Long.parseLong(dbItem.get("createdAt").n());
         String executionId = dbItem.get("executionId").s();
         String state = dbItem.get("state").s();
