@@ -19,43 +19,24 @@ package dev.aws.proto.apps.appcore.data;
 import dev.aws.proto.apps.appcore.config.DriverClientProperties;
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.util.aws.SsmUtility;
-import org.eclipse.microprofile.rest.client.RestClientBuilder;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-@ApplicationScoped
-//@SuppressWarnings("unchecked")
-public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
+public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
     private static final Logger logger = LoggerFactory.getLogger(DriverQueryManager.class);
 
-    @RestClient
-    DriverQueryClient<TAPIDriver> driverQueryClient;
+    protected abstract DriverQueryClient<TAPIDriver> getDriverQueryClient();
 
     @Inject
-    DriverClientProperties driverClientProperties;
+    protected DriverClientProperties driverClientProperties;
 
     @Inject
-    DriverQueryProperties driverQueryProperties;
-
-    DriverQueryManager(DriverClientProperties driverClientProperties, DriverQueryProperties driverQueryProperties) {
-        this.driverClientProperties = driverClientProperties;
-        this.driverQueryProperties = driverQueryProperties;
-
-        String driverApiUrl = SsmUtility.getParameterValue(driverClientProperties.driverApiUrlParameterName());
-
-        this.driverQueryClient = (DriverQueryClient<TAPIDriver>) RestClientBuilder.newBuilder()
-                .baseUri(URI.create(driverApiUrl))
-                .build(DriverQueryClient.class);
-    }
+    protected DriverQueryProperties driverQueryProperties;
 
     public List<TPlanningDriver> retrieveDriversAroundLocations(List<Coordinate> locations, Function<TAPIDriver, TPlanningDriver> converter) {
         // TODO: review this
@@ -71,7 +52,7 @@ public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
-        List<TAPIDriver> drivers = driverQueryClient.getAvailableDriversPerOrigin(driverQueryRequest);
+        List<TAPIDriver> drivers = this.getDriverQueryClient().getAvailableDriversPerOrigin(driverQueryRequest);
 
         if (drivers == null || drivers.size() == 0) {
             return new ArrayList<>();
@@ -97,9 +78,9 @@ public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         int requestCnt = 0;
 
         while (numOfDrivers < numOfOrders) {
-            drivers = driverQueryClient.getAvailableDrivers(
+            drivers = this.getDriverQueryClient().getAvailableDrivers(
                     "m", "IDLE",
-                    centroid.getLatitude().doubleValue(), centroid.getLongitude().doubleValue(),
+                    centroid.getLatitude(), centroid.getLongitude(),
                     numOfOrders + 5,
                     radius);
 
@@ -139,7 +120,7 @@ public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
     }
 
     public List<TAPIDriver> getDrivers(String distanceUnit, String status, double lat, double lon, int count, int radius) {
-        return driverQueryClient.getAvailableDrivers(distanceUnit, status, lat, lon, count, radius);
+        return this.getDriverQueryClient().getAvailableDrivers(distanceUnit, status, lat, lon, count, radius);
     }
 
     public List<TAPIDriver> getDriversAroundLocations(List<Coordinate> locations, int countPerLocation) {
@@ -150,7 +131,7 @@ public class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
-        List<TAPIDriver> drivers = driverQueryClient.getAvailableDriversPerOrigin(driverQueryRequest);
+        List<TAPIDriver> drivers = this.getDriverQueryClient().getAvailableDriversPerOrigin(driverQueryRequest);
 
         return drivers;
     }

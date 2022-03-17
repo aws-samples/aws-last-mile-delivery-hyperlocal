@@ -14,15 +14,28 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.apps.appcore.data;
 
+package dev.aws.proto.apps.instant.sequential.data;
+
+import dev.aws.proto.apps.appcore.data.ApiKeyHeaderFactory;
+import dev.aws.proto.apps.appcore.data.DriverQueryRequest;
+import org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.util.List;
 
-public interface DriverQueryClient<TDBDriver> {
+@Path("/api/geotracking/internal/driver-location")
+@RegisterClientHeaders(ApiKeyHeaderFactory.class)
+public interface DriverQueryClient extends dev.aws.proto.apps.appcore.data.DriverQueryClient<ApiDriver> {
 
-    List<TDBDriver> getAvailableDrivers(
+    @GET
+    @Path("/query")
+    @Produces("application/json")
+    List<ApiDriver> getAvailableDrivers(
             @QueryParam("distanceUnit") String distanceUnit,
             @QueryParam("status") String status,
             @QueryParam("lat") double lat,
@@ -30,5 +43,9 @@ public interface DriverQueryClient<TDBDriver> {
             @QueryParam("count") int count,
             @QueryParam("distance") int distance);
 
-    List<TDBDriver> getAvailableDriversPerOrigin(DriverQueryRequest driverQueryRequest);
+    @POST
+    @Path("/query")
+    @Produces("application/json")
+    List<ApiDriver> getAvailableDriversPerOrigin(DriverQueryRequest driverQueryRequest);
+
 }
