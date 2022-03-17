@@ -29,7 +29,6 @@ import io.vertx.core.impl.ConcurrentHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.StreamSupport;
@@ -63,10 +62,10 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
     @Override
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
         GHRequest ghRequest = new GHRequest(
-                origin.getLatitude().doubleValue(),
-                origin.getLongitude().doubleValue(),
-                destination.getLatitude().doubleValue(),
-                destination.getLongitude().doubleValue());
+                origin.getLatitude(),
+                origin.getLongitude(),
+                destination.getLatitude(),
+                destination.getLongitude());
 
         // TODO: in prod, this must be a parameter :: based on current weather conditions, package size, etc.
         ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
@@ -80,10 +79,10 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
 
     private GHResponse getRoute(Coordinate origin, Coordinate destination) {
         GHRequest ghRequest = new GHRequest(
-                origin.getLatitude().doubleValue(),
-                origin.getLongitude().doubleValue(),
-                destination.getLatitude().doubleValue(),
-                destination.getLongitude().doubleValue());
+                origin.getLatitude(),
+                origin.getLongitude(),
+                destination.getLatitude(),
+                destination.getLongitude());
 
         // TODO: in prod, this must be a parameter
         ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);

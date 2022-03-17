@@ -18,13 +18,10 @@
 package dev.aws.proto.core.routing.location;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.json.bind.annotation.JsonbProperty;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -35,15 +32,15 @@ import java.util.Objects;
 public class Coordinate {
     @JsonProperty("lat")
     @JsonbProperty("lat")
-    private BigDecimal latitude;
+    private double latitude;
 
     @JsonProperty("long")
     @JsonbProperty("long")
-    private BigDecimal longitude;
+    private double longitude;
 
     public Coordinate(double lat, double lon) {
-        this.latitude = BigDecimal.valueOf(lat);
-        this.longitude = BigDecimal.valueOf(lon);
+        this.latitude = lat;
+        this.longitude = lon;
     }
 
     @Override
@@ -55,12 +52,12 @@ public class Coordinate {
             return false;
         }
         Coordinate coordinate = (Coordinate) o;
-        return latitude.compareTo(coordinate.latitude) == 0 &&
-                longitude.compareTo(coordinate.longitude) == 0;
+        return latitude == coordinate.latitude &&
+                longitude == coordinate.longitude;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(latitude.doubleValue(), longitude.doubleValue());
+        return Objects.hash(latitude, longitude);
     }
 }
