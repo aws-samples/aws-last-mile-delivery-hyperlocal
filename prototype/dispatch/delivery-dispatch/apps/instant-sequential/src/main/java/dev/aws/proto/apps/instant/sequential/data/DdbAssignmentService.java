@@ -17,10 +17,12 @@
 package dev.aws.proto.apps.instant.sequential.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
 import dev.aws.proto.apps.instant.sequential.config.DdbProperties;
+import dev.aws.proto.core.routing.route.DeliverySegment;
 import dev.aws.proto.core.util.aws.CredentialsHelper;
 import dev.aws.proto.core.util.aws.SsmUtility;
 import org.bk.aws.dynamo.util.JsonAttributeValueUtil;
@@ -31,7 +33,10 @@ import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @ApplicationScoped
 public class DdbAssignmentService extends DdbServiceBase {
@@ -88,19 +93,18 @@ public class DdbAssignmentService extends DdbServiceBase {
         Map<String, AttributeValue> dbItem = dbItems.get(0);
         ObjectMapper mapper = new ObjectMapper();
 
-        // TODO: assemble segments and unassigned
-//        List<AssignedOrders> assigned = dbItem.get("assigned").l().stream().map(av -> {
-//            JsonNode node = JsonAttributeValueUtil.fromAttributeValue(av);
-//            try {
-//                return mapper.treeToValue(node, AssignedOrders.class);
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//        }).collect(Collectors.toList());
+        List<DeliverySegment> segments = dbItem.get("segments").l().stream().map(av -> {
+            JsonNode node = JsonAttributeValueUtil.fromAttributeValue(av);
+            try {
+                return mapper.treeToValue(node, DeliverySegment.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).toList();
 
-//        List<String> unassigned = dbItem.get("unassigned").l().stream().map(AttributeValue::s).collect(Collectors.toList());
-        Long createdAt = Long.parseLong(dbItem.get("createdAt").n());
+        List<String> unassigned = dbItem.get("unassigned").l().stream().map(AttributeValue::s).toList();
+        long createdAt = Long.parseLong(dbItem.get("createdAt").n());
         String executionId = dbItem.get("executionId").s();
         String state = dbItem.get("state").s();
         String score = dbItem.get("score").s();
@@ -110,8 +114,8 @@ public class DdbAssignmentService extends DdbServiceBase {
                 .problemId(problemId)
                 .executionId(executionId)
                 .createdAt(createdAt)
-                .segments(new ArrayList<>())
-                .unassigned(new ArrayList<>())
+                .segments(segments)
+                .unassigned(unassigned)
                 .state(state)
                 .score(score)
                 .executionId(dbItem.get("executionId").s())
