@@ -19,13 +19,13 @@ package dev.aws.proto.apps.instant.sequential.api;
 
 import dev.aws.proto.apps.appcore.api.response.RequestResult;
 import dev.aws.proto.apps.appcore.config.SolutionConfig;
-import dev.aws.proto.apps.appcore.data.DriverQueryManager;
 import dev.aws.proto.apps.appcore.planner.solution.SolutionState;
 import dev.aws.proto.apps.instant.sequential.Order;
 import dev.aws.proto.apps.instant.sequential.api.request.DispatchRequest;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
 import dev.aws.proto.apps.instant.sequential.data.ApiDriver;
 import dev.aws.proto.apps.instant.sequential.data.DdbAssignmentService;
+import dev.aws.proto.apps.instant.sequential.data.DriverQueryManager;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDelivery;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDriver;
 import dev.aws.proto.apps.instant.sequential.location.DestinationLocation;
@@ -36,8 +36,12 @@ import dev.aws.proto.core.routing.config.RoutingConfig;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.LocationBase;
+import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.optaplanner.core.api.solver.SolverJob;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -57,19 +62,21 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
     private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);
 
     @Inject
-    RoutingConfig routingConfig;
-
-    @Inject
-    SolutionConfig solutionConfig;
-
-    @Inject
-    DriverQueryManager<ApiDriver, PlanningDriver> driverQueryManager;
+    DriverQueryManager driverQueryManager;
 
     @Inject
     DdbAssignmentService assignmentService;
 
-    DispatchService(RoutingConfig routingConfig, SolutionConfig solutionConfig) {
-        super(routingConfig, solutionConfig);
+    DispatchService(RoutingConfig routingConfig, SolutionConfig solutionConfig, DriverQueryManager driverQueryManager) {
+        this.routingConfig = routingConfig;
+        this.solutionConfig = solutionConfig;
+        this.driverQueryManager = driverQueryManager;
+
+        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper());
+
+        SolverConfig solverConfig = SolverConfig.createFromXmlFile(java.nio.file.Path.of(this.solutionConfig.getSolverConfigXmlPath()).toFile());
+        this.solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
+        this.solutionMap = new ConcurrentHashMap<>();
     }
 
     @Override

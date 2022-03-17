@@ -23,8 +23,6 @@ import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDriver;
 import dev.aws.proto.apps.instant.sequential.util.Constants;
 import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
-import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.ILocation;
 import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.route.DeliverySegment;
 import dev.aws.proto.core.routing.route.SegmentRoute;
@@ -32,7 +30,6 @@ import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.text.Segment;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -110,27 +107,31 @@ public class SolutionConsumer {
                 if (segmentCtr > 2) {
                     unassigned.add(delivery.getOrder().getOrderId());
                 } else {
-                    assignedOrderSegments.add(
-                            DeliverySegment.builder()
-                                    .orderId(delivery.getOrder().getOrderId())
-                                    .index(segmentCtr)
-                                    .from(prevLocation.coordinate())
-                                    .to(delivery.getPickup().coordinate())
-                                    .segmentType(DeliverySegment.SegmentType.TO_ORIGIN)
-                                    // TODO: points will be filled later
-                                    .route((SegmentRoute) prevLocation.distanceTo(delivery.getPickup()))
-                                    .build());
+                    DeliverySegment segment1 = DeliverySegment.builder()
+                            .orderId(delivery.getOrder().getOrderId())
+                            .index(segmentCtr)
+                            .from(prevLocation.getCoordinate())
+                            .to(delivery.getPickup().getCoordinate())
+                            .segmentType(DeliverySegment.SegmentType.TO_ORIGIN)
+                            // TODO: points will be filled later
+                            .route(SegmentRoute.between(prevLocation, delivery.getPickup()))
+                            .build();
 
-                    assignedOrderSegments.add(
-                            DeliverySegment.builder()
-                                    .orderId(delivery.getOrder().getOrderId())
-                                    .index(segmentCtr + 1)
-                                    .from(delivery.getPickup().coordinate())
-                                    .to(delivery.getDropoff().coordinate())
-                                    .segmentType(DeliverySegment.SegmentType.TO_DESTINATION)
-                                    .route((SegmentRoute) delivery.getPickup().distanceTo(delivery.getDropoff()))
-                                    .build()
-                    );
+                    DeliverySegment segment2 = DeliverySegment.builder()
+                            .orderId(delivery.getOrder().getOrderId())
+                            .index(segmentCtr + 1)
+//                                    .from(new Coordinate(delivery.getPickup().getCoordinate().getLatitude(), delivery.getPickup().getCoordinate().getLongitude())
+                            .from(delivery.getPickup().getCoordinate())
+                            .to(delivery.getDropoff().getCoordinate())
+                            .segmentType(DeliverySegment.SegmentType.TO_DESTINATION)
+                            .route(SegmentRoute.between(delivery.getPickup(), delivery.getDropoff()))
+                            .build();
+
+                    logger.info("segment1.from = {} | segment1.to = {}", segment1.getFrom().getClass(), segment1.getTo().getClass());
+                    logger.info("segment2.from = {} | segment2.to = {}", segment2.getFrom().getClass(), segment2.getTo().getClass());
+
+                    assignedOrderSegments.add(segment1);
+                    assignedOrderSegments.add(segment2);
 
                     // refresh helper vars
                     prevLocation = delivery.getDropoff();
