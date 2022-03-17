@@ -28,9 +28,7 @@ public abstract class DdbServiceBase {
         return null;
     }
 
-    protected Map<String, AttributeValue> getPutItemMap(Object item) {
-        return null;
-    }
+    protected abstract Map<String, AttributeValue> getPutItemMap(Object item);
 
     protected ScanRequest scanRequest() {
         return ScanRequest.builder()
