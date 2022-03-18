@@ -21,7 +21,6 @@ import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
