@@ -44,7 +44,7 @@ public class SecretsManagerUtility {
             GetSecretValueResponse getSecretValueResponse = secretsManagerClient.getSecretValue(getSecretValueRequest);
             String result = getSecretValueResponse.secretString().toString();
 
-            logger.debug("ApiKey value successfully retrieved from SecretsManager[{}]", secretName);
+            logger.info("ApiKey value successfully retrieved from SecretsManager[{}]", secretName);
 
             return result;
         } catch (ResourceNotFoundException e) {

@@ -49,7 +49,7 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         driverQueryRequest.locations = locations;
         driverQueryRequest.countPerLocation = countPerLocation;
         driverQueryRequest.distance = 500;
-        driverQueryRequest.distanceUnit = "m";
+        driverQueryRequest.distanceUnit = "km";
         driverQueryRequest.status = "IDLE";
 
         List<TAPIDriver> drivers = this.getDriverQueryClient().getAvailableDriversPerOrigin(driverQueryRequest);

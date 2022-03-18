@@ -75,6 +75,7 @@ public class DistanceMatrix {
     }
 
     public Distance distanceBetween(ILocation origin, ILocation destination) {
+        logger.trace("Calculating distance between {} and {}", origin, destination);
         Map<ILocation, Distance> distanceRow = matrix.get(origin);
 
         return distanceRow.get(destination);
@@ -100,6 +101,7 @@ public class DistanceMatrix {
         private final Map<ILocation, Map<ILocation, Distance>> matrix;
 
         Builder(IDistanceCalculator distanceCalculator) {
+            logger.trace("Initializing DistanceMatrix.Builder");
             this.distanceCalculator = distanceCalculator;
             this.matrix = new ConcurrentHashMap<>();
         }

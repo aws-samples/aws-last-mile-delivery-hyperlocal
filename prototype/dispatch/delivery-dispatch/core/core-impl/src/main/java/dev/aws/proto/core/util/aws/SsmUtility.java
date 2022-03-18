@@ -45,7 +45,7 @@ public class SsmUtility {
             GetParameterResponse getParameterResponse = ssmClient.getParameter(getParameterRequest);
             String result = getParameterResponse.parameter().value();
 
-            logger.debug("DriverApi URL retrieved from SSM Parameter Store with name {}", parameterName);
+            logger.info("SSM Parameter successfully retrieved from SSM Parameter Store: {} = {}", parameterName, result);
 
             return result;
         } catch (AwsServiceException e) {
