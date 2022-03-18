@@ -21,6 +21,7 @@ import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.location.LocationType;
 import lombok.Data;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Data
@@ -40,5 +41,10 @@ public class DestinationLocation extends LocationBase {
         super(id, coordinate, LocationType.DESTINATION);
 
         this.leaveDelayInMillis = leaveDelayInMillis;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getId());
     }
 }
