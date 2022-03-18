@@ -58,20 +58,26 @@ public class RoutingConfig {
     private void init() {
         initLock.lock();
         try {
+            logger.trace("Checking local directory that has the OSM file");
             if (!this.localOsmDir.toFile().exists()) {
-                logger.info("{} dir doesn't exist. Creating local OSM dir.", this.localOsmDir);
+                logger.warn("{} dir doesn't exist. Creating local OSM dir.", this.localOsmDir);
                 Files.createDirectories(this.localOsmDir);
             }
+            logger.debug("Local OSM dir ({}) ok", this.localOsmDir);
 
+            logger.trace("Checking graphhopper cache dir");
             if (!this.localGraphhopperDir.toFile().exists()) {
-                logger.info("{} dir doesn't exist. Creating local graphhopper dir.", this.localGraphhopperDir);
+                logger.warn("{} dir doesn't exist. Creating local graphhopper dir.", this.localGraphhopperDir);
                 Files.createDirectories(this.localGraphhopperDir);
             }
+            logger.debug("Local Graphhopper cache dir ({}) ok", this.localGraphhopperDir);
 
+            logger.trace("Checking OSM mapfile");
             if (!this.osmFilePath.toFile().exists()) {
                 logger.error("{} local osm file doesn't exist. Quitting...", this.osmFilePath);
                 throw new FileNotFoundException("Local OSM file doesn't exist (" + this.osmFilePath + ")");
             }
+            logger.debug("Local OSM file ({}) ok", this.osmFilePath);
 
             this.hopper = this.importAndLoad();
 
@@ -84,8 +90,8 @@ public class RoutingConfig {
 
     private GraphHopper importAndLoad() {
         GraphHopper hopper = new GraphHopper();
-        logger.debug("Importing OSM file: {}", osmFilePath);
-
+        logger.info("Importing OSM file and cache: {}", osmFilePath);
+        logger.debug("Loading Graphhopper with CAR and MOTORCYCLE profiles");
 
         hopper.setOSMFile(this.osmFilePath.toString());
         hopper.setGraphHopperLocation(this.localGraphhopperDir.toString());
@@ -93,6 +99,8 @@ public class RoutingConfig {
         hopper.getEncodingManagerBuilder().add(new MotorcycleFlagEncoder());
         hopper.setProfiles(new Profile(FlagEncoderFactory.CAR), new Profile(FlagEncoderFactory.MOTORCYCLE));
         hopper.importOrLoad();
+
+        logger.debug("Graphhoper loading successful");
 
         return hopper;
     }

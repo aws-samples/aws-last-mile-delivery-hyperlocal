@@ -61,6 +61,7 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
 
     @Override
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
+        logger.trace("getPath between {} and {}", origin, destination);
         GHRequest ghRequest = new GHRequest(
                 origin.getLatitude(),
                 origin.getLongitude(),
@@ -78,6 +79,7 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
     }
 
     private GHResponse getRoute(Coordinate origin, Coordinate destination) {
+        logger.trace("getRoute between {} and {}", origin, destination);
         GHRequest ghRequest = new GHRequest(
                 origin.getLatitude(),
                 origin.getLongitude(),
@@ -88,14 +90,13 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
         ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
 //        ghRequest.setProfile(FlagEncoderFactory.CAR);
 
-        logger.trace("Graphhopper Request :: {}", ghRequest.toString());
-
         GHResponse ghResponse = graphhopper.route(ghRequest);
         return ghResponse;
     }
 
     @Override
     public Distance travelDistance(Coordinate from, Coordinate to) {
+        logger.trace("Calculating travel distance between {} and {}", from, to);
         GHResponse ghResponse = this.getRoute(from, to);
         // TODO: return wrapper that can hold both the result and error explanation instead of throwing exception
         if (ghResponse.hasErrors()) {
