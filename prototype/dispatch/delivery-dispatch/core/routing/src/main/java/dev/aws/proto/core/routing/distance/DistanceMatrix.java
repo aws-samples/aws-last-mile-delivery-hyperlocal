@@ -16,8 +16,11 @@
  */
 package dev.aws.proto.core.routing.distance;
 
-import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import dev.aws.proto.core.routing.location.ILocation;
+import dev.aws.proto.core.routing.route.GraphhopperRouter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +33,25 @@ public class DistanceMatrix {
 
     private final Map<ILocation, Map<ILocation, Distance>> matrix;
     private final long generatedTime;
+    private final Metrics metrics;
 
     private DistanceMatrix(Map<ILocation, Map<ILocation, Distance>> matrix, long generatedTime) {
         this.matrix = matrix;
         this.generatedTime = generatedTime;
+
+        this.metrics = new Metrics(generatedTime, matrix.size());
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Metrics {
+        private long generatedTimeInMs;
+        private int dimension;
+    }
+
+    public Metrics getMetrics() {
+        return this.metrics;
     }
 
     public static <TLocation extends ILocation> DistanceMatrix generate(List<TLocation> locations, GraphhopperRouter router) {

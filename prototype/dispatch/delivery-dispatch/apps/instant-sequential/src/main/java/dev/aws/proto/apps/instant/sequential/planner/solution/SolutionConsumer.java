@@ -74,23 +74,25 @@ public class SolutionConsumer {
     public static DispatchResult buildResult(DispatchSolution solution, SolverStatus solverStatus, long solverDurationInMs, boolean includeEmptyDrivers) {
         DispatchResult result = DispatchResult.builder()
                 .problemId(solution.getId())
-                .executionId(solution.getExecutionId())
                 .createdAt(solution.getCreatedAt())
                 .score(solution.getScore().toString())
-                .state(solverStatus.name())
                 .solverDurationInMs(solverDurationInMs)
+                .state(solverStatus.name())
+                .executionId(solution.getExecutionId())
                 .build();
 
         List<PlanningDriver> drivers = solution.getPlanningDrivers();
 
         if (drivers.size() > 0) {
             DistanceMatrix distanceMatrix = drivers.get(0).getLocation().getDistanceMatrix();
-            result.setDistanceMatrixMetrics(new DispatchResult.DistanceMatrixMetrics(distanceMatrix.getGeneratedTime(), distanceMatrix.dimension()));
+            result.setDistanceMatrixMetrics(distanceMatrix.getMetrics());
         }
 
-        List<DeliverySegment> assignedOrderSegments = new ArrayList<>();
+        List<DispatchResult.Assignment> assigned = new ArrayList<>();
         List<String> unassigned = new ArrayList<>();
+
         for (PlanningDriver driver : drivers) {
+            List<DeliverySegment> assignedOrderSegments = new ArrayList<>();
             PlanningDelivery delivery = driver.getNextPlanningDelivery();
             if (delivery == null && !includeEmptyDrivers) {
                 continue;
@@ -98,6 +100,8 @@ public class SolutionConsumer {
 
             // TODO: manually putting orders to unassigned if there are more than 2 assigned to a driver
             // because driver simulator at this point cannot handle more than one assigned order
+
+            // TODO: review how segmets are assembled. if multiple drivers are involved this may not be the proper solution
 
             int segmentCtr = 0;
             LocationBase prevLocation = driver.getLocation();
@@ -107,31 +111,27 @@ public class SolutionConsumer {
                 if (segmentCtr > 2) {
                     unassigned.add(delivery.getOrder().getOrderId());
                 } else {
-                    DeliverySegment segment1 = DeliverySegment.builder()
+
+                    DeliverySegment segmentToOrigin = DeliverySegment.builder()
                             .orderId(delivery.getOrder().getOrderId())
                             .index(segmentCtr)
                             .from(prevLocation.getCoordinate())
                             .to(delivery.getPickup().getCoordinate())
                             .segmentType(DeliverySegment.SegmentType.TO_ORIGIN)
-                            // TODO: points will be filled later
                             .route(SegmentRoute.between(prevLocation, delivery.getPickup()))
                             .build();
 
-                    DeliverySegment segment2 = DeliverySegment.builder()
+                    DeliverySegment segmentToDestination = DeliverySegment.builder()
                             .orderId(delivery.getOrder().getOrderId())
                             .index(segmentCtr + 1)
-//                                    .from(new Coordinate(delivery.getPickup().getCoordinate().getLatitude(), delivery.getPickup().getCoordinate().getLongitude())
                             .from(delivery.getPickup().getCoordinate())
                             .to(delivery.getDropoff().getCoordinate())
                             .segmentType(DeliverySegment.SegmentType.TO_DESTINATION)
                             .route(SegmentRoute.between(delivery.getPickup(), delivery.getDropoff()))
                             .build();
 
-                    logger.info("segment1.from = {} | segment1.to = {}", segment1.getFrom().getClass(), segment1.getTo().getClass());
-                    logger.info("segment2.from = {} | segment2.to = {}", segment2.getFrom().getClass(), segment2.getTo().getClass());
-
-                    assignedOrderSegments.add(segment1);
-                    assignedOrderSegments.add(segment2);
+                    assignedOrderSegments.add(segmentToOrigin);
+                    assignedOrderSegments.add(segmentToDestination);
 
                     // refresh helper vars
                     prevLocation = delivery.getDropoff();
@@ -139,10 +139,17 @@ public class SolutionConsumer {
                 }
                 delivery = delivery.getNextPlanningDelivery();
             }
+
+            DispatchResult.Assignment driverAssignment = DispatchResult.Assignment.builder()
+                    .driverId(driver.getId())
+                    .driverIdentity(driver.getDriverIdentity())
+                    .segments(assignedOrderSegments)
+                    .route(new SegmentRoute(Distance.ZERO, ""))
+                    .build();
+            assigned.add(driverAssignment);
         }
 
-        result.setSegments(assignedOrderSegments);
-
+        result.setAssigned(assigned);
         // currently we don't have a mechanism to keep orders unassigned
         result.setUnassigned(unassigned);
 

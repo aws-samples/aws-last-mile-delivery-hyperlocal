@@ -84,17 +84,22 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
         String executionId = req.getExecutionId();
 
-        List<PlanningDelivery> planningDeliveries = new ArrayList<>();
+        logger.trace("SolveDispatchProblem request :: problemId={} :: executionId={}", problemId, executionId);
 
+        List<PlanningDelivery> planningDeliveries = new ArrayList<>();
         List<Coordinate> locationsForDriverQuery = new ArrayList<>();
         for (Order inputOrder : req.getOrders()) {
             locationsForDriverQuery.add(inputOrder.getOrigin());
         }
 
+        logger.trace("Extracted {} locations for driver query", locationsForDriverQuery.size());
+
         List<PlanningDriver> drivers = driverQueryManager.retrieveDriversAroundLocations(locationsForDriverQuery, ApiDriver::convertToPlanningDriver);
 //        List<PlanningDriver> drivers = driverQueryManager.retrieveDriversWithExtendingRadius(req.getCentroid(), req.getOrders().length, ApiDriver::convertToPlanningDriver);
+        logger.trace("{} drivers retrieved from query", drivers.size());
 
         if (drivers.size() == 0) {
+            logger.warn("0 drivers retrieved for executionId {} (problemId {})", executionId, problemId);
             RequestResult result = RequestResult.of(problemId.toString());
             result.setError("No drivers present in the system");
 
@@ -103,7 +108,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                     .problemId(problemId)
                     .executionId(executionId)
                     .createdAt(createdAt)
-                    .segments(new ArrayList<>())
+                    .assigned(new ArrayList<>())
                     .unassigned(unassignedOrderIds)
                     .state("NO_DRIVERS")
                     .score("NA")
@@ -116,8 +121,8 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         List<LocationBase> allLocations = new ArrayList<>();
 
         for (Order inputOrder : req.getOrders()) {
-            OriginLocation originLocation = new OriginLocation(inputOrder.getOrigin().getId(), inputOrder.getOrigin());
-            DestinationLocation destinationLocation = new DestinationLocation(inputOrder.getDestination().getId(), inputOrder.getDestination());
+            OriginLocation originLocation = new OriginLocation(inputOrder.getOrigin().getId(), (Coordinate) inputOrder.getOrigin());
+            DestinationLocation destinationLocation = new DestinationLocation(inputOrder.getDestination().getId(), (Coordinate) inputOrder.getDestination());
 
             PlanningDelivery delivery = new PlanningDelivery(inputOrder, originLocation, destinationLocation);
             planningDeliveries.add(delivery);
@@ -133,7 +138,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                 .problemId(problemId)
                 .executionId(executionId)
                 .createdAt(createdAt)
-                .segments(new ArrayList<>())
+                .assigned(new ArrayList<>())
                 .unassigned(new ArrayList<>())
                 .state("ENQUEUED")
                 .score("NA")
@@ -158,7 +163,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                 .problemId(problemId)
                 .executionId(executionId)
                 .createdAt(problem.getCreatedAt())
-                .segments(new ArrayList<>())
+                .assigned(new ArrayList<>())
                 .unassigned(new ArrayList<>())
                 .state(solverJob.getSolverStatus().name())
                 .score("")
@@ -171,7 +176,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
         SolverJob<DispatchSolution, UUID> solverJob = this.solutionMap.get(problemId).solverJob;
         long solverDurationInMs = solverJob.getSolvingDuration().getSeconds() * 1000 + (solverJob.getSolvingDuration().getNano() / 1_000_000);
-        assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, SolverStatus.NOT_SOLVING, solverDurationInMs, true));
+        assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, SolverStatus.NOT_SOLVING, solverDurationInMs, false));
         SolutionConsumer.consumeSolution(solution);
 
         logger.debug("Removing problemId {} from solutionMap at consumeSolution", problemId);
@@ -204,7 +209,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
         SolverStatus solverStatus = state.solverJob.getSolverStatus();
         if (solverStatus == SolverStatus.NOT_SOLVING) {
-            logger.info(":: Solution found :: problemId = {} :: returning and persisting result result", problemId);
+            logger.info(":: Solution found :: problemId = {} :: returning and persisting result", problemId);
             try {
                 DispatchSolution solution = state.solverJob.getFinalBestSolution();
                 DispatchResult result = SolutionConsumer.buildResult(solution, solverStatus, false);
@@ -219,7 +224,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                         .problemId(problemId)
                         .executionId(state.problem.getExecutionId())
                         .createdAt(state.problem.getCreatedAt())
-                        .segments(new ArrayList<>())
+                        .assigned(new ArrayList<>())
                         .unassigned(new ArrayList<>())
                         .state(solverStatus.name())
                         .score("")
@@ -231,7 +236,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                     .problemId(problemId)
                     .executionId(state.problem.getExecutionId())
                     .createdAt(state.problem.getCreatedAt())
-                    .segments(new ArrayList<>())
+                    .assigned(new ArrayList<>())
                     .unassigned(new ArrayList<>())
                     .state(solverStatus.name())
                     .score("")

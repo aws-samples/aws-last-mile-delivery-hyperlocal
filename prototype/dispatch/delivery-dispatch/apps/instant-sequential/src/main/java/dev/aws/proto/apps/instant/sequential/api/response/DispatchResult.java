@@ -17,13 +17,16 @@
 
 package dev.aws.proto.apps.instant.sequential.api.response;
 
+import dev.aws.proto.core.routing.distance.DistanceMatrix;
+import dev.aws.proto.core.routing.route.DeliverySegment;
+import dev.aws.proto.core.routing.route.SegmentRoute;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @SuperBuilder
@@ -32,17 +35,18 @@ public class DispatchResult extends dev.aws.proto.apps.appcore.api.response.Disp
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DistanceMatrixMetrics {
-        private long generatedTimeInMs;
-        private int dimension;
+    @Builder
+    public static class Assignment {
+        private String driverId;
+        private String driverIdentity;
+        private List<DeliverySegment> segments;
+        private SegmentRoute route;
     }
 
-    private UUID problemId;
+
     private String executionId;
-    private long createdAt;
-    private DistanceMatrixMetrics distanceMatrixMetrics;
-    private String state;
-    private String score;
-    private long solverDurationInMs = -1L;
+    private DistanceMatrix.Metrics distanceMatrixMetrics;
+    private List<Assignment> assigned;
     private List<String> unassigned;
+
 }

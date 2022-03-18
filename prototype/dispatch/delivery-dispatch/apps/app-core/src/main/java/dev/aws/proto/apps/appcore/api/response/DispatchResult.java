@@ -17,14 +17,18 @@
 
 package dev.aws.proto.apps.appcore.api.response;
 
-import dev.aws.proto.core.routing.route.DeliverySegment;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @SuperBuilder
 public class DispatchResult {
-    private List<DeliverySegment> segments;
+    private UUID problemId;
+    private long createdAt;
+    private String score;
+    private long solverDurationInMs = -1L;
+    private String state;
+
 }
