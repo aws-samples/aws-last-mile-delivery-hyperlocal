@@ -29,11 +29,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SegmentRoute extends Distance {
-    private String points;
+    private String pointsEncoded;
 
-    public SegmentRoute(Distance dist, String points) {
+    public SegmentRoute(Distance dist, String pointsEncoded) {
         super(dist.getDistance(), dist.getTime());
-        this.points = points;
+        this.pointsEncoded = pointsEncoded;
     }
 
     public static SegmentRoute between(LocationBase origin, LocationBase destination) {
@@ -44,6 +44,6 @@ public class SegmentRoute extends Distance {
 
     @Override
     public int hashCode() {
-        return Objects.hash(points, super.getDistance(), super.getTime());
+        return Objects.hash(pointsEncoded, super.getDistance(), super.getTime());
     }
 }
