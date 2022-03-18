@@ -24,6 +24,7 @@ const SHAPES = {
 	CIRCLE: 'circle',
 	BOX: 'box',
 }
+const MAX_ITERATIONS = 5
 
 const handler = async (event) => {
 	switch (event.httpMethod) {
@@ -166,17 +167,14 @@ const handlePOST = async (event) => {
 				driversPerLocation = driversPerLocation.map(d => ({ distance: distByDriverId[d.driverId], distanceUnit, ...d }))
 
 				iteration++
-			} while (driversPerLocation.length < elements.length) // countPerLocation)
+			} while (driversPerLocation.length < elements.length && iteration <= MAX_ITERATIONS)
 
-			// driversPerLocation.slice(0, countPerLocation).forEach(d => {
 			driversPerLocation.forEach(d => {
 				driversById[d.driverId] = d
 			})
 		}
 
-		const drivers = Object.values(driversById)
-
-		return success(drivers)
+		return success(Object.values(driversById))
 	} catch (err) {
 		console.error('Error while querying drivers: ', err)
 
