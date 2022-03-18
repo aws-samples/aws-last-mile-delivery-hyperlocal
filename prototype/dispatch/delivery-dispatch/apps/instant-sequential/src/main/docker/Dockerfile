@@ -17,7 +17,7 @@ ADD ${MAPFILE_URL} mapfile.osm.pbf
 ##
 # Build stage for generating graphhopper cache
 ## ####################################################################################################################
-FROM --platform=linux/arm64 maven:3.6.3-jdk-11 as gh-build
+FROM --platform=linux/arm64 public.ecr.aws/docker/library/maven:3.8.4-amazoncorretto-11 as gh-build
 
 WORKDIR /build
 
@@ -39,8 +39,7 @@ RUN \
 
 
 ### Stage for instant-sequential delivery dispatcher
-# FROM --platform=linux/arm64 openjdk:11.0-jre as prod
-FROM --platform=linux/arm64 openjdk:17 as prod
+FROM --platform=linux/arm64 public.ecr.aws/amazoncorretto/amazoncorretto:11 as prod
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
