@@ -35,27 +35,57 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+/**
+ * Represents a delivery planning entity.
+ */
 @PlanningEntity
 @Data
 @NoArgsConstructor
 public class PlanningDelivery implements DeliveryOrDriver {
     private static final Logger logger = LoggerFactory.getLogger(PlanningDelivery.class);
 
+    /**
+     * The order that requires this delivery.
+     */
     private Order order;
+
+    /**
+     * The pickup location for the delivery.
+     */
     private OriginLocation pickup;
+
+    /**
+     * The dropoff location for the delivery.
+     */
     private DestinationLocation dropoff;
 
+    /**
+     * The planning ID (necessary for Optaplanner).
+     * {@see https://docs.optaplanner.org/8.17.0.Final/optaplanner-docs/html_single/index.html#planningId}
+     */
     @Setter
     private long planningId;
 
+    /**
+     * The previous item in the chain. Either the previous delivery, or the the actual driver.
+     * This is a {@link PlanningVariable} ({@see https://docs.optaplanner.org/8.17.0.Final/optaplanner-docs/html_single/index.html#planningVariable}).
+     * Also {@see https://docs.optaplanner.org/8.17.0.Final/optaplanner-docs/html_single/index.html#shadowVariable}.
+     */
     @PlanningVariable(
             valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningDeliveryRange},
             graphType = PlanningVariableGraphType.CHAINED
     )
     private DeliveryOrDriver previousDeliveryOrDriver;
 
+    /**
+     * The next item in the chain. That must be always a delivery item.
+     */
     private PlanningDelivery nextPlanningDelivery;
 
+    /**
+     * The driver this delivery is assigned to. This is a {@link AnchorShadowVariable}.
+     * {@see https://docs.optaplanner.org/8.17.0.Final/optaplanner-docs/html_single/index.html#anchorShadowVariable}
+     */
     @AnchorShadowVariable(sourceVariableName = Constants.PreviousDeliveryOrDriver)
     @Setter
     private PlanningDriver planningDriver;
@@ -106,6 +136,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
         return false;
     }
 
+    /**
+     * Assembles the chain in a string. This is for debugging purposes.
+     *
+     * @return The chain.
+     */
     private String printChain() {
         DeliveryOrDriver curr = this;
 
@@ -130,6 +165,13 @@ public class PlanningDelivery implements DeliveryOrDriver {
         return sb.toString();
     }
 
+    /**
+     * Calculates the time difference between current pickup time and previous dropoff time, plus the travel time between
+     * the previous dropoff location and the current pickup location.
+     * TODO: this is now returning 0L.
+     *
+     * @return The time difference. TODO: currently returns 0L.
+     */
     public long diffBetweenCurrPickupAndPrevDropoffPlusTravel() {
         if (previousDeliveryOrDriver == null) {
             throw new IllegalStateException("This method must not be called when the previousTripOrVehicle is not initialized yet.");
@@ -151,6 +193,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
         return 0L;
     }
 
+    /**
+     * Indicates if the rider would be late from the previous delivery for pickup the item.
+     *
+     * @return 1L if late, 0L if not.
+     */
     public long lateFromFromPreviousDelivery() {
         long diffBetweenCurrPickupAndPrevDropoffPlusTravel = this.diffBetweenCurrPickupAndPrevDropoffPlusTravel();
 
@@ -162,6 +209,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
                 : 0L;
     }
 
+    /**
+     * Gets the distance from the previous item in the chain.
+     *
+     * @return The distance between the current pickup location and the previous item's dropoff or location.
+     */
     public Distance getDistanceFromPrevDriverOrDelivery() {
         if (previousDeliveryOrDriver.isDriver()) {
             return this.getPlanningDriver().getLocation().distanceTo(this.getPickup());
@@ -170,6 +222,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
         }
     }
 
+    /**
+     * Calculates a custom score for drivers based on how far they are from the current delivery's pickup location.
+     *
+     * @return distance in sec * distance in meters
+     */
     public long scoreForPreferCloserDriverToPickupLocation() {
         Distance dist = this.getDistanceFromPrevDriverOrDelivery();
 
@@ -178,6 +235,12 @@ public class PlanningDelivery implements DeliveryOrDriver {
         return distInSec * distInMeters;
     }
 
+    /**
+     * Custom distance metric: sec * meters
+     *
+     * @param otherLocation The other location
+     * @return The custom distance metric.
+     */
     public long scoreForDistance(LocationBase otherLocation) {
         Distance dist = otherLocation.distanceTo(this.getPickup());
 

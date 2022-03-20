@@ -24,6 +24,10 @@ import lombok.Data;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Represents a location of "Origin" type.
+ * This is usually pickup point, e.g.: restaurant, seller, etc.
+ */
 @Data
 public class OriginLocation extends LocationBase {
     /**
