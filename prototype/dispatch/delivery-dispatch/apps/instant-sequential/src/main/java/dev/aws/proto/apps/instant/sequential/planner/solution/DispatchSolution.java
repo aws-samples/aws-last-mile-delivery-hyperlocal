@@ -35,13 +35,17 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * The dispatch solution. This is a {@link PlanningSolution}.
+ * {@see https://docs.optaplanner.org/8.17.0.Final/optaplanner-docs/html_single/index.html#solutionClass}
+ */
 @PlanningSolution
 @Data
 @NoArgsConstructor
 public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongScore> {
     private List<PlanningDriver> planningDrivers;
     private List<PlanningDelivery> planningDeliveries;
-
+    
     @PlanningScore
     @Getter
     @Setter

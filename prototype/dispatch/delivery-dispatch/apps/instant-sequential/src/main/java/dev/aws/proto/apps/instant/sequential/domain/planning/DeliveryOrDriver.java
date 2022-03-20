@@ -20,6 +20,13 @@ import dev.aws.proto.apps.instant.sequential.util.Constants;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
+/**
+ * Represents the planning entity that's either a delivery or a driver.
+ * A driver can exist without deliveries, but a delivery cannot exist without a driver.
+ * <p>
+ * This is a generic representation of the items in a chain:
+ * driver -- delivery -- delivery -- delivery -- ....
+ */
 @PlanningEntity
 public interface DeliveryOrDriver {
     /**

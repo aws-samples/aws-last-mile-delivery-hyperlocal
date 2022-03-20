@@ -24,6 +24,10 @@ import lombok.Data;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Represents the location of "Destination" type.
+ * This is usually a dropoff location, e.g.: customer who created the order.
+ */
 @Data
 public class DestinationLocation extends LocationBase {
     /**

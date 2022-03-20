@@ -39,15 +39,27 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * DynamoDB CRUD for Assignments, using the {@link DdbServiceBase} base.
+ */
 @ApplicationScoped
 public class DdbAssignmentService extends DdbServiceBase {
     private static final Logger logger = LoggerFactory.getLogger(DdbAssignmentService.class);
 
+    /**
+     * Config properties for DDB connection.
+     */
     @Inject
     DdbProperties ddbProperties;
 
+    /**
+     * The DDB client.
+     */
     DynamoDbClient dbClient;
 
+    /**
+     * The DDB table name.
+     */
     final String tableName;
 
     DdbAssignmentService(DdbProperties ddbProperties) {
@@ -84,6 +96,12 @@ public class DdbAssignmentService extends DdbServiceBase {
         return item;
     }
 
+    /**
+     * Retrieve an assignment based on its ID.
+     *
+     * @param problemId The ID of the assignment.
+     * @return The result object saved in DDB.
+     */
     public DispatchResult getAssignment(UUID problemId) {
 
         List<Map<String, AttributeValue>> dbItems = dbClient.query(this.getQueryRequest("ID", problemId)).items();
@@ -126,6 +144,11 @@ public class DdbAssignmentService extends DdbServiceBase {
         return result;
     }
 
+    /**
+     * Save the assignment item to DDB.
+     *
+     * @param assignment The item to save.
+     */
     public void saveAssignment(DispatchResult assignment) {
         dbClient.putItem(putRequest(assignment));
     }

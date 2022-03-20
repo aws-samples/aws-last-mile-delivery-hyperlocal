@@ -28,6 +28,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import java.util.List;
 
+/**
+ * Represents the driver query REST client for the instant sequential delivery domain.
+ */
 @Path("/api/geotracking/internal/driver-location")
 @RegisterClientHeaders(ApiKeyHeaderFactory.class)
 public interface DriverQueryClient extends dev.aws.proto.apps.appcore.data.DriverQueryClient<ApiDriver> {

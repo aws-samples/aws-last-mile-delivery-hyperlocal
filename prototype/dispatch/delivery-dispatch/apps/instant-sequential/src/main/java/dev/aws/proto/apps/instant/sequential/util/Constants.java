@@ -19,6 +19,9 @@ package dev.aws.proto.apps.instant.sequential.util;
 
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Helper class to hold constant values.
+ */
 public class Constants {
     public static final DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     public static final Long CONSTRAINTS_SCALE = 10000L;

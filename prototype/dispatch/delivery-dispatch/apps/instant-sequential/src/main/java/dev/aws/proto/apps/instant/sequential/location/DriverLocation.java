@@ -26,10 +26,20 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * Represents the location of a driver.
+ */
 @Data
 public class DriverLocation extends LocationBase {
+    /**
+     * The timestamp when the current location was recorded.
+     */
     @Getter
     private final long timestamp;
+
+    /**
+     * The date time representation of the timestamp when the current location was recorded.
+     */
     @Getter
     private final LocalDateTime dateTime;
 

@@ -26,6 +26,9 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 import java.util.Objects;
 
+/**
+ * Represents a driver in the planning process.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -77,6 +80,11 @@ public class PlanningDriver implements DeliveryOrDriver {
         return this.getLocation().distanceTo(delivery.getPickup());
     }
 
+    /**
+     * Gets the length of the chain: number of orders assigned to this driver.
+     *
+     * @return The length of the chain.
+     */
     public long chainLength() {
         DeliveryOrDriver current = this;
         long chainLen = 0;
@@ -87,6 +95,11 @@ public class PlanningDriver implements DeliveryOrDriver {
         return chainLen;
     }
 
+    /**
+     * Custom score value for indicating if a driver is assigned.
+     *
+     * @return 1L if there's at least one delivery assigned, 0L otherwise.
+     */
     public long scoreForOccupancy() {
         if (this.getNextPlanningDelivery() == null) {
             return 1L;

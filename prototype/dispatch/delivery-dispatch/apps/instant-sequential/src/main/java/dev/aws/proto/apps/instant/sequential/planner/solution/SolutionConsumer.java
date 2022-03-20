@@ -35,6 +35,9 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utility class to transform the dispatch solution.
+ */
 public class SolutionConsumer {
     private static final Logger logger = LoggerFactory.getLogger(SolutionConsumer.class);
 
