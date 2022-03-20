@@ -57,6 +57,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+/**
+ * The concrete implementation of the dispatch service for the instant-sequential delivery domain.
+ */
 @ApplicationScoped
 public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchService<Order, DispatchRequest, DispatchSolution> {
     private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);

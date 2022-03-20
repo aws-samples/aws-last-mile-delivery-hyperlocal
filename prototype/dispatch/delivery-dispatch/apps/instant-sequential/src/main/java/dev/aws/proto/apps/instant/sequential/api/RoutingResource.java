@@ -31,6 +31,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+/**
+ * Resource for routing endpoints.
+ * This is for testing purposes, may be removed in future versions.
+ */
 @Singleton
 @Path("/instant/sequential/test/routing")
 @Produces(MediaType.APPLICATION_JSON)

@@ -31,6 +31,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.UUID;
 
+/**
+ * Resource for dispatching endpoints.
+ */
 @ApplicationScoped
 @Path("/instant/sequential/dispatch")
 @Produces(MediaType.APPLICATION_JSON)
@@ -44,6 +47,13 @@ public class DispatchResource {
     @Inject
     JobScheduler jobScheduler;
 
+    /**
+     * Triggers the dispatching service with a dispatch problem solving job.
+     * It immediately returns with the problem ID that can be used to query the status of it.
+     *
+     * @param req The dispatch request object that has all the necessary information to create a solver job and execute it.
+     * @return The problem ID generated for the solving job.
+     */
     @POST
     @Path("assign-drivers")
     public RequestResult assignDrivers(DispatchRequest req) {
@@ -54,6 +64,12 @@ public class DispatchResource {
         return RequestResult.of(problemId.toString());
     }
 
+    /**
+     * Retrieve the status of a previously submitted dispatching job request.
+     *
+     * @param id The problem ID
+     * @return The result representing the dispatching job.
+     */
     @GET
     @Path("status/{problemId}")
     public DispatchResult getSolutionStatus(@PathParam("problemId") String id) {

@@ -19,6 +19,9 @@ package dev.aws.proto.apps.instant.sequential.config;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithName;
 
+/**
+ * DynamoDB Config Properties
+ */
 @ConfigMapping(prefix = "app.ddb.table")
 public interface DdbProperties {
     @WithName("assignments.parameterName")

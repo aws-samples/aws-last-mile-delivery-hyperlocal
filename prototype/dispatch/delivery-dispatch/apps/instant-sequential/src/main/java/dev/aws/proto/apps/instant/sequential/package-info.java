@@ -15,44 +15,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.instant.sequential;
-
-import dev.aws.proto.core.routing.location.CoordinateWithId;
-import lombok.Data;
-
-import java.util.List;
-
 /**
- * Represents an Order in the instant-sequential delivery domain.
+ * This module is the implementation of the "instant-sequential" delivery domain.
+ * <p>
+ * What is "instant-sequential"?
+ * <p>
+ * Instant delivery - When the orders come into the system, they are provided to the dispatch engine that tries to find
+ * immediately a suitable driver to assign the order to.
+ * <p>
+ * Sequential - The way orders are assigned are "sequential". Once an order is assigned to a driver, we assume that the
+ * driver will drive to the pickup location (e.g.: restaurant, seller, etc), takes the delivery item and drives to the
+ * drop-off location (e.g.: customer who ordered food/etc). If there are multiple orders assigned to the driver, it will
+ * always follow the Order[i]Pickup->Order[i]Dropoff->Order[i+1]Pickup->Order[i+1]Dropoff (sequential) pattern.
  */
-@Data
-public class Order extends dev.aws.proto.core.Order {
-
-    /**
-     * Represents the pickup location for the Order.
-     */
-    @Data
-    public static class Origin extends CoordinateWithId {
-        private int preparationTimeInMins;
-        private List<String> tags;
-    }
-
-    /**
-     * The dropoff point for the order.
-     */
-    private CoordinateWithId destination;
-
-    /**
-     * The pickup point for the order.
-     */
-    private Origin origin;
-
-    /**
-     * Short form of the ID.
-     *
-     * @return First 8 chars of the order ID.
-     */
-    public String getShortId() {
-        return this.getOrderId().substring(0, 8);
-    }
-}
+package dev.aws.proto.apps.instant.sequential;

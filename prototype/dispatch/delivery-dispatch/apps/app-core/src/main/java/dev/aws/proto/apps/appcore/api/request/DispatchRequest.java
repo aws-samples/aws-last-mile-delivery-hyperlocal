@@ -21,7 +21,8 @@ import dev.aws.proto.core.Order;
 import lombok.Data;
 
 /**
- * Base class for a dispatching request.
+ * Base class for a dispatch request.
+ * Extend this class while implementing your own domain.
  *
  * @param <TOrder> The concrete type of the Order in the domain.
  */

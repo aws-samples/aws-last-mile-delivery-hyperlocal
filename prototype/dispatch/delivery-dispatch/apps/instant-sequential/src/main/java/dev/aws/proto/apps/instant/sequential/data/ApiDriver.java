@@ -26,6 +26,9 @@ import lombok.Data;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+/**
+ * Represents a driver in a format retrieved from the driver query API.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class ApiDriver {

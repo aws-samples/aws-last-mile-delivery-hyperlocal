@@ -28,25 +28,60 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+/**
+ * Represents the result for a dispatching solver job.
+ */
 @Data
 @SuperBuilder
 public class DispatchResult extends dev.aws.proto.apps.appcore.api.response.DispatchResult {
 
+    /**
+     * Represents the assignment to a driver for one or multiple order.
+     */
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class Assignment {
+        /**
+         * ID of the driver in the system.
+         */
         private String driverId;
+
+        /**
+         * The identity for the driver used in cognito.
+         */
         private String driverIdentity;
+
+        /**
+         * List of routing segments.
+         */
         private List<DeliverySegment> segments;
+
+        /**
+         * The segment route representation of all the segments (whole assignment).
+         */
         private SegmentRoute route;
     }
 
-
+    /**
+     * Execution ID of the step function that triggered the dispatch request.
+     */
     private String executionId;
+
+    /**
+     * Distance matrix metric information.
+     */
     private DistanceMatrix.Metrics distanceMatrixMetrics;
+
+    /**
+     * List of assignments.
+     */
     private List<Assignment> assigned;
+
+    /**
+     * List of unassigned order IDs.
+     */
     private List<String> unassigned;
 
 }
