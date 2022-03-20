@@ -42,7 +42,7 @@ public class JobRunrApplicationLifecycle {
         backgroundJobServer.start();
         logger.debug("JobRunr :: Starting dashboard");
         dashboard.start();
-        logger.info("JobRunr :: Starting up background job server and dashboard done");
+        logger.info("JobRunr :: Started background job server and dashboard");
     }
 
     void onStop(@Observes ShutdownEvent ev) {
