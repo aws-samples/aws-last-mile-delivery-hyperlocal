@@ -25,6 +25,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
+/**
+ * Represents a segment route.
+ * Includes distance information and an encoded string representation for the routing points on the map.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

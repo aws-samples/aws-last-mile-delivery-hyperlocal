@@ -21,7 +21,13 @@ import dev.aws.proto.apps.instant.sequential.Order;
 import dev.aws.proto.core.routing.location.Coordinate;
 import lombok.Data;
 
+/**
+ * Represents a dispatch request for the instant-sequential delivery type.
+ */
 @Data
 public class DispatchRequest extends dev.aws.proto.apps.appcore.api.request.DispatchRequest<Order> {
+    /**
+     * The center location of the list order pickups.
+     */
     private Coordinate centroid;
 }

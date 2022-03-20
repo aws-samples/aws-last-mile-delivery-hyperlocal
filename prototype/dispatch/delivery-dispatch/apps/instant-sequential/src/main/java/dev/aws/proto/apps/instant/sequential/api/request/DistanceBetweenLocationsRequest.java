@@ -18,6 +18,10 @@ package dev.aws.proto.apps.instant.sequential.api.request;
 
 import dev.aws.proto.core.routing.location.Coordinate;
 
+/**
+ * Represents a request to determine the distance between two locations.
+ * This is for testing purposes and may be removed later.
+ */
 public class DistanceBetweenLocationsRequest {
     public Coordinate origin;
     public Coordinate destination;
