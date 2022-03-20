@@ -19,6 +19,9 @@ package dev.aws.proto.apps.appcore.config;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithName;
 
+/**
+ * Properties for driver query parameters.
+ */
 @ConfigMapping(prefix = "app.driver-query")
 public interface DriverQueryProperties {
     @WithName("initial-radius-in-m")

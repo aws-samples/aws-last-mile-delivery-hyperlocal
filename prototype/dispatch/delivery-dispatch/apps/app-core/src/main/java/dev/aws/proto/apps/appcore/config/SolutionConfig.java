@@ -25,22 +25,37 @@ import javax.inject.Inject;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+/**
+ * Class for loading the solver config based on execution profile.
+ */
 @ApplicationScoped
 public class SolutionConfig {
     private static final Logger logger = LoggerFactory.getLogger(SolutionConfig.class);
 
+    /**
+     * Config properties.
+     */
     @Inject
     SolutionProperties solutionProperties;
 
+    /**
+     * Path to the solver's config xml file.
+     */
     private String solverConfigXmlPath;
 
     SolutionConfig(SolutionProperties solutionProperties) {
         this.solverConfigXmlPath = solutionProperties.solverConfigXmlPath();
     }
 
+    /**
+     * Path to the solver's config xml file.
+     * If the execution profile is "dev", it loads from the "resources"; otherwise from external file.
+     *
+     * @return The absolute path to the solver's config xml.
+     */
     public String getSolverConfigXmlPath() {
         try {
-            if (ProfileManager.getActiveProfile() == "dev") {
+            if (ProfileManager.getActiveProfile().equalsIgnoreCase("dev")) {
                 return Paths.get(getClass().getClassLoader().getResource(solverConfigXmlPath).toURI()).toFile().getAbsolutePath();
             }
 

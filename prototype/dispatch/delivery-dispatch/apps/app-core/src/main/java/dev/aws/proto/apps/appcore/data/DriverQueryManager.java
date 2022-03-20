@@ -16,7 +16,6 @@
  */
 package dev.aws.proto.apps.appcore.data;
 
-import dev.aws.proto.apps.appcore.config.DriverClientProperties;
 import dev.aws.proto.apps.appcore.config.DriverClientConfig;
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
 import dev.aws.proto.core.routing.location.Coordinate;
@@ -28,18 +27,42 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Base class for Driver Query operations
+ *
+ * @param <TAPIDriver>      The type that represents the driver data received from the REST API.
+ * @param <TPlanningDriver> The type that represents the Planning Driver for the solver.
+ */
 public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
     private static final Logger logger = LoggerFactory.getLogger(DriverQueryManager.class);
 
+    /**
+     * The driver query rest client that consumes data from the REST API.
+     *
+     * @return The query client instance with the concrete type representing the API driver data.
+     */
     protected abstract DriverQueryClient<TAPIDriver> getDriverQueryClient();
 
+    /**
+     * Config for the driver client.
+     */
     @Inject
-    protected DriverClientProperties driverClientProperties;
     protected DriverClientConfig driverClientConfig;
 
+    /**
+     * Properties for driver query parameters.
+     */
     @Inject
     protected DriverQueryProperties driverQueryProperties;
 
+    /**
+     * Retrieves drivers around a list of locations.
+     * For each location we limit the number of drivers retrieved.
+     *
+     * @param locations The list of locations to seek drivers around.
+     * @param converter The function that converts data received from the API to the desired type.
+     * @return The list of drivers in the desired type.
+     */
     public List<TPlanningDriver> retrieveDriversAroundLocations(List<Coordinate> locations, Function<TAPIDriver, TPlanningDriver> converter) {
         // TODO: review this
         int countPerLocation = 3;
@@ -51,7 +74,6 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         driverQueryRequest.locations = locations;
         driverQueryRequest.countPerLocation = countPerLocation;
         driverQueryRequest.distance = 500;
-        driverQueryRequest.distanceUnit = "km";
         driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
@@ -72,6 +94,14 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         return planningDrivers;
     }
 
+    /**
+     * Retrieves drivers around a centroid. If there any not enough drivers returned, the radius will be increased.
+     *
+     * @param centroid    The location to retrieve drivers around.
+     * @param numOfOrders Number of orders to fulfill.
+     * @param converter   The function that converts data received from the API to the desired type.
+     * @return The list of drivers in the desired type.
+     */
     public List<TPlanningDriver> retrieveDriversWithExtendingRadius(Coordinate centroid, int numOfOrders, Function<TAPIDriver, TPlanningDriver> converter) {
 
         int radius = driverQueryProperties.initialRadiusInM();
@@ -122,10 +152,28 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         return planningDrivers;
     }
 
+    /**
+     * Calls the driver query API with multiple parameters.
+     *
+     * @param distanceUnit Distance unit (e.g. m, km, etc)
+     * @param status       The allowed status of the drivers to retrieve
+     * @param lat          Latitude of the centroid
+     * @param lon          Longitude of the centroid
+     * @param count        Minimum number of drivers to retrieve
+     * @param radius       The radius around the centroid.
+     * @return The list of drivers with the data format from the API.
+     */
     public List<TAPIDriver> getDrivers(String distanceUnit, String status, double lat, double lon, int count, int radius) {
         return this.getDriverQueryClient().getAvailableDrivers(distanceUnit, status, lat, lon, count, radius);
     }
 
+    /**
+     * Calls the driver query API.
+     *
+     * @param locations        The list of locations to retrieve drivers around from.
+     * @param countPerLocation The minimum number of drivers per location
+     * @return The list of drivers with the data format from the API.
+     */
     public List<TAPIDriver> getDriversAroundLocations(List<Coordinate> locations, int countPerLocation) {
         DriverQueryRequest driverQueryRequest = new DriverQueryRequest();
         driverQueryRequest.locations = locations;

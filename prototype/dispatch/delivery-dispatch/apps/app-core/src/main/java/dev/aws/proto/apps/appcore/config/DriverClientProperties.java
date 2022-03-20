@@ -19,11 +19,24 @@ package dev.aws.proto.apps.appcore.config;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithName;
 
+/**
+ * Properties for driver REST api config.
+ */
 @ConfigMapping(prefix = "app.client.driver-api")
 public interface DriverClientProperties {
+    /**
+     * The name of the secret item that holds the API key in SecretsManager.
+     *
+     * @return The secret name.
+     */
     @WithName("apikey-secret-name")
     String driverApiKeySecretName();
 
+    /**
+     * The name of the parameter that holds the API URL in SSM Parameter store.
+     *
+     * @return The name of the parameter.
+     */
     @WithName("api-url-parameter-name")
     String driverApiUrlParameterName();
 }

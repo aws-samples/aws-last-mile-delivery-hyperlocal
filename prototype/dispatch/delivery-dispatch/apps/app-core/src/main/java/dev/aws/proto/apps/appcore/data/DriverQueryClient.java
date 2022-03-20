@@ -20,9 +20,25 @@ import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 
 import java.util.List;
 
-public interface DriverQueryClient<TDBDriver> {
+/**
+ * Base interface for driver query REST client.
+ *
+ * @param <TAPIDriver> The type representing the data coming from the API
+ */
+public interface DriverQueryClient<TAPIDriver> {
 
-    List<TDBDriver> getAvailableDrivers(
+    /**
+     * Calls the driver query API with multiple parameters.
+     *
+     * @param distanceUnit Distance unit (e.g. m, km, etc)
+     * @param status       The allowed status of the drivers to retrieve
+     * @param lat          Latitude of the centroid
+     * @param lon          Longitude of the centroid
+     * @param count        Minimum number of drivers to retrieve
+     * @param distance     The radius around the centroid.
+     * @return The list of drivers with the data format from the API.
+     */
+    List<TAPIDriver> getAvailableDrivers(
             @QueryParam("distanceUnit") String distanceUnit,
             @QueryParam("status") String status,
             @QueryParam("lat") double lat,
@@ -30,5 +46,11 @@ public interface DriverQueryClient<TDBDriver> {
             @QueryParam("count") int count,
             @QueryParam("distance") int distance);
 
-    List<TDBDriver> getAvailableDriversPerOrigin(DriverQueryRequest driverQueryRequest);
+    /**
+     * Calls the driver query API
+     *
+     * @param driverQueryRequest The query request object (with multiple locations).
+     * @return The list of drivers with the data format from the API.
+     */
+    List<TAPIDriver> getAvailableDriversPerOrigin(DriverQueryRequest driverQueryRequest);
 }

@@ -24,9 +24,17 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MultivaluedMap;
 
+/**
+ * Factory to add custom header for REST api calls.
+ * Adds the "X-API-Key" header with the API key for the rest api calls.
+ * {@see https://quarkus.io/guides/rest-client#custom-headers-support}
+ */
 @ApplicationScoped
 public class ApiKeyHeaderFactory implements ClientHeadersFactory {
 
+    /**
+     * The client config for the driver query api.
+     */
     @Inject
     DriverClientConfig driverClientConfig;
 

@@ -17,26 +17,41 @@
 package dev.aws.proto.apps.appcore.config;
 
 import dev.aws.proto.core.util.aws.SecretsManagerUtility;
+import dev.aws.proto.core.util.aws.SsmUtility;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+/**
+ * Configuration for driver REST client
+ */
 @ApplicationScoped
 public class DriverClientConfig {
     private static final Logger logger = LoggerFactory.getLogger(DriverClientConfig.class);
 
+    /**
+     * The API key of the REST API.
+     */
+    @Getter
     private final String driverApiKey;
 
+    /**
+     * The API URL for driver REST API.
+     */
+    @Getter
+    private final String driverApiUrl;
+
+    /**
+     * The props for the config.
+     */
     @Inject
     DriverClientProperties driverClientProperties;
 
     DriverClientConfig(DriverClientProperties driverClientProperties) {
         this.driverApiKey = SecretsManagerUtility.getSecretValue(driverClientProperties.driverApiKeySecretName());
-    }
-
-    public String getDriverApiKey() {
-        return driverApiKey;
+        this.driverApiUrl = SsmUtility.getParameterValue(driverClientProperties.driverApiUrlParameterName());
     }
 }

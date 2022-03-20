@@ -30,25 +30,68 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Base class for DispatchService implementations.
+ * Extend this class when you're implementing your own domain.
+ *
+ * @param <TOrder>            The type of the Order
+ * @param <TDispatchRequest>  The type of the DispatchRequest
+ * @param <TDispatchSolution> The type of the DispatchSolution
+ */
 public abstract class DispatchService<
         TOrder extends Order,
         TDispatchRequest extends DispatchRequest<TOrder>,
         TDispatchSolution extends DispatchSolutionBase
         > {
 
+    /**
+     * Configuration for routing (OSM file locations, graphhopper, etc).
+     */
     @Inject
     protected RoutingConfig routingConfig;
 
+    /**
+     * Configuration for Optaplanner (solver.xml).
+     */
     @Inject
     protected SolutionConfig solutionConfig;
 
+    /**
+     * Routing tasks with Graphhopper SDK.
+     */
     protected GraphhopperRouter graphhopperRouter;
+
+    /**
+     * Optaplanner Solver manager.
+     */
     protected SolverManager<TDispatchSolution, UUID> solverManager;
+
+    /**
+     * Lookup table for solutions based on their ID.
+     */
     protected Map<UUID, SolutionState<TDispatchSolution, UUID>> solutionMap;
 
+    /**
+     * Triggers the solver to solver a dispatching problem.
+     *
+     * @param problemId The generated ID for the problem.
+     * @param request   The request object that holds all the necessary information to build the planning variables/entities.
+     */
     protected abstract void solveDispatchProblem(UUID problemId, TDispatchRequest request);
+
+    /**
+     * Final best solution consumer callback.
+     *
+     * @param solution The dispatching solution instance.
+     */
     protected abstract void finalBestSolutionConsumer(TDispatchSolution solution);
 
+    /**
+     * Problem finder callback for the solver.
+     *
+     * @param problemId The solving job's id
+     * @return The solution instance.
+     */
     protected TDispatchSolution problemFinder(UUID problemId) {
         return this.solutionMap.get(problemId).problem;
     }
