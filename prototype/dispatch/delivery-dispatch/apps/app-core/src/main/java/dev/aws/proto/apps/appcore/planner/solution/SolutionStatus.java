@@ -19,6 +19,9 @@ package dev.aws.proto.apps.appcore.planner.solution;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Status of the Optaplanner solution.
+ */
 public enum SolutionStatus {
     INITIALIZED(0),
     SOLVING(1),

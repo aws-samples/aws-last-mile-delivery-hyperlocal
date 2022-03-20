@@ -21,6 +21,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * The request item to query drivers around multiple locations.
+ */
 @Data
 public class DriverQueryRequest {
     public int distance;
