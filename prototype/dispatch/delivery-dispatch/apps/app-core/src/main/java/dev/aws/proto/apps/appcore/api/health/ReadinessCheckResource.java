@@ -40,12 +40,14 @@ public class ReadinessCheckResource implements HealthCheck {
     @Override
     public HealthCheckResponse call() {
 
-        HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Graphhopper fully loaded");
+        HealthCheckResponseBuilder responseBuilder = HealthCheckResponse.named("Readiness check");
 
         try {
             GraphHopper hopper = routingConfig.graphHopper();
             if (hopper != null && hopper.getFullyLoaded()) {
-                responseBuilder.up().withData("profile", ProfileManager.getActiveProfile());
+                responseBuilder.up()
+                        .withData("profile", ProfileManager.getActiveProfile())
+                        .withData("graphhopper", "loaded");
             }
         } catch (Exception e) {
             logger.error("Health check error", e);

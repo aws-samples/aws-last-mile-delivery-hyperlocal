@@ -17,6 +17,7 @@
 package dev.aws.proto.apps.appcore.data;
 
 import dev.aws.proto.apps.appcore.config.DriverClientProperties;
+import dev.aws.proto.apps.appcore.config.DriverClientConfig;
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
 import dev.aws.proto.core.routing.location.Coordinate;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
 
     @Inject
     protected DriverClientProperties driverClientProperties;
+    protected DriverClientConfig driverClientConfig;
 
     @Inject
     protected DriverQueryProperties driverQueryProperties;
@@ -50,6 +52,7 @@ public abstract class DriverQueryManager<TAPIDriver, TPlanningDriver> {
         driverQueryRequest.countPerLocation = countPerLocation;
         driverQueryRequest.distance = 500;
         driverQueryRequest.distanceUnit = "km";
+        driverQueryRequest.distanceUnit = "m";
         driverQueryRequest.status = "IDLE";
 
         List<TAPIDriver> drivers = this.getDriverQueryClient().getAvailableDriversPerOrigin(driverQueryRequest);

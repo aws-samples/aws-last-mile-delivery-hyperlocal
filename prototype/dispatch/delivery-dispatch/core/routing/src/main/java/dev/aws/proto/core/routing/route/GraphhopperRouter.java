@@ -62,17 +62,9 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
     @Override
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
         logger.trace("getPath between {} and {}", origin, destination);
-        GHRequest ghRequest = new GHRequest(
-                origin.getLatitude(),
-                origin.getLongitude(),
-                destination.getLatitude(),
-                destination.getLongitude());
+        GHResponse ghResponse = this.getRoute(origin, destination);
 
-        // TODO: in prod, this must be a parameter :: based on current weather conditions, package size, etc.
-        ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
-//        ghRequest.setProfile(FlagEncoderFactory.CAR);
-
-        PointList points = graphhopper.route(ghRequest).getBest().getPoints();
+        PointList points = ghResponse.getBest().getPoints();
         return StreamSupport.stream(points.spliterator(), false)
                 .map(ghPoint3D -> new Coordinate(ghPoint3D.lat, ghPoint3D.lon))
                 .collect(toList());
@@ -102,7 +94,7 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
         if (ghResponse.hasErrors()) {
 //            logger.error("Error while calculating distance: " + ghResponse.getErrors().get(0).getMessage());
 //            throw new DistanceCalculationException("No route", ghResponse.getErrors().get(0));
-//            logger.warn("There were {} errors while GH request", ghResponse.getErrors().size());
+            logger.debug("There were {} errors while GH request", ghResponse.getErrors().size());
             for (Throwable err : ghResponse.getErrors()) {
                 errors.add(err.getMessage());
             }

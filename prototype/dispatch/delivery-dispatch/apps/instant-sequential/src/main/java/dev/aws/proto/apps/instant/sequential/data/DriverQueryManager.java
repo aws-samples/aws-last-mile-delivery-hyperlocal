@@ -17,28 +17,33 @@
 
 package dev.aws.proto.apps.instant.sequential.data;
 
-import dev.aws.proto.apps.appcore.config.DriverClientProperties;
+import dev.aws.proto.apps.appcore.config.DriverClientConfig;
 import dev.aws.proto.apps.appcore.config.DriverQueryProperties;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDriver;
 import dev.aws.proto.core.exception.DispatcherException;
-import dev.aws.proto.core.util.aws.SsmUtility;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.net.URI;
 
+/**
+ * Manager class to provide a custom URL REST client to query drivers.
+ */
 @ApplicationScoped
 public class DriverQueryManager extends dev.aws.proto.apps.appcore.data.DriverQueryManager<ApiDriver, PlanningDriver> {
+    private static final Logger logger = LoggerFactory.getLogger(DriverQueryManager.class);
 
     DriverQueryClient driverQueryClient;
 
-    DriverQueryManager(DriverClientProperties driverClientProperties, DriverQueryProperties driverQueryProperties) {
-        this.driverClientProperties = driverClientProperties;
+    DriverQueryManager(DriverClientConfig driverClientConfig, DriverQueryProperties driverQueryProperties) {
+        this.driverClientConfig = driverClientConfig;
         this.driverQueryProperties = driverQueryProperties;
 
-        String driverApiUrl = SsmUtility.getParameterValue(driverClientProperties.driverApiUrlParameterName());
-
+        String driverApiUrl = this.driverClientConfig.getDriverApiUrl();
         if (driverApiUrl == null || driverApiUrl.equalsIgnoreCase("")) {
+            logger.error("Driver API URL empty. This is a must needed parameter. Quitting...");
             throw new DispatcherException("Driver API URL empty. Quitting...");
         }
 
