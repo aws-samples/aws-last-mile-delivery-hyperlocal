@@ -36,6 +36,28 @@
         <build-jar-finalname>delivery-dispatch-sameday-directpudo</build-jar-finalname>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>dev.aws.proto</groupId>
+            <artifactId>app-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
