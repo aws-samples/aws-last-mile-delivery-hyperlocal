@@ -91,7 +91,7 @@ export class SameDayDispatchEcsService extends Construct {
 					],
 				}),
 			},
-			roleName: regionalNamespaced(this, 'Dispatcher-SameDayDeliveryDirectPudo-TaskRole'),
+			roleName: regionalNamespaced(this, 'Dispatcher-SDDDirectPudo-TaskRole'),
 		})
 
 		const dispatcherTask = new ecs.Ec2TaskDefinition(this, 'SameDayDeliveryDirectPudoDispatcherTaskDef', {
@@ -163,7 +163,7 @@ export class SameDayDispatchEcsService extends Construct {
 			vpc,
 			internetFacing: false,
 			securityGroup: dmzSecurityGroup,
-			loadBalancerName: namespaced(this, 'Dispatcher-SameDay-DirectPudo'),
+			loadBalancerName: namespaced(this, 'Dispatcher-SDD-ALB'),
 			vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
 		})
 		new DefaultWaf(this, 'Dispatcher-SameDayDirectPudo-ALB-Waf', {
@@ -181,7 +181,7 @@ export class SameDayDispatchEcsService extends Construct {
 		albListener.addTargets('Dispatch-SameDayDirectPudo-Target', {
 			port: dispatchConfig.hostPort as number || 8080,
 			targets: [dispatcherService],
-			targetGroupName: namespaced(this, 'dispatcher-sameday-directpudo-targetgroup'),
+			targetGroupName: namespaced(this, 'dispatcher-SDD-TG'),
 			protocol: elb.ApplicationProtocol.HTTP,
 			healthCheck: {
 				path: '/q/health',
