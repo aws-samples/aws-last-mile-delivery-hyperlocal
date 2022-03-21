@@ -109,7 +109,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 				if (selectedOption.value === 'all' || d.driverId === selectedOption.value) {
 					let color = getRandomColor()
 
-					if (d.orders.length === 0) {
+					if (d.segments.length === 0) {
 						color = UNASSIGNEDCOLOR
 					}
 
@@ -126,8 +126,8 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 		const _viewPort = {
 			width: '100%',
 			height: 800,
-			latitude: assignment == null ? baseLocation.latitude : assignment.assigned[0].driverLocation.lat,
-			longitude: assignment == null ? baseLocation.longitude : assignment.assigned[0].driverLocation.long,
+			latitude: assignment == null ? baseLocation.latitude : assignment.assigned[0].segments[0].from.lat,
+			longitude: assignment == null ? baseLocation.longitude : assignment.assigned[0].segments[0].from.long,
 			zoom: 12,
 		}
 		setViewport(_viewPort)
@@ -140,7 +140,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 
 		const _routeLines = assignmentData.map((d: any) => {
 			if (selectedOption.value === 'all' || d.driverId === selectedOption.value) {
-				return d.orders.map((o: any, idx: number) => {
+				return d.segments.map((o: any, idx: number) => {
 					if (orderRoutes[o] != null) {
 						return orderRoutes[o].map((oRoute: any, i: number) => {
 							const geoJsonData: any = {
@@ -175,7 +175,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 			: assignment.assigned.map((d: any) => {
 				let u = ''
 
-				if (d.orders.length === 0) {
+				if (d.segments.length === 0) {
 					u = ' [U]'
 				}
 
@@ -206,7 +206,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 		const data = assignmentData.map((d: any) => {
 			let color = getRandomColor()
 
-			if (d.orders.length === 0) {
+			if (d.segments.length === 0) {
 				color = UNASSIGNEDCOLOR
 			}
 

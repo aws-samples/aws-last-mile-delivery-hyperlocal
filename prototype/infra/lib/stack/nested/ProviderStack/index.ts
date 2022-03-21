@@ -40,6 +40,7 @@ export interface ProviderStackProps extends NestedStackProps {
 		MockWebhookProvider: ExternalProviderType
 	}
 	readonly instantDeliveryProviderOrdersStatusIndex: string
+	readonly instantDeliveryProviderOrdersJobIdIndex: string
 	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly backendEcsCluster: ecs.ICluster
 	readonly graphhopperSettings: Record<string, string | number>
@@ -71,6 +72,7 @@ export class ProviderStack extends NestedStack {
 			instantDeliveryProviderLocks,
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderOrdersStatusIndex,
+			instantDeliveryProviderOrdersJobIdIndex,
 			providersConfig,
 			dispatchEngineLB,
 			backendEcsCluster,
@@ -147,6 +149,7 @@ export class ProviderStack extends NestedStack {
 			instantDeliveryProviderApi: this.instantDeliveryWebhookProvider.apiGwInstance,
 			instantDeliveryProviderApiSecretName: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 			instantDeliveryProviderOrdersStatusIndex,
+			instantDeliveryProviderOrdersJobIdIndex,
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderLocks,

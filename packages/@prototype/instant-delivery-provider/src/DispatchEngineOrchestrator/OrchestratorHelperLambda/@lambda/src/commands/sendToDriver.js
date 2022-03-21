@@ -14,52 +14,58 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+const { v4: uuidv4 } = require('uuid')
+const routing = require('../lib/routing')
 const config = require('../config')
 const constants = require('../config/constants')
+const ddb = require('../lib/dynamoDB')
 const logger = require('../utils/logger')
 const iot = require('../lib/iot')
-const ddb = require('../lib/dynamoDB')
 const eventBridge = require('../lib/eventBridge')
-const routing = require('../lib/routing')
 
 const execute = async (payload) => {
 	logger.info('Sending order to driver for payload')
 	logger.info(JSON.stringify(payload))
-	const { driverId, driverIdentity, driverLocation, orders } = payload
+	const { driverId, driverIdentity, segments } = payload
 
-	// TODO: this has to be changed to reflect this changes:
-	// https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal/issues/51
-	for (const order of orders) {
-		try {
-			const routes = await routing.getRoutingDetails(driverLocation, order)
+	try {
+		const points = segments.flatMap((s) => [[s.from.long, s.from.lat], [s.to.long, s.to.lat]])
+		const fullRoute = await routing.queryGraphHopper(points)
+		const segmentsWithRouting = await Promise.all(segments.map(async (s) => ({
+			...s,
+			// add routing for each segmenet
+			route: await routing.queryGraphHopper([[s.from.long, s.from.lat], [s.to.long, s.to.lat]]),
+		})))
 
-			const fullObject = {
-				driverId,
-				driverIdentity,
-				...order,
-				routing: routes,
-			}
+		const jobId = uuidv4()
+		const fullObject = {
+			jobId,
+			driverId,
+			driverIdentity,
+			// add full routing
+			route: fullRoute,
+			segments: segmentsWithRouting,
+		}
 
-			await ddb.updateItem(config.providerOrdersTable, order.orderId, {
-				routing: routes,
+		const promises = [...new Set(segments.map(q => q.orderId))].map((orderId) =>
+			ddb.updateItem(config.providerOrdersTable, orderId, {
+				jobId,
 			}, {
 				driverId,
 				status: constants.ASSIGNED,
-			})
+			}))
+		await Promise.all(promises)
 
-			await iot.publishMessage(`${driverIdentity}/messages`, {
-				type: 'NEW_ORDER',
-				payload: fullObject,
-			})
+		await iot.publishMessage(`${driverIdentity}/messages`, {
+			type: 'NEW_ORDER',
+			payload: fullObject,
+		})
 
-			await eventBridge.putEvent('ORDER_FULFILLED', fullObject)
-			// update the routing details in the order table
-		} catch (err) {
-			logger.error('Error on routing an order to the driver, will be skipped')
-			logger.error(err)
-
-			continue
-		}
+		await eventBridge.putEvent('ORDER_FULFILLED', fullObject)
+		// update the routing details in the order table
+	} catch (err) {
+		logger.error('Error on routing an order to the driver, will be skipped')
+		logger.error(err)
 	}
 
 	return { success: true }

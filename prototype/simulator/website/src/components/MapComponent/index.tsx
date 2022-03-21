@@ -113,8 +113,9 @@ const MapComponent: React.FC<MapInputProps> = ({ orders, geofences }) => {
 	}, [viewport, query])
 
 	useEffect(() => {
+		// TODO: change once routing available q.detail.route
 		const paths = orders.map((q: any) =>
-			q.detail.routing && q.detail.routing.map((r: any) => polyline.toGeoJSON(r.pathPolyline)),
+			q.detail.route && polyline.toGeoJSON(q.detail.route.pointsEncoded),
 		).flat()
 
 		if (paths.length) {
@@ -168,11 +169,11 @@ const MapComponent: React.FC<MapInputProps> = ({ orders, geofences }) => {
 				{drivers && drivers.map((d: any, idx: number) => (
 					<MapPin key={idx} latitude={d.latitude} longitude={d.longitude} data={d} />
 				))}
-				{orders && orders.map((q: any) => q.detail.destination).map((r: any, idx: number) => (
-					<MapPin key={idx} latitude={r.lat} longitude={r.long} data={r} iconName='Face' />
+				{orders && orders.flatMap((q: any) => q.detail.segments).filter(s => s.segmentType === 'TO_DESTINATION').map((r: any, idx: number) => (
+					<MapPin key={idx} latitude={r.to.lat} longitude={r.to.long} data={r} iconName='Face' />
 				))}
-				{orders && orders.map((q: any) => q.detail.origin).map((r: any, idx: number) => (
-					<MapPin key={idx} latitude={r.lat} longitude={r.long} data={r} iconName='Restaurant' />
+				{orders && orders.flatMap((q: any) => q.detail.segments).filter(s => s.segmentType === 'TO_ORIGIN').map((r: any, idx: number) => (
+					<MapPin key={idx} latitude={r.to.lat} longitude={r.to.long} data={r} iconName='Restaurant' />
 				))}
 				{geoJSON && geoJSON.map((g: any, idx: number) => (
 					<Source key={idx} id={`route-${idx}`} type="geojson" data={g}>

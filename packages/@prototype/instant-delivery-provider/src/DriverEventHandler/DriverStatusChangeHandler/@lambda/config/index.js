@@ -17,6 +17,7 @@
 module.exports = {
 	iotEndpoint: process.env.IOT_ENDPOINT,
 	instantDeliveryProviderOrders: process.env.PROVIDER_ORDERS_TABLE,
+	instantDeliveryProviderOrdersJobIdIndex: process.env.PROVIDER_ORDERS_JOBID_INDEX,
 	eventBusName: process.env.EVENT_BUS,
 	serviceName: process.env.SERVICE_NAME,
 	instantDeliveryProviderApiSecretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,

@@ -18,6 +18,37 @@ const aws = require('aws-sdk')
 
 const ddb = new aws.DynamoDB.DocumentClient()
 
+const query = (tableName, index, item, limit, startKey, condition = 'and') => {
+	const values = []
+	const names = []
+	const parts = []
+
+	Object.keys(item).forEach((k) => {
+		let value = item[k]
+		let operator = '='
+
+		if (item[k].type && item[k].type === 'complex') {
+			value = item[k].value
+			operator = item[k].operator
+		}
+
+		parts.push(`#${k} ${operator} :${k}`)
+
+		values[`:${k}`] = value
+		names[`#${k}`] = k
+	})
+
+	return ddb.query({
+		TableName: tableName,
+		IndexName: index,
+		KeyConditionExpression: parts.join(` ${condition} `),
+		ExpressionAttributeNames: names,
+		ExpressionAttributeValues: values,
+		...(limit ? { Limit: limit } : {}),
+		...(startKey ? { ExclusiveStartKey: { ID: startKey } } : {}),
+	}).promise()
+}
+
 const get = (tableName, id, keyName = 'ID') => {
 	return ddb
 	.get({
@@ -95,4 +126,5 @@ module.exports = {
 	updateItem,
 	putItem,
 	get,
+	query,
 }

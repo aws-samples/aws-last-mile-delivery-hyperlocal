@@ -120,8 +120,9 @@ export class DispatchEngineOrchestratorManager extends Construct {
 					payload: {
 						'driverId.$': '$.driverId',
 						'driverIdentity.$': '$.driverIdentity',
-						'driverLocation.$': '$.driverLocation',
 						'orders.$': '$.orders',
+						'segments.$': '$.segments',
+						'route.$': '$.route',
 					},
 				},
 			},

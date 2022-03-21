@@ -41,6 +41,8 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly instantDeliveryProviderOrdersStatusIndex: string
 
+	public readonly instantDeliveryProviderOrdersJobIdIndex: string
+
 	public readonly dispatcherAssignmentsTable: ddb.ITable
 
 	public readonly demographicAreaDispatchSettings: ddb.ITable
@@ -108,6 +110,16 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
+		const instantDeliveryProviderOrdersJobIdIndex = 'idx-instant-delivery-provider-orders-jobid'
+		instantDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: instantDeliveryProviderOrdersJobIdIndex,
+			partitionKey: {
+				name: 'jobid',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
+		this.instantDeliveryProviderOrdersJobIdIndex = instantDeliveryProviderOrdersJobIdIndex
 		this.instantDeliveryProviderOrdersStatusIndex = instantDeliveryProviderOrdersStatusIndex
 		this.instantDeliveryProviderOrders = instantDeliveryProviderOrders
 

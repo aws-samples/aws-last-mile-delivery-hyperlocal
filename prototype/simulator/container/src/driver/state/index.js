@@ -34,7 +34,8 @@ const ASSIGNMENT_STATUS = {
 const state = {
 	assignmentStatus: 'IDLE',
 	status: 'IDLE',
-	orderId: '',
+	orderId: undefined,
+	jobId: '',
 	segments: [],
 	updatesConfig: {
 		passiveState: {
@@ -117,6 +118,7 @@ const generateChangeStatusMessage = (driverId, driverIdentity) => {
 
 	if (status !== STATUSES.IDLE) {
 		baseMessage.orderId = state.orderId
+		baseMessage.jobId = state.jobId
 	}
 
 	return baseMessage
