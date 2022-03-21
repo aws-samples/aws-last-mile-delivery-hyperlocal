@@ -34,6 +34,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly eventBus: events.IEventBus
 	readonly instantDeliveryProviderApiSecretName: string
 	readonly iotEndpointAddress: string
+	readonly instantDeliveryProviderOrdersJobIdIndex: string
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -44,6 +45,7 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderApi,
 			instantDeliveryProviderApiSecretName,
+			instantDeliveryProviderOrdersJobIdIndex,
 			eventBus,
 			iotEndpointAddress,
 		} = props.dependencies
@@ -59,6 +61,7 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 			environment: {
 				IOT_ENDPOINT: iotEndpointAddress,
 				PROVIDER_ORDERS_TABLE: instantDeliveryProviderOrders.tableName,
+				PROVIDER_ORDERS_JOBID_INDEX: instantDeliveryProviderOrdersJobIdIndex,
 				EVENT_BUS: eventBus.eventBusName,
 				SERVICE_NAME: SERVICE_NAME.INSTANT_DELIVERY_PROVIDER_SERVICE,
 				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: instantDeliveryProviderApiSecretName,
@@ -76,6 +79,13 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 					actions: ['dynamodb:UpdateItem', 'dynamodb:GetItem'],
 					effect: iam.Effect.ALLOW,
 					resources: [instantDeliveryProviderOrders.tableArn],
+				}),
+				new iam.PolicyStatement({
+					actions: ['dynamodb:GetItem', 'dynamodb:Query'],
+					effect: iam.Effect.ALLOW,
+					resources: [
+						`${instantDeliveryProviderOrders.tableArn}/index/${instantDeliveryProviderOrdersJobIdIndex}`,
+					],
 				}),
 				new iam.PolicyStatement({
 					actions: [

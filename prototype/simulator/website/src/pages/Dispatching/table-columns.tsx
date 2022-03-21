@@ -70,13 +70,7 @@ export const columnDefinitions = (relativeDate: boolean) => ([
 		accessor: 'assigned',
 		Cell: ({ row }: any) => {
 			if (row && row.original) {
-				const assigned: any[] = row.original.assigned
-				const numOfDrivers = assigned.length
-				const numOfOrders = assigned.reduce((prev, curr) => {
-					return prev + curr.orders.length
-				}, 0)
-
-				return numOfDrivers
+				return row.original.assigned.length
 			}
 
 			return row.assigned
@@ -90,11 +84,8 @@ export const columnDefinitions = (relativeDate: boolean) => ([
 		Cell: ({ row }: any) => {
 			if (row && row.original) {
 				const assigned: any[] = row.original.assigned
-				const numOfOrders = assigned.reduce((prev, curr) => {
-					return prev + curr.orders.length
-				}, 0)
 
-				return numOfOrders
+				return new Set(assigned.flatMap(q => q.segments).map(q => q.orderId)).size
 			}
 
 			return row.assigned

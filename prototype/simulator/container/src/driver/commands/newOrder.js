@@ -21,12 +21,13 @@ const execute = async (payload) => {
 	logger.info('Executing command: newOrder')
 	logger.info('Payload', JSON.stringify(payload, null, 2))
 
-	const { segments } = payload
+	const { jobId, segments } = payload
 	const currentState = state.getStateRaw()
 	const current = currentState.assignmentStatus
 
 	if (current === state.ASSIGNMENT_STATUS.IDLE) {
 		state.setState('segments', segments)
+		state.setState('jobId', jobId)
 		state.setState('status', state.STATUSES.ACCEPTED)
 		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.IN_PROGRESS)
 		state.setState('updates', currentState.updatesConfig.activeState)

@@ -41,8 +41,9 @@ const execute = async (payload) => {
 				assigned: assigned.map(q => ({
 					driverId: q.driverId,
 					driverIdentity: q.driverIdentity,
-					driverLocation: q.driverLocation,
-					orders: q.orders.map(oId => orders.find(o => o.orderId === oId)),
+					route: q.route,
+					segments: q.segments,
+					orders: [...new Set(q.segments.map(q => q.orderId))].map(oId => orders.find(o => o.orderId === oId)),
 				})),
 				unassigned: unassigned.map(oId => orders.find(o => o.orderId === oId)),
 			}

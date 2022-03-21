@@ -54,7 +54,7 @@ const getSegmentLocations = (lat, long, radius, status, segments) => {
 	state.setState('orderId', orderId)
 
 	if (!currentPath) {
-		currentPath = polyline.decode(route.points)
+		currentPath = polyline.decode(route.pointsEncoded)
 
 		logger.info('Following path on: ', JSON.stringify(currentPath))
 	}
@@ -81,7 +81,7 @@ const getSegmentLocations = (lat, long, radius, status, segments) => {
 		currentProgress = 0
 		currentSegment++
 
-		return getSegmentLocations(lat, long, status, segments)
+		return getSegmentLocations(lat, long, radius, status, segments)
 	}
 }
 
@@ -92,6 +92,8 @@ const getCoordinates = (lat, long, radius, status) => {
 		currentSegment = 0
 
 		state.setState('segments', state.DEFAULT_STATE.segments)
+		state.setState('jobId', state.DEFAULT_STATE.jobId)
+		state.setState('orderId', state.DEFAULT_STATE.orderId)
 
 		return getIdlePosition(lat, long, radius)
 	}

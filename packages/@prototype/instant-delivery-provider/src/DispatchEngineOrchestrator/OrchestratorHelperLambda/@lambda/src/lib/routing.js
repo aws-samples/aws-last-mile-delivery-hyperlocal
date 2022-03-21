@@ -29,30 +29,15 @@ const queryGraphHopper = async (points) => {
 
 	const { data: { paths } } = results
 	// assume to take the first path
-	const { distance, time, points: pathPolyline } = paths[0]
+	const { distance, time, points: pointsEncoded } = paths[0]
 
 	return {
 		distance,
 		time,
-		pathPolyline,
+		pointsEncoded,
 	}
 }
 
-const getRoutingDetails = async (driverLocation, order) => {
-	const { origin, destination } = order
-	const fromDriverToOrigin = [[driverLocation.long, driverLocation.lat], [origin.long, origin.lat]]
-	const fromOriginToDestination = [[origin.long, origin.lat], [destination.long, destination.lat]]
-
-	// TODO: routes can be cached (eg. from origin to destination)
-	const toOrigin = await queryGraphHopper(fromDriverToOrigin)
-	const toDestination = await queryGraphHopper(fromOriginToDestination)
-
-	return [
-		toOrigin,
-		toDestination,
-	]
-}
-
 module.exports = {
-	getRoutingDetails,
+	queryGraphHopper,
 }

@@ -31,6 +31,7 @@ export interface DriverEventHandlerProps {
 	readonly instantDeliveryProviderApi: RestApi
 	readonly instantDeliveryProviderApiSecretName: string
 	readonly instantDeliveryProviderOrdersStatusIndex: string
+	readonly instantDeliveryProviderOrdersJobIdIndex: string
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly iotEndpointAddress: string
 }
@@ -50,6 +51,7 @@ export class DriverEventHandler extends Construct {
 			eventBus,
 			instantDeliveryProviderApi,
 			instantDeliveryProviderOrdersStatusIndex,
+			instantDeliveryProviderOrdersJobIdIndex,
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderApiSecretName,
 			iotEndpointAddress,
@@ -62,6 +64,7 @@ export class DriverEventHandler extends Construct {
 				instantDeliveryProviderApiSecretName,
 				eventBus,
 				iotEndpointAddress,
+				instantDeliveryProviderOrdersJobIdIndex,
 			},
 		})
 
