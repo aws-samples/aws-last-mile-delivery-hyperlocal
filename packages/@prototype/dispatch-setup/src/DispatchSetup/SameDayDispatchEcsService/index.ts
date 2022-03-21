@@ -31,6 +31,7 @@ export interface SameDayDispatchEcsServiceProps {
 	readonly ecsCluster: ecs.ICluster
 	readonly osmPbfMapFileUrl: string
 	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
+	readonly samedayDeliveryDirectPudoJobsSolverJobIndex: string
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -51,6 +52,7 @@ export class SameDayDispatchEcsService extends Construct {
 			ecsCluster,
 			osmPbfMapFileUrl,
 			samedayDeliveryDirectPudoJobs,
+			samedayDeliveryDirectPudoJobsSolverJobIndex,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -85,6 +87,7 @@ export class SameDayDispatchEcsService extends Construct {
 					statements: [
 						readDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
 						updateDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
+						readDDBTablePolicyStatement(`${samedayDeliveryDirectPudoJobs.tableArn}/index/${samedayDeliveryDirectPudoJobsSolverJobIndex}`),
 					],
 				}),
 			},

@@ -134,7 +134,7 @@
             "DeploymentHandlerLambdaServiceRoleDefaultPolicy5C7DE2FF"
           ],
           "line_numbers": [
-            251
+            301
           ],
           "element_types": [
             "resource"
@@ -150,8 +150,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            340,
-            601
+            390,
+            651
           ],
           "element_types": [
             "resource",
@@ -168,8 +168,8 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            340,
-            601
+            390,
+            651
           ],
           "element_types": [
             "resource",
@@ -186,26 +186,11 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            340,
-            601
+            390,
+            651
           ],
           "element_types": [
             "resource",
-            "resource"
-          ]
-        },
-        {
-          "id": "W51",
-          "name": "MissingBucketPolicyRule",
-          "type": "WARN",
-          "message": "S3 bucket should likely have a bucket policy",
-          "logical_resource_ids": [
-            "ConfigStorageConfigBucketA9569935"
-          ],
-          "line_numbers": [
-            131
-          ],
-          "element_types": [
             "resource"
           ]
         },
@@ -327,12 +312,15 @@
           "type": "WARN",
           "message": "Elastic Load Balancer V2 Listener Protocol should use HTTPS for ALBs",
           "logical_resource_ids": [
-            "DispatchSetupDispatchEcsServiceDispatcherALBDispatcherListener2E971289"
+            "DispatchSetupDispatchEcsServiceDispatcherALBDispatcherListener2E971289",
+            "DispatchSetupSameDayDispatchEcsServiceDispatcherSameDayDirectPudoALBDispatchSameDayDirectPudoListener5273E92C"
           ],
           "line_numbers": [
-            866
+            805,
+            1446
           ],
           "element_types": [
+            "resource",
             "resource"
           ]
         },
@@ -343,59 +331,17 @@
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
             "DispatchSetupDispatchEcsClusterDispatcherAsgInstanceRoleDefaultPolicyC466F12B",
-            "DispatchSetupDispatchEcsServiceDispatcherTaskDefExecutionRoleDefaultPolicy0080C216"
+            "DispatchSetupDispatchEcsServiceDispatcherTaskDefExecutionRoleDefaultPolicy0080C216",
+            "DispatchSetupSameDayDispatchEcsServiceSameDayDeliveryDirectPudoDispatcherTaskDefExecutionRoleDefaultPolicy59A4A67B"
           ],
           "line_numbers": [
-            236,
-            674
+            105,
+            613,
+            1254
           ],
           "element_types": [
             "resource",
-            "resource"
-          ]
-        },
-        {
-          "id": "W58",
-          "name": "LambdaFunctionCloudWatchLogsRule",
-          "type": "WARN",
-          "message": "Lambda functions require permission to write CloudWatch Logs",
-          "logical_resource_ids": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
-          ],
-          "line_numbers": [
-            958
-          ],
-          "element_types": [
-            "resource"
-          ]
-        },
-        {
-          "id": "W89",
-          "name": "LambdaFunctionInsideVPCRule",
-          "type": "WARN",
-          "message": "Lambda functions should be deployed inside a VPC",
-          "logical_resource_ids": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
-          ],
-          "line_numbers": [
-            958
-          ],
-          "element_types": [
-            "resource"
-          ]
-        },
-        {
-          "id": "W92",
-          "name": "LambdaFunctionReservedConcurrentExecutionsRule",
-          "type": "WARN",
-          "message": "Lambda functions should define ReservedConcurrentExecutions to reserve simultaneous executions",
-          "logical_resource_ids": [
-            "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
-          ],
-          "line_numbers": [
-            958
-          ],
-          "element_types": [
+            "resource",
             "resource"
           ]
         },
@@ -405,12 +351,15 @@
           "type": "WARN",
           "message": "CloudWatchLogs LogGroup should specify a KMS Key Id to encrypt the log data",
           "logical_resource_ids": [
-            "DispatchSetupDispatchEcsServiceorderdispatchertaskloggroup8F6998C0"
+            "DispatchSetupDispatchEcsServiceorderdispatchertaskloggroup8F6998C0",
+            "DispatchSetupSameDayDispatchEcsServicedispatchersamedaydirectpudotaskloggroup2E7E6D1D"
           ],
           "line_numbers": [
-            731
+            670,
+            1311
           ],
           "element_types": [
+            "resource",
             "resource"
           ]
         },
@@ -421,15 +370,21 @@
           "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
           "logical_resource_ids": [
             "DispatchSetupDispatchEcsServiceDispatcherALB3CAD3AB5",
+            "DispatchSetupSameDayDispatchEcsServiceDispatcherSameDayDirectPudoALB985933CA",
             "DispatchSetupDispatchEcsClusterDispatcherAsgInstanceRoleDA6E3DF2",
-            "DispatchSetupDispatchEcsServiceDispatcherTaskRoleFB87E9FF"
+            "DispatchSetupDispatchEcsServiceDispatcherTaskRoleFB87E9FF",
+            "DispatchSetupSameDayDispatchEcsServiceSameDayDeliveryDirectPudoDispatcherTaskRoleDFBED8E6"
           ],
           "line_numbers": [
-            813,
-            173,
-            430
+            752,
+            1393,
+            42,
+            295,
+            961
           ],
           "element_types": [
+            "resource",
+            "resource",
             "resource",
             "resource",
             "resource"
@@ -532,16 +487,16 @@
             "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
           ],
           "line_numbers": [
-            2736,
-            2877,
-            3084,
-            3261,
-            3576,
-            3851,
-            4134,
-            4388,
-            4562,
-            4765
+            2770,
+            2950,
+            3177,
+            3373,
+            3827,
+            4121,
+            4423,
+            4696,
+            4874,
+            5077
           ],
           "element_types": [
             "resource",
@@ -574,16 +529,16 @@
             "ApiGeoTrackingGetDemAreaSettingsLambda6C4A12E4"
           ],
           "line_numbers": [
-            2736,
-            2877,
-            3084,
-            3261,
-            3576,
-            3851,
-            4134,
-            4388,
-            4562,
-            4765
+            2770,
+            2950,
+            3177,
+            3373,
+            3827,
+            4121,
+            4423,
+            4696,
+            4874,
+            5077
           ],
           "element_types": [
             "resource",
@@ -623,8 +578,8 @@
             "LambdaFunctionsStackKinesisGeofencingConsumergeofencingDlq731D69E3"
           ],
           "line_numbers": [
-            3933,
-            4216
+            4207,
+            4509
           ],
           "element_types": [
             "resource",
@@ -648,7 +603,7 @@
             "OrderManagerStackOrderManagerHandlerServiceRoleDefaultPolicy8E9977C4"
           ],
           "line_numbers": [
-            653
+            672
           ],
           "element_types": [
             "resource"
@@ -665,9 +620,9 @@
             "OrderManagerStackOrderManagerHandler71247775"
           ],
           "line_numbers": [
-            104,
-            309,
-            697
+            119,
+            328,
+            731
           ],
           "element_types": [
             "resource",
@@ -684,7 +639,7 @@
             "OrderManagerStackProviderRuleEngineACDAE3AD"
           ],
           "line_numbers": [
-            309
+            328
           ],
           "element_types": [
             "resource"
@@ -701,9 +656,9 @@
             "OrderManagerStackOrderManagerHandler71247775"
           ],
           "line_numbers": [
-            104,
-            309,
-            697
+            119,
+            328,
+            731
           ],
           "element_types": [
             "resource",
@@ -741,20 +696,20 @@
             "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProvidercallbackPOSTF8164DF5"
           ],
           "line_numbers": [
-            876,
-            1026,
-            1251,
-            1476,
-            2831,
-            2981,
-            3206,
-            3431,
-            3599,
-            4923,
-            5073,
-            5298,
-            5523,
-            5691
+            927,
+            1077,
+            1302,
+            1527,
+            3089,
+            3239,
+            3464,
+            3689,
+            3857,
+            5309,
+            5459,
+            5684,
+            5909,
+            6077
           ],
           "element_types": [
             "resource",
@@ -784,9 +739,9 @@
             "InstantDeliveryProviderProviderApiGwInstanceInstantDeliveryProviderDeploymentStageprod7F1AA99C"
           ],
           "line_numbers": [
-            807,
-            2762,
-            4854
+            858,
+            3020,
+            5240
           ],
           "element_types": [
             "resource",
@@ -803,7 +758,7 @@
             "GraphhopperSetupGraphhopperALB4E50D909"
           ],
           "line_numbers": [
-            6055
+            6561
           ],
           "element_types": [
             "resource"
@@ -818,7 +773,7 @@
             "GraphhopperSetupGraphhopperALBGHListenerB51A0073"
           ],
           "line_numbers": [
-            6094
+            6600
           ],
           "element_types": [
             "resource"
@@ -830,14 +785,14 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcekzqey29bCustomResourcePolicy070605E6",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcel10fe833CustomResourcePolicy6657640C",
             "GraphhopperSetupGraphhopperTaskDefExecutionRoleDefaultPolicy2E9329C0",
             "DispatchEngineOrchestratorOrchestratorHelperLambdaServiceRoleDefaultPolicy4DC37029"
           ],
           "line_numbers": [
-            3706,
-            5935,
-            6207
+            4084,
+            6441,
+            6817
           ],
           "element_types": [
             "resource",
@@ -854,7 +809,7 @@
             "DriverDataIngestStreamIdB09121CE"
           ],
           "line_numbers": [
-            3933
+            4319
           ],
           "element_types": [
             "resource"
@@ -886,24 +841,24 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            110,
-            318,
-            596,
-            1715,
-            1929,
-            2135,
-            2343,
-            2551,
-            3900,
-            4055,
-            4257,
-            4453,
-            4649,
-            6288,
-            6811,
-            7011,
-            7205,
-            7355
+            123,
+            348,
+            643,
+            1899,
+            2132,
+            2355,
+            2580,
+            2805,
+            4286,
+            4441,
+            4643,
+            4839,
+            5035,
+            6898,
+            7421,
+            7621,
+            7815,
+            7965
           ],
           "element_types": [
             "resource",
@@ -939,11 +894,11 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            3900,
-            6811,
-            7011,
-            7205,
-            7355
+            4286,
+            7421,
+            7621,
+            7815,
+            7965
           ],
           "element_types": [
             "resource",
@@ -979,24 +934,24 @@
             "DriverEventHandlerSubMinuteExecutionStepFunctionSubMinuteExecutionHelperB9BE06B1"
           ],
           "line_numbers": [
-            110,
-            318,
-            596,
-            1715,
-            1929,
-            2135,
-            2343,
-            2551,
-            3900,
-            4055,
-            4257,
-            4453,
-            4649,
-            6288,
-            6811,
-            7011,
-            7205,
-            7355
+            123,
+            348,
+            643,
+            1899,
+            2132,
+            2355,
+            2580,
+            2805,
+            4286,
+            4441,
+            4643,
+            4839,
+            5035,
+            6898,
+            7421,
+            7621,
+            7815,
+            7965
           ],
           "element_types": [
             "resource",
@@ -1028,7 +983,7 @@
             "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
           ],
           "line_numbers": [
-            5893
+            6399
           ],
           "element_types": [
             "resource"
@@ -1043,7 +998,7 @@
             "GraphhopperSetupGraphhopperTaskDefgraphhopperindonesiaLogGroup5BC3A5AC"
           ],
           "line_numbers": [
-            5893
+            6399
           ],
           "element_types": [
             "resource"
@@ -1062,11 +1017,11 @@
             "DriverDataIngestStreamIdB09121CE"
           ],
           "line_numbers": [
-            1516,
-            3639,
-            5731,
-            6055,
-            3933
+            1567,
+            3897,
+            6117,
+            6561,
+            4319
           ],
           "element_types": [
             "resource",
@@ -1087,9 +1042,9 @@
             "DispatchEngineOrchestratorOrderIngestKinesisConsumerinstantdeliveryproviderDlqAF169715"
           ],
           "line_numbers": [
-            420,
-            438,
-            6890
+            454,
+            472,
+            7500
           ],
           "element_types": [
             "resource",
@@ -1155,7 +1110,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            435
+            485
           ],
           "element_types": [
             "resource"
@@ -1170,7 +1125,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            435
+            485
           ],
           "element_types": [
             "resource"
@@ -1185,22 +1140,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            435
-          ],
-          "element_types": [
-            "resource"
-          ]
-        },
-        {
-          "id": "W51",
-          "name": "MissingBucketPolicyRule",
-          "type": "WARN",
-          "message": "S3 bucket should likely have a bucket policy",
-          "logical_resource_ids": [
-            "MonitoringInstDebugInstanceBucket375E51C4"
-          ],
-          "line_numbers": [
-            4
+            485
           ],
           "element_types": [
             "resource"
@@ -1215,7 +1155,7 @@
             "MonitoringInstDebugInstanceRole907F1010"
           ],
           "line_numbers": [
-            238
+            288
           ],
           "element_types": [
             "resource"
@@ -1253,7 +1193,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            692
+            750
           ],
           "element_types": [
             "resource"
@@ -1268,7 +1208,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            692
+            750
           ],
           "element_types": [
             "resource"
@@ -1283,7 +1223,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            692
+            750
           ],
           "element_types": [
             "resource"
@@ -1310,6 +1250,21 @@
             "resource",
             "resource",
             "resource",
+            "resource"
+          ]
+        },
+        {
+          "id": "W77",
+          "name": "SecretsManagerSecretKmsKeyIdRule",
+          "type": "WARN",
+          "message": "Secrets Manager Secret should explicitly specify KmsKeyId. Besides control of the key this will allow the secret to be shared cross-account",
+          "logical_resource_ids": [
+            "LiveDataCacheMemoryDBClusterMemoryDBClusterPasswordCD06424D"
+          ],
+          "line_numbers": [
+            598
+          ],
+          "element_types": [
             "resource"
           ]
         },
@@ -1417,16 +1372,18 @@
             "DemographicAreaDispatchSettingsB488376F",
             "DemographicAreaProviderEngineSettingsC557CEE7",
             "InstantDeliveryProviderLocksC016DD6F",
-            "DispatcherAssignmentsB45A6CFD"
+            "DispatcherAssignmentsB45A6CFD",
+            "SameDayDeliveryDirectPudoJobsC1E8AA0A"
           ],
           "line_numbers": [
-            162,
-            198,
-            231,
-            290,
-            323,
-            356,
-            630
+            311,
+            344,
+            377,
+            436,
+            484,
+            517,
+            791,
+            847
           ],
           "element_types": [
             "resource",
@@ -1435,21 +1392,7 @@
             "resource",
             "resource",
             "resource",
-            "resource"
-          ]
-        },
-        {
-          "id": "W73",
-          "name": "DynamoDBBillingModeRule",
-          "type": "WARN",
-          "message": "DynamoDB table should have billing mode set to either PAY_PER_REQUEST or PROVISIONED",
-          "logical_resource_ids": [
-            "GeoPolygonTable42E97153"
-          ],
-          "line_numbers": [
-            162
-          ],
-          "element_types": [
+            "resource",
             "resource"
           ]
         },
@@ -1464,9 +1407,9 @@
             "DatabaseSeederSeedDBPolygonTableCoordsCustomResourcePolicy86F9826E"
           ],
           "line_numbers": [
-            389,
-            445,
-            501
+            550,
+            606,
+            662
           ],
           "element_types": [
             "resource",
@@ -1483,7 +1426,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            597
+            758
           ],
           "element_types": [
             "resource"
@@ -1498,7 +1441,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            597
+            758
           ],
           "element_types": [
             "resource"
@@ -1513,22 +1456,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            597
-          ],
-          "element_types": [
-            "resource"
-          ]
-        },
-        {
-          "id": "W51",
-          "name": "MissingBucketPolicyRule",
-          "type": "WARN",
-          "message": "S3 bucket should likely have a bucket policy",
-          "logical_resource_ids": [
-            "DriversTelemetryBucket0AE0FD9C"
-          ],
-          "line_numbers": [
-            130
+            758
           ],
           "element_types": [
             "resource"
@@ -1546,18 +1474,21 @@
             "DemographicAreaDispatchSettingsB488376F",
             "DemographicAreaProviderEngineSettingsC557CEE7",
             "InstantDeliveryProviderLocksC016DD6F",
-            "DispatcherAssignmentsB45A6CFD"
+            "DispatcherAssignmentsB45A6CFD",
+            "SameDayDeliveryDirectPudoJobsC1E8AA0A"
           ],
           "line_numbers": [
-            162,
-            198,
-            231,
-            290,
-            323,
-            356,
-            630
+            311,
+            344,
+            377,
+            436,
+            484,
+            517,
+            791,
+            847
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource",
@@ -1578,7 +1509,7 @@
           ],
           "line_numbers": [
             4,
-            130
+            229
           ],
           "element_types": [
             "resource",
@@ -1710,10 +1641,10 @@
             477,
             642,
             750,
-            1389,
-            1539,
-            1704,
-            1812
+            1509,
+            1659,
+            1824,
+            1932
           ],
           "element_types": [
             "resource",
@@ -1737,7 +1668,7 @@
           ],
           "line_numbers": [
             258,
-            1320
+            1440
           ],
           "element_types": [
             "resource",
@@ -1753,7 +1684,7 @@
             "ExternalProviderSetupServiceRoleDefaultPolicy8D6BF04A"
           ],
           "line_numbers": [
-            1959
+            2199
           ],
           "element_types": [
             "resource"
@@ -1773,10 +1704,10 @@
           ],
           "line_numbers": [
             108,
-            960,
-            1124,
-            2024,
-            2152
+            1080,
+            1244,
+            2264,
+            2392
           ],
           "element_types": [
             "resource",
@@ -1800,10 +1731,10 @@
           ],
           "line_numbers": [
             108,
-            960,
-            1124,
-            2024,
-            2152
+            1080,
+            1244,
+            2264,
+            2392
           ],
           "element_types": [
             "resource",
@@ -1827,10 +1758,10 @@
           ],
           "line_numbers": [
             108,
-            960,
-            1124,
-            2024,
-            2152
+            1080,
+            1244,
+            2264,
+            2392
           ],
           "element_types": [
             "resource",
@@ -1851,7 +1782,7 @@
           ],
           "line_numbers": [
             790,
-            1852
+            1972
           ],
           "element_types": [
             "resource",
@@ -1948,7 +1879,7 @@
           "type": "WARN",
           "message": "AWS::ApiGateway::Deployment resources should be associated with an AWS::ApiGateway::UsagePlan. ",
           "logical_resource_ids": [
-            "SimulatorRestApiDeployment7165AE7B833b78043a4df56c23840dd8f37fa76c"
+            "SimulatorRestApiDeployment7165AE7Baee9bd27fab6a963e033ed1499264be3"
           ],
           "line_numbers": [
             200
@@ -1966,7 +1897,7 @@
             "SimulatorRestApiANYB8AFA192"
           ],
           "line_numbers": [
-            362
+            365
           ],
           "element_types": [
             "resource"
@@ -1981,7 +1912,7 @@
             "SimulatorRestApiDeploymentStageprod2BCF2C02"
           ],
           "line_numbers": [
-            293
+            296
           ],
           "element_types": [
             "resource"
@@ -1996,7 +1927,7 @@
             "SimulatorRestApiDeploymentStageprod2BCF2C02"
           ],
           "line_numbers": [
-            293
+            296
           ],
           "element_types": [
             "resource"
@@ -2015,17 +1946,17 @@
             "SimulatorManagerOriginSimulatorLambdaOriginEventHandlerServiceRoleDefaultPolicy70005689",
             "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
-            "UpdateLambdaConfigurationkzqey2dcCustomResourcePolicy9C49ECB4"
+            "UpdateLambdaConfigurationl10fe943CustomResourcePolicy25ABE229"
           ],
           "line_numbers": [
             5,
-            5624,
-            6088,
-            7068,
-            7527,
-            7720,
-            8687,
-            9806
+            5914,
+            6378,
+            7358,
+            7855,
+            8048,
+            9018,
+            10325
           ],
           "element_types": [
             "resource",
@@ -2060,32 +1991,35 @@
             "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
             "SimulatorManagerDestinationSimulatorLambdaE614D361",
             "SimulatorManagerDestinationSimulatorLambdaDestinationStatusUpdateLambda7FD0C441",
+            "SimulatorManagerDestinationSimulatorLambdaS3PresignedUrlLambdaE6ECBCFE",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
             90,
-            5380,
             5670,
-            5812,
-            6001,
-            6188,
-            6521,
-            6832,
-            7186,
-            7374,
-            7568,
-            7820,
-            8152,
-            8463,
-            8791,
-            8946,
-            9135,
-            9416,
-            9637
+            5960,
+            6102,
+            6291,
+            6478,
+            6811,
+            7122,
+            7491,
+            7698,
+            7896,
+            8148,
+            8480,
+            8794,
+            9122,
+            9292,
+            9474,
+            9615,
+            9930,
+            10156
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource",
@@ -2126,27 +2060,30 @@
             "SimulatorManagerDestinationSimulatorLambdaDestinationStarterStepFunctionDestinationStarterHelper6D16BE0E",
             "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
             "SimulatorManagerDestinationSimulatorLambdaE614D361",
+            "SimulatorManagerDestinationSimulatorLambdaS3PresignedUrlLambdaE6ECBCFE",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
             90,
-            5380,
             5670,
-            5812,
-            6001,
-            6188,
-            6521,
-            6832,
-            7568,
-            7820,
-            8152,
-            8463,
-            8791,
-            9135,
-            9637
+            5960,
+            6102,
+            6291,
+            6478,
+            6811,
+            7122,
+            7896,
+            8148,
+            8480,
+            8794,
+            9122,
+            9474,
+            9615,
+            10156
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource",
@@ -2186,32 +2123,35 @@
             "SimulatorManagerDestinationSimulatorLambdaDestinationEraserStepFunctionDestinationEraserHelperEEF2F7D1",
             "SimulatorManagerDestinationSimulatorLambdaE614D361",
             "SimulatorManagerDestinationSimulatorLambdaDestinationStatusUpdateLambda7FD0C441",
+            "SimulatorManagerDestinationSimulatorLambdaS3PresignedUrlLambdaE6ECBCFE",
             "SimulatorManagerOrderSimulatorLambda1D914205",
             "SimulatorManagerStatsSimulatorLambdaStatisticsLambdaD6482994",
             "SimulatorManagerDispatcherAssignmentQueryLambdaED65C083"
           ],
           "line_numbers": [
             90,
-            5380,
             5670,
-            5812,
-            6001,
-            6188,
-            6521,
-            6832,
-            7186,
-            7374,
-            7568,
-            7820,
-            8152,
-            8463,
-            8791,
-            8946,
-            9135,
-            9416,
-            9637
+            5960,
+            6102,
+            6291,
+            6478,
+            6811,
+            7122,
+            7491,
+            7698,
+            7896,
+            8148,
+            8480,
+            8794,
+            9122,
+            9292,
+            9474,
+            9615,
+            9930,
+            10156
           ],
           "element_types": [
+            "resource",
             "resource",
             "resource",
             "resource",
@@ -2247,12 +2187,12 @@
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5"
           ],
           "line_numbers": [
-            6088,
-            6435,
-            7068,
-            7720,
-            8066,
-            8687
+            6378,
+            6725,
+            7358,
+            8048,
+            8394,
+            9018
           ],
           "element_types": [
             "resource",
@@ -2280,7 +2220,7 @@
             "SimulatorWebsiteHostingCloudFrontDistroCFDistributionF9EFFC1F"
           ],
           "line_numbers": [
-            1781
+            1945
           ],
           "element_types": [
             "resource"
@@ -2295,7 +2235,7 @@
             "SimulatorWebsiteHostingCloudFrontDistroCFDistributionF9EFFC1F"
           ],
           "line_numbers": [
-            1781
+            1945
           ],
           "element_types": [
             "resource"
@@ -2331,18 +2271,24 @@
             "SimulatorECSStackDestinationSimulatorContainerSimulatorRoledestinationDefaultPolicyF258DA5E",
             "SimulatorECSStackDestinationSimulatorContainerECSExecutionRoledestinationDefaultPolicy0070E31D",
             "SimulatorECSStackOriginSimulatorContainerSimulatorRoleoriginDefaultPolicy5C9476E8",
-            "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleoriginDefaultPolicy6A16E111"
+            "SimulatorECSStackOriginSimulatorContainerECSExecutionRoleoriginDefaultPolicy6A16E111",
+            "SimulatorWebsiteHostingWebACLWebACLCreateCustomResourcePolicy068617E0",
+            "SimulatorWebsiteHostingWebACLWebACLDeleteCustomResourcePolicyC41DCB8E"
           ],
           "line_numbers": [
-            462,
-            534,
-            611,
+            442,
+            514,
+            607,
             847,
-            967,
-            1228,
-            1348
+            983,
+            1248,
+            1384,
+            1821,
+            1866
           ],
           "element_types": [
+            "resource",
+            "resource",
             "resource",
             "resource",
             "resource",
@@ -2361,7 +2307,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1622
+            1662
           ],
           "element_types": [
             "resource"
@@ -2376,7 +2322,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1622
+            1662
           ],
           "element_types": [
             "resource"
@@ -2391,7 +2337,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            1622
+            1662
           ],
           "element_types": [
             "resource"
@@ -2409,8 +2355,8 @@
           ],
           "line_numbers": [
             804,
-            1185,
-            1566
+            1205,
+            1606
           ],
           "element_types": [
             "resource",
@@ -2430,8 +2376,8 @@
           ],
           "line_numbers": [
             804,
-            1185,
-            1566
+            1205,
+            1606
           ],
           "element_types": [
             "resource",
@@ -2446,7 +2392,6 @@
           "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
           "logical_resource_ids": [
             "SimulatorVPCECSSecurityGroupEA9C0F68",
-            "SimulatorECSStackSimulatorCommonRepository716850DC",
             "SimulatorECSStackDriverSimulatorContainerSimulatorRoledriverE93A15DF",
             "SimulatorECSStackDriverSimulatorContainerECSExecutionRoledriver759B0CAF",
             "SimulatorECSStackDestinationSimulatorContainerSimulatorRoledestination82E749C8",
@@ -2456,16 +2401,14 @@
           ],
           "line_numbers": [
             228,
-            442,
-            507,
-            584,
+            487,
+            580,
             820,
-            940,
-            1201,
-            1321
+            956,
+            1221,
+            1357
           ],
           "element_types": [
-            "resource",
             "resource",
             "resource",
             "resource",
@@ -2484,7 +2427,7 @@
             "SimulatorWebsiteHostingHostingBucket1AAE5F4A"
           ],
           "line_numbers": [
-            1655
+            1695
           ],
           "element_types": [
             "resource"
@@ -2636,14 +2579,14 @@
             "DestinationSimulationsTableBB0F81AF"
           ],
           "line_numbers": [
-            4,
-            37,
-            100,
-            167,
-            200,
-            233,
-            300,
-            333
+            105,
+            138,
+            201,
+            268,
+            301,
+            334,
+            401,
+            434
           ],
           "element_types": [
             "resource",
@@ -2672,14 +2615,14 @@
             "DestinationSimulationsTableBB0F81AF"
           ],
           "line_numbers": [
-            4,
-            37,
-            100,
-            167,
-            200,
-            233,
-            300,
-            333
+            105,
+            138,
+            201,
+            268,
+            301,
+            334,
+            401,
+            434
           ],
           "element_types": [
             "resource",
@@ -2689,6 +2632,21 @@
             "resource",
             "resource",
             "resource",
+            "resource"
+          ]
+        },
+        {
+          "id": "W35",
+          "name": "S3BucketAccessLoggingRule",
+          "type": "WARN",
+          "message": "S3 Bucket should have access logging configured",
+          "logical_resource_ids": [
+            "SimulatorConfig781A0694"
+          ],
+          "line_numbers": [
+            4
+          ],
+          "element_types": [
             "resource"
           ]
         }

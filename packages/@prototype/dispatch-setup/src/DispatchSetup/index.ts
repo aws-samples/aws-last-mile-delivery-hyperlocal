@@ -29,6 +29,7 @@ export interface DispatchSetupProps {
 	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly osmPbfMapFileUrl: string
 	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
+	readonly samedayDeliveryDirectPudoJobsSolverJobIndex: string
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -52,6 +53,7 @@ export class DispatchSetup extends Construct {
 			dmzSecurityGroup,
 			osmPbfMapFileUrl,
 			samedayDeliveryDirectPudoJobs,
+			samedayDeliveryDirectPudoJobsSolverJobIndex,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -86,6 +88,7 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			osmPbfMapFileUrl,
 			samedayDeliveryDirectPudoJobs,
+			samedayDeliveryDirectPudoJobsSolverJobIndex,
 			ssmStringParameters,
 			vpc,
 		})

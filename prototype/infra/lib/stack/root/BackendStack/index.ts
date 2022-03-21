@@ -91,6 +91,7 @@ export class BackendStack extends Stack {
 					instantDeliveryProviderOrders,
 					instantDeliveryProviderOrdersStatusIndex,
 					samedayDeliveryDirectPudoJobs,
+					samedayDeliveryDirectPudoJobsSolverJobIndex,
 					ssmStringParameters: dataStorageSsmStringParameters,
 				},
 				backendBaseNestedStack: {
@@ -181,6 +182,7 @@ export class BackendStack extends Stack {
 			driverApiKeySecretName: geoTrackingApiKeySecretName,
 			osmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl as string,
 			samedayDeliveryDirectPudoJobs,
+			samedayDeliveryDirectPudoJobsSolverJobIndex,
 			ssmStringParameters,
 			vpc,
 			vpcNetworking,
