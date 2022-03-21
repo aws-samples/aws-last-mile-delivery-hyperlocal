@@ -22,15 +22,15 @@ import { SameDayDispatchEcsService } from './SameDayDispatchEcsService'
 
 export interface DispatchSetupProps {
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
-    readonly dispatchEngineBucket: s3.IBucket
+	readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly dispatcherSettings: Record<string, any>
-    readonly driverApiKeySecretName: string
-    readonly dmzSecurityGroup: ec2.ISecurityGroup
+	readonly driverApiKeySecretName: string
+	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly osmPbfMapFileUrl: string
 	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
-    readonly vpc: ec2.IVpc
+	readonly vpc: ec2.IVpc
 }
 
 export class DispatchSetup extends Construct {
