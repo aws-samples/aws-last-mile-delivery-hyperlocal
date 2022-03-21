@@ -37,6 +37,8 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly instantDeliveryProviderOrders: ddb.ITable
 
+	public readonly instantDeliveryProviderLocks: ddb.ITable
+
 	public readonly instantDeliveryProviderOrdersStatusIndex: string
 
 	public readonly dispatcherAssignmentsTable: ddb.ITable
@@ -45,7 +47,7 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly demographicAreaProviderEngineSettings: ddb.ITable
 
-	public readonly instantDeliveryProviderLocks: ddb.ITable
+	public readonly samedayDeliveryDirectPudoJobs: ddb.ITable
 
 	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 
@@ -168,5 +170,26 @@ export class DataStoragePersistent extends NestedStack {
 			description: 'DispatcherAssignments tablename parameter for dispatcher',
 		})
 		this.ssmStringParameters[parameterStoreKeys.assignmentsTableName] = dispatcherAssignmentsTableNameParameter
+
+		const samedayDeliveryDirectPudoJobsTableName = namespaced(this, 'sameday-delivery-directpudo-jobs')
+		this.samedayDeliveryDirectPudoJobs = new hyperlocal_ddb.Table(this, 'SameDayDeliveryDirectPudoJobs', {
+			tableName: samedayDeliveryDirectPudoJobsTableName,
+			removalPolicy: props.removalPolicy,
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+			sortKey: {
+				name: 'createdAt',
+				type: ddb.AttributeType.NUMBER,
+			},
+		})
+		const samedayDeliveryDirectPudoJobsTableNameParameter = new ssm.StringParameter(this, 'sameday-delivery-directpudo-jobs-param', {
+			parameterName: parameterStoreKeys.samedayDeliveryDirectPudoJobsTableName,
+			stringValue: samedayDeliveryDirectPudoJobsTableName,
+			description: 'SameDayDeliveryDirectPudoJobs tablename parameter for dispatcher',
+		})
+		this.ssmStringParameters[parameterStoreKeys.samedayDeliveryDirectPudoJobsTableName] =
+			samedayDeliveryDirectPudoJobsTableNameParameter
 	}
 }
