@@ -69,6 +69,7 @@ export class DispatchEcsCluster extends Construct {
 			roleName: regionalNamespaced(this, 'Dispatch-ASG-Instance'),
 		})
 
+		// TODO: pass instanceType as a parameter
 		const asg = new autoscaling.AutoScalingGroup(this, 'DispatcherEcsAsg', {
 			instanceType: ec2.InstanceType.of(ec2.InstanceClass.C6G, ec2.InstanceSize.XLARGE8),
 			machineImage: ecs.EcsOptimizedImage.amazonLinux2(ecs.AmiHardwareType.ARM),
@@ -85,11 +86,6 @@ export class DispatchEcsCluster extends Construct {
 			desiredCapacity: 2,
 			role: asgInstanceRole,
 		})
-
-		asg.userData.addCommands(
-			'mkdir -p /opt/dispatcher-app/config',
-			`docker run --rm -it amazon/aws-cli s3 cp 's3://${dispatchEngineBucket.bucketName}/dispatcher-app/config/application.properties' '/opt/dispatcher-app/config/application.properties'`,
-		)
 
 		const asgCapacityProvider = new ecs.AsgCapacityProvider(this, 'DispatcherEcsClusterAsgCP', {
 			autoScalingGroup: asg,

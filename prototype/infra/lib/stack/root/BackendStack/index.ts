@@ -49,7 +49,7 @@ export interface BackendStackProps extends StackProps {
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 	readonly geoTrackingApiKeySecretName: string
 	readonly graphhopperSettings: Record<string, string | number>
-	readonly dispatcherSettings: Record<string, string | number>
+	readonly dispatcherSettings: Record<string, string | number | any>
 	readonly parameterStoreKeys: Record<string, string>
 }
 
@@ -90,6 +90,7 @@ export class BackendStack extends Stack {
 					instantDeliveryProviderLocks,
 					instantDeliveryProviderOrders,
 					instantDeliveryProviderOrdersStatusIndex,
+					samedayDeliveryDirectPudoJobs,
 					ssmStringParameters: dataStorageSsmStringParameters,
 				},
 				backendBaseNestedStack: {
@@ -166,10 +167,6 @@ export class BackendStack extends Stack {
 		})
 		this.appConfig = appConfigNestedStack
 
-		// find the website and solver bundle
-		const prototypeDir = findUp('prototype', { cwd: __dirname, type: 'directory' }) || '../../../../../'
-		const dispatcherConfigPath = path.join(prototypeDir, 'dispatch', 'order-dispatcher', 'deploy', 'application.properties')
-
 		// merge ssmStringParameters to one
 		const ssmStringParameters: Record<string, ssm.IStringParameter> = {
 			...dataStorageSsmStringParameters,
@@ -177,18 +174,16 @@ export class BackendStack extends Stack {
 		}
 
 		const dispatcherStack = new DispatcherStack(this, 'DispatcherStack', {
+			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
+			dispatchEngineBucket,
+			dispatcherAssignmentsTable,
+			dispatcherSettings,
+			driverApiKeySecretName: geoTrackingApiKeySecretName,
+			osmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl as string,
+			samedayDeliveryDirectPudoJobs,
+			ssmStringParameters,
 			vpc,
 			vpcNetworking,
-			dispatchEngineBucket,
-			dispatcherConfigPath,
-			dispatcherVersion: 'v2',
-			driverApiKeySecretName: geoTrackingApiKeySecretName,
-			ssmStringParameters,
-			demAreaDispatchEngineSettingsTable: demographicAreaDispatchSettings,
-			dispatcherAssignmentsTable,
-			dispatcherDockerContainerName: dispatcherSettings.containerName.toString(),
-			dispatcherDockerOsmPbfMapFileUrl: graphhopperSettings.osmPbfMapFileUrl.toString(),
-			dispatcherSettings,
 		})
 
 		const providerNestedStack = new ProviderStack(this, 'ProvidersNestedStack', {

@@ -16,23 +16,21 @@
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
 import { aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_elasticloadbalancingv2 as elb, aws_s3 as s3, aws_ssm as ssm } from 'aws-cdk-lib'
-import { DispatchHosting } from './DispatchHosting'
 import { DispatchEcsService } from './DispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
+import { SameDayDispatchEcsService } from './SameDayDispatchEcsService'
 
 export interface DispatchSetupProps {
-    readonly vpc: ec2.IVpc
-    readonly dmzSecurityGroup: ec2.ISecurityGroup
-	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
-    readonly driverApiKeySecretName: string
-    readonly dispatchEngineBucket: s3.IBucket
-    readonly dispatcherConfigPath: string
-    readonly dispatcherVersion: string
-	readonly dispatcherDockerOsmPbfMapFileUrl: string
-	readonly dispatcherDockerContainerName: string
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
+    readonly dispatchEngineBucket: s3.IBucket
 	readonly dispatcherAssignmentsTable: ddb.ITable
-	readonly dispatcherSettings: Record<string, string | number>
+	readonly dispatcherSettings: Record<string, any>
+    readonly driverApiKeySecretName: string
+    readonly dmzSecurityGroup: ec2.ISecurityGroup
+	readonly osmPbfMapFileUrl: string
+	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
+    readonly vpc: ec2.IVpc
 }
 
 export class DispatchSetup extends Construct {
@@ -40,35 +38,23 @@ export class DispatchSetup extends Construct {
 
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
+	readonly samedayDeliveryLoadBalancer: elb.IApplicationLoadBalancer
+
 	constructor (scope: Construct, id: string, props: DispatchSetupProps) {
 		super(scope, id)
 
 		const {
-			vpc,
-			dmzSecurityGroup,
-			driverApiKeySecretName,
-			ssmStringParameters,
-			dispatchEngineBucket,
-			dispatcherConfigPath,
-			dispatcherVersion,
-			dispatcherDockerContainerName,
-			dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
+			dispatchEngineBucket,
 			dispatcherAssignmentsTable,
 			dispatcherSettings,
-		} = props
-
-		// this feature is not used. let's flag this as DEPRECATED and remove later
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const dispatchHosting = new DispatchHosting(this, 'DispatchHosting', {
-			dispatchEngineBucket,
 			driverApiKeySecretName,
-			// driverApiUrlParameterName: ssmStringParameters[geoTrackingApiUrl].stringValue,
-			dispatcherConfigPath,
-			dispatcherVersion,
-			dispatcherAssignmentTableName: dispatcherAssignmentsTable.tableName,
-			demographicAreaDispatcherSettingsTableName: demAreaDispatchEngineSettingsTable.tableName,
-		})
+			dmzSecurityGroup,
+			osmPbfMapFileUrl,
+			samedayDeliveryDirectPudoJobs,
+			ssmStringParameters,
+			vpc,
+		} = props
 
 		const dispatchEcsCluster = new DispatchEcsCluster(this, 'DispatchEcsCluster', {
 			dispatchEngineBucket,
@@ -78,19 +64,31 @@ export class DispatchSetup extends Construct {
 		this.dispatcherEcsCluster = dispatchEcsCluster.cluster
 
 		const dispatchEcsService = new DispatchEcsService(this, 'DispatchEcsService', {
-			vpc,
-			dmzSecurityGroup,
-			ecsCluster: dispatchEcsCluster.cluster,
-			dispatchEngineBucket,
-			driverApiKeySecretName,
-			ssmStringParameters,
-			containerName: dispatcherDockerContainerName,
-			osmPbfMapFileUrl: dispatcherDockerOsmPbfMapFileUrl,
 			demAreaDispatchEngineSettingsTable,
+			dispatchConfig: dispatcherSettings.instant.sequential as Record<string, string | number>,
+			dispatchEngineBucket,
 			dispatcherAssignmentsTable,
-			ecsTaskCount: dispatcherSettings.ecsTaskCount as number,
+			dmzSecurityGroup,
+			driverApiKeySecretName,
+			ecsCluster: dispatchEcsCluster.cluster,
+			osmPbfMapFileUrl,
+			ssmStringParameters,
+			vpc,
 		})
 
 		this.loadBalancer = dispatchEcsService.loadBalancer
+
+		const samedayDeliveryDispatchEcsService = new SameDayDispatchEcsService(this, 'SameDayDispatchEcsService', {
+			dispatchConfig: dispatcherSettings.sameday.directpudo as Record<string, string | number>,
+			dispatchEngineBucket,
+			dmzSecurityGroup,
+			driverApiKeySecretName,
+			ecsCluster: dispatchEcsCluster.cluster,
+			osmPbfMapFileUrl,
+			samedayDeliveryDirectPudoJobs,
+			ssmStringParameters,
+			vpc,
+		})
+		this.samedayDeliveryLoadBalancer = samedayDeliveryDispatchEcsService.loadBalancer
 	}
 }

@@ -23,45 +23,43 @@ import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@pro
 import path from 'path'
 import { sync as findup } from 'find-up'
 
-export interface DispatchEcsServiceProps {
-	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
+export interface SameDayDispatchEcsServiceProps {
 	readonly dispatchConfig: Record<string, string | number>
 	readonly dispatchEngineBucket: s3.IBucket
-	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly driverApiKeySecretName: string
 	readonly ecsCluster: ecs.ICluster
 	readonly osmPbfMapFileUrl: string
+	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
 
-export class DispatchEcsService extends Construct {
+export class SameDayDispatchEcsService extends Construct {
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
 	readonly dispatcherService: ecs.Ec2Service
 
-	constructor (scope: Construct, id: string, props: DispatchEcsServiceProps) {
+	constructor (scope: Construct, id: string, props: SameDayDispatchEcsServiceProps) {
 		super(scope, id)
 
 		const {
-			demAreaDispatchEngineSettingsTable,
 			dispatchConfig,
 			dispatchEngineBucket,
-			dispatcherAssignmentsTable,
 			dmzSecurityGroup,
 			driverApiKeySecretName,
 			ecsCluster,
 			osmPbfMapFileUrl,
+			samedayDeliveryDirectPudoJobs,
 			ssmStringParameters,
 			vpc,
 		} = props
 
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
 
-		const dispatcherTaskRole = new iam.Role(this, 'DispatcherTaskRole', {
+		const dispatcherTaskRole = new iam.Role(this, 'SameDayDeliveryDirectPudoDispatcherTaskRole', {
 			assumedBy: new iam.ServicePrincipal(cdkconsts.ServicePrincipals.ECS_TASKS),
-			description: 'Role for Dispatcher ECS Task',
+			description: 'Role for Same Day Delivery Direct PUDO Dispatcher ECS Task',
 			inlinePolicies: {
 				apiKeyAccess: new iam.PolicyDocument({
 					statements: [
@@ -83,36 +81,18 @@ export class DispatchEcsService extends Construct {
 						}),
 					],
 				}),
-				bucketAccess: new iam.PolicyDocument({
-					statements: [
-						new iam.PolicyStatement({
-							effect: iam.Effect.ALLOW,
-							actions: [
-								's3:GetObject',
-								's3:HeadObject',
-								's3:ListBucket',
-								's3:PutObject',
-							],
-							resources: [
-								dispatchEngineBucket.bucketArn,
-								`${dispatchEngineBucket.bucketArn}/*`,
-							],
-						}),
-					],
-				}),
 				ddbAccess: new iam.PolicyDocument({
 					statements: [
-						readDDBTablePolicyStatement(demAreaDispatchEngineSettingsTable.tableArn),
-						readDDBTablePolicyStatement(dispatcherAssignmentsTable.tableArn),
-						updateDDBTablePolicyStatement(dispatcherAssignmentsTable.tableArn),
+						readDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
+						updateDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
 					],
 				}),
 			},
-			roleName: regionalNamespaced(this, 'Dispatcher-TaskRole'),
+			roleName: regionalNamespaced(this, 'Dispatcher-SameDayDeliveryDirectPudo-TaskRole'),
 		})
 
-		const dispatcherTask = new ecs.Ec2TaskDefinition(this, 'DispatcherTaskDef', {
-			family: namespaced(this, 'dispatcher-task'),
+		const dispatcherTask = new ecs.Ec2TaskDefinition(this, 'SameDayDeliveryDirectPudoDispatcherTaskDef', {
+			family: namespaced(this, 'dispatcher-sameday-directpudo-task'),
 			taskRole: dispatcherTaskRole,
 			volumes: [
 				{
@@ -125,11 +105,11 @@ export class DispatchEcsService extends Construct {
 			networkMode: ecs.NetworkMode.AWS_VPC,
 		})
 
-		const dispatcherImage = new ecr_assets.DockerImageAsset(this, 'DispatcherImage', {
+		const dispatcherImage = new ecr_assets.DockerImageAsset(this, 'SameDayDeliveryDirectPudoDispatcherImage', {
 			directory: path.join(
 				findup('packages', { cwd: __dirname, type: 'directory' }) || '../../../../../',
 				'..',
-				'prototype', 'dispatch', 'delivery-dispatch', 'build', 'instant', 'sequential',
+				'prototype', 'dispatch', 'delivery-dispatch', 'build', 'sameday', 'directpudo',
 			),
 			buildArgs: {
 				MAPFILE_URL: osmPbfMapFileUrl,
@@ -137,10 +117,10 @@ export class DispatchEcsService extends Construct {
 			target: 'prod',
 		})
 
-		const container = dispatcherTask.addContainer('order-dispatcher', {
+		const container = dispatcherTask.addContainer('dispatcher-sameday-directpudo', {
 			image: ecs.ContainerImage.fromDockerImageAsset(dispatcherImage),
 			containerName: namespaced(this, dispatchConfig.containerName as string),
-			memoryReservationMiB: dispatchConfig.memoryReservationMiB as number || 6000,
+			memoryReservationMiB: dispatchConfig.memoryReservationMiB as number || 8192,
 			environment: {
 				JAVA_OPTS: '-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager',
 				CONFIG_BUCKET: dispatchEngineBucket.bucketName,
@@ -153,50 +133,52 @@ export class DispatchEcsService extends Construct {
 
 			logging: ecs.LogDrivers.awsLogs({
 				streamPrefix: 'ecs',
-				logGroup: new logs.LogGroup(this, 'order-dispatcher-task-loggroup', {
-					logGroupName: namespaced(this, `order-dispatcher-task-${Date.now()}`),
+				logGroup: new logs.LogGroup(this, 'dispatcher-sameday-directpudo-task-loggroup', {
+					logGroupName: namespaced(this, `dispatcher-sameday-directpudo-task-${Date.now()}`),
 				}),
 			}),
 		})
+
+		// TODO: do we need this?
 		container.addMountPoints({
 			containerPath: '/app/config-external',
 			sourceVolume: 'externalConfig',
 			readOnly: false,
 		})
 
-		const dispatcherService = new ecs.Ec2Service(this, 'DispatcherService', {
+		const dispatcherService = new ecs.Ec2Service(this, 'Dispatcher-SameDayDirectPudo-Service', {
 			cluster: ecsCluster,
 			desiredCount: dispatchConfig.ecsTaskCount as number,
 			securityGroups: [dmzSecurityGroup],
-			serviceName: namespaced(this, 'Order-Dispatcher'),
+			serviceName: namespaced(this, 'Dispatcher-SameDay-DirectPudo'),
 			taskDefinition: dispatcherTask,
 			vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_NAT },
 		})
 
 		// setup an application load balancer
-		const loadBalancer = new elb.ApplicationLoadBalancer(this, 'DispatcherALB', {
+		const loadBalancer = new elb.ApplicationLoadBalancer(this, 'Dispatcher-SameDayDirectPudo-ALB', {
 			vpc,
 			internetFacing: false,
 			securityGroup: dmzSecurityGroup,
-			loadBalancerName: namespaced(this, 'Dispatcher'),
+			loadBalancerName: namespaced(this, 'Dispatcher-SameDay-DirectPudo'),
 			vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
 		})
-		new DefaultWaf(this, 'DispatcherALBWaf', {
+		new DefaultWaf(this, 'Dispatcher-SameDayDirectPudo-ALB-Waf', {
 			resourceArn: loadBalancer.loadBalancerArn,
 		})
 
-		loadBalancer.logAccessLogs(dispatchEngineBucket, 'logs/alb-access-logs')
+		loadBalancer.logAccessLogs(dispatchEngineBucket, 'logs/alb-sameday-directpudo-access-logs')
 
-		const albListener = loadBalancer.addListener('DispatcherListener', {
+		const albListener = loadBalancer.addListener('Dispatch-SameDayDirectPudo-Listener', {
 			open: false,
 			port: 80,
 			protocol: elb.ApplicationProtocol.HTTP,
 		})
 
-		albListener.addTargets('DispatcherTarget', {
+		albListener.addTargets('Dispatch-SameDayDirectPudo-Target', {
 			port: dispatchConfig.hostPort as number || 8080,
 			targets: [dispatcherService],
-			targetGroupName: namespaced(this, 'dispatcher-targetgroup'),
+			targetGroupName: namespaced(this, 'dispatcher-sameday-directpudo-targetgroup'),
 			protocol: elb.ApplicationProtocol.HTTP,
 			healthCheck: {
 				path: '/q/health',
