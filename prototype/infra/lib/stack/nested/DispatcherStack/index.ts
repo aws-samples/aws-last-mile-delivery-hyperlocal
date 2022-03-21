@@ -18,21 +18,19 @@
 import { Construct } from 'constructs'
 import { NestedStack, NestedStackProps, aws_s3 as s3, aws_ec2 as ec2, aws_elasticloadbalancingv2 as elb, aws_dynamodb as ddb, aws_ssm as ssm } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
-import { DispatchSetup, GraphhopperSetup } from '@prototype/dispatch-setup'
+import { DispatchSetup } from '@prototype/dispatch-setup'
 
 export interface DispatcherStackProps extends NestedStackProps {
+	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
+	readonly dispatchEngineBucket: s3.IBucket
+	readonly dispatcherAssignmentsTable: ddb.ITable
+	readonly dispatcherSettings: Record<string, any>
+	readonly driverApiKeySecretName: string
+	readonly osmPbfMapFileUrl: string
+	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
-	readonly driverApiKeySecretName: string
-	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
-	readonly dispatchEngineBucket: s3.IBucket
-	readonly dispatcherConfigPath: string
-	readonly dispatcherVersion: string
-	readonly dispatcherDockerOsmPbfMapFileUrl: string
-	readonly dispatcherDockerContainerName: string
-	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
-	readonly dispatcherAssignmentsTable: ddb.ITable
-	readonly dispatcherSettings: Record<string, string | number>
 }
 
 export class DispatcherStack extends NestedStack {
@@ -40,41 +38,40 @@ export class DispatcherStack extends NestedStack {
 
 	readonly dispatcherLB: elb.IApplicationLoadBalancer
 
+	readonly sameDayDeliveryDispatcherLB: elb.IApplicationLoadBalancer
+
 	constructor (scope: Construct, id: string, props: DispatcherStackProps) {
 		super(scope, id, props)
 
 		const {
+			demAreaDispatchEngineSettingsTable,
+			dispatchEngineBucket,
+			dispatcherAssignmentsTable,
+			dispatcherSettings,
+			driverApiKeySecretName,
+			osmPbfMapFileUrl,
+			samedayDeliveryDirectPudoJobs,
+			ssmStringParameters,
 			vpc,
 			vpcNetworking: {
 				securityGroups,
 			},
-			dispatchEngineBucket,
-			driverApiKeySecretName,
-			ssmStringParameters,
-			dispatcherConfigPath,
-			dispatcherVersion,
-			dispatcherDockerContainerName,
-			dispatcherDockerOsmPbfMapFileUrl,
-			demAreaDispatchEngineSettingsTable,
-			dispatcherAssignmentsTable,
-			dispatcherSettings,
 		} = props
 
 		const dispatchSetup = new DispatchSetup(this, 'DispatchSetup', {
-			vpc,
-			dmzSecurityGroup: securityGroups.dmz,
-			dispatchEngineBucket,
-			dispatcherConfigPath,
-			dispatcherVersion,
-			driverApiKeySecretName,
-			ssmStringParameters,
 			demAreaDispatchEngineSettingsTable,
+			dispatchEngineBucket,
 			dispatcherAssignmentsTable,
-			dispatcherDockerContainerName,
-			dispatcherDockerOsmPbfMapFileUrl,
 			dispatcherSettings,
+			driverApiKeySecretName,
+			dmzSecurityGroup: securityGroups.dmz,
+			osmPbfMapFileUrl,
+			samedayDeliveryDirectPudoJobs,
+			ssmStringParameters,
+			vpc,
 		})
 
 		this.dispatcherLB = dispatchSetup.loadBalancer
+		this.sameDayDeliveryDispatcherLB = dispatchSetup.samedayDeliveryLoadBalancer
 	}
 }

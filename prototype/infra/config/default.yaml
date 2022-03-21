@@ -66,6 +66,8 @@ parameterStoreKeys:
   # key for demAreaDispatchSettings table name
   demAreaDispatcherSettingsTableName: /HyperLocal/Ddb/DemAreaDispatcherSettings/TableName
 
+  samedayDeliveryDirectPudoJobsTableName: /HyperLocal/Ddb/SameDayDeliveryDirectPudoJobs/TableName
+
 # open search service config
 # instance types:
 #   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html
@@ -305,14 +307,50 @@ graphhopperSettings:
   # name for graphhopper docker repo
   containerName: graphhopper-indonesia
 
-# settings for the dispatcher app
+# settings for various dispatcher domains
 dispatcherSettings:
-  # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
-  ecsTaskCount: 2
+  # instant delivery domain
+  instant:
+    # instant - sequential dispatcher
+    sequential:
+      # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
+      ecsTaskCount: 2
 
-  # name for dispatcher docker repo
-  containerName: order-dispatcher
+      # name for dispatcher docker repo
+      containerName: order-dispatcher
 
+      # [OPTIONAL] port mapping
+      containerPort: 8080
+      hostPort: 8080
+
+    # instant - mixed pickup dropoff dispatcher
+    mixedpudo:
+      # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
+      ecsTaskCount: 2
+
+      # name for dispatcher docker repo
+      containerName: order-dispatcher-instant-mixedpudo
+
+      # [OPTIONAL] port mapping
+      containerPort: 8080
+      hostPort: 8080
+
+  # same-day delivery domain
+  sameday:
+  # settings for same day - direct pudo dispatcher
+    directpudo:
+      # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
+      ecsTaskCount: 2
+
+      # name for dispatcher docker repo
+      containerName: order-dispatcher-sameday-directpudo
+
+      # The soft limit (in MiB) of memory to reserve for the container.
+      memoryReservationMiB: 8192
+
+      # [OPTIONAL] port mapping
+      containerPort: 8080
+      hostPort: 8080
 
 
 # country to configure the simulator for. Allowed values: Philippines and Indonesia

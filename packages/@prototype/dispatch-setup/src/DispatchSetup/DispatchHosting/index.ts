@@ -21,6 +21,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { namespaced } from '@aws-play/cdk-core'
 
+/**
+ * DEPRECATED. Don't use this construct
+ */
 export interface DispatchHostingProps {
 	readonly dispatchEngineBucket: s3.IBucket
 	readonly driverApiKeySecretName: string
@@ -31,6 +34,9 @@ export interface DispatchHostingProps {
 	readonly dispatcherAssignmentTableName: string
 }
 
+/**
+ * DEPRECATED. Don't use this construct
+ */
 export class DispatchHosting extends Construct {
 	constructor (scope: Construct, id: string, props: DispatchHostingProps) {
 		super(scope, id)
