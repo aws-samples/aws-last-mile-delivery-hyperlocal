@@ -23,12 +23,10 @@ import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
 import dev.aws.proto.apps.instant.sequential.config.DdbProperties;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
-import dev.aws.proto.core.util.aws.CredentialsHelper;
 import dev.aws.proto.core.util.aws.SsmUtility;
 import org.bk.aws.dynamo.util.JsonAttributeValueUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -53,11 +51,6 @@ public class DdbAssignmentService extends DdbServiceBase {
     DdbProperties ddbProperties;
 
     /**
-     * The DDB client.
-     */
-    DynamoDbClient dbClient;
-
-    /**
      * The DDB table name.
      */
     final String tableName;
@@ -65,10 +58,7 @@ public class DdbAssignmentService extends DdbServiceBase {
     DdbAssignmentService(DdbProperties ddbProperties) {
         this.ddbProperties = ddbProperties;
         this.tableName = SsmUtility.getParameterValue(ddbProperties.assignmentsTableParameterName());
-        this.dbClient = DynamoDbClient.builder()
-                .credentialsProvider(CredentialsHelper.getCredentialsProvider())
-                .region(CredentialsHelper.getRegion())
-                .build();
+        this.dbClient = super.createDBClient();
     }
 
     @Override

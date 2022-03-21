@@ -16,6 +16,8 @@
  */
 package dev.aws.proto.apps.appcore.data;
 
+import dev.aws.proto.core.util.aws.CredentialsHelper;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.*;
 
 import java.util.HashMap;
@@ -25,6 +27,23 @@ import java.util.Map;
  * Base for service classes to retrieve data form DynamoDB.
  */
 public abstract class DdbServiceBase {
+    /**
+     * The DDB client.
+     */
+    protected DynamoDbClient dbClient;
+
+    /**
+     * Create a DDB client
+     *
+     * @return The properly set up DDB client.
+     */
+    protected DynamoDbClient createDBClient() {
+        return DynamoDbClient.builder()
+                .credentialsProvider(CredentialsHelper.getCredentialsProvider())
+                .region(CredentialsHelper.getRegion())
+                .build();
+    }
+
     /**
      * Override this the get the table name to operate on.
      *
