@@ -28,8 +28,8 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly driverApiKeySecretName: string
 	readonly osmPbfMapFileUrl: string
 	readonly parameterStoreKeys: Record<string, string>
-	readonly samedayDirectPudoDeliveryJobs: ddb.ITable
-	readonly samedayDirectPudoSolverJobs: ddb.ITable
+	readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
+	readonly sameDayDirectPudoSolverJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
@@ -53,8 +53,8 @@ export class DispatcherStack extends NestedStack {
 			driverApiKeySecretName,
 			osmPbfMapFileUrl,
 			parameterStoreKeys,
-			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoSolverJobs,
+			sameDayDirectPudoDeliveryJobs,
+			sameDayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 			vpcNetworking: {
@@ -71,13 +71,13 @@ export class DispatcherStack extends NestedStack {
 			dmzSecurityGroup: securityGroups.dmz,
 			osmPbfMapFileUrl,
 			parameterStoreKeys,
-			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoSolverJobs,
+			sameDayDirectPudoDeliveryJobs,
+			sameDayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 		})
 
 		this.dispatcherLB = dispatchSetup.loadBalancer
-		this.sameDayDeliveryDispatcherLB = dispatchSetup.samedayDeliveryLoadBalancer
+		this.sameDayDeliveryDispatcherLB = dispatchSetup.sameDayDeliveryLoadBalancer
 	}
 }
