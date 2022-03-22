@@ -51,8 +51,6 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly samedayDirectPudoDeliveryJobs: ddb.ITable
 
-	public readonly samedayDirectPudoDeliveryJobsSolverJobIndex: string
-
 	public readonly samedayDirectPudoSolverJobs: ddb.ITable
 
 	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
@@ -202,14 +200,22 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.NUMBER,
 			},
 		})
-		this.samedayDirectPudoDeliveryJobsSolverJobIndex = namespaced(this, 'idx-sameday-directpudo-delivery-jobs-solverjobid')
+		const samedayDirectPudoDeliveryJobsSolverJobIdIndexName = namespaced(this, 'idx-sameday-directpudo-delivery-jobs-solverjobid')
 		samedayDirectPudoDeliveryJobs.addGlobalSecondaryIndex({
-			indexName: instantDeliveryProviderOrdersStatusIndex,
+			indexName: samedayDirectPudoDeliveryJobsSolverJobIdIndexName,
 			partitionKey: {
 				name: 'solverJobId',
 				type: ddb.AttributeType.STRING,
 			},
 		})
+		const samedayDirectPudoDeliveryJobsSolverJobIdIndexParameter = new ssm.StringParameter(this, 'sameday-directpudo-delivery-jobs-solverjobid-param', {
+			parameterName: parameterStoreKeys.samedayDirectPudoDeliveryJobsSolverJobIdIndex,
+			stringValue: samedayDirectPudoDeliveryJobsSolverJobIdIndexName,
+			description: 'samedayDirectPudo DeliveryJobs solverJobId index parameter for dispatcher',
+		})
+		this.ssmStringParameters[parameterStoreKeys.samedayDirectPudoDeliveryJobsSolverJobIdIndex] =
+			samedayDirectPudoDeliveryJobsSolverJobIdIndexParameter
+
 		this.samedayDirectPudoDeliveryJobs = samedayDirectPudoDeliveryJobs
 		const samedayDirectPudoDeliveryJobsTableNameParameter = new ssm.StringParameter(this, 'sameday-directpudo-delivery-jobs-param', {
 			parameterName: parameterStoreKeys.samedayDirectPudoDeliveryJobsTableName,
