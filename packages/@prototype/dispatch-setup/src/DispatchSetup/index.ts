@@ -29,8 +29,8 @@ export interface DispatchSetupProps {
 	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly osmPbfMapFileUrl: string
 	readonly parameterStoreKeys: Record<string, string>
-	readonly samedayDirectPudoDeliveryJobs: ddb.ITable
-	readonly samedayDirectPudoSolverJobs: ddb.ITable
+	readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
+	readonly sameDayDirectPudoSolverJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -40,7 +40,7 @@ export class DispatchSetup extends Construct {
 
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
-	readonly samedayDeliveryLoadBalancer: elb.IApplicationLoadBalancer
+	readonly sameDayDeliveryLoadBalancer: elb.IApplicationLoadBalancer
 
 	constructor (scope: Construct, id: string, props: DispatchSetupProps) {
 		super(scope, id)
@@ -54,8 +54,8 @@ export class DispatchSetup extends Construct {
 			dmzSecurityGroup,
 			osmPbfMapFileUrl,
 			parameterStoreKeys,
-			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoSolverJobs,
+			sameDayDirectPudoDeliveryJobs,
+			sameDayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -82,7 +82,7 @@ export class DispatchSetup extends Construct {
 
 		this.loadBalancer = dispatchEcsService.loadBalancer
 
-		const samedayDeliveryDispatchEcsService = new SameDayDispatchEcsService(this, 'SameDayDispatchEcsService', {
+		const sameDayDeliveryDispatchEcsService = new SameDayDispatchEcsService(this, 'SameDayDispatchEcsService', {
 			dispatchConfig: dispatcherSettings.sameday.directpudo as Record<string, string | number>,
 			dispatchEngineBucket,
 			dmzSecurityGroup,
@@ -90,11 +90,11 @@ export class DispatchSetup extends Construct {
 			ecsCluster: dispatchEcsCluster.cluster,
 			osmPbfMapFileUrl,
 			parameterStoreKeys,
-			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoSolverJobs,
+			sameDayDirectPudoDeliveryJobs,
+			sameDayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 		})
-		this.samedayDeliveryLoadBalancer = samedayDeliveryDispatchEcsService.loadBalancer
+		this.sameDayDeliveryLoadBalancer = sameDayDeliveryDispatchEcsService.loadBalancer
 	}
 }
