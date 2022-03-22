@@ -47,9 +47,31 @@ const execute = async (payload) => {
 			segments: segmentsWithRouting,
 		}
 
-		const promises = [...new Set(segments.map(q => q.orderId))].map((orderId) =>
+		const orderIds = [...new Set(segments.map(q => q.orderId))]
+		const routes = await Promise.all(
+			orderIds.map(async (orderId) => {
+				const orderSegments = segments.filter(q => q.orderId === orderId)
+				const toOrigin = orderSegments.find(q => q.segmentType === 'TO_ORIGIN')
+				const toDestination = orderSegments.find(q => q.segmentType === 'TO_DESTINATION')
+
+				return {
+					orderId,
+					// TODO: this is only added to help to represent this data in the simulator, can be omitted
+					// as full route is generated above and sent to the rider through IoT Core
+					route: await routing.queryGraphHopper([
+						[toOrigin.from.long, toOrigin.from.lat], // driver
+						[toOrigin.to.long, toOrigin.to.lat], // origin point (eg. restaurant)
+						[toDestination.to.long, toDestination.to.lat], // destination point (eg. customer)
+					]),
+				}
+			}),
+		)
+
+		/// update route for this order
+		const promises = orderIds.map((orderId) =>
 			ddb.updateItem(config.providerOrdersTable, orderId, {
 				jobId,
+				route: routes.find(q => q.orderId === orderId).route,
 			}, {
 				driverId,
 				status: constants.ASSIGNED,
@@ -62,7 +84,6 @@ const execute = async (payload) => {
 		})
 
 		await eventBridge.putEvent('ORDER_FULFILLED', fullObject)
-		// update the routing details in the order table
 	} catch (err) {
 		logger.error('Error on routing an order to the driver, will be skipped')
 		logger.error(err)

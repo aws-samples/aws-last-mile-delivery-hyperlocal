@@ -33,12 +33,13 @@ const execute = async (payload) => {
 
 		logger.debug('Results from query:')
 		logger.debug(JSON.stringify(results.data))
-		const { data: { state, assigned, unassigned } } = results
+		const { data: { problemId, state, assigned, unassigned } } = results
 
 		if (state === 'NOT_SOLVING') {
 			return {
 				inProgress: false,
 				assigned: assigned.map(q => ({
+					problemId,
 					driverId: q.driverId,
 					driverIdentity: q.driverIdentity,
 					route: q.route,
@@ -51,6 +52,7 @@ const execute = async (payload) => {
 
 		if (state === 'NO_DRIVERS') {
 			return {
+				problemId,
 				inProgress: false,
 				assigned: [],
 				unassigned: unassigned.map(oId => orders.find(o => o.orderId === oId)),

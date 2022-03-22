@@ -34,7 +34,7 @@ import Destinations from '../pages/Destinations'
 import SystemStatus from '../pages/SystemStatus'
 import NotFound from '../pages/404'
 import AuthRoute from '../components/AuthRoute'
-import Dispatching from '../pages/Dispatching'
+import InstantDeliveryDispatching from '../pages/InstantDeliveryDispatching'
 
 const Layout: React.FC = (): React.ReactElement => {
 	return (
@@ -55,7 +55,7 @@ const Layout: React.FC = (): React.ReactElement => {
 					<AuthRoute exact path='/orders' component={Orders} />
 					<AuthRoute exact path='/origins' component={Origins} />
 					<AuthRoute exact path='/destinations' component={Destinations} />
-					<AuthRoute exact path='/dispatching' component={Dispatching} />
+					<AuthRoute exact path='/dispatching-instant-delivery' component={InstantDeliveryDispatching} />
 					<AuthRoute exact path='/system-status' component={SystemStatus} />
 					<AuthRoute component={NotFound} />
 				</Switch>

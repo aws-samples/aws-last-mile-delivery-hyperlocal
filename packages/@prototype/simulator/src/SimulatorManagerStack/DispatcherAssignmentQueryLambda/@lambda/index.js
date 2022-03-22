@@ -28,7 +28,7 @@ const getOrderRoutes = async (idList) => {
 	const orderIds = idList.split(',').map((id) => `'${id}'`)
 	const trimmedIds = trimArray(orderIds, 20)
 	const executions = trimmedIds.map(async (oIds) => {
-		const queryStatement = `SELECT ID, routing FROM "${ORDER_TABLE}" WHERE ID IN [${oIds.join(',')}]`
+		const queryStatement = `SELECT ID, route FROM "${ORDER_TABLE}" WHERE ID IN [${oIds.join(',')}]`
 		const orderRouteResult = await ddb.executeStatement({ Statement: queryStatement }).promise()
 
 		return orderRouteResult.Items.map(record => aws.DynamoDB.Converter.unmarshall(record))
@@ -38,7 +38,7 @@ const getOrderRoutes = async (idList) => {
 
 	const orderRoutes = {}
 	allOrderRouteResult.flat().forEach(r => {
-		orderRoutes[r.ID] = r.routing
+		orderRoutes[r.ID] = r.route
 	})
 
 	return orderRoutes
