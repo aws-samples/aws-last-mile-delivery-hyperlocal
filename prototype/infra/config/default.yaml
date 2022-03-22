@@ -66,7 +66,14 @@ parameterStoreKeys:
   # key for demAreaDispatchSettings table name
   demAreaDispatcherSettingsTableName: /HyperLocal/Ddb/DemAreaDispatcherSettings/TableName
 
-  samedayDeliveryDirectPudoJobsTableName: /HyperLocal/Ddb/SameDayDeliveryDirectPudoJobs/TableName
+  # key for sameday-directpudo -- delivery jobs table name
+  samedayDirectPudoDeliveryJobsTableName: /HyperLocal/Ddb/SameDayDirectPudoJobs/TableName
+  
+  # key for sameday-directpudo -- delivery jobs table secondary index for solverJobId
+  samedayDirectPudoDeliveryJobsSolverJobIdIndex: /HyperLocal/Ddb/SameDayDirectPudoJobs/Index/SolverJobId
+
+  # key for sameday-directpudo -- solver jobs table name
+  samedayDirectPudoSolverJobsTableName: /HyperLocal/Ddb/SameDayDirectPudoJobs/TableName
 
 # open search service config
 # instance types:
