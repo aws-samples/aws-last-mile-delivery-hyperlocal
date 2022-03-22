@@ -30,8 +30,8 @@ export interface SameDayDispatchEcsServiceProps {
 	readonly driverApiKeySecretName: string
 	readonly ecsCluster: ecs.ICluster
 	readonly osmPbfMapFileUrl: string
+	readonly parameterStoreKeys: Record<string, string>
 	readonly samedayDirectPudoDeliveryJobs: ddb.ITable
-	readonly samedayDirectPudoDeliveryJobsSolverJobIndex: string
 	readonly samedayDirectPudoSolverJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
@@ -52,14 +52,16 @@ export class SameDayDispatchEcsService extends Construct {
 			driverApiKeySecretName,
 			ecsCluster,
 			osmPbfMapFileUrl,
+			parameterStoreKeys,
 			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoDeliveryJobsSolverJobIndex,
 			samedayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 		} = props
 
 		const driverApiKeySecret = secretsmanager.Secret.fromSecretNameV2(this, 'DriverApiKeySecret', driverApiKeySecretName)
+		const samedayDirectPudoDeliveryJobsSolverJobIdIndexName =
+			ssmStringParameters[parameterStoreKeys.samedayDirectPudoDeliveryJobsSolverJobIdIndex].stringValue
 
 		const dispatcherTaskRole = new iam.Role(this, 'SameDayDeliveryDirectPudoDispatcherTaskRole', {
 			assumedBy: new iam.ServicePrincipal(cdkconsts.ServicePrincipals.ECS_TASKS),
@@ -89,7 +91,7 @@ export class SameDayDispatchEcsService extends Construct {
 					statements: [
 						readDDBTablePolicyStatement(samedayDirectPudoDeliveryJobs.tableArn),
 						updateDDBTablePolicyStatement(samedayDirectPudoDeliveryJobs.tableArn),
-						readDDBTablePolicyStatement(`${samedayDirectPudoDeliveryJobs.tableArn}/index/${samedayDirectPudoDeliveryJobsSolverJobIndex}`),
+						readDDBTablePolicyStatement(`${samedayDirectPudoDeliveryJobs.tableArn}/index/${samedayDirectPudoDeliveryJobsSolverJobIdIndexName}`),
 						readDDBTablePolicyStatement(samedayDirectPudoSolverJobs.tableArn),
 						updateDDBTablePolicyStatement(samedayDirectPudoSolverJobs.tableArn),
 					],

@@ -28,8 +28,8 @@ export interface DispatchSetupProps {
 	readonly driverApiKeySecretName: string
 	readonly dmzSecurityGroup: ec2.ISecurityGroup
 	readonly osmPbfMapFileUrl: string
+	readonly parameterStoreKeys: Record<string, string>
 	readonly samedayDirectPudoDeliveryJobs: ddb.ITable
-	readonly samedayDirectPudoDeliveryJobsSolverJobIndex: string
 	readonly samedayDirectPudoSolverJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
@@ -53,8 +53,8 @@ export class DispatchSetup extends Construct {
 			driverApiKeySecretName,
 			dmzSecurityGroup,
 			osmPbfMapFileUrl,
+			parameterStoreKeys,
 			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoDeliveryJobsSolverJobIndex,
 			samedayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
@@ -89,8 +89,8 @@ export class DispatchSetup extends Construct {
 			driverApiKeySecretName,
 			ecsCluster: dispatchEcsCluster.cluster,
 			osmPbfMapFileUrl,
+			parameterStoreKeys,
 			samedayDirectPudoDeliveryJobs,
-			samedayDirectPudoDeliveryJobsSolverJobIndex,
 			samedayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
