@@ -58,8 +58,8 @@ const navigationItems = [
 	},
 	{
 		type: SideNavigationItemType.LINK,
-		text: 'Dispatching',
-		href: '/dispatching',
+		text: 'Dispatching (Instant Delivery)',
+		href: '/dispatching-instant-delivery',
 	},
 	{ type: SideNavigationItemType.DIVIDER },
 	{

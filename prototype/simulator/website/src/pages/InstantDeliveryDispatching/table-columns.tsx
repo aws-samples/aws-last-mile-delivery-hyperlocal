@@ -17,7 +17,7 @@
 import { Popover } from 'aws-northstar'
 import dayjs from '../../utils/daysjs'
 
-export const columnDefinitions = (relativeDate: boolean) => ([
+export const columnDefinitions = (relativeDate: boolean): any => ([
 	{
 		id: 'id',
 		width: 120,

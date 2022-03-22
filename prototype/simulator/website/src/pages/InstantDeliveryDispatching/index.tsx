@@ -21,7 +21,7 @@ import { DateRangeOutlined, DateRangeRounded } from '@material-ui/icons'
 import OrderAPI from '../../api/OrderAPI'
 import { columnDefinitions } from './table-columns'
 
-const Dispatching: React.FC = () => {
+const InstantDeliveryDispatching: React.FC = () => {
 	const [assignments, setAssignments] = useState<any>([])
 	const [selectedAssignment, setSelectedAssignment] = useState<any>()
 	const [loading, setLoading] = useState(false)
@@ -103,4 +103,4 @@ const Dispatching: React.FC = () => {
 	)
 }
 
-export default Dispatching
+export default InstantDeliveryDispatching

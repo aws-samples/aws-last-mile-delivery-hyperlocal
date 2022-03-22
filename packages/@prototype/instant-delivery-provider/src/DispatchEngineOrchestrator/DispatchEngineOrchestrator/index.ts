@@ -123,6 +123,7 @@ export class DispatchEngineOrchestratorManager extends Construct {
 						'orders.$': '$.orders',
 						'segments.$': '$.segments',
 						'route.$': '$.route',
+						'problemId.$': '$.problemId',
 					},
 				},
 			},

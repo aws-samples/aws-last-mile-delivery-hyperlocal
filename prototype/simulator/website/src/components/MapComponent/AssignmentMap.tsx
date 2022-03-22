@@ -89,7 +89,7 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 					return
 				}
 
-				const idList = assignmentData.map((q: any) => q.orders).flat()
+				const idList = Array.from(new Set(assignmentData.flatMap((q: any) => q.segments).map((q: any) => q.orderId)))
 				const routes = await OrderAPI.getOrderRoutes(idList.join(','))
 
 				setOrderRoutes(routes.data.orderRoutes)
@@ -134,39 +134,45 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 	}, [assignment])
 
 	useEffect(() => {
-		const routes = assignmentData.map(({ route, driverId, color }: any) =>
-			route.map((r: any) => ({ driverId, color, ...r })),
-		).flat()
+		const _originPins: any[] = []
+		const _destinationPins: any[] = []
+		const _routeLines: any[] = []
 
-		const _routeLines = assignmentData.map((d: any) => {
+		assignmentData.forEach((d: any) => {
 			if (selectedOption.value === 'all' || d.driverId === selectedOption.value) {
-				return d.segments.map((o: any, idx: number) => {
-					if (orderRoutes[o] != null) {
-						return orderRoutes[o].map((oRoute: any, i: number) => {
-							const geoJsonData: any = {
-								type: 'Feature',
-								geometry: polyline.toGeoJSON(oRoute.pathPolyline),
-							}
-
-							return {
-								geoJsonData,
-								color: d.color,
-							}
+				return d.segments.forEach((o: any) => {
+					if (o.segmentType === 'TO_ORIGIN') {
+						_originPins.push({
+							...o,
+							color: d.color,
 						})
 					}
 
-					return null
+					if (o.segmentType === 'TO_DESTINATION') {
+						_destinationPins.push({
+							...o,
+							color: d.color,
+						})
+					}
+
+					if (orderRoutes[o.orderId] != null) {
+						const geoJsonData: any = {
+							type: 'Feature',
+							geometry: polyline.toGeoJSON(orderRoutes[o.orderId].pointsEncoded),
+						}
+
+						_routeLines.push({
+							geoJsonData,
+							color: d.color,
+						})
+					}
 				})
-			} else {
-				return null
 			}
 		})
 
-		const _originPins = routes.filter((q: any) => q.type === 'ORIGIN' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
 		setOriginPins(_originPins)
-		const _destinationPins = routes.filter((q: any) => q.type === 'DESTINATION' && (selectedOption.value === 'all' || q.driverId === selectedOption.value))
 		setDestinationPins(_destinationPins)
-		setRouteLines(_routeLines.flat().flat().filter((q: any) => q !== null))
+		setRouteLines(_routeLines)
 	}, [assignmentData, orderRoutes, selectedOption])
 
 	useEffect(() => {
@@ -252,26 +258,26 @@ const AssignmentMap: React.FC<MapInputProps> = ({ assignment }) => {
 				{assignmentData && assignmentData.map((d: any) => (
 					<MapPin
 						key={d.driverId}
-						latitude={d.driverLocation.lat}
-						longitude={d.driverLocation.long}
+						latitude={d.segments[0].from.lat}
+						longitude={d.segments[0].from.long}
 						color={d.color}
 						data={d} />
 				))}
 				{originPins && originPins.map((d: any) => (<MapPin
-					key={`${d.driverId}-${d.id}`}
-					latitude={d.lat}
-					longitude={d.long}
+					key={`${d.orderId}-origin`}
+					latitude={d.to.lat}
+					longitude={d.to.long}
 					color={d.color}
-					data={{ originId: d.id }}
+					data={d}
 					iconName='TripOriginOutlined'
 				/>))}
 				{destinationPins && destinationPins.map((d: any) => (
 					<MapPin
-						key={`${d.driverId}-${d.id}`}
-						latitude={d.lat}
-						longitude={d.long}
+						key={`${d.orderId}-destination`}
+						latitude={d.to.lat}
+						longitude={d.to.long}
 						color={d.color}
-						data={{ destinationId: d.id }}
+						data={d}
 						iconName='HomeOutlined'
 					/>
 				))}
