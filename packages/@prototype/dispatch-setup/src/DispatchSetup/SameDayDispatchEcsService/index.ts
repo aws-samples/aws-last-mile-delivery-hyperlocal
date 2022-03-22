@@ -30,8 +30,9 @@ export interface SameDayDispatchEcsServiceProps {
 	readonly driverApiKeySecretName: string
 	readonly ecsCluster: ecs.ICluster
 	readonly osmPbfMapFileUrl: string
-	readonly samedayDeliveryDirectPudoJobs: ddb.ITable
-	readonly samedayDeliveryDirectPudoJobsSolverJobIndex: string
+	readonly samedayDirectPudoDeliveryJobs: ddb.ITable
+	readonly samedayDirectPudoDeliveryJobsSolverJobIndex: string
+	readonly samedayDirectPudoSolverJobs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -51,8 +52,9 @@ export class SameDayDispatchEcsService extends Construct {
 			driverApiKeySecretName,
 			ecsCluster,
 			osmPbfMapFileUrl,
-			samedayDeliveryDirectPudoJobs,
-			samedayDeliveryDirectPudoJobsSolverJobIndex,
+			samedayDirectPudoDeliveryJobs,
+			samedayDirectPudoDeliveryJobsSolverJobIndex,
+			samedayDirectPudoSolverJobs,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -85,9 +87,11 @@ export class SameDayDispatchEcsService extends Construct {
 				}),
 				ddbAccess: new iam.PolicyDocument({
 					statements: [
-						readDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
-						updateDDBTablePolicyStatement(samedayDeliveryDirectPudoJobs.tableArn),
-						readDDBTablePolicyStatement(`${samedayDeliveryDirectPudoJobs.tableArn}/index/${samedayDeliveryDirectPudoJobsSolverJobIndex}`),
+						readDDBTablePolicyStatement(samedayDirectPudoDeliveryJobs.tableArn),
+						updateDDBTablePolicyStatement(samedayDirectPudoDeliveryJobs.tableArn),
+						readDDBTablePolicyStatement(`${samedayDirectPudoDeliveryJobs.tableArn}/index/${samedayDirectPudoDeliveryJobsSolverJobIndex}`),
+						readDDBTablePolicyStatement(samedayDirectPudoSolverJobs.tableArn),
+						updateDDBTablePolicyStatement(samedayDirectPudoSolverJobs.tableArn),
 					],
 				}),
 			},

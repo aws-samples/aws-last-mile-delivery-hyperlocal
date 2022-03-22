@@ -49,9 +49,11 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly demographicAreaProviderEngineSettings: ddb.ITable
 
-	public readonly samedayDeliveryDirectPudoJobs: ddb.ITable
+	public readonly samedayDirectPudoDeliveryJobs: ddb.ITable
 
-	public readonly samedayDeliveryDirectPudoJobsSolverJobIndex: string
+	public readonly samedayDirectPudoDeliveryJobsSolverJobIndex: string
+
+	public readonly samedayDirectPudoSolverJobs: ddb.ITable
 
 	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 
@@ -185,9 +187,11 @@ export class DataStoragePersistent extends NestedStack {
 		})
 		this.ssmStringParameters[parameterStoreKeys.assignmentsTableName] = dispatcherAssignmentsTableNameParameter
 
-		const samedayDeliveryDirectPudoJobsTableName = namespaced(this, 'sameday-delivery-directpudo-jobs')
-		const samedayDeliveryDirectPudoJobs = new hyperlocal_ddb.Table(this, 'SameDayDeliveryDirectPudoJobs', {
-			tableName: samedayDeliveryDirectPudoJobsTableName,
+		// ---------------- same day delivery related resources -------------------------------------------------------
+		// ------------------------------------------------------------------------------------------------------------
+		const samedayDirectPudoDeliveryJobsTableName = namespaced(this, 'sameday-directpudo-delivery-jobs')
+		const samedayDirectPudoDeliveryJobs = new hyperlocal_ddb.Table(this, 'samedayDirectPudoDeliveryJobs', {
+			tableName: samedayDirectPudoDeliveryJobsTableName,
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -198,21 +202,43 @@ export class DataStoragePersistent extends NestedStack {
 				type: ddb.AttributeType.NUMBER,
 			},
 		})
-		this.samedayDeliveryDirectPudoJobsSolverJobIndex = namespaced(this, 'idx-sameday-directpudo-jobs-solverjob')
-		samedayDeliveryDirectPudoJobs.addGlobalSecondaryIndex({
+		this.samedayDirectPudoDeliveryJobsSolverJobIndex = namespaced(this, 'idx-sameday-directpudo-delivery-jobs-solverjobid')
+		samedayDirectPudoDeliveryJobs.addGlobalSecondaryIndex({
 			indexName: instantDeliveryProviderOrdersStatusIndex,
 			partitionKey: {
 				name: 'solverJobId',
 				type: ddb.AttributeType.STRING,
 			},
 		})
-		this.samedayDeliveryDirectPudoJobs = samedayDeliveryDirectPudoJobs
-		const samedayDeliveryDirectPudoJobsTableNameParameter = new ssm.StringParameter(this, 'sameday-delivery-directpudo-jobs-param', {
-			parameterName: parameterStoreKeys.samedayDeliveryDirectPudoJobsTableName,
-			stringValue: samedayDeliveryDirectPudoJobsTableName,
-			description: 'SameDayDeliveryDirectPudoJobs tablename parameter for dispatcher',
+		this.samedayDirectPudoDeliveryJobs = samedayDirectPudoDeliveryJobs
+		const samedayDirectPudoDeliveryJobsTableNameParameter = new ssm.StringParameter(this, 'sameday-directpudo-delivery-jobs-param', {
+			parameterName: parameterStoreKeys.samedayDirectPudoDeliveryJobsTableName,
+			stringValue: samedayDirectPudoDeliveryJobsTableName,
+			description: 'samedayDirectPudoDeliveryJobs tablename parameter for dispatcher',
 		})
-		this.ssmStringParameters[parameterStoreKeys.samedayDeliveryDirectPudoJobsTableName] =
-			samedayDeliveryDirectPudoJobsTableNameParameter
+		this.ssmStringParameters[parameterStoreKeys.samedayDirectPudoDeliveryJobsTableName] =
+			samedayDirectPudoDeliveryJobsTableNameParameter
+
+		const samedayDirectPudoSolverJobsTableName = namespaced(this, 'sameday-directpudo-solver-jobs')
+		const samedayDirectPudoSolverJobsTable = new hyperlocal_ddb.Table(this, 'samedayDirectPudoSolverJobs', {
+			tableName: samedayDirectPudoSolverJobsTableName,
+			removalPolicy: props.removalPolicy,
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+			sortKey: {
+				name: 'createdAt',
+				type: ddb.AttributeType.NUMBER,
+			},
+		})
+		this.samedayDirectPudoSolverJobs = samedayDirectPudoSolverJobsTable
+		const samedayDirectPudoSolverJobsTableNameParameter = new ssm.StringParameter(this, 'sameday-directpudo-solver-jobs-param', {
+			parameterName: parameterStoreKeys.samedayDirectPudoSolverJobsTableName,
+			stringValue: samedayDirectPudoSolverJobsTableName,
+			description: 'samedayDirectPudoSolverJobs tablename parameter for dispatcher',
+		})
+		this.ssmStringParameters[parameterStoreKeys.samedayDirectPudoSolverJobsTableName] =
+			samedayDirectPudoSolverJobsTableNameParameter
 	}
 }
