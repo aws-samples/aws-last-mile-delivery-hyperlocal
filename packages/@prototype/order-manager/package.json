@@ -23,7 +23,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@prototype/lambda-common": "0.0.0-alpha.0"
+    "@aws-play/cdk-core": "^0.0.0-alpha.14",
+    "@aws-play/cdk-lambda": "^0.0.0-alpha.1",
+    "@prototype/common": "^0.0.0-alpha.0",
+    "@prototype/lambda-common": "^0.0.0-alpha.0",
+    "@prototype/live-data-cache": "^0.0.0-alpha.0",
+    "@prototype/networking": "^0.0.0-alpha.0"
   },
   "peerDependencies": {
     "aws-cdk-lib": "^2.10.0",
