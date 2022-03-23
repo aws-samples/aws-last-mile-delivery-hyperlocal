@@ -14,7 +14,8 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.apps.instant.sequential.config;
+
+package dev.aws.proto.apps.sameday.directpudo.config;
 
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithName;
@@ -24,9 +25,12 @@ import io.smallrye.config.WithName;
  */
 @ConfigMapping(prefix = "app.ssmparams.ddb")
 public interface DdbProperties {
-    @WithName("table.assignments")
-    String assignmentsTableParameterName();
+    @WithName("table.delivery-jobs")
+    String deliveryJobsTableParameterName();
 
-    @WithName("table.dem-area-dispatcher-settings")
-    String demAreaDispatcherSettingsTableParameterName();
+    @WithName("table.solver-jobs")
+    String solverJobsTableParameterName();
+
+    @WithName("index.delivery-jobs-solver-job-id")
+    String deliveryJobsTableSolverJobIdIndexParameterName();
 }

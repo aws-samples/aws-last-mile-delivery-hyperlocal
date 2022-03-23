@@ -22,14 +22,14 @@ import io.smallrye.config.WithName;
 /**
  * Properties for driver REST api config.
  */
-@ConfigMapping(prefix = "app.client.driver-api")
+@ConfigMapping(prefix = "app")
 public interface DriverClientProperties {
     /**
      * The name of the secret item that holds the API key in SecretsManager.
      *
      * @return The secret name.
      */
-    @WithName("apikey-secret-name")
+    @WithName("client.driver-api.apikey-secret-name")
     String driverApiKeySecretName();
 
     /**
@@ -37,6 +37,6 @@ public interface DriverClientProperties {
      *
      * @return The name of the parameter.
      */
-    @WithName("api-url-parameter-name")
+    @WithName("ssmparams.apigw.driver-api-url")
     String driverApiUrlParameterName();
 }
