@@ -56,6 +56,11 @@
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.mapbox.mapboxsdk</groupId>
+            <artifactId>mapbox-sdk-geojson</artifactId>
+        </dependency>
+
 
     </dependencies>
 

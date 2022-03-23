@@ -147,7 +147,7 @@ public class SolutionConsumer {
                     .driverId(driver.getId())
                     .driverIdentity(driver.getDriverIdentity())
                     .segments(assignedOrderSegments)
-                    .route(new SegmentRoute(Distance.ZERO, ""))
+                    .route(SegmentRoute.fromSegments(assignedOrderSegments))
                     .build();
             assigned.add(driverAssignment);
         }
