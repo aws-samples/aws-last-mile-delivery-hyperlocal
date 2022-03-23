@@ -69,19 +69,16 @@ class Destination {
 		const events = await helper.loadRemoteFile(this.config.simulatorConfigBucket, this.params.eventsFilePath)
 		const validOrders = events.orders.map((q) => ({
 			...q,
-			payload: {
-				...q.payload,
-				bookedAt: Number(dayjs(q.payload.bookedAt).format('HHmmssSSS')),
-			},
+			createdAt: Number(dayjs(q.createdAt).format('HHmmssSSS')),
 		}))
 		.filter(q => {
-			const bookedTimeSec = Math.floor(q.payload.bookedAt / 1000)
+			const bookedTimeSec = Math.floor(q.createdAt / 1000)
 
 			return bookedTimeSec > nowTime
 		}).sort((a, b) => {
-			return a.payload.bookedAt - b.payload.bookedAt
+			return a.createdAt - b.createdAt
 		}).reduce((acc, curr) => {
-			const bookedTimeSec = Math.floor(curr.payload.bookedAt / 1000)
+			const bookedTimeSec = Math.floor(curr.createdAt / 1000)
 
 			if (!acc[bookedTimeSec]) {
 				acc[bookedTimeSec] = [curr]
@@ -93,7 +90,7 @@ class Destination {
 		}, {})
 
 		logger.debug('Original Events: ', events.orders.length)
-		logger.debug('Events to play: ', Object.keys(validOrders).length)
+		logger.debug('Events to play: ', Object.keys(validOrders).reduce((acc, curr) => validOrders[curr].length + acc, 0))
 
 		// start to send orders every
 		this.orderInterval = setInterval(async () => {
