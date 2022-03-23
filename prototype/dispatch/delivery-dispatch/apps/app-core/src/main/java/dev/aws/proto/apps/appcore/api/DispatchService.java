@@ -24,7 +24,10 @@ import dev.aws.proto.apps.appcore.planner.solution.SolutionState;
 import dev.aws.proto.core.Order;
 import dev.aws.proto.core.routing.config.RoutingConfig;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
+import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.Map;
@@ -43,6 +46,8 @@ public abstract class DispatchService<
         TDispatchRequest extends DispatchRequest<TOrder>,
         TDispatchSolution extends DispatchSolutionBase
         > {
+
+    private static final Logger logger = LoggerFactory.getLogger(DispatchService.class);
 
     /**
      * Configuration for routing (OSM file locations, graphhopper, etc).
@@ -80,11 +85,30 @@ public abstract class DispatchService<
     protected abstract void solveDispatchProblem(UUID problemId, TDispatchRequest request);
 
     /**
+     * Placeholder to create custom implementations for storing solution data, cleaning up, etc.
+     *
+     * @param solution           The dispatching solution instance.
+     * @param solverDurationInMs The duration took to solve the problem, in milliseconds.
+     */
+    protected abstract void finalBestSolutionConsumerHook(TDispatchSolution solution, long solverDurationInMs);
+
+    /**
      * Final best solution consumer callback.
      *
      * @param solution The dispatching solution instance.
      */
-    protected abstract void finalBestSolutionConsumer(TDispatchSolution solution);
+    protected void finalBestSolutionConsumer(TDispatchSolution solution) {
+        UUID problemId = solution.getId();
+
+        SolverJob<TDispatchSolution, UUID> solverJob = this.solutionMap.get(problemId).solverJob;
+        long solverDurationInMs = solverJob.getSolvingDuration().getSeconds() * 1000 + (solverJob.getSolvingDuration().getNano() / 1_000_000);
+
+        // custom implementations for storing data, cleaning up, etc
+        this.finalBestSolutionConsumerHook(solution, solverDurationInMs);
+
+        logger.debug("Removing problemId {} from solutionMap at finalBestSolutionConsumer", problemId);
+        this.solutionMap.remove(problemId);
+    }
 
     /**
      * Problem finder callback for the solver.
