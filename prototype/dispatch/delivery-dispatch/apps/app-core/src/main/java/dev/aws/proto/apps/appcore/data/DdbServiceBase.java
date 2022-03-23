@@ -25,6 +25,7 @@ import java.util.Map;
 
 /**
  * Base for service classes to retrieve data form DynamoDB.
+ * TODO: switch to https://sdk.amazonaws.com/java/api/latest/software/amazon/awssdk/enhanced/dynamodb/DynamoDbEnhancedClient.html
  */
 public abstract class DdbServiceBase {
     /**
