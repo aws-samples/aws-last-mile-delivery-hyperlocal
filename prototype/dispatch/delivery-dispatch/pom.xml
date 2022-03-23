@@ -55,6 +55,7 @@
         <graphhopper-reader-osm.version>3.0-pre3</graphhopper-reader-osm.version>
         <jobrunr.version>4.0.9</jobrunr.version>
         <lombok.version>1.18.22</lombok.version>
+        <mapbox-sdk-geojson.version>5.8.0</mapbox-sdk-geojson.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
@@ -138,6 +139,13 @@
                 <artifactId>aws-sdk2-dynamo-json-helper</artifactId>
                 <version>${awssdk2-dynamo-json-helper.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.mapbox.mapboxsdk</groupId>
+                <artifactId>mapbox-sdk-geojson</artifactId>
+                <version>${mapbox-sdk-geojson.version}</version>
+            </dependency>
+
 
         </dependencies>
     </dependencyManagement>
