@@ -46,6 +46,7 @@ export const updateDDBTablePolicyStatement = (tableArn: string): iam.PolicyState
 		[
 			DynamoDB.UPDATE_ITEM,
 			DynamoDB.PUT_ITEM,
+			DynamoDB.BATCH_WRITE_ITEM,
 		],
 		tableArn,
 	)
