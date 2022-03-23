@@ -48,7 +48,7 @@
     </licenses>
 
     <properties>
-        <awssdk.version>2.17.148</awssdk.version>
+        <awssdk.version>2.17.153</awssdk.version>
         <awssdk2-dynamo-json-helper.version>0.13.0</awssdk2-dynamo-json-helper.version>
         <compiler-plugin.version>3.10.0</compiler-plugin.version>
         <graphhopper-core.version>4.0</graphhopper-core.version>
@@ -114,7 +114,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
+            
             <dependency>
                 <groupId>org.jobrunr</groupId>
                 <artifactId>jobrunr</artifactId>
