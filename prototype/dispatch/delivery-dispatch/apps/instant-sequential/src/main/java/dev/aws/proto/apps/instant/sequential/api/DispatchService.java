@@ -174,16 +174,9 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
     }
 
     @Override
-    protected void finalBestSolutionConsumer(DispatchSolution solution) {
-        UUID problemId = solution.getId();
-
-        SolverJob<DispatchSolution, UUID> solverJob = this.solutionMap.get(problemId).solverJob;
-        long solverDurationInMs = solverJob.getSolvingDuration().getSeconds() * 1000 + (solverJob.getSolvingDuration().getNano() / 1_000_000);
+    protected void finalBestSolutionConsumerHook(DispatchSolution solution, long solverDurationInMs) {
         assignmentService.saveAssignment(SolutionConsumer.buildResult(solution, SolverStatus.NOT_SOLVING, solverDurationInMs, false));
         SolutionConsumer.consumeSolution(solution);
-
-        logger.debug("Removing problemId {} from solutionMap at consumeSolution", problemId);
-        this.solutionMap.remove(problemId);
     }
 
 
