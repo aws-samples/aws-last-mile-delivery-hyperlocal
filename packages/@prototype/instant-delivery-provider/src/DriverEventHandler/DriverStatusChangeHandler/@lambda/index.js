@@ -118,6 +118,25 @@ const handler = async (event, context) => {
 		return
 	}
 
+	if (order.Item.jobId !== jobId) {
+		console.error(`[ERROR]: The order ${orderId} does not belong to the job ${jobId}`)
+
+		try {
+			await eventBridge.putEvent('UNEXPECTED_ERROR', {
+				type: 'JOB_ORDER_MISMATCH',
+				message: 'Driver trying to report event information for an order not related to the job',
+				orderId,
+				jobId,
+				event,
+			})
+		} catch (err) {
+			console.error('Error sending message to event bridge')
+			console.error(err)
+		}
+
+		return
+	}
+
 	if (order.Item.driverId !== driverId) {
 		console.error('[ERROR]: The order has been somehow assigned to another driver or the driver doen not match!')
 

@@ -28,6 +28,7 @@ const execute = async (payload) => {
 	if (current === state.ASSIGNMENT_STATUS.IDLE) {
 		state.setState('segments', segments)
 		state.setState('jobId', jobId)
+		state.setState('orderId', state.DEFAULT_STATE.orderId)
 		state.setState('status', state.STATUSES.ACCEPTED)
 		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.IN_PROGRESS)
 		state.setState('updates', currentState.updatesConfig.activeState)
