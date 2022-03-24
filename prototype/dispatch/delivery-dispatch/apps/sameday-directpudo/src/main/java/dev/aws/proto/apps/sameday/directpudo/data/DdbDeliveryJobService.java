@@ -115,7 +115,7 @@ public class DdbDeliveryJobService extends DdbServiceBase {
 
         if (dbItems.size() == 0) {
             logger.info("No delivery jobs found for solverJobId {}", solverJobId);
-            return null;
+            return new ArrayList<>();
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -197,5 +197,7 @@ public class DdbDeliveryJobService extends DdbServiceBase {
             BatchWriteItemResponse response = super.dbClient.batchWriteItem(batchWriteItemRequest);
             logger.debug("BatchWrite Iteration {} :: {}", i, response);
         }
+
+        logger.info("{} deliveryJobs saved for solverJobId {}", deliveryJobs.size(), solverJobId);
     }
 }
