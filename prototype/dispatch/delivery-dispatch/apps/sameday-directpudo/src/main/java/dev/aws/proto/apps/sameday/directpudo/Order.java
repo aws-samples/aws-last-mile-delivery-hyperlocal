@@ -22,6 +22,8 @@ import dev.aws.proto.apps.sameday.directpudo.data.Timeframe;
 import dev.aws.proto.core.routing.location.CoordinateWithId;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Represents an Order in the sameday-directpudo delivery domain.
  */
@@ -34,7 +36,7 @@ public class Order extends dev.aws.proto.core.Order {
     @Data
     public static class Origin extends CoordinateWithId {
         private int preparationTimeInMins;
-        private String tags;
+        private List<String> tags;
     }
 
     @Data
