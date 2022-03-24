@@ -28,26 +28,34 @@ import software.amazon.awssdk.regions.Region;
 public class CredentialsHelper {
     private static Logger logger = LoggerFactory.getLogger(CredentialsHelper.class);
 
-    static Region region;
+    private static Region region;
+    private static AwsCredentialsProvider credentialsProvider;
+
+    private CredentialsHelper() {
+        // don't allow to instantiate this class
+    }
 
     public static AwsCredentialsProvider getCredentialsProvider() {
-        AwsCredentialsProvider credentialsProvider;
-        String activeProfile = ProfileManager.getActiveProfile();
+        if (credentialsProvider == null) {
+            AwsCredentialsProvider currentCredentialsProvider;
+            String activeProfile = ProfileManager.getActiveProfile();
 
-        logger.trace("getCredentialsProvider called. activeProfile={}", activeProfile);
+            logger.trace("getCredentialsProvider called. activeProfile={}", activeProfile);
 
-        if (activeProfile.equalsIgnoreCase("dev")) {
-            String profileName = ConfigProvider.getConfig().getValue("aws.profile", String.class);
-            logger.trace("app's activeProfile = {}, awsProfile = {}. Acquiring ProfileCredentialsProvider", activeProfile, profileName);
-            credentialsProvider = ProfileCredentialsProvider.builder()
-                    .profileName(profileName)
-                    .build();
-        } else {
-            logger.trace("app's activeProfile = {}. Acquiring default credentials provider", activeProfile);
-            credentialsProvider = DefaultCredentialsProvider.builder().build();
+            if (activeProfile.equalsIgnoreCase("dev")) {
+                String profileName = ConfigProvider.getConfig().getValue("aws.profile", String.class);
+                logger.trace("app's activeProfile = {}, awsProfile = {}. Acquiring ProfileCredentialsProvider", activeProfile, profileName);
+                currentCredentialsProvider = ProfileCredentialsProvider.builder()
+                        .profileName(profileName)
+                        .build();
+            } else {
+                logger.trace("app's activeProfile = {}. Acquiring default credentials provider", activeProfile);
+                currentCredentialsProvider = DefaultCredentialsProvider.builder().build();
+            }
+
+            logger.debug("Acquired AWS credentials provider: {}", currentCredentialsProvider);
+            credentialsProvider = currentCredentialsProvider;
         }
-
-        logger.debug("Acquired AWS credentials provider: {}", credentialsProvider);
         return credentialsProvider;
     }
 
