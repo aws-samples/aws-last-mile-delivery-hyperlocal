@@ -239,4 +239,16 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                     .build();
         }
     }
+
+    public void saveInitialEnqueued(UUID problemId, DispatchRequest req) {
+        assignmentService.saveAssignment(DispatchResult.builder()
+                .problemId(problemId)
+                .executionId(req.getExecutionId())
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()).getTime())
+                .assigned(new ArrayList<>())
+                .unassigned(new ArrayList<>())
+                .state("ENQUEUED")
+                .score("NA")
+                .build());
+    }
 }
