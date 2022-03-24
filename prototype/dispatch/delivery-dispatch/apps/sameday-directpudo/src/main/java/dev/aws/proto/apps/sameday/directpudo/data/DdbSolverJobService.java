@@ -22,8 +22,8 @@ import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
 import dev.aws.proto.apps.sameday.directpudo.config.DdbProperties;
 import dev.aws.proto.core.util.aws.SsmUtility;
-import io.vertx.core.impl.logging.Logger;
-import io.vertx.core.impl.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -76,6 +76,8 @@ public class DdbSolverJobService extends DdbServiceBase {
 
     public void save(SolverJob solverJob) {
         super.dbClient.putItem(super.putRequest(solverJob));
+
+        logger.info("SolverJob saved: {}", solverJob);
     }
 
     public SolverJob getItem(UUID problemId) {
