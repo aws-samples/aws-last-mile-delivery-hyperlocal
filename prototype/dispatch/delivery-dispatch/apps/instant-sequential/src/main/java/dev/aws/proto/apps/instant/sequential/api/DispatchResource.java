@@ -61,6 +61,7 @@ public class DispatchResource {
 
         UUID problemId = UUID.randomUUID();
         jobScheduler.<DispatchService>enqueue(dispatcherService -> dispatcherService.solveDispatchProblem(problemId, req));
+        dispatcherService.saveInitialEnqueued(problemId, req);
         return RequestResult.of(problemId.toString());
     }
 
