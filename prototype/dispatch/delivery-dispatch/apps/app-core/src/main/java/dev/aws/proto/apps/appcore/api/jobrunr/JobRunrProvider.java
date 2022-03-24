@@ -32,7 +32,6 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
-import java.nio.file.Paths;
 
 public class JobRunrProvider {
     @Produces
@@ -70,7 +69,7 @@ public class JobRunrProvider {
     @Singleton
     public SQLiteDataSource dataSource() {
         final SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl("jdbc:sqlite:" + Paths.get(System.getProperty("java.io.tmpdir"), "jobrunr-db.db"));
+        dataSource.setUrl("jdbc:sqlite:jobrunr-db.db");
         return dataSource;
     }
 
