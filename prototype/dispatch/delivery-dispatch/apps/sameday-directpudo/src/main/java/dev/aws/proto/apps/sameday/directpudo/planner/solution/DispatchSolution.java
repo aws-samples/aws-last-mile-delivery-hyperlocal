@@ -17,42 +17,44 @@
 
 package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.aws.proto.apps.appcore.planner.solution.DispatchSolutionBase;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningDriver;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 
-import java.util.UUID;
+import java.util.List;
 
-//@PlanningSolution
+@PlanningSolution
 @Data
 @NoArgsConstructor
 public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongScore> {
+    private List<PlanningDriver> planningDrivers;
+    private List<PlanningVisit> visits;
 
-    /**
-     * The unique identifier for the solution.
-     */
-    @JsonProperty("dispatchingSolutionId")
-    protected UUID id;
+    @PlanningScore
+    @Getter
+    @Setter
+    private HardMediumSoftLongScore score;
 
-    /**
-     * The name of the dispatching solution.
-     */
-    protected String name;
+    @ProblemFactCollectionProperty
+    @ValueRangeProvider(id = "PlanningDriverRange")
+    public List<PlanningDriver> getPlanningDrivers() {
+        return this.planningDrivers;
+    }
 
-    /**
-     * Timestamp of the creation of this solution.
-     */
-    protected long createdAt;
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "PlanningVisitRange")
+    public List<PlanningVisit> getPlanningVisits() {
+        return this.visits;
+    }
 
-    /**
-     * Step function execution ID.
-     */
-    protected String executionId;
-
-    /**
-     * Solver score for the solution.
-     */
-    protected HardMediumSoftLongScore score;
 }

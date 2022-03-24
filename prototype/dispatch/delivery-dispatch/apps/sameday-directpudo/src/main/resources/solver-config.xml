@@ -1,0 +1,67 @@
+<!--
+  ~ Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
+  ~ this software and associated documentation files (the "Software"), to deal in
+  ~ the Software without restriction, including without limitation the rights to
+  ~ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  ~ the Software, and to permit persons to whom the Software is furnished to do so.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  ~ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  ~ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  ~ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  ~ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  -->
+<solver>
+    <!--    &lt;!&ndash; Scan the solution for annotations instead of explicitly define them here &ndash;&gt;-->
+    <!--    &lt;!&ndash;    <scanAnnotatedClasses/>&ndash;&gt;-->
+    <!--    &lt;!&ndash;<environmentMode>FULL_ASSERT</environmentMode>&ndash;&gt;&lt;!&ndash; To slowly prove there are no bugs in this code &ndash;&gt;-->
+    <!--    &lt;!&ndash;    To solve faster by saturating multiple CPU cores&ndash;&gt;-->
+    <!--    <moveThreadCount>AUTO</moveThreadCount>-->
+
+    <!--    &lt;!&ndash;    <solutionClass>dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution</solutionClass>&ndash;&gt;-->
+    <!--    &lt;!&ndash;    <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryOrDriver</entityClass>&ndash;&gt;-->
+    <!--    &lt;!&ndash;    <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningDelivery</entityClass>&ndash;&gt;-->
+
+    <!--    <scoreDirectorFactory>-->
+    <!--        &lt;!&ndash;        <constraintProviderClass>&ndash;&gt;-->
+    <!--        &lt;!&ndash;            dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchConstraintProvider&ndash;&gt;-->
+    <!--        &lt;!&ndash;        </constraintProviderClass>&ndash;&gt;-->
+    <!--        <scoreDefinitionType>SIMPLE</scoreDefinitionType>-->
+    <!--        <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>-->
+    <!--    </scoreDirectorFactory>-->
+    <!--    &lt;!&ndash;    <termination>&ndash;&gt;-->
+    <!--    &lt;!&ndash;        <secondsSpentLimit>150</secondsSpentLimit>&ndash;&gt;-->
+    <!--    &lt;!&ndash;    </termination>&ndash;&gt;-->
+    <!--    <constructionHeuristic>-->
+    <!--        &lt;!&ndash;        <constructionHeuristicType>ALLOCATE_TO_VALUE_FROM_QUEUE</constructionHeuristicType>&ndash;&gt;-->
+    <!--        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
+    <!--    </constructionHeuristic>-->
+    <!--    <localSearch>-->
+    <!--        <unionMoveSelector>-->
+    <!--            <changeMoveSelector/>-->
+    <!--            <swapMoveSelector/>-->
+    <!--            <subChainChangeMoveSelector>-->
+    <!--                <selectReversingMoveToo>true</selectReversingMoveToo>-->
+    <!--            </subChainChangeMoveSelector>-->
+    <!--            <subChainSwapMoveSelector>-->
+    <!--                <selectReversingMoveToo>true</selectReversingMoveToo>-->
+    <!--            </subChainSwapMoveSelector>-->
+    <!--            &lt;!&ndash; TODO use nearby selection to scale out &ndash;&gt;-->
+    <!--        </unionMoveSelector>-->
+    <!--        <acceptor>-->
+    <!--            <lateAcceptanceSize>400</lateAcceptanceSize>-->
+    <!--            &lt;!&ndash;            <entityTabuSize>64</entityTabuSize>&ndash;&gt;-->
+    <!--        </acceptor>-->
+    <!--        <forager>-->
+    <!--            <acceptedCountLimit>4</acceptedCountLimit>-->
+    <!--        </forager>-->
+    <!--        <termination>-->
+    <!--            <bestScoreFeasible>true</bestScoreFeasible>-->
+    <!--            <secondsSpentLimit>45</secondsSpentLimit>-->
+    <!--            <unimprovedSecondsSpentLimit>20</unimprovedSecondsSpentLimit>-->
+    <!--        </termination>-->
+    <!--    </localSearch>-->
+</solver>
