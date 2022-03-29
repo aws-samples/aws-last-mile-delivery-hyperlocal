@@ -42,6 +42,7 @@
         <module>instant-sequential</module>
         <module>instant-mixedpudo</module>
         <module>sameday-directpudo</module>
+        <module>distancecache-util</module>
     </modules>
 
     <dependencies>
