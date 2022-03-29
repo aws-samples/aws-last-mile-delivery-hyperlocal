@@ -61,6 +61,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <picocli.version>4.6.3</picocli.version>
         <quarkus-plugin.version>2.7.3.Final</quarkus-plugin.version>
         <quarkus.package.type>uber-jar</quarkus.package.type>
         <quarkus.platform.version>2.7.3.Final</quarkus.platform.version>
@@ -115,7 +116,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-            
+
             <dependency>
                 <groupId>org.jobrunr</groupId>
                 <artifactId>jobrunr</artifactId>
@@ -151,6 +152,13 @@
                 <groupId>com.uber</groupId>
                 <artifactId>h3</artifactId>
                 <version>${h3.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/info.picocli/picocli -->
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>${picocli.version}</version>
             </dependency>
 
         </dependencies>
