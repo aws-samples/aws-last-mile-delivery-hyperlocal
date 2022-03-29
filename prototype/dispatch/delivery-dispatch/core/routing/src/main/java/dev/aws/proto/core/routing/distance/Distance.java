@@ -36,9 +36,6 @@ public class Distance {
     }
 
     protected Distance(long distance, long time) {
-        if (distance < 0L || time < 0L) {
-            throw new IllegalArgumentException("Distance can't be negative");
-        }
         this.distance = distance;
         this.time = time;
     }
@@ -46,8 +43,8 @@ public class Distance {
     /**
      * Create a distance of the given value.
      *
-     * @param distance must be positive or zero
-     * @param time     must be positive or zero
+     * @param distance distance in meters
+     * @param time     time in milliseconds
      * @return distance
      */
     public static Distance ofValue(long distance, long time) {

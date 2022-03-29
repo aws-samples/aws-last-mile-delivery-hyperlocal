@@ -62,4 +62,9 @@ public class Coordinate {
     public int hashCode() {
         return Objects.hash(latitude, longitude);
     }
+
+    @Override
+    public String toString() {
+        return "[lat/lng = " + latitude + "/" + longitude + "]";
+    }
 }
