@@ -30,4 +30,7 @@ public interface RoutingProperties {
 
     @WithName("osm-file")
     String osmFile();
+
+    @WithName("routing-profile")
+    String routingProfile();
 }
