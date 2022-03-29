@@ -22,47 +22,129 @@ import com.graphhopper.GraphHopper;
 import com.graphhopper.ResponsePath;
 import com.graphhopper.routing.util.FlagEncoderFactory;
 import com.graphhopper.util.PointList;
+import com.uber.h3core.util.GeoCoord;
 import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.distance.IDistanceCalculator;
 import dev.aws.proto.core.routing.location.Coordinate;
-import io.vertx.core.impl.ConcurrentHashSet;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
-public class GraphhopperRouter implements IRouter, IDistanceCalculator {
-
+/**
+ * The Graphhopper router.
+ * Performs distance calculations and gets paths between two lat/lng coordinates.
+ */
+public class GraphhopperRouter implements IDistanceCalculator {
     private static final Logger logger = LoggerFactory.getLogger(GraphhopperRouter.class);
+    private static final RoundingMode roundingMode = RoundingMode.HALF_EVEN;
 
+    /**
+     * The allowed profiles for routing.
+     * <p>
+     * Currently, it supports two profiles:
+     * - CAR
+     * - MOTORCYCLE
+     * <p>
+     * IMPORTANT:
+     * if you extend this, make sure the `graphhopper-settings.xml` files are updated with the additional profiles.
+     */
+    private static final String[] allowedProfiles = {FlagEncoderFactory.CAR, FlagEncoderFactory.MOTORCYCLE};
+
+    /**
+     * The hopper object.
+     */
     private final GraphHopper graphhopper;
 
-    private final Set<String> errors = new ConcurrentHashSet<>();
+    /**
+     * The selected routing profile.
+     */
+    private final String profile;
 
-    public GraphhopperRouter(GraphHopper graphhopper) {
+    /**
+     * The number of decimal places for GPS coordinates.
+     * <p>
+     * If this value is set between 0 and 8 (inclusive), rounding will happen, otherwise, will be ignored.
+     * <p>
+     * {@see http://wiki.gis.com/wiki/index.php/Decimal_degrees}
+     * | ---------------| ---------|
+     * | Decimal places | Distance |
+     * |              0 | 111 km   |
+     * |              1 | 11.1 km  |
+     * |              2 | 1.11 km  |
+     * |              3 | 111 m    |
+     * |              4 | 11.1 m   |
+     * |              5 | 1.11 m   |
+     * |              6 | 0.111 m  |
+     * |              7 | 1.11 cm  |
+     * |              8 | 1.11 mm  |
+     * -----------------------------
+     */
+    private final int gpsAccuracy;
+
+    /**
+     * A counter to get information about routing errors.
+     */
+    @Getter
+    private final AtomicInteger errorCnt;
+
+    public GraphhopperRouter(GraphHopper graphhopper, String profile) {
+        // don't use additional gps accuracy
+        this(graphhopper, profile, -1);
+    }
+
+    public GraphhopperRouter(GraphHopper graphhopper, String profile, int gpsAccuracy) {
         if (graphhopper == null) {
             throw new IllegalArgumentException("Graphhopper router cannot be null.");
         }
+        if (Arrays.stream(allowedProfiles).noneMatch(profile::equals)) {
+            throw new IllegalArgumentException(
+                    String.format("%s is not a supported profile. Allowed profile values are [%s]",
+                            profile, String.join(", ", allowedProfiles)
+                    )
+            );
+        }
 
         this.graphhopper = graphhopper;
+        this.profile = profile;
+        this.gpsAccuracy = gpsAccuracy;
+        this.errorCnt = new AtomicInteger(0);
     }
 
-    public Set<String> errors() {
-        return errors;
+    private GHResponse getRoute(double fromLat, double fromLng, double toLat, double toLng) {
+        if (gpsAccuracy >= 0 && gpsAccuracy <= 8) {
+            fromLat = BigDecimal.valueOf(fromLat).setScale(gpsAccuracy, roundingMode).doubleValue();
+            fromLng = BigDecimal.valueOf(fromLng).setScale(gpsAccuracy, roundingMode).doubleValue();
+            toLat = BigDecimal.valueOf(toLat).setScale(gpsAccuracy, roundingMode).doubleValue();
+            toLng = BigDecimal.valueOf(toLng).setScale(gpsAccuracy, roundingMode).doubleValue();
+        }
+
+        logger.trace("getRoute between {}/{} and {}/{}", fromLat, fromLng, toLat, toLng);
+
+        GHRequest ghRequest = new GHRequest(fromLat, fromLng, toLat, toLng);
+        ghRequest.setProfile(this.profile);
+        return graphhopper.route(ghRequest);
     }
 
-    public void clearErrors() {
-        errors.clear();
-    }
-
-    @Override
+    /**
+     * Gets a routing path between two geo points.
+     *
+     * @param origin      The starting point.
+     * @param destination The endpoint.
+     * @return The list of points that define the travel path.
+     */
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
         logger.trace("getPath between {} and {}", origin, destination);
-        GHResponse ghResponse = this.getRoute(origin, destination);
+        GHResponse ghResponse = this.getRoute(
+                origin.getLatitude(), origin.getLongitude(), destination.getLatitude(), destination.getLongitude());
 
         PointList points = ghResponse.getBest().getPoints();
         return StreamSupport.stream(points.spliterator(), false)
@@ -70,41 +152,37 @@ public class GraphhopperRouter implements IRouter, IDistanceCalculator {
                 .collect(toList());
     }
 
-    private GHResponse getRoute(Coordinate origin, Coordinate destination) {
-        logger.trace("getRoute between {} and {}", origin, destination);
-        GHRequest ghRequest = new GHRequest(
-                origin.getLatitude(),
-                origin.getLongitude(),
-                destination.getLatitude(),
-                destination.getLongitude());
-
-        // TODO: in prod, this must be a parameter
-        ghRequest.setProfile(FlagEncoderFactory.MOTORCYCLE);
-//        ghRequest.setProfile(FlagEncoderFactory.CAR);
-
-        GHResponse ghResponse = graphhopper.route(ghRequest);
-        return ghResponse;
-    }
-
     @Override
     public Distance travelDistance(Coordinate from, Coordinate to) {
-        logger.trace("Calculating travel distance between {} and {}", from, to);
-        GHResponse ghResponse = this.getRoute(from, to);
-        // TODO: return wrapper that can hold both the result and error explanation instead of throwing exception
+        return this.travelDistance(new GeoCoord(from.getLatitude(), from.getLongitude()), new GeoCoord(to.getLatitude(), to.getLongitude()));
+    }
+
+    /**
+     * Gets the travel distance (in meters and in milliseconds) between two geo points.
+     * <p>
+     * If Graphhopper cannot determine the distance between the two points, will return `-1` values for the distance.
+     * <p>
+     *
+     * @param from Origin location.
+     * @param to   Destination location.
+     * @return The distance between the origin and the destination.
+     */
+    public Distance travelDistance(GeoCoord from, GeoCoord to) {
+        logger.trace("Calculating distance between {} and {}", from, to);
+
+        GHResponse ghResponse = this.getRoute(from.lat, from.lng, to.lat, to.lng);
+
         if (ghResponse.hasErrors()) {
-//            logger.error("Error while calculating distance: " + ghResponse.getErrors().get(0).getMessage());
-//            throw new DistanceCalculationException("No route", ghResponse.getErrors().get(0));
-            logger.debug("There were {} errors while GH request", ghResponse.getErrors().size());
             for (Throwable err : ghResponse.getErrors()) {
-                errors.add(err.getMessage());
+                logger.debug("Error while calculating route between {}/{} and {}/{}: {}", from.lat, from.lng, to.lat, to.lng, err.getMessage());
+                errorCnt.incrementAndGet();
             }
 
-            return Distance.ofValue(Long.MAX_VALUE, Long.MAX_VALUE);
+            return Distance.ofValue(-1, -1);
         }
 
-        long lengthDistance = IDistanceCalculator.travelDistanceSelector(ghResponse.getBest(), ResponsePath::getDistance).longValue();
-        long timeDistance = IDistanceCalculator.travelDistanceSelector(ghResponse.getBest(), ResponsePath::getTime);
-        return Distance.ofValue(lengthDistance, timeDistance);
+        ResponsePath bestPath = ghResponse.getBest();
+        return Distance.ofValue((long) bestPath.getDistance(), bestPath.getTime());
     }
 
 

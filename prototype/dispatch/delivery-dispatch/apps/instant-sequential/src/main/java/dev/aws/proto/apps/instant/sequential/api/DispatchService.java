@@ -75,7 +75,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         this.solutionConfig = solutionConfig;
         this.driverQueryManager = driverQueryManager;
 
-        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper());
+        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper(), routingConfig.routingProfile());
 
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(java.nio.file.Path.of(this.solutionConfig.getSolverConfigXmlPath()).toFile());
         this.solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());

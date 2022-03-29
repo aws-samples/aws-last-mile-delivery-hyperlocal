@@ -50,7 +50,7 @@ public class RoutingResource {
     @Inject
     public RoutingResource(RoutingConfig routingConfig) {
         this.routingConfig = routingConfig;
-        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper());
+        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper(), routingConfig.routingProfile());
     }
 
     @POST
@@ -58,9 +58,8 @@ public class RoutingResource {
     public Distance distanceBetweenLocations(DistanceBetweenLocationsRequest req) {
         Distance dist = this.graphhopperRouter.travelDistance(req.origin, req.destination);
 
-        if (this.graphhopperRouter.errors().size() > 0) {
-            this.graphhopperRouter.errors().forEach(logger::warn);
-            this.graphhopperRouter.clearErrors();
+        if (this.graphhopperRouter.getErrorCnt().get() > 0) {
+            logger.warn("There were {} errors while finding routes", this.graphhopperRouter.getErrorCnt().get());
         }
 
         logger.info("{}", dist);

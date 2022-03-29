@@ -66,9 +66,8 @@ public class DistanceMatrix {
 
         long generatedTime = System.currentTimeMillis() - start;
         logger.debug(":: DistanceMatrix :: calculation time = {}ms :: dimension = {}", generatedTime, builder.getMatrix().size());
-        logger.debug(":: DistanceMatrix :: router errors: {}", router.errors().size());
-        router.errors().forEach(logger::info);
-        router.clearErrors();
+        logger.debug(":: DistanceMatrix :: router errors: {}", router.getErrorCnt().get());
+        router.getErrorCnt().set(0);
 
         DistanceMatrix distMatrix = new DistanceMatrix(builder.getMatrix(), generatedTime);
         return distMatrix;
