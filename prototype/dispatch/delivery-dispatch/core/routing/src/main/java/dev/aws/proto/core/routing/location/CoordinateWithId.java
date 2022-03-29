@@ -29,4 +29,9 @@ public class CoordinateWithId extends Coordinate {
     public int hashCode() {
         return Objects.hashCode(this.id);
     }
+
+    @Override
+    public String toString() {
+        return "[lat/lng = " + super.getLatitude() + "/" + super.getLongitude() + "][id = " + id + "]";
+    }
 }
