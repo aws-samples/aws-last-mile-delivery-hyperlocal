@@ -16,9 +16,8 @@
  */
 package dev.aws.proto.core.routing.distance;
 
-import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.exception.DistanceCalculationException;
+import dev.aws.proto.core.routing.location.Coordinate;
 
 import java.util.function.Function;
 
@@ -39,4 +38,6 @@ public interface IDistanceCalculator {
      * @throws DistanceCalculationException when the distance between given coordinates cannot be calculated
      */
     Distance travelDistance(Coordinate origin, Coordinate destination);
+
+
 }
