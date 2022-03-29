@@ -60,7 +60,10 @@
             <groupId>com.mapbox.mapboxsdk</groupId>
             <artifactId>mapbox-sdk-geojson</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.uber</groupId>
+            <artifactId>h3</artifactId>
+        </dependency>
 
     </dependencies>
 

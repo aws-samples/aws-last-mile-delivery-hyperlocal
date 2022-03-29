@@ -53,6 +53,7 @@
         <compiler-plugin.version>3.10.0</compiler-plugin.version>
         <graphhopper-core.version>4.0</graphhopper-core.version>
         <graphhopper-reader-osm.version>3.0-pre3</graphhopper-reader-osm.version>
+        <h3.version>3.7.0</h3.version>
         <jobrunr.version>4.0.9</jobrunr.version>
         <lombok.version>1.18.22</lombok.version>
         <mapbox-sdk-geojson.version>5.8.0</mapbox-sdk-geojson.version>
@@ -146,6 +147,11 @@
                 <version>${mapbox-sdk-geojson.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.uber</groupId>
+                <artifactId>h3</artifactId>
+                <version>${h3.version}</version>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
