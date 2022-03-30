@@ -14,26 +14,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 package dev.aws.proto.core.routing.distance;
 
 import dev.aws.proto.core.routing.location.ILocation;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 public class DistanceMatrix {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrix.class);
 
     private final Map<ILocation, Map<ILocation, Distance>> matrix;
+    @Getter
     private final long generatedTime;
-    private final Metrics metrics;
+
+    @Getter
+    private final DistanceMatrix.Metrics metrics;
 
     private DistanceMatrix(Map<ILocation, Map<ILocation, Distance>> matrix, long generatedTime) {
         this.matrix = matrix;
@@ -50,112 +57,63 @@ public class DistanceMatrix {
         private int dimension;
     }
 
-    public Metrics getMetrics() {
-        return this.metrics;
-    }
-
-    public static <TLocation extends ILocation> DistanceMatrix generate(List<TLocation> locations, GraphhopperRouter router) {
-        logger.debug(":: DistanceMatrix :: build with {} locations", locations.size());
-        long start = System.currentTimeMillis();
-
-        Builder builder = new Builder(router);
-
-        for (TLocation location : locations) {
-            builder.addLocation(location);
-        }
-
-        long generatedTime = System.currentTimeMillis() - start;
-        logger.debug(":: DistanceMatrix :: calculation time = {}ms :: dimension = {}", generatedTime, builder.getMatrix().size());
-        logger.debug(":: DistanceMatrix :: router errors: {}", router.getErrorCnt().get());
-        router.getErrorCnt().set(0);
-
-        DistanceMatrix distMatrix = new DistanceMatrix(builder.getMatrix(), generatedTime);
-        return distMatrix;
-    }
-
     public Distance distanceBetween(ILocation origin, ILocation destination) {
         logger.trace("Calculating distance between {} and {}", origin, destination);
-        Map<ILocation, Distance> distanceRow = matrix.get(origin);
+        Map<ILocation, Distance> distanceRow = this.matrix.get(origin);
 
         return distanceRow.get(destination);
     }
 
-    public int dimension() {
-        return this.matrix.size();
-    }
+    public static DistanceMatrix generate(List<ILocation> locationList, GraphhopperRouter router) {
+        long start = System.currentTimeMillis();
+        int locCnt = locationList.size();
+        ILocation[] locations = new ILocation[locCnt];
+        locationList.toArray(locations);
 
-    public long getGeneratedTime() {
-        return generatedTime;
-    }
+        logger.debug("DMatrix :: dimension = {}x{} ({} cells)", locCnt, locCnt, locCnt * locCnt);
 
-    @Override
-    public String toString() {
-        return "DistanceMatrix{" +
-                "matrix=" + matrix +
-                '}';
-    }
-
-    static class Builder {
-        private final IDistanceCalculator distanceCalculator;
-        private final Map<ILocation, Map<ILocation, Distance>> matrix;
-
-        Builder(IDistanceCalculator distanceCalculator) {
-            logger.trace("Initializing DistanceMatrix.Builder");
-            this.distanceCalculator = distanceCalculator;
-            this.matrix = new ConcurrentHashMap<>();
+        // create inverse lookup
+        Map<ILocation, Integer> locIdxLookup = new HashMap<>();
+        for (int i = 0; i < locCnt; i++) {
+            locIdxLookup.put(locations[i], i);
         }
 
-        /**
-         * Add a new location into the distance matrix.
-         * Calculates all the distances with the existing locations.
-         *
-         * @param newLocation the new location
-         * @return the new calculated distance row
-         */
-        IDistanceMatrixRow addLocation(ILocation newLocation) {
-            logger.trace("Adding location {}", newLocation.coordinate());
-            long start = System.currentTimeMillis();
+        Distance[][] distances = new Distance[locCnt][locCnt];
 
-            Map<ILocation, Distance> distancesToOthers = new ConcurrentHashMap<>();
-            distancesToOthers.put(newLocation, Distance.ZERO);
+        int cellCnt = locCnt * locCnt;
+        AtomicInteger ctr = new AtomicInteger(0);
+        int onePercentOr1000 = Math.max((cellCnt / 100), 1000);
 
-            matrix.entrySet().stream().parallel().forEach(distanceRow -> {
-                ILocation other = distanceRow.getKey();
-                Map<ILocation, Distance> distancesFromOthers = distanceRow.getValue();
-                distancesFromOthers.put(newLocation, calculateDistance(other, newLocation));
-                distancesToOthers.put(other, calculateDistance(newLocation, other));
-            });
+        IntStream.range(0, cellCnt)
+                .parallel()
+                .forEach(idx -> {
+                    int i = idx / locCnt;
+                    int j = idx % locCnt;
 
-            matrix.put(newLocation, distancesToOthers);
-            logger.trace("Location {} added, took {}ms. Current matrix size: {}", newLocation, (System.currentTimeMillis() - start), matrix.size());
+                    Distance d = router.travelDistance(locations[i].coordinate(), locations[j].coordinate());
+                    distances[i][j] = d;
 
-            return location -> {
-                if (!distancesToOthers.containsKey(location)) {
-                    throw new IllegalArgumentException(
-                            "Distance from " + newLocation
-                                    + " to " + location
-                                    + " hasn't been recorded.\n"
-                                    + "We only know distances to " + distancesToOthers.keySet());
-                }
-                return distancesToOthers.get(location);
-            };
+                    int localCtr = ctr.incrementAndGet();
+                    if (localCtr % onePercentOr1000 == 0) {
+                        logger.debug("Processing {}/{} ({}%)", localCtr, cellCnt, ((double) localCtr / cellCnt) * 100);
+                    }
+                });
+
+        Map<ILocation, Map<ILocation, Distance>> matrix = new HashMap<>();
+        for (int i = 0; i < locCnt; i++) {
+            Map<ILocation, Distance> row = new HashMap<>();
+            for (int j = 0; j < locCnt; j++) {
+                row.put(locations[j], distances[j][i]); // TODO: review indexing
+            }
+
+            matrix.put(locations[i], row);
         }
 
-        /**
-         * Calculates the distance between two locations
-         *
-         * @param origin      origin
-         * @param destination destination
-         * @return the distance between origin and destination
-         */
-        private Distance calculateDistance(ILocation origin, ILocation destination) {
-            logger.trace("Calculating distance between {},{}\t{},{}", origin.coordinate().getLatitude(), origin.coordinate().getLongitude(), destination.coordinate().getLatitude(), destination.coordinate().getLongitude());
-            Distance distance = distanceCalculator.travelDistance(origin.coordinate(), destination.coordinate());
-            return distance;
-        }
+        long generatedTime = System.currentTimeMillis() - start;
 
-        Map<ILocation, Map<ILocation, Distance>> getMatrix() {
-            return this.matrix;
-        }
+        logger.debug("DistanceMatrix :: calc time = {}ms :: dim = {}x{} :: per cell = {}ms", generatedTime, locCnt, locCnt, ((double) generatedTime / (locCnt * locCnt)));
+        logger.debug("DistanceMatrix :: errors = {}", router.getErrorCnt().get());
+        router.getErrorCnt().set(0);
+        return new DistanceMatrix(matrix, generatedTime);
     }
 }
