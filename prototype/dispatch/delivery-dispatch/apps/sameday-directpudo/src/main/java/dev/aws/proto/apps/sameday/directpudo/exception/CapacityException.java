@@ -15,21 +15,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.data;
+package dev.aws.proto.apps.sameday.directpudo.exception;
 
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CapacityBase;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import dev.aws.proto.core.exception.DispatcherException;
 
-/**
- * Represents a parcel in the sameday-directpudo delivery domain.
- */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@SuperBuilder
-public class Parcel extends CapacityBase {
-    private String type;
+public class CapacityException extends DispatcherException {
+    public CapacityException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public CapacityException(String message) {
+        super(message);
+    }
 }
