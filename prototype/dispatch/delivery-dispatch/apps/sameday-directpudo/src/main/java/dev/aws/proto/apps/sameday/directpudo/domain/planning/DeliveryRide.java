@@ -17,49 +17,16 @@
 
 package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCapacity;
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
-import dev.aws.proto.apps.sameday.directpudo.location.DriverLocation;
-import dev.aws.proto.core.routing.location.LocationBase;
+import dev.aws.proto.apps.sameday.directpudo.data.Parcel;
 import lombok.Getter;
 import lombok.Setter;
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 
 @Getter
 @Setter
-public class PlanningDriver implements VisitOrDriver {
-
-    private DriverLocation location;
-    private MaxCapacity maxCapacity;
-
-    // shadow variables
-    private CurrentCapacity currentCapacity;
-    private PlanningVisit nextVisit;
-
-    // overrides
-    @Override
-    public LocationBase getLocation() {
-        return this.location;
-    }
-
-    @Override
-    public PlanningDriver getPlanningDriver() {
-        return this;
-    }
-
-    @Override
-    public Integer getVisitIndex() {
-        return 0;
-    }
-
-    @Override
-    public PlanningVisit getNextPlanningVisit() {
-        return this.nextVisit;
-    }
-
-    @Override
-    public void setNextPlanningVisit(PlanningVisit nextPlanningVisit) {
-        this.nextVisit = nextPlanningVisit;
-    }
-
-    // TODO: add getDistanceTo methods
+@DeepPlanningClone
+public class DeliveryRide {
+    protected PlanningVisit pickupVisit;
+    protected PlanningVisit dropoffVisit;
+    protected Parcel parcel;
 }

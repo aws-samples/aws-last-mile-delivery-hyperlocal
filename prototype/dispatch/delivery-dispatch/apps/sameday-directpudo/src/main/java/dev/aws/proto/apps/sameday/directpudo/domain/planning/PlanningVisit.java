@@ -17,11 +17,17 @@
 
 package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.solver.VisitIndexUpdatingVariableListener;
+import dev.aws.proto.apps.sameday.directpudo.util.Constants;
+import dev.aws.proto.core.routing.location.LocationBase;
+import lombok.Getter;
+import lombok.Setter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.*;
 
 @PlanningEntity
+@Getter
+@Setter
 public class PlanningVisit implements VisitOrDriver {
 
     public static enum VisitType {
@@ -29,26 +35,58 @@ public class PlanningVisit implements VisitOrDriver {
         DROPOFF
     }
 
-    protected VisitType visitType;
+    private VisitType visitType;
+    private LocationBase location;
+    private DeliveryRide ride;
 
-    @PlanningVariable(
-            valueRangeProviderRefs = {"PlanningDriverRange", "PlanningVisitRange"},
-            graphType = PlanningVariableGraphType.CHAINED
-    )
+    // planning variables: changes during planning
     private VisitOrDriver previousVisitOrDriver;
 
+    // shadow variables
+    private PlanningVisit nextVisit;
+    private PlanningDriver planningDriver;
+    private Integer visitIndex;
+
+    // getters/setters overrides
+
     @Override
-    public PlanningDriver getPlanningDriver() {
-        return null;
+    public LocationBase getLocation() {
+        return this.location;
+    }
+
+    // TODO: maybe add getParcelSize
+
+    @PlanningVariable(
+            valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningVisitRange},
+            graphType = PlanningVariableGraphType.CHAINED
+    )
+    public VisitOrDriver getPreviousVisitOrDriver() {
+        return this.previousVisitOrDriver;
     }
 
     @Override
     public PlanningVisit getNextPlanningVisit() {
-        return null;
+        return this.nextVisit;
     }
 
     @Override
-    public void setNextPlanningVisit(PlanningVisit nextPlanningVisit) {
-
+    public void setNextPlanningVisit(PlanningVisit nextVisit) {
+        this.nextVisit = nextVisit;
     }
+
+    @Override
+    @AnchorShadowVariable(sourceVariableName = Constants.PreviousVisitOrDriver)
+    public PlanningDriver getPlanningDriver() {
+        return this.planningDriver;
+    }
+
+    @CustomShadowVariable(
+            variableListenerClass = VisitIndexUpdatingVariableListener.class,
+            sources = {@PlanningVariableReference(variableName = Constants.PreviousVisitOrDriver)}
+    )
+    public Integer getVisitIndex() {
+        return this.visitIndex;
+    }
+
+    // todo: add distanceTo() method
 }
