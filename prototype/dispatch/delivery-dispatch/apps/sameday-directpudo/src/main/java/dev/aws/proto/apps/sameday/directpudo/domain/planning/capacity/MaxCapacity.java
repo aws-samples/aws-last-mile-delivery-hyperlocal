@@ -15,21 +15,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.data;
+package dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity;
 
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CapacityBase;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-/**
- * Represents a parcel in the sameday-directpudo delivery domain.
- */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @SuperBuilder
-public class Parcel extends CapacityBase {
-    private String type;
+public class MaxCapacity extends CapacityBase {
+    public boolean exceeds(float length, float height, float width, float weight) {
+        return
+                length > this.getLength()
+                        || height > this.getHeight()
+                        || width > this.getWidth()
+                        || weight > this.getWidth();
+    }
 }
