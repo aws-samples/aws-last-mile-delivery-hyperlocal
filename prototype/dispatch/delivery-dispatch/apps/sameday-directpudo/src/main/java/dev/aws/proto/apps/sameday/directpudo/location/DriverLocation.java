@@ -15,26 +15,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.domain.planning;
+package dev.aws.proto.apps.sameday.directpudo.location;
 
-import dev.aws.proto.apps.sameday.directpudo.util.Constants;
+import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.LocationBase;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import dev.aws.proto.core.routing.location.LocationType;
 
-@PlanningEntity
-public interface VisitOrDriver {
-
-    LocationBase getLocation();
-
-    PlanningDriver getPlanningDriver();
-
-    Integer getVisitIndex();
-
-    @InverseRelationShadowVariable(sourceVariableName = Constants.PreviousVisitOrDriver)
-    PlanningVisit getNextPlanningVisit();
-
-    void setNextPlanningVisit(PlanningVisit nextPlanningVisit);
-
-
+public class DriverLocation extends LocationBase {
+    public DriverLocation(String id, Coordinate coordinate) {
+        // TODO: consider using a dedicated LocationType in the future, esp when using geocluster centroid as "depot"
+        super(id, coordinate, LocationType.MOVING_LOCATION);
+    }
 }

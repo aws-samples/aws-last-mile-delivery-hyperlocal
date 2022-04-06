@@ -25,6 +25,9 @@ import java.time.format.DateTimeFormatter;
 public class Constants {
     public static final DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    public static final String PreviousVisitOrDriver = "previousVisitOrDriver";
+    public static final String PlanningDriverRange = "PlanningDriverRange";
+    public static final String PlanningVisitRange = "PlanningVisitRange";
 
     private Constants() {
         throw new AssertionError("Utility class");
