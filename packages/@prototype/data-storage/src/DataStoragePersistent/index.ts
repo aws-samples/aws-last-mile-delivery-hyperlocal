@@ -226,16 +226,12 @@ export class DataStoragePersistent extends NestedStack {
 			sameDayDirectPudoDeliveryJobsTableNameParameter
 
 		const sameDayDirectPudoSolverJobsTableName = namespaced(this, 'sameday-directpudo-solver-jobs')
-		const sameDayDirectPudoSolverJobsTable = new hyperlocal_ddb.Table(this, 'sameDayDirectPudoSolverJobs', {
+		const sameDayDirectPudoSolverJobsTable = new hyperlocal_ddb.Table(this, 'SameDayDirectPudoSolverJobs', {
 			tableName: sameDayDirectPudoSolverJobsTableName,
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
-			},
-			sortKey: {
-				name: 'createdAt',
-				type: ddb.AttributeType.NUMBER,
 			},
 		})
 		this.sameDayDirectPudoSolverJobs = sameDayDirectPudoSolverJobsTable
