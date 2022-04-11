@@ -35,6 +35,7 @@ import dev.aws.proto.apps.instant.sequential.planner.solution.SolutionConsumer;
 import dev.aws.proto.core.routing.config.RoutingConfig;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
 import dev.aws.proto.core.routing.location.Coordinate;
+import dev.aws.proto.core.routing.location.ILocation;
 import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.optaplanner.core.api.solver.SolverJob;
@@ -147,8 +148,9 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                 .score("NA")
                 .build());
 
+        List<ILocation> matrixLocs = allLocations.stream().map(locBase -> (ILocation) locBase).collect(Collectors.toList());
         // build distance matrix
-        DistanceMatrix distanceMatrix = DistanceMatrix.generate(allLocations, this.graphhopperRouter);
+        DistanceMatrix distanceMatrix = DistanceMatrix.generate(matrixLocs, this.graphhopperRouter);
         logger.trace(distanceMatrix.toString());
         for (LocationBase loc : allLocations) {
             loc.setDistanceMatrix(distanceMatrix);
