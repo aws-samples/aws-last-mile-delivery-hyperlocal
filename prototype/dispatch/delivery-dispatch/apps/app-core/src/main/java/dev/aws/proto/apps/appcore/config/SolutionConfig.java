@@ -41,7 +41,7 @@ public class SolutionConfig {
     /**
      * Path to the solver's config xml file.
      */
-    private String solverConfigXmlPath;
+    private final String solverConfigXmlPath;
 
     SolutionConfig(SolutionProperties solutionProperties) {
         this.solverConfigXmlPath = solutionProperties.solverConfigXmlPath();

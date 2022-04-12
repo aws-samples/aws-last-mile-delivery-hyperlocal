@@ -18,12 +18,15 @@
 package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
 import dev.aws.proto.apps.appcore.planner.solution.DispatchSolutionBase;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryRide;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningDriver;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
+import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -36,25 +39,33 @@ import java.util.List;
 @PlanningSolution
 @Data
 @NoArgsConstructor
+@SuperBuilder
 public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongScore> {
+
     private List<PlanningDriver> planningDrivers;
-    private List<PlanningVisit> visits;
+    private List<PlanningVisit> planningVisits;
+    private List<DeliveryRide> rides;
 
     @PlanningScore
     @Getter
     @Setter
-    private HardMediumSoftLongScore score;
+    public HardMediumSoftLongScore score;
 
     @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = "PlanningDriverRange")
+    @ValueRangeProvider(id = Constants.PlanningDriverRange)
     public List<PlanningDriver> getPlanningDrivers() {
         return this.planningDrivers;
     }
 
     @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "PlanningVisitRange")
+    @ValueRangeProvider(id = Constants.PlanningVisitRange)
     public List<PlanningVisit> getPlanningVisits() {
-        return this.visits;
+        return this.planningVisits;
+    }
+
+    @ProblemFactCollectionProperty
+    public List<DeliveryRide> getRides() {
+        return this.rides;
     }
 
 }
