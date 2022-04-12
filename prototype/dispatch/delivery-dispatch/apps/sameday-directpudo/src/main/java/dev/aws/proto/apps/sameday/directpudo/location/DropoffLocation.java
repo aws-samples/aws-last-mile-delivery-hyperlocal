@@ -18,11 +18,9 @@
 package dev.aws.proto.apps.sameday.directpudo.location;
 
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.location.LocationType;
 
-public class DropoffLocation extends LocationBase {
-
+public class DropoffLocation extends Location {
     public DropoffLocation(String id, Coordinate coordinate) {
         super(id, coordinate, LocationType.DESTINATION);
     }

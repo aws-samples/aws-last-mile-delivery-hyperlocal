@@ -14,38 +14,17 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package dev.aws.proto.apps.instant.sequential.location;
 
+package dev.aws.proto.apps.sameday.directpudo.location;
+
+import dev.aws.proto.core.routing.distance.TravelDistance;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.LocationType;
-import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-/**
- * Represents the location of a driver.
- */
-@Data
-public class DriverLocation extends Location {
-    /**
-     * The timestamp when the current location was recorded.
-     */
-    @Getter
-    private final long timestamp;
-
-    /**
-     * The date time representation of the timestamp when the current location was recorded.
-     */
-    @Getter
-    private final LocalDateTime dateTime;
-
-    public DriverLocation(String id, Coordinate coordinate, long timestamp) {
-        super(id, coordinate, LocationType.MOVING_LOCATION);
-
-        this.timestamp = timestamp;
-        this.dateTime = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+@NoArgsConstructor
+public class Location extends dev.aws.proto.core.routing.location.LocationBase<TravelDistance> {
+    public Location(String id, Coordinate coordinate, LocationType locationType) {
+        super(id, coordinate, locationType);
     }
 }

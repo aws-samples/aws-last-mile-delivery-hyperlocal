@@ -18,10 +18,9 @@
 package dev.aws.proto.apps.sameday.directpudo.location;
 
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.location.LocationType;
 
-public class PickupLocation extends LocationBase {
+public class PickupLocation extends Location {
     public PickupLocation(String id, Coordinate coordinate) {
         super(id, coordinate, LocationType.ORIGIN);
     }

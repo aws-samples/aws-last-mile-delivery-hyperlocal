@@ -18,10 +18,10 @@ package dev.aws.proto.apps.instant.sequential.domain.planning;
 
 import dev.aws.proto.apps.instant.sequential.Order;
 import dev.aws.proto.apps.instant.sequential.location.DestinationLocation;
+import dev.aws.proto.apps.instant.sequential.location.Location;
 import dev.aws.proto.apps.instant.sequential.location.OriginLocation;
 import dev.aws.proto.apps.instant.sequential.util.Constants;
 import dev.aws.proto.core.routing.distance.Distance;
-import dev.aws.proto.core.routing.location.LocationBase;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -183,8 +183,7 @@ public class PlanningDelivery implements DeliveryOrDriver {
 
         PlanningDelivery previous = (PlanningDelivery) previousDeliveryOrDriver;
 
-        long dist = previous.getDropoff().distanceTo(this.getPickup()).getTime();
-
+//        long dist = previous.getDropoff().distanceTo(this.getPickup()).getDistanceInSeconds() * 1000L;
         // difference between current pickupTime and previous dropoff + travel dist between prev.dropoffLoc -> current.pickupLoc
 //        long diffBetweenCurrPickupAndPrevDropoffPlusTravel = this.getPickupTimestamp() -
 //          (previous.getDropoffTimestamp() + dist);
@@ -230,8 +229,8 @@ public class PlanningDelivery implements DeliveryOrDriver {
     public long scoreForPreferCloserDriverToPickupLocation() {
         Distance dist = this.getDistanceFromPrevDriverOrDelivery();
 
-        long distInSec = dist.getTime() / 1000;
-        long distInMeters = dist.getDistance();
+        long distInSec = dist.getDistanceInSeconds();
+        long distInMeters = dist.getDistanceInMeters();
         return distInSec * distInMeters;
     }
 
@@ -241,11 +240,11 @@ public class PlanningDelivery implements DeliveryOrDriver {
      * @param otherLocation The other location
      * @return The custom distance metric.
      */
-    public long scoreForDistance(LocationBase otherLocation) {
+    public long scoreForDistance(Location otherLocation) {
         Distance dist = otherLocation.distanceTo(this.getPickup());
 
-        long distInSec = dist.getTime() / 1000;
-        long distInMeters = dist.getDistance();
+        long distInSec = dist.getDistanceInSeconds();
+        long distInMeters = dist.getDistanceInMeters();
         return distInSec * distInMeters;
     }
 }
