@@ -32,8 +32,14 @@ const queryGraphHopper = async (points) => {
 	const { distance, time, points: pointsEncoded } = paths[0]
 
 	return {
-		distance,
-		time,
+		distance: {
+			value: distance,
+			unit: 'm',
+		},
+		time: {
+			value: time / 1000,
+			unit: 'sec',
+		},
 		pointsEncoded,
 	}
 }
