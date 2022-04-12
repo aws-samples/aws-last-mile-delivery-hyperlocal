@@ -21,11 +21,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TravelDistance {
-    private long meters;
-    private long seconds;
+public class TravelDistance extends Distance {
     private int h3Distance;
+
+    public TravelDistance(long distanceInMeters, long distanceInSeconds, int h3Distance) {
+        super(distanceInMeters, distanceInSeconds);
+        this.h3Distance = h3Distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TravelDistance)) return false;
+        if (!super.equals(o)) return false;
+        TravelDistance that = (TravelDistance) o;
+        return distanceInMeters == that.distanceInMeters && distanceInSeconds == that.distanceInSeconds && h3Distance == that.h3Distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), distanceInMeters, distanceInSeconds, h3Distance);
+    }
 }

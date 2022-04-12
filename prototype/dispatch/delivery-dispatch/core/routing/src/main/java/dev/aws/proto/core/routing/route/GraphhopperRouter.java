@@ -182,7 +182,7 @@ public class GraphhopperRouter implements IDistanceCalculator {
         }
 
         ResponsePath bestPath = ghResponse.getBest();
-        return Distance.ofValue((long) bestPath.getDistance(), bestPath.getTime());
+        return Distance.ofValue((long) bestPath.getDistance(), bestPath.getTime() / 1000L);
     }
 
 

@@ -18,15 +18,12 @@
 package dev.aws.proto.core.routing.route;
 
 import dev.aws.proto.core.routing.distance.Distance;
-import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.LocationBase;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,39 +37,19 @@ public class SegmentRoute extends Distance {
     private String pointsEncoded;
 
     public SegmentRoute(Distance dist, String pointsEncoded) {
-        super(dist.getDistance(), dist.getTime());
+        super(dist.getDistanceInMeters(), dist.getDistanceInSeconds());
         this.pointsEncoded = pointsEncoded;
     }
 
-    public static SegmentRoute between(LocationBase origin, LocationBase destination) {
+    public static SegmentRoute between(LocationBase<Distance> origin, LocationBase<Distance> destination) {
         Distance dist = origin.distanceTo(destination);
         String pointsEncoded = PolylineHelper.encodePointsToPolyline(Arrays.asList(origin.getCoordinate(), destination.getCoordinate()));
 
         return new SegmentRoute(dist, pointsEncoded);
     }
 
-    public static SegmentRoute fromSegments(List<DeliverySegment> segments) {
-        List<Coordinate> path = new ArrayList<>();
-        long allDistInMeters = 0;
-        long allDistTimeInMs = 0;
-
-        if (segments.size() > 0) {
-            path.add(segments.get(0).getFrom());
-        }
-
-        for (int i = 0; i < segments.size(); i++) {
-            path.add(segments.get(i).getTo());
-
-            allDistInMeters += segments.get(i).getRoute().getDistance();
-            allDistTimeInMs += segments.get(i).getRoute().getTime();
-        }
-        String pointsEncoded = PolylineHelper.encodePointsToPolyline(path);
-
-        return new SegmentRoute(Distance.ofValue(allDistInMeters, allDistTimeInMs), pointsEncoded);
-    }
-
     @Override
     public int hashCode() {
-        return Objects.hash(pointsEncoded, super.getDistance(), super.getTime());
+        return Objects.hash(pointsEncoded, super.getDistanceInMeters(), super.getDistanceInSeconds());
     }
 }

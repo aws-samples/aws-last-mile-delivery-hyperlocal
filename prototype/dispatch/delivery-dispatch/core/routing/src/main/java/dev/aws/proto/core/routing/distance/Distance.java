@@ -19,6 +19,8 @@ package dev.aws.proto.core.routing.distance;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.util.Objects;
+
 @JsonSerialize
 public class Distance {
 
@@ -27,37 +29,37 @@ public class Distance {
      */
     public static final Distance ZERO = Distance.ofValue(0L, 0L);
 
-    private final long distance;
-    private final long time;
+    protected final long distanceInMeters;
+    protected final long distanceInSeconds;
 
     protected Distance() {
-        this.distance = 0;
-        this.time = 0;
+        this.distanceInMeters = 0;
+        this.distanceInSeconds = 0;
     }
 
-    protected Distance(long distance, long time) {
-        this.distance = distance;
-        this.time = time;
+    protected Distance(long distanceInMeters, long distanceInSeconds) {
+        this.distanceInMeters = distanceInMeters;
+        this.distanceInSeconds = distanceInSeconds;
     }
 
     /**
-     * Create a distance of the given value.
+     * Create a distanceInMeters of the given value.
      *
-     * @param distance distance in meters
-     * @param time     time in milliseconds
-     * @return distance
+     * @param distanceInMeters  distanceInMeters in meters
+     * @param distanceInSeconds distanceInSeconds in seconds
+     * @return distanceInMeters
      */
-    public static Distance ofValue(long distance, long time) {
-        return new Distance(distance, time);
+    public static Distance ofValue(long distanceInMeters, long distanceInSeconds) {
+        return new Distance(distanceInMeters, distanceInSeconds);
     }
 
     /**
-     * Distance in length.
+     * Distance in meters.
      *
      * @return positive number or zero
      */
-    public long getDistance() {
-        return distance;
+    public long getDistanceInMeters() {
+        return distanceInMeters;
     }
 
     /**
@@ -65,39 +67,33 @@ public class Distance {
      *
      * @return positive number or zero
      */
-    public long getTime() {
-        return time;
+    public long getDistanceInSeconds() {
+        return distanceInSeconds;
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Distance dist = (Distance) o;
-        return dist.distance == this.distance && dist.time == this.time;
+        if (this == o) return true;
+        if (!(o instanceof Distance)) return false;
+        Distance distance = (Distance) o;
+        return distanceInMeters == distance.distanceInMeters && distanceInSeconds == distance.distanceInSeconds;
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(distance);
-//        return Long.hashCode(distance) ^ Long.hashCode(time);
+        return Objects.hash(distanceInMeters, distanceInSeconds);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Distance = %dkm %dm | Time = %dh %dm %ds %dms",
-                distance / 1000,
-                distance % 1000,
-                time / 3600_000,
-                time / 60_000 % 60,
-                time / 1000 % 60,
-                time % 1000);
+                "Distance = %dkm %dm | Time = %dh %dm %ds",
+                distanceInMeters / 1000,
+                distanceInMeters % 1000,
+                distanceInSeconds / 3600_000,
+                distanceInSeconds / 60_000 % 60,
+                distanceInSeconds % 60);
     }
 }
 

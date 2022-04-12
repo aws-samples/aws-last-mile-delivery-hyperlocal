@@ -141,7 +141,7 @@ public class H3DistanceCache {
             }
 
             Distance dist = router.travelDistance(hexa1Geo, hexa2Geo);
-            return new TravelDistance(dist.getDistance(), Math.round((double) dist.getTime() / 1000L), h3Distance);
+            return new TravelDistance(dist.getDistanceInMeters(), dist.getDistanceInSeconds(), h3Distance);
         }
     }
 

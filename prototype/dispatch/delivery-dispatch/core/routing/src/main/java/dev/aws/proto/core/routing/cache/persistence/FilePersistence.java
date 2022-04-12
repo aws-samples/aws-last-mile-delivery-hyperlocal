@@ -74,8 +74,8 @@ public class FilePersistence implements ICachePersistence {
                 for (int j = 0; j < dim; j++) {
                     TravelDistance travelDistance = distances[i][j];
 
-                    outputStream.writeLong(travelDistance.getMeters());
-                    outputStream.writeLong(travelDistance.getSeconds());
+                    outputStream.writeLong(travelDistance.getDistanceInMeters());
+                    outputStream.writeLong(travelDistance.getDistanceInSeconds());
                     outputStream.writeInt(travelDistance.getH3Distance());
                 }
             }

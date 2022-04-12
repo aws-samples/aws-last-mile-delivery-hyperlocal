@@ -17,7 +17,6 @@
 package dev.aws.proto.apps.instant.sequential.location;
 
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.location.LocationType;
 import lombok.Data;
 
@@ -29,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * This is usually pickup point, e.g.: restaurant, seller, etc.
  */
 @Data
-public class OriginLocation extends LocationBase {
+public class OriginLocation extends Location {
     /**
      * The time that takes to arriving to the origin, parking, picking up the item and be able to leave the location.
      * Default: Random number between 120k and 420k milliseconds (2 to 7 minutes).

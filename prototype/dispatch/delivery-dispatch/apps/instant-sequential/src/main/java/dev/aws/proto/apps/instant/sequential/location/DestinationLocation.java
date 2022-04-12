@@ -17,7 +17,6 @@
 package dev.aws.proto.apps.instant.sequential.location;
 
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.location.LocationType;
 import lombok.Data;
 
@@ -29,7 +28,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * This is usually a dropoff location, e.g.: customer who created the order.
  */
 @Data
-public class DestinationLocation extends LocationBase {
+public class DestinationLocation extends Location {
     /**
      * The time that takes from arriving to destination to delivering the item and be able to leave the location.
      * <p>
