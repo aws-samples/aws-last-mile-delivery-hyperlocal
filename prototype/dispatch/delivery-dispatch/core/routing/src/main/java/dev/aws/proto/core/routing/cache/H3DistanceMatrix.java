@@ -20,6 +20,7 @@ package dev.aws.proto.core.routing.cache;
 import com.uber.h3core.H3Core;
 import dev.aws.proto.core.routing.H3;
 import dev.aws.proto.core.routing.cache.persistence.ICachePersistence;
+import dev.aws.proto.core.routing.distance.IDistanceMatrix;
 import dev.aws.proto.core.routing.distance.TravelDistance;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.ILocation;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class H3DistanceMatrix {
+public class H3DistanceMatrix implements IDistanceMatrix<TravelDistance> {
     private static final Logger logger = LoggerFactory.getLogger(H3DistanceMatrix.class);
 
     private final H3DistanceCache distanceCache;
@@ -43,6 +44,7 @@ public class H3DistanceMatrix {
         this.locIdxLookup = locIdxLookup;
     }
 
+    @Override
     public TravelDistance distanceBetween(ILocation origin, ILocation destination) {
         logger.trace("Calculating distance between {} and {}", origin, destination);
 
