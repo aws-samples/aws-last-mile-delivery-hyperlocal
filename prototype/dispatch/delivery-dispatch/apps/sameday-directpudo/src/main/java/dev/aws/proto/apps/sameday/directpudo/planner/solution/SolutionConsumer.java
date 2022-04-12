@@ -17,13 +17,13 @@
 
 package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
+import dev.aws.proto.apps.appcore.api.response.DeliverySegment;
+import dev.aws.proto.apps.appcore.api.response.Segment;
 import dev.aws.proto.apps.sameday.directpudo.Order;
+import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
-import dev.aws.proto.apps.sameday.directpudo.data.DeliveryJob;
-import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.route.DeliverySegment;
-import dev.aws.proto.core.routing.route.SegmentRoute;
+import dev.aws.proto.core.routing.route.PolylineHelper;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +95,7 @@ public class SolutionConsumer {
                         .from((Coordinate) prevLoc)
                         .to((Coordinate) o.getOrigin())
                         .segmentType(DeliverySegment.SegmentType.TO_ORIGIN)
-                        .route(new SegmentRoute(Distance.ofValue(Math.abs(rand.nextLong()) % 2000, Math.abs(rand.nextLong()) % 1000), "MOCK"))
+                        .route(new Segment(Math.abs(rand.nextLong()) % 2000, Math.abs(rand.nextLong()) % 1000, PolylineHelper.encodePointsToPolyline(List.of((Coordinate) prevLoc, (Coordinate) o.getOrigin()))))
                         .build();
 
                 DeliverySegment segmentDestination = DeliverySegment.builder()
@@ -104,7 +104,7 @@ public class SolutionConsumer {
                         .from((Coordinate) o.getOrigin())
                         .to((Coordinate) o.getDestination())
                         .segmentType(DeliverySegment.SegmentType.TO_DESTINATION)
-                        .route(new SegmentRoute(Distance.ofValue(Math.abs(rand.nextLong()) % 2000, Math.abs(rand.nextLong()) % 1000), "MOCK"))
+                        .route(new Segment(Math.abs(rand.nextLong()) % 2000, Math.abs(rand.nextLong()) % 1000, PolylineHelper.encodePointsToPolyline(List.of((Coordinate) o.getOrigin(), (Coordinate) o.getDestination()))))
                         .build();
 
                 prevLoc = o.getDestination();
@@ -118,7 +118,7 @@ public class SolutionConsumer {
                     .createdAt(Timestamp.valueOf(LocalDateTime.now()).getTime())
                     .solverJobId(solverJobId)
                     .segments(jobSegments)
-                    .route(SegmentRoute.fromSegments(jobSegments))
+                    .route(Segment.fromSegments(jobSegments))
                     .build();
 
             deliveryJobs.add(deliveryJob);

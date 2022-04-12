@@ -20,10 +20,11 @@ package dev.aws.proto.apps.sameday.directpudo.data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.aws.proto.apps.appcore.api.response.DeliverySegment;
+import dev.aws.proto.apps.appcore.api.response.Segment;
 import dev.aws.proto.apps.appcore.data.DdbServiceBase;
+import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.config.DdbProperties;
-import dev.aws.proto.core.routing.route.DeliverySegment;
-import dev.aws.proto.core.routing.route.SegmentRoute;
 import dev.aws.proto.core.util.aws.SsmUtility;
 import org.bk.aws.dynamo.util.JsonAttributeValueUtil;
 import org.slf4j.Logger;
@@ -93,7 +94,7 @@ public class DdbDeliveryJobService extends DdbServiceBase {
      * @param solverJobId The solverJobId.
      * @return List of Delivery jobs
      */
-    public List<DeliveryJob> retreiveDeliveryJobsForSolverJobId(UUID solverJobId) {
+    public List<DeliveryJob> retrieveDeliveryJobsForSolverJobId(UUID solverJobId) {
         logger.debug("Loading delivery jobs for solverJobId {}", solverJobId);
 
         Map<String, String> expressionAttributeNames = new HashMap<>();
@@ -140,7 +141,7 @@ public class DdbDeliveryJobService extends DdbServiceBase {
                     .build();
 
             try {
-                deliveryJob.setRoute(mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("route")), SegmentRoute.class));
+                deliveryJob.setRoute(mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("route")), Segment.class));
             } catch (JsonProcessingException e) {
                 logger.error("Error parsing ddbItem :: route", e);
             }

@@ -20,6 +20,7 @@ package dev.aws.proto.apps.appcore.planner.solution;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.optaplanner.core.api.score.AbstractScore;
 
 import java.util.UUID;
@@ -32,6 +33,7 @@ import java.util.UUID;
  */
 @Data
 @NoArgsConstructor
+@SuperBuilder
 public abstract class DispatchSolutionBase<TScore extends AbstractScore> {
     /**
      * The unique identifier for the solution.

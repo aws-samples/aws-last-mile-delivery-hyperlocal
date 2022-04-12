@@ -15,8 +15,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.core.routing.route;
-
+package dev.aws.proto.apps.appcore.api.response;
 
 import dev.aws.proto.core.routing.location.Coordinate;
 import lombok.AllArgsConstructor;
@@ -65,12 +64,13 @@ public class DeliverySegment {
     /**
      * The type of the segment.
      */
-    private SegmentType segmentType;
+    private DeliverySegment.SegmentType segmentType;
 
     /**
      * The route for this segment.
      * Includes distance information and an encoded string representation for the routing points on the map.
      */
-    private SegmentRoute route;
+    private Segment route;
 
 }
+

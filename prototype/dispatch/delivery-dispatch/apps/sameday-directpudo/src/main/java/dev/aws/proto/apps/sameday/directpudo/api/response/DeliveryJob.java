@@ -15,10 +15,10 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.data;
+package dev.aws.proto.apps.sameday.directpudo.api.response;
 
-import dev.aws.proto.core.routing.route.DeliverySegment;
-import dev.aws.proto.core.routing.route.SegmentRoute;
+import dev.aws.proto.apps.appcore.api.response.DeliverySegment;
+import dev.aws.proto.apps.appcore.api.response.Segment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,5 +58,5 @@ public class DeliveryJob {
     /**
      * The segment route representation of all the segments (whole assignment).
      */
-    private SegmentRoute route;
+    private Segment route;
 }

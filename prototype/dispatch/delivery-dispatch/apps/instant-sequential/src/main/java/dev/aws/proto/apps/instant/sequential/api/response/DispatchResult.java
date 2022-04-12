@@ -17,9 +17,9 @@
 
 package dev.aws.proto.apps.instant.sequential.api.response;
 
+import dev.aws.proto.apps.appcore.api.response.DeliverySegment;
+import dev.aws.proto.apps.appcore.api.response.Segment;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
-import dev.aws.proto.core.routing.route.DeliverySegment;
-import dev.aws.proto.core.routing.route.SegmentRoute;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -61,7 +61,7 @@ public class DispatchResult extends dev.aws.proto.apps.appcore.api.response.Disp
         /**
          * The segment route representation of all the segments (whole assignment).
          */
-        private SegmentRoute route;
+        private Segment route;
     }
 
     /**
