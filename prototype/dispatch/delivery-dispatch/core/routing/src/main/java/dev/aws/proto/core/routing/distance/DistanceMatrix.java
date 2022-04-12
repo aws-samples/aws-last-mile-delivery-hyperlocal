@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-public class DistanceMatrix {
+public class DistanceMatrix implements IDistanceMatrix<Distance> {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrix.class);
 
     private final Map<ILocation, Map<ILocation, Distance>> matrix;
@@ -57,6 +57,7 @@ public class DistanceMatrix {
         private int dimension;
     }
 
+    @Override
     public Distance distanceBetween(ILocation origin, ILocation destination) {
         logger.trace("Calculating distance between {} and {}", origin, destination);
         Map<ILocation, Distance> distanceRow = this.matrix.get(origin);
