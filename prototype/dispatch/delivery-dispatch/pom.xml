@@ -60,6 +60,7 @@
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <optaplanner.version>8.19.0.Final</optaplanner.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <picocli.version>4.6.3</picocli.version>
         <quarkus-plugin.version>2.7.3.Final</quarkus-plugin.version>
@@ -92,7 +93,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
                 <groupId>com.graphhopper</groupId>
                 <artifactId>graphhopper-reader-osm</artifactId>

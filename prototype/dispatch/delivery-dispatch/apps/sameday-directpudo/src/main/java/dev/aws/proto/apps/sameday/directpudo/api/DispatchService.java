@@ -20,6 +20,7 @@ package dev.aws.proto.apps.sameday.directpudo.api;
 import dev.aws.proto.apps.appcore.config.SolutionConfig;
 import dev.aws.proto.apps.sameday.directpudo.Order;
 import dev.aws.proto.apps.sameday.directpudo.api.request.DispatchRequest;
+import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJobWithDeliveryJobs;
 import dev.aws.proto.apps.sameday.directpudo.data.DdbDeliveryJobService;
@@ -30,7 +31,10 @@ import dev.aws.proto.apps.sameday.directpudo.planner.solution.SolutionConsumer;
 import dev.aws.proto.core.routing.config.RoutingConfig;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.api.solver.SolverStatus;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,12 +68,22 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         this.solutionConfig = solutionConfig;
 
         this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper());
+        this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper(), routingConfig.routingProfile());
 
 //        SolverConfig solverConfig = SolverConfig.createFromXmlFile(java.nio.file.Path.of(this.solutionConfig.getSolverConfigXmlPath()).toFile());
 //        this.solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
+        SolverConfig solverConfig = SolverConfig.createFromXmlFile(java.nio.file.Path.of(this.solutionConfig.getSolverConfigXmlPath()).toFile());
+        this.solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
         this.solutionMap = new ConcurrentHashMap<>();
     }
 
+    /**
+     * TODO: reminder -- we can query drivers and do geoclustering on them, use clusters' centroids as
+     * "depot location" without using depot concept per se
+     *
+     * @param problemId The generated ID for the problem.
+     * @param req       The dispatch request object.
+     */
     @Override
     public void solveDispatchProblem(UUID problemId, DispatchRequest req) {
         long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
@@ -80,6 +94,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         DispatchSolution problem = new DispatchSolution();
         problem.setId(problemId);
         problem.setName("SameDayDirectPudoSolution");
+        problem.setName("MOCK_SameDayDirectPudoSolution");
         problem.setCreatedAt(createdAt);
         problem.setExecutionId(executionId);
         problem.setScore(HardMediumSoftLongScore.ZERO);
@@ -102,6 +117,9 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
         /// ---- END OF MOCK
 
+        logger.debug("End of mock");
+
+//        return;
 //        logger.trace("Extracting locations from request orders");
 //        List<LocationBase> allLocations = new ArrayList<>();
 //        for (Order o : req.getOrders()) {
@@ -138,6 +156,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         }
 
         List<DeliveryJob> deliveryJobs = deliveryJobService.retreiveDeliveryJobsForSolverJobId(problemId);
+        List<DeliveryJob> deliveryJobs = deliveryJobService.retrieveDeliveryJobsForSolverJobId(problemId);
 
         SolverJobWithDeliveryJobs result = SolverJobWithDeliveryJobs.builder()
                 .problemId(solverJob.getProblemId())

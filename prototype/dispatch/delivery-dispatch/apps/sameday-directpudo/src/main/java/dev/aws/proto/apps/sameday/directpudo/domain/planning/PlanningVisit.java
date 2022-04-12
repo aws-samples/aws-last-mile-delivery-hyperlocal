@@ -25,6 +25,7 @@ import lombok.Setter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.*;
 
+// TODO: add difficultyWeightFactoryClass (and change solver-config's constructionHeuristicType
 @PlanningEntity
 @Getter
 @Setter

@@ -38,7 +38,7 @@ public class DispatchResource {
     private static final Logger logger = LoggerFactory.getLogger(DispatchResource.class);
 
     @Inject
-    DispatchService dispatcherService;
+    DispatchService dispatchService;
 
     @Inject
     JobScheduler jobScheduler;
@@ -49,8 +49,14 @@ public class DispatchResource {
         logger.info("Dispatch solve request :: orders = {}", req.getOrders().length);
 
         UUID problemId = UUID.randomUUID();
-        jobScheduler.<DispatchService>enqueue(dispatcherService -> dispatcherService.solveDispatchProblem(problemId, req));
-        dispatcherService.saveInitialEnqueued(problemId, req);
+
+        try {
+            dispatchService.saveInitialEnqueued(problemId, req);
+        } catch (Exception e) {
+            logger.error("There was an error saving the initial enqueued job into the database: {}", e.getMessage());
+        }
+
+        jobScheduler.<DispatchService>enqueue(dispatchService -> dispatchService.solveDispatchProblem(problemId, req));
         return RequestResult.of(problemId.toString());
     }
 
@@ -60,6 +66,6 @@ public class DispatchResource {
         logger.debug(":: GetSolutionStatus :: problemId = {}", id);
         UUID problemId = UUID.fromString(id);
 
-        return dispatcherService.getSolutionStatus(problemId);
+        return dispatchService.getSolutionStatus(problemId);
     }
 }
