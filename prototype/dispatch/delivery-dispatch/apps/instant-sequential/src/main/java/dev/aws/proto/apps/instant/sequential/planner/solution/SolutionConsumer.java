@@ -16,16 +16,16 @@
  */
 package dev.aws.proto.apps.instant.sequential.planner.solution;
 
+import dev.aws.proto.apps.appcore.api.response.DeliverySegment;
+import dev.aws.proto.apps.appcore.api.response.Segment;
 import dev.aws.proto.apps.instant.sequential.Order;
 import dev.aws.proto.apps.instant.sequential.api.response.DispatchResult;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDelivery;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDriver;
+import dev.aws.proto.apps.instant.sequential.location.Location;
 import dev.aws.proto.apps.instant.sequential.util.Constants;
 import dev.aws.proto.core.routing.distance.Distance;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
-import dev.aws.proto.core.routing.location.LocationBase;
-import dev.aws.proto.core.routing.route.DeliverySegment;
-import dev.aws.proto.core.routing.route.SegmentRoute;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +63,7 @@ public class SolutionConsumer {
 
                 logger.debug("\torder[id={}][at={}] [distance from prev = {}s/{}m]",
                         order.getOrderId(), Instant.ofEpochMilli(order.getCreatedAt()).atZone(ZoneId.systemDefault()).toLocalDateTime().format(Constants.DATETIMEFORMATTER),
-                        dist.getTime() / 1000, dist.getDistance()
+                        dist.getDistanceInSeconds(), dist.getDistanceInMeters()
                 );
                 planningDelivery = planningDelivery.getNextPlanningDelivery();
             }
@@ -87,7 +87,7 @@ public class SolutionConsumer {
         List<PlanningDriver> drivers = solution.getPlanningDrivers();
 
         if (drivers.size() > 0) {
-            DistanceMatrix distanceMatrix = drivers.get(0).getLocation().getDistanceMatrix();
+            DistanceMatrix distanceMatrix = (DistanceMatrix) drivers.get(0).getLocation().getDistanceMatrix();
             result.setDistanceMatrixMetrics(distanceMatrix.getMetrics());
         }
 
@@ -107,7 +107,7 @@ public class SolutionConsumer {
             // TODO: review how segmets are assembled. if multiple drivers are involved this may not be the proper solution
 
             int segmentCtr = 0;
-            LocationBase prevLocation = driver.getLocation();
+            Location prevLocation = driver.getLocation();
 
             while (delivery != null) {
                 // TODO: review and remove once simulator supports more than one order/driver
@@ -121,7 +121,7 @@ public class SolutionConsumer {
                             .from(prevLocation.getCoordinate())
                             .to(delivery.getPickup().getCoordinate())
                             .segmentType(DeliverySegment.SegmentType.TO_ORIGIN)
-                            .route(SegmentRoute.between(prevLocation, delivery.getPickup()))
+                            .route(Segment.between(prevLocation, delivery.getPickup()))
                             .build();
 
                     DeliverySegment segmentToDestination = DeliverySegment.builder()
@@ -130,7 +130,7 @@ public class SolutionConsumer {
                             .from(delivery.getPickup().getCoordinate())
                             .to(delivery.getDropoff().getCoordinate())
                             .segmentType(DeliverySegment.SegmentType.TO_DESTINATION)
-                            .route(SegmentRoute.between(delivery.getPickup(), delivery.getDropoff()))
+                            .route(Segment.between(delivery.getPickup(), delivery.getDropoff()))
                             .build();
 
                     assignedOrderSegments.add(segmentToOrigin);
@@ -147,7 +147,7 @@ public class SolutionConsumer {
                     .driverId(driver.getId())
                     .driverIdentity(driver.getDriverIdentity())
                     .segments(assignedOrderSegments)
-                    .route(SegmentRoute.fromSegments(assignedOrderSegments))
+                    .route(Segment.fromSegments(assignedOrderSegments))
                     .build();
             assigned.add(driverAssignment);
         }

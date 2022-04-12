@@ -15,15 +15,16 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.api.response;
+package dev.aws.proto.apps.appcore.api.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
-@SuperBuilder
-public class SolverJobWithDeliveryJobs extends SolverJob {
-    private List<DeliveryJob> deliveryJobs;
+@NoArgsConstructor
+@AllArgsConstructor
+public class UnitValue<TUnit, TValue> {
+    private TUnit unit;
+    private TValue value;
 }
