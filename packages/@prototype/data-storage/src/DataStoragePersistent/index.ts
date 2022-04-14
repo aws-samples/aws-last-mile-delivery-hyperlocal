@@ -53,6 +53,8 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly sameDayDirectPudoSolverJobs: ddb.ITable
 
+	public readonly sameDayDirectPudoHubs: ddb.ITable
+
 	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 
 	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
@@ -242,5 +244,23 @@ export class DataStoragePersistent extends NestedStack {
 		})
 		this.ssmStringParameters[parameterStoreKeys.sameDayDirectPudoSolverJobsTableName] =
 			sameDayDirectPudoSolverJobsTableNameParameter
+
+		const sameDayDirectPudoHubsTableName = namespaced(this, 'sameday-directpudo-hubs')
+		const sameDayDirectPudoHubsTable = new hyperlocal_ddb.Table(this, 'SameDayDirectPudoHubs', {
+			tableName: sameDayDirectPudoHubsTableName,
+			removalPolicy: props.removalPolicy,
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+		this.sameDayDirectPudoHubs = sameDayDirectPudoHubsTable
+		const sameDayDirectPudoHubsTableNameParameter = new ssm.StringParameter(this, 'sameday-directpudo-hubs-param', {
+			parameterName: parameterStoreKeys.sameDayDirectPudoHubsTableName,
+			stringValue: sameDayDirectPudoHubsTableName,
+			description: 'sameDayDirectPudoHubsTableName tablename parameter for dispatcher',
+		})
+		this.ssmStringParameters[parameterStoreKeys.sameDayDirectPudoHubsTableName] =
+			sameDayDirectPudoHubsTableNameParameter
 	}
 }
