@@ -33,6 +33,7 @@ export interface SameDayDispatchEcsServiceProps {
 	readonly parameterStoreKeys: Record<string, string>
 	readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
 	readonly sameDayDirectPudoSolverJobs: ddb.ITable
+	readonly sameDayDirectPudoHubs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -55,6 +56,7 @@ export class SameDayDispatchEcsService extends Construct {
 			parameterStoreKeys,
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
+			sameDayDirectPudoHubs,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -94,6 +96,7 @@ export class SameDayDispatchEcsService extends Construct {
 						readDDBTablePolicyStatement(`${sameDayDirectPudoDeliveryJobs.tableArn}/index/${sameDayDirectPudoDeliveryJobsSolverJobIdIndexName}`),
 						readDDBTablePolicyStatement(sameDayDirectPudoSolverJobs.tableArn),
 						updateDDBTablePolicyStatement(sameDayDirectPudoSolverJobs.tableArn),
+						readDDBTablePolicyStatement(sameDayDirectPudoHubs.tableArn),
 					],
 				}),
 			},

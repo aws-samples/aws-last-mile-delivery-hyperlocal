@@ -31,6 +31,7 @@ export interface DispatchSetupProps {
 	readonly parameterStoreKeys: Record<string, string>
 	readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
 	readonly sameDayDirectPudoSolverJobs: ddb.ITable
+	readonly sameDayDirectPudoHubs: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 }
@@ -56,6 +57,7 @@ export class DispatchSetup extends Construct {
 			parameterStoreKeys,
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
+			sameDayDirectPudoHubs,
 			ssmStringParameters,
 			vpc,
 		} = props
@@ -92,6 +94,7 @@ export class DispatchSetup extends Construct {
 			parameterStoreKeys,
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
+			sameDayDirectPudoHubs,
 			ssmStringParameters,
 			vpc,
 		})

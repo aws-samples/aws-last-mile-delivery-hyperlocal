@@ -75,6 +75,9 @@ parameterStoreKeys:
   # key for sameday-directpudo -- solver jobs table name
   sameDayDirectPudoSolverJobsTableName: /HyperLocal/Ddb/SameDayDirectPudoSolverJobs/TableName
 
+  # key for sameday-directpudo -- hubs table name
+  sameDayDirectPudoHubsTableName: /HyperLocal/Ddb/SameDayDirectPudoHubs/TableName
+
 # open search service config
 # instance types:
 #   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html
