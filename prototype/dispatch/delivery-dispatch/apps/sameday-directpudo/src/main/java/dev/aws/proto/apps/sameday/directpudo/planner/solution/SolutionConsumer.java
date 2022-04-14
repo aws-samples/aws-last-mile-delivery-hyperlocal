@@ -22,6 +22,7 @@ import dev.aws.proto.apps.appcore.api.response.Segment;
 import dev.aws.proto.apps.sameday.directpudo.Order;
 import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.route.PolylineHelper;
 import org.optaplanner.core.api.solver.SolverStatus;
@@ -38,7 +39,7 @@ import java.util.UUID;
 public class SolutionConsumer {
     private static final Logger logger = LoggerFactory.getLogger(SolutionConsumer.class);
 
-    public static SolverJob extractSolverJob(DispatchSolution solution, SolverStatus solverStatus, long solverDurationInMs) {
+    public static SolverJob MOCK_extractSolverJob(DispatchSolution solution, SolverStatus solverStatus, long solverDurationInMs) {
         SolverJob result = SolverJob.builder()
                 .problemId(solution.getId())
                 .createdAt(solution.getCreatedAt())
@@ -60,7 +61,7 @@ public class SolutionConsumer {
      * @param orders   TEMPORARY PARAMETER UNTIL THE REAL MODELING WILL BE IMPLEMENTED THIS IS FOR MOCKING NOW
      * @return The list of delivery jobs.
      */
-    public static List<DeliveryJob> extractDeliveryJobs(DispatchSolution solution, List<Order> orders) {
+    public static List<DeliveryJob> MOCK_extractDeliveryJobs(DispatchSolution solution, List<Order> orders) {
         UUID solverJobId = solution.getId();
 
         List<DeliveryJob> deliveryJobs = new ArrayList<>();
@@ -127,4 +128,22 @@ public class SolutionConsumer {
         return deliveryJobs;
     }
 
+    public static void logSolution(DispatchSolution solution) {
+        logger.debug("[{}] solution score: {}", solution.getId(), solution.getScore());
+
+        solution.getPlanningDrivers().forEach(driver -> {
+
+            logger.debug("driver[{}] :: [visits = {}] :: location {}", driver.getId(), driver.chainLength(), driver.getLocation().getCoordinate());
+
+            PlanningVisit visit = driver.getNextPlanningVisit();
+            if (visit == null) {
+                logger.debug("\t-- NO visits assigned");
+            }
+
+            while (visit != null) {
+                logger.debug("\t{}", visit);
+                visit = visit.getNextPlanningVisit();
+            }
+        });
+    }
 }

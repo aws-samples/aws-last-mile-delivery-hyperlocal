@@ -15,23 +15,43 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.location;
+package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
-import dev.aws.proto.core.routing.distance.TravelDistance;
-import dev.aws.proto.core.routing.location.Coordinate;
-import dev.aws.proto.core.routing.location.LocationType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
 @NoArgsConstructor
-public class Location extends dev.aws.proto.core.routing.location.LocationBase<TravelDistance> {
-    public Location(String id, Coordinate coordinate, LocationType locationType) {
-        super(id, coordinate, locationType);
-    }
+@AllArgsConstructor
+@Getter
+@Setter
+public abstract class PlanningBase<TId extends Comparable<TId>> implements Comparable<PlanningBase<TId>> {
+    protected TId id;
 
     @PlanningId
+    public TId getId() {
+        return this.id;
+    }
+
+    public String getShortId() {
+        if (this.id != null) {
+            String idStr = this.id.toString();
+            if (idStr.length() > 8) {
+                idStr = idStr.substring(0, 8);
+            }
+            return idStr;
+        }
+        return null;
+    }
+
     @Override
-    public String getId() {
-        return super.getId();
+    public int compareTo(PlanningBase<TId> other) {
+        int classComp = getClass().getName().compareTo(other.getClass().getName());
+        if (classComp == 0) {
+            return this.id.compareTo(other.getId());
+        }
+        return classComp;
     }
 }
