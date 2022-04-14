@@ -29,6 +29,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public class CurrentCapacity extends CapacityBase {
+    public static final CurrentCapacity ZERO = CurrentCapacity.builder().build();
+
     private MaxCapacity maxCapacity;
 
     public boolean canAddParcel(Parcel parcel) {
@@ -59,4 +61,8 @@ public class CurrentCapacity extends CapacityBase {
         this.setWeight(Math.max(this.getWeight() - parcel.getWeight(), 0));
     }
 
+    @Override
+    public String toString() {
+        return "[current capacity: " + super.toString() + "]";
+    }
 }

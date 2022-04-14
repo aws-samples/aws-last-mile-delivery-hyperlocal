@@ -18,8 +18,8 @@
 package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.solver.VisitIndexUpdatingVariableListener;
+import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
-import dev.aws.proto.core.routing.location.LocationBase;
 import lombok.Getter;
 import lombok.Setter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -29,7 +29,7 @@ import org.optaplanner.core.api.domain.variable.*;
 @PlanningEntity
 @Getter
 @Setter
-public class PlanningVisit implements VisitOrDriver {
+public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver {
 
     public static enum VisitType {
         PICKUP,
@@ -37,8 +37,9 @@ public class PlanningVisit implements VisitOrDriver {
     }
 
     private VisitType visitType;
-    private LocationBase location;
+    private Location location;
     private DeliveryRide ride;
+    private String orderId;
 
     // planning variables: changes during planning
     private VisitOrDriver previousVisitOrDriver;
@@ -51,7 +52,7 @@ public class PlanningVisit implements VisitOrDriver {
     // getters/setters overrides
 
     @Override
-    public LocationBase getLocation() {
+    public Location getLocation() {
         return this.location;
     }
 
@@ -90,4 +91,18 @@ public class PlanningVisit implements VisitOrDriver {
     }
 
     // todo: add distanceTo() method
+
+    public String getPlanningDriverId() {
+        return planningDriver == null ?
+                "null" : planningDriver.getId();
+    }
+
+    @Override
+    public String toString() {
+        String prev = previousVisitOrDriver == null ? "null" :
+                previousVisitOrDriver instanceof PlanningDriver ? ((PlanningDriver) previousVisitOrDriver).getId() : ((PlanningVisit) previousVisitOrDriver).getId();
+        String next = nextVisit == null ? "null" : nextVisit.getId();
+
+        return "[" + visitType + "][OID: " + this.getOrderId() + "][" + getShortId() + "][idx=" + visitIndex + "] :: " + location + " [prev = " + prev + "][next = " + next + "]";
+    }
 }

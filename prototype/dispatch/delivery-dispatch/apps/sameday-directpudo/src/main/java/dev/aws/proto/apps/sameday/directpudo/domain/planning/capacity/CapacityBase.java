@@ -31,4 +31,9 @@ public class CapacityBase {
     private float height;
     private float width;
     private float weight;
+
+    @Override
+    public String toString() {
+        return "[l=" + length + " | h=" + height + " | w=" + weight + "][weight = " + weight + "]";
+    }
 }

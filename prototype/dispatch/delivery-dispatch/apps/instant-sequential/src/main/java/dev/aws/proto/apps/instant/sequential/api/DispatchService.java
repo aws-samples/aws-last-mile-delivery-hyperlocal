@@ -29,6 +29,7 @@ import dev.aws.proto.apps.instant.sequential.data.DriverQueryManager;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDelivery;
 import dev.aws.proto.apps.instant.sequential.domain.planning.PlanningDriver;
 import dev.aws.proto.apps.instant.sequential.location.DestinationLocation;
+import dev.aws.proto.apps.instant.sequential.location.Location;
 import dev.aws.proto.apps.instant.sequential.location.OriginLocation;
 import dev.aws.proto.apps.instant.sequential.planner.solution.DispatchSolution;
 import dev.aws.proto.apps.instant.sequential.planner.solution.SolutionConsumer;
@@ -36,7 +37,6 @@ import dev.aws.proto.core.routing.config.RoutingConfig;
 import dev.aws.proto.core.routing.distance.DistanceMatrix;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.ILocation;
-import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
@@ -122,7 +122,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         }
 
         // TODO: fill out segments
-        List<LocationBase> allLocations = new ArrayList<>();
+        List<Location> allLocations = new ArrayList<>();
 
         for (Order inputOrder : req.getOrders()) {
             OriginLocation originLocation = new OriginLocation(inputOrder.getOrigin().getId(), (Coordinate) inputOrder.getOrigin());
@@ -152,7 +152,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         // build distance matrix
         DistanceMatrix distanceMatrix = DistanceMatrix.generate(matrixLocs, this.graphhopperRouter);
         logger.trace(distanceMatrix.toString());
-        for (LocationBase loc : allLocations) {
+        for (Location loc : allLocations) {
             loc.setDistanceMatrix(distanceMatrix);
         }
 

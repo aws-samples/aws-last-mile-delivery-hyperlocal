@@ -20,24 +20,24 @@ package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCapacity;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
 import dev.aws.proto.apps.sameday.directpudo.location.DriverLocation;
-import dev.aws.proto.core.routing.location.LocationBase;
+import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PlanningDriver implements VisitOrDriver {
+public class PlanningDriver extends PlanningBase<String> implements VisitOrDriver {
 
     private DriverLocation location;
     private MaxCapacity maxCapacity;
 
     // shadow variables
     private CurrentCapacity currentCapacity;
-    private PlanningVisit nextVisit;
+    private PlanningVisit nextPlanningVisit;
 
     // overrides
     @Override
-    public LocationBase getLocation() {
+    public Location getLocation() {
         return this.location;
     }
 
@@ -51,15 +51,21 @@ public class PlanningDriver implements VisitOrDriver {
         return 0;
     }
 
-    @Override
-    public PlanningVisit getNextPlanningVisit() {
-        return this.nextVisit;
-    }
-
-    @Override
-    public void setNextPlanningVisit(PlanningVisit nextPlanningVisit) {
-        this.nextVisit = nextPlanningVisit;
-    }
-
     // TODO: add getDistanceTo methods
+
+    @Override
+    public String toString() {
+        return "[Driver][" + getId() + "] :: " + location.getCoordinate() + " :: " + currentCapacity + " :: " + maxCapacity;
+    }
+
+    public long chainLength() {
+        long len = 0;
+        PlanningVisit visit = this.getNextPlanningVisit();
+
+        while (visit != null) {
+            len++;
+            visit = visit.getNextPlanningVisit();
+        }
+        return len;
+    }
 }

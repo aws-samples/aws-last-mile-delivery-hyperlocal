@@ -25,7 +25,7 @@ import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 @Getter
 @Setter
 @DeepPlanningClone
-public class DeliveryRide {
+public class DeliveryRide extends PlanningBase<Long> {
     protected PlanningVisit pickupVisit;
     protected PlanningVisit dropoffVisit;
     protected Parcel parcel;

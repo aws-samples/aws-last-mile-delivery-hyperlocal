@@ -49,4 +49,9 @@ public class LocationBase<TDistance extends Distance> implements ILocation, Comp
     public int compareTo(LocationBase other) {
         return this.locationType.compareTo(other.locationType);
     }
+
+    @Override
+    public String toString() {
+        return "[" + locationType + "][" + id + "]" + ((Coordinate) coordinate).toString();
+    }
 }
