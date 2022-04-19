@@ -19,7 +19,7 @@ import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_dynamodb as ddb, aw
 import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowOpenSearchRead, AllowOpenSearchWrite, readDDBTablePolicyStatement, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchRead, AllowOpenSearchWrite, readDDBTablePolicyStatement, LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly MEMORYDB_ADMIN_USERNAME: string
@@ -80,6 +80,7 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			vpc,
 			vpcSubnets: {
@@ -89,9 +90,5 @@ export class ListDriversForPolygonLambda extends DeclaredLambdaFunction<Environm
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

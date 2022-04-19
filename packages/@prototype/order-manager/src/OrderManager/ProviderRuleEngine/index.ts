@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_lambda as lambda, aws_dynamodb as ddb, aws_iam as iam, aws_apigateway as apigw, aws_secretsmanager as secretsmanager } from 'aws-cdk-lib'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
 	PROVIDERS: string
@@ -82,13 +82,10 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 						`${instantDeliveryProviderSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

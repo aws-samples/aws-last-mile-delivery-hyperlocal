@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -62,6 +62,7 @@ export class InstantDeliveryProviderCallbackLambda extends DeclaredLambdaFunctio
 					effect: iam.Effect.ALLOW,
 					resources: [eventBus.eventBusArn],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			layers: lambdaLayers,
 			vpc,
@@ -72,9 +73,5 @@ export class InstantDeliveryProviderCallbackLambda extends DeclaredLambdaFunctio
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

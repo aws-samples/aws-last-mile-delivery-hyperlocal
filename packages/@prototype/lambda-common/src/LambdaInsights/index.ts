@@ -17,8 +17,22 @@
 import { Construct } from 'constructs'
 import { Stack, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 
-export const LambdaInsightsExecutionPolicy = (): iam.IManagedPolicy => {
-	return iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLambdaInsightsExecutionRolePolicy')
+export const LambdaInsightsExecutionPolicyStatements = (): iam.PolicyStatement[] => {
+	return [
+		new iam.PolicyStatement({
+			actions: ['logs:CreateLogGroup'],
+			effect: iam.Effect.ALLOW,
+			resources: ['*'],
+		}),
+		new iam.PolicyStatement({
+			actions: [
+				'logs:CreateLogStream',
+				'logs:PutLogEvents',
+			],
+			effect: iam.Effect.ALLOW,
+			resources: ['arn:aws:logs:*:*:log-group:/aws/lambda-insights:*'],
+		}),
+	]
 }
 
 export const LambdaInsightsLayer = (scope: Construct, id: string): lambda.LayerVersion => {

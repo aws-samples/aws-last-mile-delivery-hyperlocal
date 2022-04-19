@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Arn, Stack, aws_opensearchservice as opensearchservice, aws_ec2 as ec2, aws_iam as iam } from 'aws-cdk-lib'
+import { Arn, Stack, aws_opensearchservice as opensearchservice, aws_ec2 as ec2, aws_iam as iam, ArnFormat } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface OpenSearchClusterProps {
@@ -51,9 +51,76 @@ export class OpenSearchCluster extends Construct {
 		} = props
 
 		// https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html
-		const cognitoDashboardsRole = new iam.Role(this, 'CognitoKabanaAuthRole', {
+		const cognitoDashboardsRole = new iam.Role(this, 'CognitoKibanaAuthRole', {
 			assumedBy: new iam.ServicePrincipal('es.amazonaws.com'),
-			managedPolicies: [iam.ManagedPolicy.fromManagedPolicyArn(this, 'AmazonOpenSearchServiceCognitoAccess', 'arn:aws:iam::aws:policy/AmazonOpenSearchServiceCognitoAccess')],
+			inlinePolicies: {
+				cognitoUserPoolAccess: new iam.PolicyDocument({
+					statements: [
+						new iam.PolicyStatement({
+							effect: iam.Effect.ALLOW,
+							actions: [
+								'cognito-idp:DescribeUserPool',
+								'cognito-idp:CreateUserPoolClient',
+								'cognito-idp:DeleteUserPoolClient',
+								'cognito-idp:UpdateUserPoolClient',
+								'cognito-idp:DescribeUserPoolClient',
+								'cognito-idp:AdminInitiateAuth',
+								'cognito-idp:AdminUserGlobalSignOut',
+								'cognito-idp:ListUserPoolClients',
+							],
+							resources: [Arn.format({
+								resource: 'userpool',
+								service: 'cognito-idp',
+								resourceName: userPoolId,
+								arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
+							}, Stack.of(scope))],
+						}),
+					],
+				}),
+				cognitoIdentityPoolAccess: new iam.PolicyDocument({
+					statements: [
+						new iam.PolicyStatement({
+							effect: iam.Effect.ALLOW,
+							actions: [
+								'cognito-identity:DescribeIdentityPool',
+								'cognito-identity:UpdateIdentityPool',
+								'cognito-identity:GetIdentityPoolRoles',
+							],
+							resources: [Arn.format({
+								resource: 'identitypool',
+								service: 'cognito-identity',
+								resourceName: identityPoolId,
+								arnFormat: ArnFormat.SLASH_RESOURCE_NAME,
+							}, Stack.of(scope))],
+						}),
+					],
+				}),
+				setIdentityPoolRoles: new iam.PolicyDocument({
+					statements: [
+						new iam.PolicyStatement({
+							effect: iam.Effect.ALLOW,
+							actions: ['cognito-identity:SetIdentityPoolRoles'],
+							resources: ['*'],
+						}),
+					],
+				}),
+				passRolePolicy: new iam.PolicyDocument({
+					statements: [
+						new iam.PolicyStatement({
+							effect: iam.Effect.ALLOW,
+							actions: ['iam:PassRole'],
+							resources: [':aws:iam::*:role/*'],
+							conditions: {
+								StringLike: {
+									'iam:PassedToService': [
+										'cognito-identity.amazonaws.com',
+									],
+								},
+							},
+						}),
+					],
+				}),
+			},
 		})
 
 		const domainName = namespaced(this, 'live-data', { lowerCase: true })

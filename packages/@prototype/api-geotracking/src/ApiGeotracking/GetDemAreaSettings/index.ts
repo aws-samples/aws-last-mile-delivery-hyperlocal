@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_memorydb as memorydb, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy, readDDBTablePolicyStatement } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements, readDDBTablePolicyStatement } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
     readonly DDB_TABLE: string
@@ -55,6 +55,7 @@ export class GetDemAreaSettingsLambda extends DeclaredLambdaFunction<Environment
 			layers: lambdaLayers,
 			initialPolicy: [
 				readDDBTablePolicyStatement(demographicAreaDispatchSettings.tableArn),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			vpc,
 			vpcSubnets: {
@@ -64,9 +65,5 @@ export class GetDemAreaSettingsLambda extends DeclaredLambdaFunction<Environment
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

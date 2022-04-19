@@ -20,7 +20,7 @@ import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 export interface DriverLocationUpdateIngestLambdaExternalDeps {
 	readonly vpc: ec2.IVpc
@@ -99,6 +99,7 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			layers: lambdaLayers,
 			vpc,
@@ -109,9 +110,5 @@ export class DriverLocationUpdateIngestLambda extends DeclaredLambdaFunction<Env
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }
