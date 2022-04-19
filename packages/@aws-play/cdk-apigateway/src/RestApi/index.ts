@@ -50,9 +50,6 @@ export class RestApi extends apigw.RestApi {
 	constructor (scope: Construct, id: string, props: RestApiProps) {
 		super(scope, id, RestApi.defaultProps(props))
 
-		// dummy
-		this.root.addMethod('ANY')
-
 		let { restApiName } = props
 
 		if (!restApiName) {
