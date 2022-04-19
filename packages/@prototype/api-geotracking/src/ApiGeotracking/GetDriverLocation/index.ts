@@ -19,7 +19,7 @@ import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_iam as iam } from '
 import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly MEMORYDB_ADMIN_USERNAME: string
@@ -69,6 +69,7 @@ export class GetDriverLocationLambda extends DeclaredLambdaFunction<Environment,
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			vpc,
 			vpcSubnets: {
@@ -78,9 +79,5 @@ export class GetDriverLocationLambda extends DeclaredLambdaFunction<Environment,
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

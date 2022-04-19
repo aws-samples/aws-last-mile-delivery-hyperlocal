@@ -19,7 +19,7 @@ import { Duration, aws_kinesis as kinesis, aws_lambda as lambda, aws_iam as iam,
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly GEO_CLUSTERING_MANAGER_ARN: string
@@ -69,13 +69,10 @@ export class OrderIngestLambda extends DeclaredLambdaFunction<Environment, Depen
 					],
 					effect: iam.Effect.ALLOW,
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

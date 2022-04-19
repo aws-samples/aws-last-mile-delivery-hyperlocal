@@ -19,7 +19,7 @@ import { Duration, aws_lambda as lambda, aws_iam as iam, aws_events as events, a
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { namespaced } from '@aws-play/cdk-core'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -81,6 +81,7 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			vpc,
 			vpcSubnets: {
@@ -90,9 +91,5 @@ export class GeofencingServiceLambda extends DeclaredLambdaFunction<Environment,
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

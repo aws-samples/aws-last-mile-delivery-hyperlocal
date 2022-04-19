@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_dynamodb as ddb, aws_kinesis as kinesis, aws_lambda as lambda, aws_iam as iam } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 
 interface Environment extends DeclaredLambdaEnvironment {
 	readonly PROVIDER_LOCKS_TABLE: string
@@ -81,13 +81,10 @@ export class DriverCleanupLambda extends DeclaredLambdaFunction<Environment, Dep
 						`${instantDeliveryProviderOrders.tableArn}/index/${instantDeliveryProviderOrdersStatusIndex}`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

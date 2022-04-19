@@ -19,7 +19,7 @@ import { Duration, aws_lambda as lambda, aws_dynamodb as ddb, aws_events as even
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -139,13 +139,10 @@ export class OrchestratorHelperLambda extends DeclaredLambdaFunction<Environment
 						`${instantDeliveryProviderApiSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

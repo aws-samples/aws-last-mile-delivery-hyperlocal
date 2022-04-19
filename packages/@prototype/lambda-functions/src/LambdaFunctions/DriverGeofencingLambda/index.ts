@@ -20,7 +20,7 @@ import { namespaced } from '@aws-play/cdk-core'
 import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { Kinesis } from 'cdk-iam-actions/lib/actions'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 export interface DriverGeofencingtLambdaExternalDeps {
@@ -103,6 +103,7 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			layers: lambdaLayers,
 			vpc,
@@ -113,9 +114,5 @@ export class DriverGeofencingtLambda extends DeclaredLambdaFunction<Environment,
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

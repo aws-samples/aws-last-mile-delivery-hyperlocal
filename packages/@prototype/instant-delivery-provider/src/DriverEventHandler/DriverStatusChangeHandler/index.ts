@@ -19,7 +19,7 @@ import { Duration, aws_dynamodb as ddb, aws_events as events, aws_secretsmanager
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -96,13 +96,10 @@ export class DriverStatusChangeHandler extends DeclaredLambdaFunction<Environmen
 						`${instantDeliveryProviderApiSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

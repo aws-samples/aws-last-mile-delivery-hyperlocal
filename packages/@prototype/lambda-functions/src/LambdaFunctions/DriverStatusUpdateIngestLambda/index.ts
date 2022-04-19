@@ -19,7 +19,7 @@ import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, a
 import { namespaced } from '@aws-play/cdk-core'
 import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { AllowOpenSearchWrite, LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -87,6 +87,7 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 					],
 				}),
 				AllowOpenSearchWrite(openSearchDomain.domainArn),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			layers: lambdaLayers,
 			vpc,
@@ -97,9 +98,5 @@ export class DriverStatusUpdateLambda extends DeclaredLambdaFunction<Environment
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

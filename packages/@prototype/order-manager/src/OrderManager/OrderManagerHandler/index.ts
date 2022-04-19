@@ -20,7 +20,7 @@ import { MemoryDBCluster } from '@prototype/live-data-cache'
 import { Networking } from '@prototype/networking'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -108,6 +108,7 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 						`${memoryDBCluster.adminPasswordSecret.secretArn}*`,
 					],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			vpc: privateVpc,
 			layers: [
@@ -122,9 +123,5 @@ export class OrderManagerHandlerLambda extends DeclaredLambdaFunction<Environmen
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }

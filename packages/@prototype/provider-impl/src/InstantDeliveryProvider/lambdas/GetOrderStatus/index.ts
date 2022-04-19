@@ -18,7 +18,7 @@ import { Construct } from 'constructs'
 import { Duration, aws_ec2 as ec2, aws_lambda as lambda, aws_events as events, aws_iam as iam, aws_dynamodb as ddb } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
-import { LambdaInsightsExecutionPolicy } from '@prototype/lambda-common'
+import { LambdaInsightsExecutionPolicyStatements } from '@prototype/lambda-common'
 import { SERVICE_NAME, PROVIDER_NAME } from '@prototype/common'
 
 interface Environment extends DeclaredLambdaEnvironment {
@@ -73,6 +73,7 @@ export class GetOrderStatusLambda extends DeclaredLambdaFunction<Environment, De
 					effect: iam.Effect.ALLOW,
 					resources: [instantDeliveryProviderOrders.tableArn],
 				}),
+				...LambdaInsightsExecutionPolicyStatements(),
 			],
 			layers: lambdaLayers,
 			vpc,
@@ -83,9 +84,5 @@ export class GetOrderStatusLambda extends DeclaredLambdaFunction<Environment, De
 		}
 
 		super(scope, id, declaredProps)
-
-		if (this.role) {
-			this.role.addManagedPolicy(LambdaInsightsExecutionPolicy())
-		}
 	}
 }
