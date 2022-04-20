@@ -19,10 +19,14 @@ ADD ${MAPFILE_URL} mapfile.osm.pbf
 ## ####################################################################################################################
 FROM --platform=linux/arm64 public.ecr.aws/docker/library/maven:3.8.4-amazoncorretto-11 as gh-build
 
+ARG DISTANCE_CACHE_FILE=cache-res9.distcache
+
 WORKDIR /build
 
 COPY --from=downloader /download/graphhopper.jar /build/graphhopper.jar
 COPY --from=downloader /download/mapfile.osm.pbf /build/mapfile.osm.pbf
+
+ADD ${DISTANCE_CACHE_FILE} /build/cache-res9.distcache
 
 # add the config file
 COPY ./graphhopper-config.yml /build/graphhopper-config.yml
@@ -51,6 +55,8 @@ COPY --from=downloader --chown=1001 /download/mapfile.osm.pbf /map/mapfile.osm.p
 
 # graphhopper cache
 COPY --from=gh-build --chown=1001 /graphhopper-cache /graphhopper-cache
+
+COPY --from=gh-build --chown=1001 /build/cache-res9.distcache /cache/cache-res9.distcache
 
 # settings
 COPY ./config/application.properties /app/config/application.properties
