@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedSwapMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -39,6 +41,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DeliveryRideSwapMoveIteratorFactory implements MoveIteratorFactory<DispatchSolution, Move<DispatchSolution>> {
+    private static final Logger logger = LoggerFactory.getLogger(DeliveryRideSwapMoveIteratorFactory.class);
 
     private List<GenuineVariableDescriptor<DispatchSolution>> variableDescriptorList;
     private List<SingletonInverseVariableSupply> inverseVariableSupplyList = null;
@@ -63,13 +66,17 @@ public class DeliveryRideSwapMoveIteratorFactory implements MoveIteratorFactory<
             // No seriously, write a custom move instead of reusing ChainedSwapMove so you don't need any of this
             // Yes, I know, chain correction like in ChainedSwapMove is a big pain to write yourself...
             InnerScoreDirector<DispatchSolution, HardMediumSoftLongScore> innerScoreDirector = (InnerScoreDirector<DispatchSolution, HardMediumSoftLongScore>) scoreDirector;
-            GenuineVariableDescriptor<DispatchSolution> variableDescriptor = innerScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(PlanningVisit.class).getGenuineVariableDescriptor(Constants.PreviousVisitOrDriver);
+            GenuineVariableDescriptor<DispatchSolution> variableDescriptor = innerScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(PlanningVisit.class).getGenuineVariableDescriptor(Constants.PreviousVisitOrVehicle);
             variableDescriptorList = Collections.singletonList(variableDescriptor);
             inverseVariableSupplyList = Collections.singletonList(innerScoreDirector.getSupplyManager().demand(new SingletonInverseVariableDemand<>(variableDescriptor)));
         }
 
+        logger.trace("Creating DeliveryRideSwapMoveIterator");
         DispatchSolution solution = scoreDirector.getWorkingSolution();
-        return new DeliveryRideSwapMoveIterator(solution.getRides(), workingRandom);
+        DeliveryRideSwapMoveIterator deliveryRideSwapMoveIterator = new DeliveryRideSwapMoveIterator(solution.getRides(), workingRandom);
+        logger.debug("DeliveryRideSwapMoveIterator created");
+
+        return deliveryRideSwapMoveIterator;
     }
 
     @AllArgsConstructor
