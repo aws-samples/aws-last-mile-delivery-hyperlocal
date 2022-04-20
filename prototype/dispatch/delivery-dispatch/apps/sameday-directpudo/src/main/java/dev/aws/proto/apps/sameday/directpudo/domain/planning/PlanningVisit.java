@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 @PlanningEntity
 @Getter
 @Setter
-public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver {
 public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicle {
     private static final Logger logger = LoggerFactory.getLogger(PlanningVisit.class);
 
@@ -48,15 +47,13 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
     private String orderId;
 
     // planning variables: changes during planning
-    private VisitOrDriver previousVisitOrDriver;
     private VisitOrVehicle previousVisitOrVehicle;
 
     // shadow variables
-    private PlanningVisit nextVisit;
-    private PlanningDriver planningDriver;
     private PlanningVisit nextPlanningVisit;
     private PlanningVehicle planningVehicle;
     private Integer visitIndex;
+    private Long deliveryDurationUntilNow;
 
     // getters/setters overrides
 
@@ -69,31 +66,18 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
 
     @DeepPlanningClone
     @PlanningVariable(
-            valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningVisitRange},
             valueRangeProviderRefs = {Constants.PlanningVehicleRange, Constants.PlanningVisitRange},
             graphType = PlanningVariableGraphType.CHAINED
     )
-    public VisitOrDriver getPreviousVisitOrDriver() {
-        return this.previousVisitOrDriver;
     public VisitOrVehicle getPreviousVisitOrVehicle() {
         return this.previousVisitOrVehicle;
     }
 
     @Override
     public PlanningVisit getNextPlanningVisit() {
-        return this.nextVisit;
         return this.nextPlanningVisit;
     }
 
-    @Override
-    public void setNextPlanningVisit(PlanningVisit nextVisit) {
-        this.nextVisit = nextVisit;
-    }
-
-    @Override
-    @AnchorShadowVariable(sourceVariableName = Constants.PreviousVisitOrDriver)
-    public PlanningDriver getPlanningDriver() {
-        return this.planningDriver;
     @AnchorShadowVariable(sourceVariableName = Constants.PreviousVisitOrVehicle)
     public PlanningVehicle getPlanningVehicle() {
         return this.planningVehicle;
@@ -101,18 +85,26 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
 
     @CustomShadowVariable(
             variableListenerClass = VisitIndexUpdatingVariableListener.class,
-            sources = {@PlanningVariableReference(variableName = Constants.PreviousVisitOrDriver)}
             sources = {@PlanningVariableReference(variableName = Constants.PreviousVisitOrVehicle)}
     )
     public Integer getVisitIndex() {
         return this.visitIndex;
     }
 
+    //    @CustomShadowVariable(
+//            variableListenerRef = @PlanningVariableReference(variableName = "visitIndex")
+//    )
+    public Long getDeliveryDurationUntilNow() {
+        return this.deliveryDurationUntilNow;
+    }
+
     // todo: add distanceTo() method
 
-    public String getPlanningDriverId() {
-        return planningDriver == null ?
-                "null" : planningDriver.getId();
+    public String getPlanningVehicleId() {
+        return planningVehicle == null ?
+                this.id + "-VEHICLE" : planningVehicle.getId();
+    }
+
     @Override
     public int hashCode() {
         return super.id.hashCode();
@@ -120,10 +112,42 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
 
     @Override
     public String toString() {
-        String prev = previousVisitOrDriver == null ? "null" :
-                previousVisitOrDriver instanceof PlanningDriver ? ((PlanningDriver) previousVisitOrDriver).getId() : ((PlanningVisit) previousVisitOrDriver).getId();
-        String next = nextVisit == null ? "null" : nextVisit.getId();
+        String prev = previousVisitOrVehicle == null ? "null" :
+                previousVisitOrVehicle instanceof PlanningVehicle ? "Vehicle" + ((PlanningVehicle) previousVisitOrVehicle).getId() : ((PlanningVisit) previousVisitOrVehicle).getId();
+        String next = nextPlanningVisit == null ? "null" : nextPlanningVisit.getShortId();
 
-        return "[" + visitType + "][OID: " + this.getOrderId() + "][" + getShortId() + "][idx=" + visitIndex + "] :: " + location + " [prev = " + prev + "][next = " + next + "]";
+        String durationFromPrev = previousVisitOrVehicle == null ? "null" :
+                previousVisitOrVehicle instanceof PlanningVehicle ?
+                        String.valueOf(((PlanningVehicle) previousVisitOrVehicle).getLocation().distanceTo(this.getLocation()).getDistanceInSeconds()) :
+                        String.valueOf(((PlanningVisit) previousVisitOrVehicle).getLocation().distanceTo(this.getLocation()).getDistanceInSeconds());
+
+        return "[visit[" + getId() + "]] [" + visitType + "][order=" + this.getOrderId() + "][idx=" + visitIndex + "]\t[durationUntilNowInSec=" + deliveryDurationUntilNow + "][durFromPrev= " + durationFromPrev + "]\t[prev = " + prev + "][next = " + next + "]";
+    }
+
+    public int scoreForDistanceFromPreviousVisitOrVehicle() {
+        if (previousVisitOrVehicle == null) {
+            throw new IllegalStateException("This method should not be called when the previousVisitOrDriver is not initialized yet.");
+        }
+
+        TravelDistance distance = this.location.distanceTo(previousVisitOrVehicle.getLocation());
+        return (int) distance.getDistanceInMeters();
+    }
+
+    public boolean isLastVisit() {
+        return this.nextPlanningVisit == null;
+    }
+
+    public int scoreForDistanceFromLastVisitToHub() {
+        if (!isLastVisit()) {
+            throw new IllegalStateException("This method should not be called when this visit is not the last one");
+        }
+
+        TravelDistance distance = this.location.distanceTo(this.getPlanningVehicle().getLocation());
+        return (int) distance.getDistanceInMeters();
+    }
+
+    public int scoreForMaxDurationOfDeliveryJob() {
+        int secDiff = (int) (this.deliveryDurationUntilNow - Constants.MaxDurationOfDeliveryJobInSeconds);
+        return Math.max(secDiff, 0);
     }
 }
