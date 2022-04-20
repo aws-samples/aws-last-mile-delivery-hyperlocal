@@ -20,6 +20,7 @@ package dev.aws.proto.apps.sameday.directpudo.domain.planning.solver;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrVehicle;
 import dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution;
+import dev.aws.proto.core.routing.distance.TravelDistance;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.slf4j.Logger;
@@ -27,8 +28,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-public class VisitIndexUpdatingVariableListener implements VariableListener<DispatchSolution, PlanningVisit> {
-    private static final Logger logger = LoggerFactory.getLogger(VisitIndexUpdatingVariableListener.class);
+public class VisitShadowVarsUpdatingVariableListener implements VariableListener<DispatchSolution, PlanningVisit> {
+    private static final Logger logger = LoggerFactory.getLogger(VisitShadowVarsUpdatingVariableListener.class);
 
     @Override
     public void beforeEntityAdded(ScoreDirector<DispatchSolution> scoreDirector, PlanningVisit planningVisit) {
@@ -64,16 +65,25 @@ public class VisitIndexUpdatingVariableListener implements VariableListener<Disp
         VisitOrVehicle previousVisitOrVehicle = sourceVisit.getPreviousVisitOrVehicle();
 
         Integer visitIdx;
+        Long deliveryDurationUntilNow;
+
 
         if (previousVisitOrVehicle == null) { // sourceVisit didn't have a prev assigned
             visitIdx = null;
+            deliveryDurationUntilNow = 0L;
         } else { // sourceVisit was a visit
             visitIdx = previousVisitOrVehicle.getVisitIndex();
+            deliveryDurationUntilNow = previousVisitOrVehicle.getDeliveryDurationUntilNow();
 
             if (visitIdx != null) { // sourceVisit was the first visit, so its previous was the driver that has null visitIdx
                 visitIdx++;
             }
+
+            if (deliveryDurationUntilNow != null) {
+                deliveryDurationUntilNow += previousVisitOrVehicle.getLocation().distanceTo(sourceVisit.getLocation()).getDistanceInSeconds();
+            }
         }
+//        logger.debug("visitIdx = {}, deliveryDur = {}", visitIdx, deliveryDurationUntilNow);
 
         // --------
         // update the visitIndex shadow variable
@@ -92,6 +102,29 @@ public class VisitIndexUpdatingVariableListener implements VariableListener<Disp
             shadowVisit = shadowVisit.getNextPlanningVisit();
             if (visitIdx != null) {
                 visitIdx++;
+            }
+        }
+
+        // -----------
+        // update the deliveryDurationUntilNow shadow variable
+
+        VisitOrVehicle previousShadowVisit = previousVisitOrVehicle;
+        PlanningVisit currentShadowVisit = sourceVisit;
+
+        while (previousShadowVisit != null && currentShadowVisit != null && !Objects.equals(previousShadowVisit.getDeliveryDurationUntilNow(), deliveryDurationUntilNow)) {
+            // update the variable on current
+            scoreDirector.beforeVariableChanged(currentShadowVisit, "deliveryDurationUntilNow");
+            currentShadowVisit.setDeliveryDurationUntilNow(deliveryDurationUntilNow);
+            scoreDirector.afterVariableChanged(currentShadowVisit, "deliveryDurationUntilNow");
+
+            // move the pointers together to next
+            previousShadowVisit = currentShadowVisit;
+            currentShadowVisit = currentShadowVisit.getNextPlanningVisit();
+
+            // update the value
+            if (deliveryDurationUntilNow != null && currentShadowVisit != null) {
+                TravelDistance distance = previousShadowVisit.getLocation().distanceTo(currentShadowVisit.getLocation());
+                deliveryDurationUntilNow += distance.getDistanceInSeconds();
             }
         }
     }
