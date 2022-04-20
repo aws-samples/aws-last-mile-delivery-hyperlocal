@@ -25,11 +25,17 @@ import java.time.format.DateTimeFormatter;
 public class Constants {
     public static final DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public static final String PreviousVisitOrDriver = "previousVisitOrDriver";
-    public static final String PlanningDriverRange = "PlanningDriverRange";
     public static final String PreviousVisitOrVehicle = "previousVisitOrVehicle";
     public static final String PlanningVehicleRange = "PlanningVehicleRange";
     public static final String PlanningVisitRange = "PlanningVisitRange";
+
+    public static final int MaxDurationOfDeliveryJobInSeconds;
+
+    static {
+        MaxDurationOfDeliveryJobInSeconds = 3600;
+//         TODO: implement
+//         MaxDurationOfDeliveryJobInSeconds = SsmUtility.getParameterValue("MaxDurationOfDeliveryJobInSeconds");
+    }
 
     private Constants() {
         throw new AssertionError("Utility class");

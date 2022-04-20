@@ -43,7 +43,7 @@ public class DispatchConstraintProvider implements ConstraintProvider {
     // ************************************************************************
 
     protected Constraint olderOrdersCannotBeAssignedAfterFresher(ConstraintFactory factory) {
-        return factory.from(PlanningDelivery.class)
+        return factory.forEach(PlanningDelivery.class)
                 .join(PlanningDelivery.class,
                         Joiners.equal(PlanningDelivery::getPlanningDriver, PlanningDelivery::getPlanningDriver),
                         Joiners.equal(PlanningDelivery::getNextPlanningDelivery, Function.identity()),
@@ -57,7 +57,7 @@ public class DispatchConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint dontAssignMultipleIfOtherDriversUnassigned(ConstraintFactory factory) {
-        return factory.from(PlanningDriver.class)
+        return factory.forEach(PlanningDriver.class)
                 .join(PlanningDriver.class,
                         Joiners.filtering((a, b) -> a.chainLength() == 0 && b.chainLength() > 1),
                         Joiners.filtering((a, b) -> a.getId() != b.getId())
@@ -69,7 +69,7 @@ public class DispatchConstraintProvider implements ConstraintProvider {
     }
 
     protected Constraint deliveryPickupMustBeAfterPreviousDropoffPlusTravel(ConstraintFactory factory) {
-        return factory.from(PlanningDelivery.class)
+        return factory.forEach(PlanningDelivery.class)
                 .penalizeLong(
                         "deliveryPickupMustBeAfterPreviousDropoffPlusTravel",
                         HardMediumSoftLongScore.ONE_HARD,
@@ -106,7 +106,7 @@ public class DispatchConstraintProvider implements ConstraintProvider {
      * @return
      */
     protected Constraint preferOccupiedDrivers(ConstraintFactory factory) {
-        return factory.from(PlanningDriver.class)
+        return factory.forEach(PlanningDriver.class)
                 .penalizeLong(
                         "preferOccupiedDrivers",
                         HardMediumSoftLongScore.ONE_MEDIUM,
@@ -129,7 +129,7 @@ public class DispatchConstraintProvider implements ConstraintProvider {
 //            (delivery, driver) -> delivery.scoreForPreferCloserDriverToPickupLocation()
 //          );
 
-        return factory.from(PlanningDelivery.class)
+        return factory.forEach(PlanningDelivery.class)
                 .join(PlanningDriver.class,
                         Joiners.equal(PlanningDelivery::getPlanningDriver, PlanningDriver::getPlanningDriver)
 //            Joiners.equal(PlanningDelivery::self, PlanningDriver::getNextPlanningDelivery)

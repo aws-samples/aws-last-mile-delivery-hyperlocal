@@ -23,7 +23,10 @@ import dev.aws.proto.apps.sameday.directpudo.Order;
 import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
+import dev.aws.proto.apps.sameday.directpudo.location.Location;
+import dev.aws.proto.core.routing.distance.TravelDistance;
 import dev.aws.proto.core.routing.location.Coordinate;
+import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import dev.aws.proto.core.routing.route.PolylineHelper;
 import org.optaplanner.core.api.solver.SolverStatus;
 import org.slf4j.Logger;
@@ -35,11 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SolutionConsumer {
     private static final Logger logger = LoggerFactory.getLogger(SolutionConsumer.class);
 
-    public static SolverJob MOCK_extractSolverJob(DispatchSolution solution, SolverStatus solverStatus, long solverDurationInMs) {
+    public static SolverJob extractSolverJob(DispatchSolution solution, SolverStatus solverStatus, long solverDurationInMs) {
         SolverJob result = SolverJob.builder()
                 .problemId(solution.getId())
                 .createdAt(solution.getCreatedAt())
@@ -128,22 +132,100 @@ public class SolutionConsumer {
         return deliveryJobs;
     }
 
+    public static List<DeliveryJob> extractDeliveryJobs(DispatchSolution solution, GraphhopperRouter router) {
+        UUID solverJobId = solution.getId();
+        List<DeliveryJob> deliveryJobs = new ArrayList<>();
+
+        solution.getPlanningVehicles().forEach(planningVehicle -> {
+            List<DeliverySegment> jobSegments = new ArrayList<>();
+
+            PlanningVisit visit = planningVehicle.getNextPlanningVisit();
+            if (visit == null) {
+                // no visits assigned --> no deliveryJob created
+                return;
+            }
+
+            Location prevLoc = planningVehicle.getLocation();
+
+            while (visit != null) {
+                PlanningVisit.VisitType visitType = visit.getVisitType();
+                DeliverySegment.SegmentType segmentType;
+                switch (visitType) {
+                    case PICKUP:
+                        segmentType = DeliverySegment.SegmentType.TO_ORIGIN;
+                        break;
+                    case DROPOFF:
+                        segmentType = DeliverySegment.SegmentType.TO_DESTINATION;
+                        break;
+                    default:
+                        segmentType = DeliverySegment.SegmentType.TO_HUB;
+                        break;
+                }
+
+                TravelDistance segmentDist = prevLoc.distanceTo(visit.getLocation());
+                List<Coordinate> segmentPath = router.getPath(prevLoc.getCoordinate(), visit.getLocation().coordinate());
+                String segmentPointsEnc = PolylineHelper.encodePointsToPolyline(segmentPath);
+
+                DeliverySegment segment = DeliverySegment.builder()
+                        .orderId(visit.getOrderId())
+                        .index(visit.getVisitIndex())
+                        .from(prevLoc.getCoordinate())
+                        .to(visit.getLocation().getCoordinate())
+                        .segmentType(segmentType)
+                        .route(new Segment(segmentDist.getDistanceInMeters(), segmentDist.getDistanceInSeconds(), segmentPointsEnc))
+                        .build();
+
+                prevLoc = visit.getLocation();
+                jobSegments.add(segment);
+                visit = visit.getNextPlanningVisit();
+            }
+
+            DeliveryJob deliveryJob = DeliveryJob.builder()
+                    .id(UUID.randomUUID())
+                    .createdAt(Timestamp.valueOf(LocalDateTime.now()).getTime())
+                    .solverJobId(solverJobId)
+                    .segments(jobSegments)
+                    .route(Segment.fromSegments(jobSegments))
+                    .build();
+            deliveryJobs.add(deliveryJob);
+        });
+
+        return deliveryJobs;
+    }
+
     public static void logSolution(DispatchSolution solution) {
         logger.debug("[{}] solution score: {}", solution.getId(), solution.getScore());
 
-        solution.getPlanningDrivers().forEach(driver -> {
+        solution.getPlanningVehicles().forEach(vehicle -> {
 
-            logger.debug("driver[{}] :: [visits = {}] :: location {}", driver.getId(), driver.chainLength(), driver.getLocation().getCoordinate());
+            logger.debug("vehicle[{}] :: [visits = {}] :: location {}", vehicle.getId(), vehicle.chainLength(), vehicle.getLocation().getCoordinate());
 
-            PlanningVisit visit = driver.getNextPlanningVisit();
+            List<Coordinate> points = new ArrayList<>();
+            points.add(vehicle.getLocation().getCoordinate());
+
+            PlanningVisit visit = vehicle.getNextPlanningVisit();
             if (visit == null) {
                 logger.debug("\t-- NO visits assigned");
             }
 
             while (visit != null) {
                 logger.debug("\t{}", visit);
+                points.add(visit.getLocation().getCoordinate());
                 visit = visit.getNextPlanningVisit();
             }
+
+            String pointsEncoded = PolylineHelper.encodePointsToPolyline(points);
+            String coordsStr = String.join(",", points.stream().map(c -> {
+                return String.format("[%f, %f]", c.getLongitude(), c.getLatitude());
+            }).collect(Collectors.toList()));
+
+
+            StringBuilder sb = new StringBuilder();
+            logger.debug("");
+            logger.debug("\tPoints encoded: {}", pointsEncoded);
+            logger.debug("\tPoints: {}", coordsStr);
+
+
         });
     }
 }
