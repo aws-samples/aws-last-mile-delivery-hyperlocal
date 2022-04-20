@@ -31,7 +31,7 @@
     <packaging>pom</packaging>
 
     <description>
-        App implementations for different dispatch concepts
+        App implementations for different dispatch concepts and utilities
     </description>
 
     <properties>
