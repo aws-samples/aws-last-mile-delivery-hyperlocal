@@ -31,14 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class H3DistanceMatrix implements IDistanceMatrix<TravelDistance> {
+public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceMatrix<TravelDistance> {
     private static final Logger logger = LoggerFactory.getLogger(H3DistanceMatrix.class);
 
     private final H3DistanceCache distanceCache;
     private final TravelDistance[][] matrix;
-    private final Map<ILocation, Integer> locIdxLookup;
+    private final Map<TLocation, Integer> locIdxLookup;
 
-    public H3DistanceMatrix(H3DistanceCache h3DistanceCache, TravelDistance[][] matrix, Map<ILocation, Integer> locIdxLookup) {
+    public H3DistanceMatrix(H3DistanceCache h3DistanceCache, TravelDistance[][] matrix, Map<TLocation, Integer> locIdxLookup) {
         this.distanceCache = h3DistanceCache;
         this.matrix = matrix;
         this.locIdxLookup = locIdxLookup;
@@ -48,17 +48,17 @@ public class H3DistanceMatrix implements IDistanceMatrix<TravelDistance> {
     public TravelDistance distanceBetween(ILocation origin, ILocation destination) {
         logger.trace("Calculating distance between {} and {}", origin, destination);
 
-        int indexFrom = locIdxLookup.get(origin);
-        int indexTo = locIdxLookup.get(destination);
+        int indexFrom = this.locIdxLookup.get(origin);
+        int indexTo = this.locIdxLookup.get(destination);
 
         return this.matrix[indexFrom][indexTo];
     }
 
-    public static H3DistanceMatrix generate(ICachePersistence persistence, List<ILocation> locationList) {
+    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(ICachePersistence persistence, List<TLocation> locationList) {
         long start = System.currentTimeMillis();
         H3DistanceCache h3DistanceCache = persistence.importCache();
         H3Core h3 = H3.h3();
-        Map<ILocation, Integer> locIdxLookup = new HashMap<>();
+        Map<TLocation, Integer> locIdxLookup = new HashMap<>();
         int dim = locationList.size();
 
         for (int i = 0; i < dim; i++) {
@@ -75,7 +75,14 @@ public class H3DistanceMatrix implements IDistanceMatrix<TravelDistance> {
                 long hexa1 = h3.geoToH3(coord1.getLatitude(), coord1.getLongitude(), h3DistanceCache.getH3Resolution());
                 long hexa2 = h3.geoToH3(coord2.getLatitude(), coord2.getLongitude(), h3DistanceCache.getH3Resolution());
 
-                distances[i][j] = h3DistanceCache.getDistance(hexa1, hexa2);
+                TravelDistance distance = h3DistanceCache.getDistance(hexa1, hexa2);
+
+                if (distance == null) {
+                    // TODO: calculate with graphhopper
+                    logger.warn("No distance found between {} -- {}", locationList.get(i), locationList.get(j));
+                }
+
+                distances[i][j] = distance;
             }
         }
 
@@ -83,6 +90,6 @@ public class H3DistanceMatrix implements IDistanceMatrix<TravelDistance> {
 
         logger.debug("H3DistanceMatrix :: calc time = {}ms :: dim = {}x{} :: per cell = {}ms", generatedTime, dim, dim, ((double) generatedTime / (dim * dim)));
 
-        return new H3DistanceMatrix(h3DistanceCache, distances, locIdxLookup);
+        return new H3DistanceMatrix<>(h3DistanceCache, distances, locIdxLookup);
     }
 }
