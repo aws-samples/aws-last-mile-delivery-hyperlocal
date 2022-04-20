@@ -54,9 +54,8 @@ public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceM
         return this.matrix[indexFrom][indexTo];
     }
 
-    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(ICachePersistence persistence, List<TLocation> locationList) {
+    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(H3DistanceCache h3DistanceCache, List<TLocation> locationList) {
         long start = System.currentTimeMillis();
-        H3DistanceCache h3DistanceCache = persistence.importCache();
         H3Core h3 = H3.h3();
         Map<TLocation, Integer> locIdxLookup = new HashMap<>();
         int dim = locationList.size();
@@ -91,5 +90,15 @@ public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceM
         logger.debug("H3DistanceMatrix :: calc time = {}ms :: dim = {}x{} :: per cell = {}ms", generatedTime, dim, dim, ((double) generatedTime / (dim * dim)));
 
         return new H3DistanceMatrix<>(h3DistanceCache, distances, locIdxLookup);
+    }
+
+    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(ICachePersistence persistence, List<TLocation> locationList) {
+        long start = System.currentTimeMillis();
+        H3DistanceCache h3DistanceCache = persistence.importCache();
+        long importTime = System.currentTimeMillis() - start;
+        logger.debug("H3DistanceMatrix :: cache import time = {}ms", importTime);
+
+        H3DistanceMatrix<TLocation> h3DistanceMatrix = generate(h3DistanceCache, locationList);
+        return h3DistanceMatrix;
     }
 }
