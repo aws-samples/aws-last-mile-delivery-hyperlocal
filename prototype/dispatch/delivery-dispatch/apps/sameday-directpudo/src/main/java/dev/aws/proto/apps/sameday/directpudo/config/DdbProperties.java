@@ -31,6 +31,9 @@ public interface DdbProperties {
     @WithName("table.solver-jobs")
     String solverJobsTableParameterName();
 
+    @WithName("table.hubs")
+    String hubsTableParameterName();
+
     @WithName("index.delivery-jobs-solver-job-id")
     String deliveryJobsTableSolverJobIdIndexParameterName();
 }
