@@ -20,16 +20,22 @@ package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.solver.VisitIndexUpdatingVariableListener;
 import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
+import dev.aws.proto.core.routing.distance.TravelDistance;
 import lombok.Getter;
 import lombok.Setter;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // TODO: add difficultyWeightFactoryClass (and change solver-config's constructionHeuristicType
 @PlanningEntity
 @Getter
 @Setter
 public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver {
+public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicle {
+    private static final Logger logger = LoggerFactory.getLogger(PlanningVisit.class);
 
     public static enum VisitType {
         PICKUP,
@@ -43,10 +49,13 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver
 
     // planning variables: changes during planning
     private VisitOrDriver previousVisitOrDriver;
+    private VisitOrVehicle previousVisitOrVehicle;
 
     // shadow variables
     private PlanningVisit nextVisit;
     private PlanningDriver planningDriver;
+    private PlanningVisit nextPlanningVisit;
+    private PlanningVehicle planningVehicle;
     private Integer visitIndex;
 
     // getters/setters overrides
@@ -58,17 +67,22 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver
 
     // TODO: maybe add getParcelSize
 
+    @DeepPlanningClone
     @PlanningVariable(
             valueRangeProviderRefs = {Constants.PlanningDriverRange, Constants.PlanningVisitRange},
+            valueRangeProviderRefs = {Constants.PlanningVehicleRange, Constants.PlanningVisitRange},
             graphType = PlanningVariableGraphType.CHAINED
     )
     public VisitOrDriver getPreviousVisitOrDriver() {
         return this.previousVisitOrDriver;
+    public VisitOrVehicle getPreviousVisitOrVehicle() {
+        return this.previousVisitOrVehicle;
     }
 
     @Override
     public PlanningVisit getNextPlanningVisit() {
         return this.nextVisit;
+        return this.nextPlanningVisit;
     }
 
     @Override
@@ -80,11 +94,15 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver
     @AnchorShadowVariable(sourceVariableName = Constants.PreviousVisitOrDriver)
     public PlanningDriver getPlanningDriver() {
         return this.planningDriver;
+    @AnchorShadowVariable(sourceVariableName = Constants.PreviousVisitOrVehicle)
+    public PlanningVehicle getPlanningVehicle() {
+        return this.planningVehicle;
     }
 
     @CustomShadowVariable(
             variableListenerClass = VisitIndexUpdatingVariableListener.class,
             sources = {@PlanningVariableReference(variableName = Constants.PreviousVisitOrDriver)}
+            sources = {@PlanningVariableReference(variableName = Constants.PreviousVisitOrVehicle)}
     )
     public Integer getVisitIndex() {
         return this.visitIndex;
@@ -95,6 +113,9 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrDriver
     public String getPlanningDriverId() {
         return planningDriver == null ?
                 "null" : planningDriver.getId();
+    @Override
+    public int hashCode() {
+        return super.id.hashCode();
     }
 
     @Override

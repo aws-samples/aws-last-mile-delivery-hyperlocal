@@ -43,8 +43,11 @@ import java.util.List;
 public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongScore> {
 
     private List<PlanningDriver> planningDrivers;
+    private List<PlanningVehicle> planningVehicles;
     private List<PlanningVisit> planningVisits;
     private List<DeliveryRide> rides;
+    private List<Location> locations;
+    private List<PlanningHub> hubs;
 
     @PlanningScore
     @Getter
@@ -55,6 +58,9 @@ public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongSco
     @ValueRangeProvider(id = Constants.PlanningDriverRange)
     public List<PlanningDriver> getPlanningDrivers() {
         return this.planningDrivers;
+    @ValueRangeProvider(id = Constants.PlanningVehicleRange)
+    public List<PlanningVehicle> getPlanningVehicles() {
+        return this.planningVehicles;
     }
 
     @PlanningEntityCollectionProperty
@@ -66,6 +72,16 @@ public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongSco
     @ProblemFactCollectionProperty
     public List<DeliveryRide> getRides() {
         return this.rides;
+    }
+
+    @ProblemFactCollectionProperty
+    public List<Location> getLocations() {
+        return this.locations;
+    }
+
+    @ProblemFactCollectionProperty
+    public List<PlanningHub> getHubs() {
+        return this.hubs;
     }
 
 }

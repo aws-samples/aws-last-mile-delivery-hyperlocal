@@ -23,6 +23,7 @@
 
     <solutionClass>dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution</solutionClass>
     <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrDriver</entityClass>
+    <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrVehicle</entityClass>
     <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit</entityClass>
 
     <scoreDirectorFactory>

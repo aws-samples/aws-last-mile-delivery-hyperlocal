@@ -19,16 +19,16 @@ package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCapacity;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
-import dev.aws.proto.apps.sameday.directpudo.location.DriverLocation;
+import dev.aws.proto.apps.sameday.directpudo.location.HubLocation;
 import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PlanningDriver extends PlanningBase<String> implements VisitOrDriver {
+public class PlanningVehicle extends PlanningBase<String> implements VisitOrVehicle {
 
-    private DriverLocation location;
+    private HubLocation location;
     private MaxCapacity maxCapacity;
 
     // shadow variables
@@ -42,7 +42,7 @@ public class PlanningDriver extends PlanningBase<String> implements VisitOrDrive
     }
 
     @Override
-    public PlanningDriver getPlanningDriver() {
+    public PlanningVehicle getPlanningVehicle() {
         return this;
     }
 
@@ -51,11 +51,26 @@ public class PlanningDriver extends PlanningBase<String> implements VisitOrDrive
         return 0;
     }
 
+    @Override
+    public Long getDeliveryDurationUntilNow() {
+        return 0L;
+    }
+
+    @Override
+    public PlanningVisit getNextPlanningVisit() {
+        return this.nextPlanningVisit;
+    }
+
     // TODO: add getDistanceTo methods
 
     @Override
     public String toString() {
-        return "[Driver][" + getId() + "] :: " + location.getCoordinate() + " :: " + currentCapacity + " :: " + maxCapacity;
+        return "[Driver][" + getId() + "] :: " + currentCapacity + " :: " + maxCapacity;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.id.hashCode();
     }
 
     public long chainLength() {
@@ -67,5 +82,9 @@ public class PlanningDriver extends PlanningBase<String> implements VisitOrDrive
             visit = visit.getNextPlanningVisit();
         }
         return len;
+    }
+
+    public int overCapacityScore() {
+        return 1;
     }
 }

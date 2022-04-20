@@ -17,21 +17,23 @@
 
 package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
+import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
-import dev.aws.proto.core.routing.location.LocationBase;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 
 @PlanningEntity
-public interface VisitOrDriver {
+public interface VisitOrVehicle {
 
-    LocationBase getLocation();
+    Location getLocation();
 
-    PlanningDriver getPlanningDriver();
+    PlanningVehicle getPlanningVehicle();
 
     Integer getVisitIndex();
 
-    @InverseRelationShadowVariable(sourceVariableName = Constants.PreviousVisitOrDriver)
+    Long getDeliveryDurationUntilNow();
+
+    @InverseRelationShadowVariable(sourceVariableName = Constants.PreviousVisitOrVehicle)
     PlanningVisit getNextPlanningVisit();
 
     void setNextPlanningVisit(PlanningVisit nextPlanningVisit);

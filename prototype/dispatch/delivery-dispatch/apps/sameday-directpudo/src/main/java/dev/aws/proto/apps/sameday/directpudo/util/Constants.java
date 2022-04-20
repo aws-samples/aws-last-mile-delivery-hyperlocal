@@ -27,6 +27,8 @@ public class Constants {
 
     public static final String PreviousVisitOrDriver = "previousVisitOrDriver";
     public static final String PlanningDriverRange = "PlanningDriverRange";
+    public static final String PreviousVisitOrVehicle = "previousVisitOrVehicle";
+    public static final String PlanningVehicleRange = "PlanningVehicleRange";
     public static final String PlanningVisitRange = "PlanningVisitRange";
 
     private Constants() {
