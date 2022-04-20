@@ -22,9 +22,11 @@ import dev.aws.proto.core.routing.distance.IDistanceMatrix;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @NoArgsConstructor
-public class LocationBase<TDistance extends Distance> implements ILocation, Comparable<LocationBase> {
+public class LocationBase<TDistance extends Distance> implements ILocation, Comparable<LocationBase<TDistance>> {
     private String id;
     private Coordinate coordinate;
     private LocationType locationType;
@@ -53,5 +55,10 @@ public class LocationBase<TDistance extends Distance> implements ILocation, Comp
     @Override
     public String toString() {
         return "[" + locationType + "][" + id + "]" + ((Coordinate) coordinate).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, coordinate, locationType);
     }
 }
