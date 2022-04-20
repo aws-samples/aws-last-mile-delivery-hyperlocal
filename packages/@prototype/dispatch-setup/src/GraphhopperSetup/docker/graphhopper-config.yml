@@ -1,7 +1,6 @@
 graphhopper:
-
   # OpenStreetMap input file PBF or XML, can be changed via command line -Ddw.graphhopper.datareader.file=some.pbf
-  datareader.file: "/map/mapfile.osm.pbf"
+  datareader.file: /map/mapfile.osm.pbf
   # Local folder used by graphhopper to store its data
   graph.location: /graphhopper-cache
 
@@ -10,7 +9,7 @@ graphhopper:
 
   # More options: foot,hike,bike,bike2,mtb,racingbike,motorcycle,car4wd,wheelchair (comma separated)
   # bike2 takes elevation data into account (like up-hill is slower than down-hill) and requires enabling graph.elevation.provider below.
-  # graph.flag_encoders: car
+  graph.flag_encoders: car,motorcycle
 
   # Enable turn restrictions for car or motorcycle.
   # graph.flag_encoders: car|turn_costs=true
@@ -51,9 +50,9 @@ graphhopper:
       vehicle: car
       weighting: fastest
 
-    # - name: motorcycle
-    #   vehicle: motorcycle
-    #   weighting: fastest
+    - name: motorcycle
+      vehicle: motorcycle
+      weighting: fastest
 
   #  - name: car_with_turn_costs
   #    vehicle: car
@@ -70,7 +69,7 @@ graphhopper:
   # usage) and the routing will also be slower than with `turn_costs: false`.
   profiles_ch:
     - profile: car
-    # - profile: motorcycle
+    - profile: motorcycle
   #   - profile: car_with_turn_costs
 
   # Hybrid mode:
@@ -82,7 +81,7 @@ graphhopper:
   # profile for which an LM profile exists. Important: This only will give correct routing results if the weights
   # calculated for the profile are equal or larger (for every edge) than those calculated for the profile that was used
   # for the preparation (`my_other_profile`)
-  profiles_lm: []
+  profiles_lm: [ ]
 
   ##### Elevation #####
 
@@ -131,8 +130,7 @@ graphhopper:
   # the most simple case you can imagine an island without a bridge or ferry connection. The following parameter
   # allows setting a minimum size (number of edges) for such detached components. This can be used to reduce the number
   # of cases where a connection between locations might not be found.
-  prepare.min_network_size: 200
-
+  prepare.min_network_size: 600
 
   ##### Routing #####
 
@@ -181,27 +179,27 @@ graphhopper:
 # Dropwizard server configuration
 server:
   application_connectors:
-  - type: http
-    port: 80
-    # for security reasons bind to localhost
-    bind_host: 0.0.0.0
+    - type: http
+      port: 80
+      # for security reasons bind to localhost
+      bind_host: 0.0.0.0
   request_log:
-      appenders: []
+    appenders: [ ]
   admin_connectors:
-  - type: http
-    port: 8081
-    bind_host: 0.0.0.0
+    - type: http
+      port: 8081
+      bind_host: 0.0.0.0
 # See https://www.dropwizard.io/1.3.8/docs/manual/configuration.html#logging
 logging:
   appenders:
-  - type: file
-    time_zone: UTC
-    current_log_filename: logs/graphhopper.log
-    log_format: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-    archive: true
-    archived_log_filename_pattern: ./logs/graphhopper-%d.log.gz
-    archived_file_count: 30
-    never_block: true
-  - type: console
-    time_zone: UTC
-    log_format: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    - type: file
+      time_zone: UTC
+      current_log_filename: logs/graphhopper.log
+      log_format: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+      archive: true
+      archived_log_filename_pattern: ./logs/graphhopper-%d.log.gz
+      archived_file_count: 30
+      never_block: true
+    - type: console
+      time_zone: UTC
+      log_format: "%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,60 +1,61 @@
 ##
-# Build stage for generating graphhopper cache
-FROM --platform=linux/arm64 maven:3.6.3-jdk-11 as build
+# Downloader stage
+## #################################################################################################################### 
+FROM --platform=linux/arm64 debian:buster-slim as downloader
 
 ARG MAPFILE_URL=set_MAPFILE_URL_env_var
+ARG GRAPHHOPPER_VERSION=4.0
 
-RUN apt-get install -y git wget
-WORKDIR /build
+WORKDIR /download
 
-# fetch graphhopper, make some finetune in the pom.xml and build it
-RUN \
-    git clone --depth 1 --branch 4.0 https://github.com/graphhopper/graphhopper.git \
-    && cd graphhopper \
-    && sed -i 's/nodeVersion>v12.3.1/nodeVersion>v17.2.0/' web-bundle/pom.xml \
-    && sed -i 's/npmVersion>6.14.5/npmVersion>8.1.4/' web-bundle/pom.xml
-
-RUN cd graphhopper && mvn clean package --quiet -DskipTests=true
+# fetch graphhopper
+ADD https://github.com/graphhopper/graphhopper/releases/download/${GRAPHHOPPER_VERSION}/graphhopper-web-${GRAPHHOPPER_VERSION}.jar graphhopper.jar
 
 # fetch the mapfile
-RUN mkdir -p /map && wget -O /map/mapfile.osm.pbf ${MAPFILE_URL}
+ADD ${MAPFILE_URL} mapfile.osm.pbf
+
+##
+# Build stage for generating graphhopper cache
+## ####################################################################################################################
+FROM --platform=linux/arm64 public.ecr.aws/docker/library/maven:3.8.4-amazoncorretto-11 as gh-build
+
+WORKDIR /build
+
+COPY --from=downloader /download/graphhopper.jar /build/graphhopper.jar
+COPY --from=downloader /download/mapfile.osm.pbf /build/mapfile.osm.pbf
 
 # add the config file
-COPY config-docker.yml /build/config.yml
-COPY ./graphhopper.sh ./graphhopper
+COPY ./graphhopper-config.yml /build/graphhopper-config.yml
 
 # build the mapfile cache with graphhopper
 RUN \
     mkdir -p /graphhopper-cache \
-    && cd graphhopper \
-    && JAVA_OPTS="-Xmx16g -Xms16g" ./graphhopper.sh --action import --config /build/config.yml --graph-cache /graphhopper-cache --input /map/mapfile.osm.pbf
+    && java \
+        -Xmx16g -Xms16g \
+        -Ddw.graphhopper.datareader.file="/build/mapfile.osm.pbf" \
+        -Ddw.graphhopper.graph.location="/graphhopper-cache" \
+        -jar /build/graphhopper.jar \
+        import /build/graphhopper-config.yml
 
-# Stage to create graphhopper image with the map and pre-generated gh cache in it
-FROM --platform=linux/arm64 openjdk:11.0-jre as prod
+### Stage for instant-sequential delivery dispatcher
+FROM --platform=linux/arm64 public.ecr.aws/amazoncorretto/amazoncorretto:11 as prod
 
-ENV JAVA_OPTS "-Xmx6g -Xms6g -Ddw.server.application_connectors[0].bind_host=0.0.0.0 -Ddw.server.application_connectors[0].port=80"
-WORKDIR /graphhopper
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 # mapfile
-COPY --from=build /map/mapfile.osm.pbf /map/mapfile.osm.pbf
+COPY --from=downloader --chown=1001 /download/mapfile.osm.pbf /map/mapfile.osm.pbf
 
 # graphhopper cache
-COPY --from=build /graphhopper-cache /graphhopper-cache
+COPY --from=gh-build --chown=1001 /graphhopper-cache /graphhopper-cache
 
-# pom.xml is used to get the jar file version. see https://github.com/graphhopper/graphhopper/pull/1990#discussion_r409438806
-COPY --from=build /build/graphhopper/pom.xml ./
-
-# graphhopper executables
-COPY --from=build /build/graphhopper/web/target/*.jar ./web/target/
-
-# graphhopper script
-COPY ./graphhopper.sh ./
-
-# config file
-COPY ./config-docker.yml ./config.yml
-
-VOLUME [ "/data" ]
+# graphhopper executable
+COPY --from=downloader /download/graphhopper.jar /app/graphhopper.jar
+COPY ./graphhopper-config.yml /app/graphhopper-config.yml
 
 EXPOSE 80
 
-ENTRYPOINT [ "./graphhopper.sh", "--action", "web", "--config", "/graphhopper/config.yml", "--graph-cache", "/graphhopper-cache", "--input", "/map/mapfile.osm.pbf" ]
+ENTRYPOINT [ "java", "-Xmx6g", "-Xms6g", \
+             "-Ddw.graphhopper.datareader.file=/map/mapfile.osm.pbf", \
+             "-Ddw.graphhopper.graph.location=/graphhopper-cache", \
+             "-jar", "/app/graphhopper.jar", "server", "/app/graphhopper-config.yml" \
+        ]
