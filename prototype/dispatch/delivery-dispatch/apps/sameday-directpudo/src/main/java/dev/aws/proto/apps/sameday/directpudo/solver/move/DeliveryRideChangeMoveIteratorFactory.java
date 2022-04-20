@@ -19,7 +19,7 @@ package dev.aws.proto.apps.sameday.directpudo.solver.move;
 
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryRide;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrDriver;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrVehicle;
 import dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
@@ -32,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.ChainedChangeMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -39,6 +41,8 @@ import java.util.List;
 import java.util.Random;
 
 public class DeliveryRideChangeMoveIteratorFactory implements MoveIteratorFactory<DispatchSolution, Move<DispatchSolution>> {
+    private static final Logger logger = LoggerFactory.getLogger(DeliveryRideChangeMoveIteratorFactory.class);
+
     GenuineVariableDescriptor<DispatchSolution> variableDescriptor = null;
     SingletonInverseVariableSupply inverseVariableSupply = null;
 
@@ -62,37 +66,42 @@ public class DeliveryRideChangeMoveIteratorFactory implements MoveIteratorFactor
             // No seriously, write a custom move instead of reusing ChainedChangeMove so you don't need any of this
             // Yes, I know, chain correction like in ChainedChangeMove is a big pain to write yourself...
             InnerScoreDirector<DispatchSolution, HardMediumSoftLongScore> innerScoreDirector = (InnerScoreDirector<DispatchSolution, HardMediumSoftLongScore>) scoreDirector;
-            variableDescriptor = innerScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(PlanningVisit.class).getGenuineVariableDescriptor(Constants.PreviousVisitOrDriver);
+            variableDescriptor = innerScoreDirector.getSolutionDescriptor().findEntityDescriptorOrFail(PlanningVisit.class).getGenuineVariableDescriptor(Constants.PreviousVisitOrVehicle);
 
             // original comments from @ge0ffrey
             // TODO DO NOT demand supplies without returning them
             inverseVariableSupply = innerScoreDirector.getSupplyManager().demand((new SingletonInverseVariableDemand<>(variableDescriptor)));
         }
 
+        logger.trace("Creating DeliveryRideChangeMoveIterator :: VariableDescriptor = {}", variableDescriptor);
+
         DispatchSolution solution = scoreDirector.getWorkingSolution();
         // original comments from @geoffrey
         // TODO perf loss because it happens at the start of every step but it doesn't different during the phase?
-        List<VisitOrDriver> visitOrDrivers = new ArrayList<>(solution.getPlanningDrivers().size() + solution.getPlanningVisits().size());
-        visitOrDrivers.addAll(solution.getPlanningDrivers());
-        visitOrDrivers.addAll(solution.getPlanningVisits());
+        List<VisitOrVehicle> allDriversAndVisits = new ArrayList<>(solution.getPlanningVehicles().size() + solution.getPlanningVisits().size());
+        allDriversAndVisits.addAll(solution.getPlanningVehicles());
+        allDriversAndVisits.addAll(solution.getPlanningVisits());
 
-        return new DeliveryRideChangeMoveIterator(solution.getRides(), visitOrDrivers, workingRandom);
+        DeliveryRideChangeMoveIterator deliveryRideChangeMoveIterator = new DeliveryRideChangeMoveIterator(solution.getRides(), allDriversAndVisits, workingRandom);
+        logger.debug("DeliveryRideChangeMoveIterator created");
+
+        return deliveryRideChangeMoveIterator;
     }
 
     private class DeliveryRideChangeMoveIterator implements Iterator<Move<DispatchSolution>> {
         private final List<DeliveryRide> deliveryRides;
-        private final List<VisitOrDriver> visitOrDrivers;
+        private final List<VisitOrVehicle> allDriversAndVisits;
         private final Random workingRandom;
 
-        public DeliveryRideChangeMoveIterator(List<DeliveryRide> deliveryRides, List<VisitOrDriver> visitOrDrivers, Random workingRandom) {
+        public DeliveryRideChangeMoveIterator(List<DeliveryRide> deliveryRides, List<VisitOrVehicle> allDriversAndVisits, Random workingRandom) {
             this.deliveryRides = deliveryRides;
-            this.visitOrDrivers = visitOrDrivers;
+            this.allDriversAndVisits = allDriversAndVisits;
             this.workingRandom = workingRandom;
         }
 
         @Override
         public boolean hasNext() {
-            return !deliveryRides.isEmpty() && visitOrDrivers.size() >= 4;
+            return !deliveryRides.isEmpty() && allDriversAndVisits.size() >= 4;
         }
 
         @Override
@@ -101,8 +110,10 @@ public class DeliveryRideChangeMoveIteratorFactory implements MoveIteratorFactor
             PlanningVisit fromPickupVisit = deliveryRide.getPickupVisit();
             PlanningVisit fromDropoffVisit = deliveryRide.getDropoffVisit();
 
-            VisitOrDriver toPickupVisit = visitOrDrivers.get(workingRandom.nextInt(visitOrDrivers.size()));
-            List<VisitOrDriver> potentialToDropoffVisitList = new ArrayList<>();
+            // TODO: REVIEW THIS PART
+            // FOR SOME REASON WE GET AN ILLEGALSTATEEXCEPTION WHERE the shadow variables are not 100% updated. maybe need to implement a VariableListener for previousVisit/nextVisit
+            VisitOrVehicle toPickupVisit = allDriversAndVisits.get(workingRandom.nextInt(allDriversAndVisits.size()));
+            List<VisitOrVehicle> potentialToDropoffVisitList = new ArrayList<>();
             potentialToDropoffVisitList.add(fromPickupVisit);
 
             PlanningVisit visit = toPickupVisit.getNextPlanningVisit();
@@ -110,15 +121,15 @@ public class DeliveryRideChangeMoveIteratorFactory implements MoveIteratorFactor
                 if (visit != fromPickupVisit && visit != fromDropoffVisit) {
                     potentialToDropoffVisitList.add(visit);
                 }
-                visit = visit.getNextVisit();
+                visit = visit.getNextPlanningVisit();
             }
 
-            VisitOrDriver toDropoffVisit = potentialToDropoffVisitList.get(workingRandom.nextInt(potentialToDropoffVisitList.size()));
+            VisitOrVehicle toDropoffVisit = potentialToDropoffVisitList.get(workingRandom.nextInt(potentialToDropoffVisitList.size()));
 
-            ChainedChangeMove<DispatchSolution> pickupMove = new ChainedChangeMove<>(
-                    fromPickupVisit, variableDescriptor, inverseVariableSupply, toPickupVisit);
-            ChainedChangeMove<DispatchSolution> dropoffMove = new ChainedChangeMove<>(
-                    fromDropoffVisit, variableDescriptor, inverseVariableSupply, toDropoffVisit);
+            ChainedChangeMove<DispatchSolution> pickupMove = new ChainedChangeMove<DispatchSolution>(
+                    variableDescriptor, fromPickupVisit, toPickupVisit, inverseVariableSupply);
+            ChainedChangeMove<DispatchSolution> dropoffMove = new ChainedChangeMove<DispatchSolution>(
+                    variableDescriptor, fromDropoffVisit, toDropoffVisit, inverseVariableSupply);
 
             return new CompositeMove<>(pickupMove, dropoffMove);
         }
