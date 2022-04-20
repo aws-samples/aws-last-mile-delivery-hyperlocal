@@ -21,6 +21,7 @@ import com.mapbox.geojson.Point;
 import com.mapbox.geojson.utils.PolylineUtils;
 import dev.aws.proto.core.routing.location.Coordinate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,14 @@ public class PolylineHelper {
 
     public static String encodePointsToPolyline(List<Coordinate> points) {
         List<Point> path = points.stream().map(c -> Point.fromLngLat(c.getLongitude(), c.getLatitude())).collect(Collectors.toList());
-        return PolylineUtils.encode(path, OSRMv4_PRECISION);
+        return PolylineUtils.encode(path, OSRMv5_PRECISION);
+    }
+
+    public static String concatEncodedPolylines(List<String> encodedPolylines) {
+        List<Point> path = new ArrayList<>();
+        for (String encodedLine : encodedPolylines) {
+            path.addAll(PolylineUtils.decode(encodedLine, OSRMv5_PRECISION));
+        }
+        return PolylineUtils.encode(path, OSRMv5_PRECISION);
     }
 }
