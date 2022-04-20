@@ -18,7 +18,6 @@
 package dev.aws.proto.apps.appcore.api.response;
 
 import dev.aws.proto.core.routing.distance.Distance;
-import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.location.LocationBase;
 import dev.aws.proto.core.routing.route.PolylineHelper;
 import dev.aws.proto.core.routing.route.SegmentRoute;
@@ -50,21 +49,17 @@ public class Segment {
     }
 
     public static Segment fromSegments(List<DeliverySegment> segments) {
-        List<Coordinate> path = new ArrayList<>();
+        List<String> encodedPolylines = new ArrayList<>();
         long allDistInMeters = 0;
         long allDistTimeInSec = 0;
 
-        if (segments.size() > 0) {
-            path.add(segments.get(0).getFrom());
-        }
-
         for (int i = 0; i < segments.size(); i++) {
-            path.add(segments.get(i).getTo());
+            encodedPolylines.add(segments.get(i).getRoute().pointsEncoded);
 
             allDistInMeters += segments.get(i).getRoute().getDistance().getValue();
             allDistTimeInSec += segments.get(i).getRoute().getTime().getValue();
         }
-        String pointsEncoded = PolylineHelper.encodePointsToPolyline(path);
+        String pointsEncoded = PolylineHelper.concatEncodedPolylines(encodedPolylines);
 
         return new Segment(allDistInMeters, allDistTimeInSec, pointsEncoded);
     }
