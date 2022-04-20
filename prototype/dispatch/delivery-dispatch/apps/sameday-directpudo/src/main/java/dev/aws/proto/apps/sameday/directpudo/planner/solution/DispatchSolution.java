@@ -19,8 +19,10 @@ package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
 import dev.aws.proto.apps.appcore.planner.solution.DispatchSolutionBase;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryRide;
-import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningDriver;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningHub;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVehicle;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
+import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import lombok.Data;
 import lombok.Getter;
@@ -42,7 +44,6 @@ import java.util.List;
 @SuperBuilder
 public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongScore> {
 
-    private List<PlanningDriver> planningDrivers;
     private List<PlanningVehicle> planningVehicles;
     private List<PlanningVisit> planningVisits;
     private List<DeliveryRide> rides;
@@ -55,9 +56,6 @@ public class DispatchSolution extends DispatchSolutionBase<HardMediumSoftLongSco
     public HardMediumSoftLongScore score;
 
     @ProblemFactCollectionProperty
-    @ValueRangeProvider(id = Constants.PlanningDriverRange)
-    public List<PlanningDriver> getPlanningDrivers() {
-        return this.planningDrivers;
     @ValueRangeProvider(id = Constants.PlanningVehicleRange)
     public List<PlanningVehicle> getPlanningVehicles() {
         return this.planningVehicles;

@@ -22,7 +22,6 @@
     <moveThreadCount>AUTO</moveThreadCount>
 
     <solutionClass>dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution</solutionClass>
-    <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrDriver</entityClass>
     <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.VisitOrVehicle</entityClass>
     <entityClass>dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit</entityClass>
 
@@ -47,6 +46,16 @@
 
     <localSearch>
         <unionMoveSelector>
+            <!--            <moveIteratorFactory>-->
+            <!--                <moveIteratorFactoryClass>-->
+            <!--                    dev.aws.proto.apps.sameday.directpudo.solver.move.DeliveryRideChangeMoveIteratorFactory-->
+            <!--                </moveIteratorFactoryClass>-->
+            <!--            </moveIteratorFactory>-->
+            <!--            <moveIteratorFactory>-->
+            <!--                <moveIteratorFactoryClass>-->
+            <!--                    dev.aws.proto.apps.sameday.directpudo.solver.move.DeliveryRideSwapMoveIteratorFactory-->
+            <!--                </moveIteratorFactoryClass>-->
+            <!--            </moveIteratorFactory>-->
             <changeMoveSelector/>
             <swapMoveSelector/>
             <subChainChangeMoveSelector>
@@ -68,8 +77,8 @@
         <!-- TODO: review this -->
         <termination>
             <bestScoreFeasible>true</bestScoreFeasible>
-            <secondsSpentLimit>45</secondsSpentLimit>
-            <unimprovedSecondsSpentLimit>20</unimprovedSecondsSpentLimit>
+            <secondsSpentLimit>15</secondsSpentLimit>
+            <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
         </termination>
     </localSearch>
 </solver>
