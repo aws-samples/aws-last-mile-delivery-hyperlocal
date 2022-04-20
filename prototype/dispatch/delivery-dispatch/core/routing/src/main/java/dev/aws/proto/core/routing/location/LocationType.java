@@ -39,9 +39,14 @@ public enum LocationType implements Comparable<LocationType> {
     MOVING_LOCATION(4),
 
     /**
+     * Hub location. E.g.: where vehicles are "stored"
+     */
+    HUB(8),
+
+    /**
      * Warehouse location. (This represents interim warehouse while delivering with multiple hops)
      */
-    WAREHOUSE(8);
+    WAREHOUSE(16);
 
     private final int value;
 

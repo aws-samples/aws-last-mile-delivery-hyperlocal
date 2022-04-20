@@ -38,6 +38,7 @@ public class DeliverySegment {
     public static enum SegmentType {
         TO_ORIGIN,
         TO_DESTINATION,
+        TO_HUB,
         TO_WAREHOUSE,
     }
 
