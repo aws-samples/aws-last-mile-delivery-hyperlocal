@@ -1,0 +1,14 @@
+2022-04-20T18:45:30.923+0800	[34mINFO[0m	Detected OS: alpine
+2022-04-20T18:45:30.923+0800	[34mINFO[0m	Detecting Alpine vulnerabilities...
+2022-04-20T18:45:30.923+0800	[34mINFO[0m	Number of language-specific files: 1
+2022-04-20T18:45:30.923+0800	[34mINFO[0m	Detecting npm vulnerabilities...
+
+sim-ecs-container:latest (alpine 3.14.6)
+========================================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
+
+usr/src/app/package-lock.json (npm)
+===================================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
