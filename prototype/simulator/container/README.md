@@ -111,7 +111,7 @@ To start the simulation:
 npm start
 ```
 
-## Imge Scanning
+## Image Scanning
 
 Use [trivy](https://aquasecurity.github.io/trivy/v0.19.2/) to scan for container image vulnerabilities.
 
