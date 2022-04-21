@@ -1,0 +1,53 @@
+2022-04-20T19:21:28.058+0800	[34mINFO[0m	Detected OS: amazon
+2022-04-20T19:21:28.059+0800	[34mINFO[0m	Detecting Amazon Linux vulnerabilities...
+2022-04-20T19:21:28.067+0800	[34mINFO[0m	Number of language-specific files: 1
+2022-04-20T19:21:28.067+0800	[34mINFO[0m	Detecting jar vulnerabilities...
+
+graphhopper:latest (amazon 2 (Karoo))
+=====================================
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
+
+2022-04-20T19:21:28.072+0800	[34mINFO[0m	Table result includes only package filenames. Use '--format json' option to get the full path to the package file.
+
+Java (jar)
+==========
+Total: 8 (UNKNOWN: 1, LOW: 1, MEDIUM: 5, HIGH: 1, CRITICAL: 0)
+
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+
+|                   LIBRARY                   | VULNERABILITY ID | SEVERITY | INSTALLED VERSION |         FIXED VERSION          |                 TITLE                 |
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+
+| ch.qos.logback:logback-core                 | CVE-2021-42550   | MEDIUM   | 1.2.3             |                                | logback: remote code execution        |
+| (graphhopper.jar)                           |                  |          |                   |                                | through JNDI call from within         |
+|                                             |                  |          |                   |                                | its configuration file...             |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-42550 |
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+
+| com.fasterxml.jackson.core:jackson-databind | CVE-2020-36518   | HIGH     | 2.10.5.1          | 2.12.6.1, 2.13.2.1             | jackson-databind: denial of service   |
+| (graphhopper.jar)                           |                  |          |                   |                                | via a large depth of nested objects   |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2020-36518 |
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+
+| com.google.protobuf:protobuf-java           | CVE-2021-22569   | MEDIUM   | 3.11.4            | 3.16.1, 3.18.2, 3.19.2         | protobuf-java: potential DoS in the   |
+| (graphhopper.jar)                           |                  |          |                   |                                | parsing procedure for binary data     |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-22569 |
++                                             +------------------+----------+                   +                                +---------------------------------------+
+|                                             | GMS-2022-5       | UNKNOWN  |                   |                                | A potential Denial of Service         |
+|                                             |                  |          |                   |                                | issue in protobuf-java                |
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+
+| org.eclipse.jetty:jetty-server              | CVE-2021-34428   | LOW      | 9.4.39.v20210325  | 9.4.40.v20210413, 10.0.3,      | jetty: SessionListener can            |
+| (graphhopper.jar)                           |                  |          |                   | 11.0.3                         | prevent a session from being          |
+|                                             |                  |          |                   |                                | invalidated breaking logout           |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-34428 |
++---------------------------------------------+------------------+----------+                   +--------------------------------+---------------------------------------+
+| org.eclipse.jetty:jetty-servlets            | CVE-2021-28169   | MEDIUM   |                   | 9.4.41.v20210516, 10.0.3,      | jetty: requests to the                |
+| (graphhopper.jar)                           |                  |          |                   | 11.0.3                         | ConcatServlet and WelcomeFilter       |
+|                                             |                  |          |                   |                                | are able to access protected...       |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-28169 |
++---------------------------------------------+------------------+          +-------------------+--------------------------------+---------------------------------------+
+| org.glassfish.jersey.core:jersey-common     | CVE-2021-28168   |          |              2.33 | 2.34, 3.0.2                    | jersey: Local information disclosure  |
+| (graphhopper.jar)                           |                  |          |                   |                                | via system temporary directory        |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-28168 |
++---------------------------------------------+------------------+          +-------------------+--------------------------------+---------------------------------------+
+| org.glassfish:jakarta.el                    | CVE-2021-28170   |          | 3.0.3             |                                | jakarta-el: ELParserTokenManager      |
+| (graphhopper.jar)                           |                  |          |                   |                                | enables invalid EL                    |
+|                                             |                  |          |                   |                                | expressions to be evaluate            |
+|                                             |                  |          |                   |                                | -->avd.aquasec.com/nvd/cve-2021-28170 |
++---------------------------------------------+------------------+----------+-------------------+--------------------------------+---------------------------------------+

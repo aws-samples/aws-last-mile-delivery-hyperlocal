@@ -1,21 +1,14 @@
-2022-04-20T17:42:57.637+0800	[34mINFO[0m	Detected OS: amazon
-2022-04-20T17:42:57.637+0800	[34mINFO[0m	Detecting Amazon Linux vulnerabilities...
-2022-04-20T17:42:57.645+0800	[34mINFO[0m	Number of language-specific files: 1
-2022-04-20T17:42:57.645+0800	[34mINFO[0m	Detecting jar vulnerabilities...
+2022-04-20T19:19:43.799+0800	[34mINFO[0m	Detected OS: amazon
+2022-04-20T19:19:43.799+0800	[34mINFO[0m	Detecting Amazon Linux vulnerabilities...
+2022-04-20T19:19:43.808+0800	[34mINFO[0m	Number of language-specific files: 1
+2022-04-20T19:19:43.808+0800	[34mINFO[0m	Detecting jar vulnerabilities...
 
 delivery-dispatch-sameday-directpudo-docker:latest (amazon 2 (Karoo))
 =====================================================================
 Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
 
-2022-04-20T17:42:57.650+0800	[34mINFO[0m	Table result includes only package filenames. Use '--format json' option to get the full path to the package file.
 
 Java (jar)
 ==========
-Total: 1 (UNKNOWN: 0, LOW: 0, MEDIUM: 1, HIGH: 0, CRITICAL: 0)
+Total: 0 (UNKNOWN: 0, LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0)
 
-+---------------------------------------------------+------------------+----------+-------------------+---------------+---------------------------------------+
-|                      LIBRARY                      | VULNERABILITY ID | SEVERITY | INSTALLED VERSION | FIXED VERSION |                 TITLE                 |
-+---------------------------------------------------+------------------+----------+-------------------+---------------+---------------------------------------+
-| com.graphhopper:graphhopper-core                  | CVE-2021-23408   | MEDIUM   |               4.0 |           3.2 | Prototype Pollution in GraphHopper    |
-| (delivery-dispatch-sameday-directpudo-runner.jar) |                  |          |                   |               | -->avd.aquasec.com/nvd/cve-2021-23408 |
-+---------------------------------------------------+------------------+----------+-------------------+---------------+---------------------------------------+

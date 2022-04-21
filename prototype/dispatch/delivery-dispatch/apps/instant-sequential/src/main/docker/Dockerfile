@@ -4,7 +4,7 @@
 FROM --platform=linux/arm64 debian:buster-slim as downloader
 
 ARG MAPFILE_URL=set_MAPFILE_URL_env_var
-ARG GRAPHHOPPER_VERSION=4.0
+ARG GRAPHHOPPER_VERSION=5.0
 
 WORKDIR /download
 
