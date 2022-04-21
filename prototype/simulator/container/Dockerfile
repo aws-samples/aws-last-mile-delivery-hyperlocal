@@ -10,6 +10,5 @@ RUN npm audit fix
 COPY start.sh app.json ./
 
 COPY ./src ./src
-USER 1001
 
 CMD [ "npm", "start" ]
