@@ -17,6 +17,7 @@
 
 package dev.aws.proto.apps.sameday.directpudo.api;
 
+import com.uber.h3core.H3Core;
 import dev.aws.proto.apps.appcore.config.DistanceCachingConfig;
 import dev.aws.proto.apps.appcore.config.SolutionConfig;
 import dev.aws.proto.apps.appcore.planner.solution.SolutionState;
@@ -41,10 +42,12 @@ import dev.aws.proto.apps.sameday.directpudo.location.Location;
 import dev.aws.proto.apps.sameday.directpudo.location.PickupLocation;
 import dev.aws.proto.apps.sameday.directpudo.planner.solution.DispatchSolution;
 import dev.aws.proto.apps.sameday.directpudo.planner.solution.SolutionConsumer;
+import dev.aws.proto.core.routing.H3;
 import dev.aws.proto.core.routing.cache.H3DistanceCache;
 import dev.aws.proto.core.routing.cache.H3DistanceMatrix;
 import dev.aws.proto.core.routing.cache.persistence.ICachePersistence;
 import dev.aws.proto.core.routing.config.RoutingConfig;
+import dev.aws.proto.core.routing.distance.TravelDistance;
 import dev.aws.proto.core.routing.location.Coordinate;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
@@ -113,43 +116,84 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         String executionId = req.getExecutionId();
         logger.info("SolveDispatchProblem request :: problemId={} :: executionId={}", problemId, executionId);
 
-        logger.trace("Pulling hubs information");
+        logger.debug("Pulling hubs information");
         List<PlanningHub> hubs = hubService.listHubs();
 
-        logger.trace("Extracting locations from request orders and hubs");
-        List<Location> allLocations = new ArrayList<>();
+        // maintain lookup tables for all locations, pickups and dropoffs
+        Map<String, Location> locationMap = new HashMap<>();
         Map<String, Location> pickupLocations = new HashMap<>();
         Map<String, Location> dropoffLocations = new HashMap<>();
 
+        // hub locations
         for (PlanningHub hub : hubs) {
-            allLocations.add(new HubLocation(hub.getId(), hub.getCoordinate()));
+            HubLocation hubLoc = new HubLocation(hub.getId(), hub.getCoordinate());
+            locationMap.put(hub.getId(), hubLoc);
         }
+
+        // TEMPORARY HACK - DO NOT USE IN PROD
+        // TODO: review this
+        // -------------------------------------------------------------------------------------------------------------
+        // Removes all the orders that have either a pickup or a dropoff location that is NOT inside the cached area.
+        // For prod, either report these removed orders and feed it back to the queue or filter out on the backend so
+        // dispatcher doesn't have to handle it.
+        H3Core h3 = H3.h3();
+        long centerHexa = h3.geoToH3(14.617794, 121.001995, h3DistanceCache.getH3Resolution());
+
+        // the orders that have only "valid" pickup/dropoff locations for our caching mechanism
+        List<Order> validOrders = new ArrayList<>();
 
         for (Order o : req.getOrders()) {
-            PickupLocation pickup = new PickupLocation(o.getOrigin().getId(), (Coordinate) o.getOrigin());
-            allLocations.add(pickup);
+            Coordinate origin = o.getOrigin();
+            Coordinate dest = o.getDestination();
 
-            DropoffLocation dropoff = new DropoffLocation(o.getDestination().getId(), (Coordinate) o.getDestination());
-            allLocations.add(dropoff);
+            TravelDistance origDist = h3DistanceCache.getDistance(
+                    h3.geoToH3(origin.getLatitude(), origin.getLongitude(), h3DistanceCache.getH3Resolution()), centerHexa);
+            TravelDistance destDist = h3DistanceCache.getDistance(
+                    h3.geoToH3(dest.getLatitude(), dest.getLongitude(), h3DistanceCache.getH3Resolution()), centerHexa);
 
-            pickupLocations.put(o.getOrderId(), pickup);
-            dropoffLocations.put(o.getOrderId(), dropoff);
+            if (origDist == null || destDist == null) {
+                logger.warn("Skipping order {} because origin or destination location is outside or on the edge of covered geo polygon", o.getOrderId());
+                continue;
+            }
+            validOrders.add(o);
+        }
+        // -------------------------------------------------------------------------------------------------------------
+        // --------------------------
+
+        logger.debug("Original orders: {}, valid orders: {}", req.getOrders().length, validOrders.size());
+
+        // create pickup and dropoff locations
+        // reuse objects if the location IDs are reused
+        for (Order o : validOrders) {
+            if (!locationMap.containsKey(o.getOrigin().getId())) {
+                PickupLocation pickup = new PickupLocation(o.getOrigin().getId(), (Coordinate) o.getOrigin());
+                locationMap.put(o.getOrigin().getId(), pickup);
+            }
+
+            if (!locationMap.containsKey(o.getDestination().getId())) {
+                DropoffLocation dropoff = new DropoffLocation(o.getDestination().getId(), (Coordinate) o.getDestination());
+                locationMap.put(o.getDestination().getId(), dropoff);
+            }
+
+            pickupLocations.put(o.getOrderId(), locationMap.get(o.getOrigin().getId()));
+            dropoffLocations.put(o.getOrderId(), locationMap.get(o.getDestination().getId()));
         }
 
+        // break down the orders to visits (and rides)
         List<PlanningVisit> planningVisits = new ArrayList<>();
         List<DeliveryRide> rides = new ArrayList<>();
         long rideId = 0;
-        for (Order o : req.getOrders()) {
+        for (Order o : validOrders) {
             String orderId = o.getOrderId();
 
             PlanningVisit pickupVisit = new PlanningVisit();
-            pickupVisit.setId(pickupLocations.get(orderId).getId());
+            pickupVisit.setId(orderId + "-" + pickupLocations.get(orderId).getId());
             pickupVisit.setOrderId(orderId);
             pickupVisit.setVisitType(PlanningVisit.VisitType.PICKUP);
             pickupVisit.setLocation(pickupLocations.get(orderId));
 
             PlanningVisit dropoffVisit = new PlanningVisit();
-            dropoffVisit.setId(dropoffLocations.get(orderId).getId());
+            dropoffVisit.setId(orderId + "-" + dropoffLocations.get(orderId).getId());
             dropoffVisit.setOrderId(orderId);
             dropoffVisit.setVisitType(PlanningVisit.VisitType.DROPOFF);
             dropoffVisit.setLocation(dropoffLocations.get(orderId));
@@ -172,49 +216,64 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
             rides.add(ride);
         }
 
-        // TODO: create vehicles from hubs information
-        List<PlanningVehicle> mockVehicles = new ArrayList<>();
-        Random rnd = new Random();
-        for (int i = 0; i < 5; i++) {
-            PlanningVehicle vehicle = new PlanningVehicle();
-            vehicle.setMaxCapacity(MaxCapacity.MOTORBIKE);
-            vehicle.setCurrentCapacity(CurrentCapacity.ZERO);
-            HubLocation vehicleLocation = new HubLocation("MOCK_ID_" + i, hubs.get(rnd.nextInt(hubs.size())).getCoordinate());
-            vehicle.setLocation(vehicleLocation);
-            vehicle.setId("MOCK_ID_" + i);
-
-            allLocations.add(vehicleLocation);
-            mockVehicles.add(vehicle);
+        // generate "virtual" vehicles from hubs information
+        // in prod, this could be replaced with querying drivers from the DriverQueryAPI
+        List<PlanningVehicle> vehicles = new ArrayList<>();
+        for (PlanningHub hub : hubs) {
+            // hub location already added
+            HubLocation vehicleLocation = (HubLocation) locationMap.get(hub.getId());
+            logger.debug("Generating {} vehicles for {}", hub.getNumOfVehicles(), hub.getName());
+            for (int i = 0; i < hub.getNumOfVehicles(); i++) {
+                PlanningVehicle vehicle = new PlanningVehicle();
+                vehicle.setMaxCapacity(MaxCapacity.MOTORBIKE);
+                vehicle.setCurrentCapacity(CurrentCapacity.ZERO);
+                vehicle.setLocation(vehicleLocation);
+                vehicle.setId(UUID.randomUUID().toString());
+                vehicles.add(vehicle);
+            }
         }
 
-        logger.debug("Starting to generate a distance matrix with {} locations extracted from the request.", allLocations.size());
+        // generate the distance matrix that will be used to lookup distances between any location pairs
+        logger.debug("Starting to generate a distance matrix with {} locations extracted from the request.", locationMap.size());
+        List<Location> locationList = new ArrayList<>(locationMap.values());
+        H3DistanceMatrix<Location> h3DistanceMatrix = H3DistanceMatrix.generate(this.h3DistanceCache, locationList);
 
-        H3DistanceMatrix<Location> h3DistanceMatrix = H3DistanceMatrix.generate(this.h3DistanceCache, allLocations);
-
-        for (Location loc : allLocations) {
+        // save the reference to the distance matrix for each location for convenience
+        for (Location loc : locationList) {
             loc.setDistanceMatrix(h3DistanceMatrix);
         }
 
+        // create the problem instance
         DispatchSolution realProblem = DispatchSolution.builder()
                 .id(problemId)
                 .name("SameDayDirectPudoSolution")
                 .createdAt(createdAt)
                 .executionId(executionId)
                 .score(HardMediumSoftLongScore.ZERO)
-                .locations(allLocations)
+                .locations(locationList)
                 .planningVisits(planningVisits)
-                .planningVehicles(mockVehicles)
+                .planningVehicles(vehicles)
                 .rides(rides)
                 .hubs(hubs)
                 .build();
 
+        // optaplanner FTW
         org.optaplanner.core.api.solver.SolverJob<DispatchSolution, UUID> optaSolverJob = this.solverManager.solve(problemId, super::problemFinder, this::finalBestSolutionConsumer);
+        // save the state
         this.solutionMap.put(problemId, new SolutionState<>(optaSolverJob, realProblem, System.currentTimeMillis()));
     }
 
     @Override
     protected void finalBestSolutionConsumerHook(DispatchSolution dispatchSolution, long solverDurationInMs) {
-        logger.debug("[{}ms] :: finalBestSolutionConsumerHook :: {}", solverDurationInMs, dispatchSolution);
+        logger.debug(
+                "[{}ms] :: finalBestSolutionConsumerHook :: planningVehicles = {} :: planningVisits = {} :: hubs = {} :: locations = {}",
+                solverDurationInMs,
+                dispatchSolution.getPlanningVehicles().size(),
+                dispatchSolution.getPlanningVisits().size(),
+                dispatchSolution.getHubs().size(),
+                dispatchSolution.getLocations().size()
+        );
+
         SolutionConsumer.logSolution(dispatchSolution);
 
         try {
@@ -229,7 +288,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
             SolverJob solverJob = SolutionConsumer.extractSolverJob(dispatchSolution, SolverStatus.NOT_SOLVING, solverDurationInMs);
             solverJobService.save(solverJob);
         } catch (Exception e) {
-            logger.error("Saving solverjob failed: {}", e.getMessage());
+            logger.error("Saving solverJob failed: {}", e.getMessage());
             e.printStackTrace();
         }
     }

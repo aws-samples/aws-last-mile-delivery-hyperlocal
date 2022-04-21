@@ -87,7 +87,7 @@ public class DdbHubService extends DdbServiceBase {
         for (Map<String, AttributeValue> dbItem : dbItems) {
             try {
                 Coordinate coord = objectMapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("coordinate")), Coordinate.class);
-                hubs.add(new PlanningHub(dbItem.get("ID").s(), dbItem.get("name").s(), coord));
+                hubs.add(new PlanningHub(dbItem.get("ID").s(), dbItem.get("name").s(), coord, Integer.parseInt(dbItem.get("numOfVehicles").n())));
             } catch (JsonProcessingException e) {
                 logger.error("Error parsing ddbItem :: coordinate", e);
             }

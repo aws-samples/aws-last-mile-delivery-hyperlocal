@@ -28,15 +28,17 @@ import lombok.Setter;
 public class PlanningHub extends PlanningBase<String> {
     private String name;
     private Coordinate coordinate;
+    private int numOfVehicles;
 
-    public PlanningHub(String id, String name, Coordinate coordinate) {
+    public PlanningHub(String id, String name, Coordinate coordinate, int numOfVehicles) {
         this.id = id;
         this.name = name;
         this.coordinate = coordinate;
+        this.numOfVehicles = numOfVehicles;
     }
 
     @Override
     public String toString() {
-        return name + " " + coordinate;
+        return name + " | vehicles = " + numOfVehicles + " | " + coordinate;
     }
 }
