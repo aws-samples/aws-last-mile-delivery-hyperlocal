@@ -37,6 +37,10 @@ public class Order extends dev.aws.proto.core.Order {
     public static class Origin extends CoordinateWithId {
         private int preparationTimeInMins;
         private List<String> tags;
+
+        public String toString() {
+            return super.toString() + " | prepTime=" + preparationTimeInMins;
+        }
     }
 
     @Data

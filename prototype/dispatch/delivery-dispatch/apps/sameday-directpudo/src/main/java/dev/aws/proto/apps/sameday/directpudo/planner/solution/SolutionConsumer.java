@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class SolutionConsumer {
@@ -196,7 +197,13 @@ public class SolutionConsumer {
     public static void logSolution(DispatchSolution solution) {
         logger.debug("[{}] solution score: {}", solution.getId(), solution.getScore());
 
+        AtomicInteger notAssignedVehicleCnt = new AtomicInteger(0);
+
         solution.getPlanningVehicles().forEach(vehicle -> {
+            if (vehicle.getNextPlanningVisit() == null) {
+                notAssignedVehicleCnt.incrementAndGet();
+                return;
+            }
 
             logger.debug("vehicle[{}] :: [visits = {}] :: location {}", vehicle.getId(), vehicle.chainLength(), vehicle.getLocation().getCoordinate());
 
@@ -204,10 +211,6 @@ public class SolutionConsumer {
             points.add(vehicle.getLocation().getCoordinate());
 
             PlanningVisit visit = vehicle.getNextPlanningVisit();
-            if (visit == null) {
-                logger.debug("\t-- NO visits assigned");
-            }
-
             while (visit != null) {
                 logger.debug("\t{}", visit);
                 points.add(visit.getLocation().getCoordinate());
@@ -223,9 +226,9 @@ public class SolutionConsumer {
             StringBuilder sb = new StringBuilder();
             logger.debug("");
             logger.debug("\tPoints encoded: {}", pointsEncoded);
-            logger.debug("\tPoints: {}", coordsStr);
-
-
+//            logger.debug("\tPoints: {}", coordsStr);
         });
+
+        logger.debug("Number of vehicles not assigned: {}", notAssignedVehicleCnt.get());
     }
 }
