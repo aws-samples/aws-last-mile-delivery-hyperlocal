@@ -17,6 +17,7 @@
 
 package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVehicle;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
 import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
@@ -31,7 +32,8 @@ public class DispatchConstraintProvider implements ConstraintProvider {
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{
-                testConstraint(constraintFactory),
+//                testConstraint(constraintFactory),
+                vehicleCapacity(constraintFactory),
                 pickupAndDropoffBySameVehicle(constraintFactory),
                 pickupBeforeDropoff(constraintFactory),
                 distanceToPreviousVisitOrVehicle(constraintFactory),
@@ -99,23 +101,19 @@ public class DispatchConstraintProvider implements ConstraintProvider {
                 );
     }
 
-//    protected Constraint vehicleCapacity(ConstraintFactory factory) {
-//        return factory.forEach(DeliveryRide.class)
-//                .join(PlanningVisit.class,
-//                        Joiners.equal(DeliveryRide::getPickupVisit, Function.identity())
-//                )
-//                .groupBy(PlanningVisit::getPlanningDriver, sum(DeliveryRide::getParcel))
-//                .penalize(
-//                        "Vehicle capacity",
-//                        HardMediumSoftLongScore.ONE_HARD
-////                        vehicle -> vehicle.overCapacityScore()
-//                );
-//    }
+    protected Constraint vehicleCapacity(ConstraintFactory factory) {
+        return factory.forEach(PlanningVehicle.class)
+                .penalize(
+                        "Vehicle capacity",
+                        HardMediumSoftLongScore.ONE_HARD,
+                        PlanningVehicle::scoreForCapacityViolation
+                );
+    }
 
-    protected Constraint testConstraint(ConstraintFactory factory) {
+    protected Constraint limitVisitsPerVehicle(ConstraintFactory factory) {
         return factory.forEach(PlanningVisit.class)
                 .groupBy(PlanningVisit::getPlanningVehicle, count())
-                .filter((visit, visitCount) -> visitCount > 12)
-                .penalize("Max visits per driver", HardMediumSoftLongScore.ONE_HARD);
+                .filter((visit, visitCount) -> visitCount > 30)
+                .penalize("Limit visits per vehicle", HardMediumSoftLongScore.ONE_HARD);
     }
 }
