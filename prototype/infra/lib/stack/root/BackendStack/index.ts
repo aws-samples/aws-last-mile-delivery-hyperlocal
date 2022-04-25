@@ -94,6 +94,7 @@ export class BackendStack extends Stack {
 					sameDayDirectPudoDeliveryJobs,
 					sameDayDirectPudoSolverJobs,
 					sameDayDirectPudoHubs,
+					sameDayDirectPudoVehicleCapacity,
 					ssmStringParameters: dataStorageSsmStringParameters,
 				},
 				backendBaseNestedStack: {
@@ -187,6 +188,7 @@ export class BackendStack extends Stack {
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
 			sameDayDirectPudoHubs,
+			sameDayDirectPudoVehicleCapacity,
 			ssmStringParameters,
 			vpc,
 			vpcNetworking,

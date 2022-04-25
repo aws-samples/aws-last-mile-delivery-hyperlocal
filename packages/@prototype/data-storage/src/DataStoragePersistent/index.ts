@@ -19,6 +19,7 @@ import { NestedStack, NestedStackProps, aws_dynamodb as ddb, aws_s3 as s3, aws_s
 import { namespaced, namespacedBucket } from '@aws-play/cdk-core'
 import { hyperlocal_ddb, hyperlocal_s3 } from '@prototype/common'
 import { DatabaseSeeder } from './DatabaseSeeder'
+import { DatabaseSeeder as SameDayDirectPudoVehicleCapacitySeeder } from './DatabaseSeeder/sameday-directpudo-vehicle-capacity-seeder'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface DataStoragePersistentProps extends NestedStackProps {
@@ -54,6 +55,8 @@ export class DataStoragePersistent extends NestedStack {
 	public readonly sameDayDirectPudoSolverJobs: ddb.ITable
 
 	public readonly sameDayDirectPudoHubs: ddb.ITable
+
+	public readonly sameDayDirectPudoVehicleCapacity: ddb.ITable
 
 	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 
@@ -262,5 +265,27 @@ export class DataStoragePersistent extends NestedStack {
 		})
 		this.ssmStringParameters[parameterStoreKeys.sameDayDirectPudoHubsTableName] =
 			sameDayDirectPudoHubsTableNameParameter
+
+		const sameDayDirectPudoVehicleCapacityTableName = namespaced(this, 'sameday-directpudo-vehicle-capacity')
+		const sameDayDirectPudoVehicleCapacityTable = new hyperlocal_ddb.Table(this, 'SameDayDirectPudoVehicleCapacity', {
+			tableName: sameDayDirectPudoVehicleCapacityTableName,
+			removalPolicy: props.removalPolicy,
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+		this.sameDayDirectPudoVehicleCapacity = sameDayDirectPudoVehicleCapacityTable
+		const sameDayDirectPudoVehicleCapacityTableNameParameter = new ssm.StringParameter(this, 'sameday-directpudo-vehicle-capacity-param', {
+			parameterName: parameterStoreKeys.sameDayDirectPudoVehicleCapacityTableName,
+			stringValue: sameDayDirectPudoVehicleCapacityTableName,
+			description: 'sameDayDirectPudoVehicleCapacityTableName tablename parameter for dispatcher',
+		})
+		this.ssmStringParameters[parameterStoreKeys.sameDayDirectPudoVehicleCapacityTableName] =
+			sameDayDirectPudoVehicleCapacityTableNameParameter
+
+		new SameDayDirectPudoVehicleCapacitySeeder(this, 'SameDayDirectPudoVehicleCapacitySeeder', {
+			sameDayDirectPudoVehicleCapacity: sameDayDirectPudoVehicleCapacityTable,
+		})
 	}
 }
