@@ -53,6 +53,19 @@ public class CurrentCapacity extends CapacityBase {
         this.setWeight(this.getWeight() + parcel.getWeight());
     }
 
+    public boolean tryAddParcel(Parcel parcel) {
+        if (!this.canAddParcel(parcel)) {
+            return false;
+        }
+
+        this.setLength(Math.max(this.getLength(), parcel.getLength()));
+        this.setHeight(this.getHeight() + parcel.getHeight());
+        this.setWidth(Math.max(this.getWidth(), parcel.getWidth()));
+        this.setWeight(this.getWeight() + parcel.getWeight());
+
+        return true;
+    }
+
     public void removeParcel(Parcel parcel) {
         // don't change length/width as we don't have enough information about
         // previous maxLengths/maxWidths, unless we maintain it in a linked list

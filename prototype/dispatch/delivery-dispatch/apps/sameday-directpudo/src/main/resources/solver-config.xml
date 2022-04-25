@@ -41,7 +41,7 @@
     <!-- Terminate solver after N seconds -->
     <!-- TODO: review this -->
     <termination>
-        <secondsSpentLimit>150</secondsSpentLimit>
+        <secondsSpentLimit>1500</secondsSpentLimit>
     </termination>
 
     <localSearch>
@@ -77,8 +77,8 @@
         <!-- TODO: review this -->
         <termination>
             <bestScoreFeasible>true</bestScoreFeasible>
-            <secondsSpentLimit>15</secondsSpentLimit>
-            <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+            <secondsSpentLimit>150</secondsSpentLimit>
+            <unimprovedSecondsSpentLimit>25</unimprovedSecondsSpentLimit>
         </termination>
     </localSearch>
 </solver>

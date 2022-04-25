@@ -50,8 +50,8 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
     private VisitOrVehicle previousVisitOrVehicle;
 
     // shadow variables
-    private PlanningVisit nextPlanningVisit;
     private PlanningVehicle planningVehicle;
+    private PlanningVisit nextPlanningVisit;
     private Integer visitIndex;
     private Long deliveryDurationUntilNow;
 

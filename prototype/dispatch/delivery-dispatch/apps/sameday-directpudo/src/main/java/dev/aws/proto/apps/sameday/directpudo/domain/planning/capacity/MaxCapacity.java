@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 public class MaxCapacity extends CapacityBase {
-    public static final MaxCapacity MOTORBIKE = MaxCapacity.builder().length(100).height(100).width(100).weight(100).build();
+    public static final MaxCapacity MOTORBIKE = MaxCapacity.builder().length(50).height(60).width(50).weight(10).build();
 
     public boolean exceeds(float length, float height, float width, float weight) {
         return
