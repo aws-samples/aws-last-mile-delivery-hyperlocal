@@ -78,6 +78,9 @@ parameterStoreKeys:
   # key for sameday-directpudo -- hubs table name
   sameDayDirectPudoHubsTableName: /HyperLocal/Ddb/SameDayDirectPudoHubs/TableName
 
+  # key for sameday-directpudo -- vehicle capacity table name
+  sameDayDirectPudoVehicleCapacityTableName: /HyperLocal/Ddb/SameDayDirectPudoVechicleCapacity/TableName
+
 # open search service config
 # instance types:
 #   * https://docs.aws.amazon.com/opensearch-service/latest/developerguide/supported-instance-types.html

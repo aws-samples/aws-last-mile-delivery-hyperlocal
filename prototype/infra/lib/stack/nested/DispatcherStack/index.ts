@@ -31,6 +31,7 @@ export interface DispatcherStackProps extends NestedStackProps {
 	readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
 	readonly sameDayDirectPudoSolverJobs: ddb.ITable
 	readonly sameDayDirectPudoHubs: ddb.ITable
+	readonly sameDayDirectPudoVehicleCapacity: ddb.ITable
 	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: Networking
@@ -57,6 +58,7 @@ export class DispatcherStack extends NestedStack {
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
 			sameDayDirectPudoHubs,
+			sameDayDirectPudoVehicleCapacity,
 			ssmStringParameters,
 			vpc,
 			vpcNetworking: {
@@ -76,6 +78,7 @@ export class DispatcherStack extends NestedStack {
 			sameDayDirectPudoDeliveryJobs,
 			sameDayDirectPudoSolverJobs,
 			sameDayDirectPudoHubs,
+			sameDayDirectPudoVehicleCapacity,
 			ssmStringParameters,
 			vpc,
 		})
