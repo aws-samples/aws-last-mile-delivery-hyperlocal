@@ -17,6 +17,7 @@
 
 package dev.aws.proto.apps.sameday.directpudo.domain.planning;
 
+import dev.aws.proto.apps.sameday.directpudo.data.Parcel;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCapacity;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
 import dev.aws.proto.apps.sameday.directpudo.location.HubLocation;
@@ -61,7 +62,13 @@ public class PlanningVehicle extends PlanningBase<String> implements VisitOrVehi
         return this.nextPlanningVisit;
     }
 
-    // TODO: add getDistanceTo methods
+//    @CustomShadowVariable(
+//            variableListenerClass = CurrentCapacityUpdatingVariableListener.class,
+//            sources = {@PlanningVariableReference(entityClass = PlanningVisit.class, variableName = Constants.PreviousVisitOrVehicle)}
+//    )
+//    public CurrentCapacity getCurrentCapacity() {
+//        return this.currentCapacity;
+//    }
 
     @Override
     public String toString() {
@@ -84,7 +91,25 @@ public class PlanningVehicle extends PlanningBase<String> implements VisitOrVehi
         return len;
     }
 
-    public int overCapacityScore() {
-        return 1;
+    public int scoreForCapacityViolation() {
+        CurrentCapacity currentCapacity = CurrentCapacity.ZERO;
+        currentCapacity.setMaxCapacity(this.maxCapacity);
+
+        PlanningVisit visit = this.getNextPlanningVisit();
+        while (visit != null) {
+            Parcel parcel = visit.getRide().getParcel();
+            if (visit.getVisitType() == PlanningVisit.VisitType.PICKUP) {
+                boolean success = currentCapacity.tryAddParcel(parcel);
+                if (!success) {
+                    return 1;
+                }
+            } else {
+                currentCapacity.removeParcel(parcel);
+            }
+
+            visit = visit.getNextPlanningVisit();
+        }
+
+        return 0;
     }
 }
