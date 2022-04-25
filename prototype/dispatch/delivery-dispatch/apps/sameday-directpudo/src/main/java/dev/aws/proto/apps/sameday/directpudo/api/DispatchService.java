@@ -140,9 +140,14 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         long centerHexa = h3.geoToH3(14.617794, 121.001995, h3DistanceCache.getH3Resolution());
 
         // the orders that have only "valid" pickup/dropoff locations for our caching mechanism
-        List<Order> validOrders = new ArrayList<>();
+        Map<String, Order> validOrdersMap = new HashMap<>();
 
         for (Order o : req.getOrders()) {
+            if (validOrdersMap.containsKey(o.getOrderId())) {
+                logger.warn("Skipping order {}: DUPLICATE ORDER ID", o.getOrderId());
+                continue;
+            }
+
             Coordinate origin = o.getOrigin();
             Coordinate dest = o.getDestination();
 
@@ -155,8 +160,10 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                 logger.warn("Skipping order {} because origin or destination location is outside or on the edge of covered geo polygon", o.getOrderId());
                 continue;
             }
-            validOrders.add(o);
+
+            validOrdersMap.put(o.getOrderId(), o);
         }
+        List<Order> validOrders = new ArrayList<>(validOrdersMap.values());
         // -------------------------------------------------------------------------------------------------------------
         // --------------------------
 
@@ -265,15 +272,6 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
     @Override
     protected void finalBestSolutionConsumerHook(DispatchSolution dispatchSolution, long solverDurationInMs) {
-        logger.debug(
-                "[{}ms] :: finalBestSolutionConsumerHook :: planningVehicles = {} :: planningVisits = {} :: hubs = {} :: locations = {}",
-                solverDurationInMs,
-                dispatchSolution.getPlanningVehicles().size(),
-                dispatchSolution.getPlanningVisits().size(),
-                dispatchSolution.getHubs().size(),
-                dispatchSolution.getLocations().size()
-        );
-
         SolutionConsumer.logSolution(dispatchSolution);
 
         try {
@@ -291,6 +289,15 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
             logger.error("Saving solverJob failed: {}", e.getMessage());
             e.printStackTrace();
         }
+
+        logger.debug(
+                "[{}ms] :: finalBestSolutionConsumerHook :: planningVehicles = {} :: planningVisits = {} :: hubs = {} :: locations = {}",
+                solverDurationInMs,
+                dispatchSolution.getPlanningVehicles().size(),
+                dispatchSolution.getPlanningVisits().size(),
+                dispatchSolution.getHubs().size(),
+                dispatchSolution.getLocations().size()
+        );
     }
 
     public SolverJobWithDeliveryJobs getSolutionStatus(UUID problemId) {
