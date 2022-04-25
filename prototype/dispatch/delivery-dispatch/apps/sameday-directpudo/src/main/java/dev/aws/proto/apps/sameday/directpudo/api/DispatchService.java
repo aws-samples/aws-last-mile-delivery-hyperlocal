@@ -26,10 +26,7 @@ import dev.aws.proto.apps.sameday.directpudo.api.request.DispatchRequest;
 import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJobWithDeliveryJobs;
-import dev.aws.proto.apps.sameday.directpudo.data.DdbDeliveryJobService;
-import dev.aws.proto.apps.sameday.directpudo.data.DdbHubService;
-import dev.aws.proto.apps.sameday.directpudo.data.DdbSolverJobService;
-import dev.aws.proto.apps.sameday.directpudo.data.Parcel;
+import dev.aws.proto.apps.sameday.directpudo.data.*;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryRide;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningHub;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVehicle;
@@ -85,6 +82,9 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
     DdbHubService hubService;
 
     @Inject
+    DdbVehicleCapacityService vehicleCapacityService;
+
+    @Inject
     DistanceCachingConfig distanceCachingConfig;
 
     private H3DistanceCache h3DistanceCache;
@@ -118,6 +118,9 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
         logger.debug("Pulling hubs information");
         List<PlanningHub> hubs = hubService.listHubs();
+
+        logger.debug("Pulling vehicle capacity information");
+        Map<String, MaxCapacity> maxCapacities = vehicleCapacityService.getMaxCapacities();
 
         // maintain lookup tables for all locations, pickups and dropoffs
         Map<String, Location> locationMap = new HashMap<>();
@@ -226,13 +229,19 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         // generate "virtual" vehicles from hubs information
         // in prod, this could be replaced with querying drivers from the DriverQueryAPI
         List<PlanningVehicle> vehicles = new ArrayList<>();
+
+        // this time we pick the "smallest" motorbike as a max capacity definition
+        // this can be obviously changed later
+        MaxCapacity MOTORBIKE_MAXCAPACITY = maxCapacities.getOrDefault("Motorbike-150cc",
+                MaxCapacity.builder().length(50).height(60).width(50).weight(10).build());
+
         for (PlanningHub hub : hubs) {
             // hub location already added
             HubLocation vehicleLocation = (HubLocation) locationMap.get(hub.getId());
             logger.debug("Generating {} vehicles for {}", hub.getNumOfVehicles(), hub.getName());
             for (int i = 0; i < hub.getNumOfVehicles(); i++) {
                 PlanningVehicle vehicle = new PlanningVehicle();
-                vehicle.setMaxCapacity(MaxCapacity.MOTORBIKE);
+                vehicle.setMaxCapacity(MOTORBIKE_MAXCAPACITY);
                 vehicle.setCurrentCapacity(CurrentCapacity.ZERO);
                 vehicle.setLocation(vehicleLocation);
                 vehicle.setId(UUID.randomUUID().toString());
