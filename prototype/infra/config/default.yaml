@@ -79,7 +79,7 @@ parameterStoreKeys:
   sameDayDirectPudoHubsTableName: /HyperLocal/Ddb/SameDayDirectPudoHubs/TableName
 
   # key for sameday-directpudo -- vehicle capacity table name
-  sameDayDirectPudoVehicleCapacityTableName: /HyperLocal/Ddb/SameDayDirectPudoVechicleCapacity/TableName
+  sameDayDirectPudoVehicleCapacityTableName: /HyperLocal/Ddb/SameDayDirectPudoVehicleCapacity/TableName
 
 # open search service config
 # instance types:
