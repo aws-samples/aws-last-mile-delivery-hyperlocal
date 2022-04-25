@@ -219,6 +219,21 @@
             </build>
         </profile>
         <profile>
+            <id>build:instant:sequential:prod</id>
+            <properties>
+                <h3.version>3.7.0</h3.version>
+                <skipTests>true</skipTests>
+            </properties>
+            <modules>
+                <module>core</module>
+                <module>apps/app-core</module>
+                <module>apps/instant-sequential</module>
+            </modules>
+            <build>
+                <defaultGoal>clean package</defaultGoal>
+            </build>
+        </profile>
+        <profile>
             <id>quarkus:dev:instant:sequential</id>
             <modules>
                 <module>core</module>
@@ -231,6 +246,21 @@
         </profile>
         <profile>
             <id>build:sameday:directpudo</id>
+            <modules>
+                <module>core</module>
+                <module>apps/app-core</module>
+                <module>apps/sameday-directpudo</module>
+            </modules>
+            <build>
+                <defaultGoal>clean package</defaultGoal>
+            </build>
+        </profile>
+        <profile>
+            <id>build:sameday:directpudo:prod</id>
+            <properties>
+                <h3.version>3.7.0</h3.version>
+                <skipTests>true</skipTests>
+            </properties>
             <modules>
                 <module>core</module>
                 <module>apps/app-core</module>
