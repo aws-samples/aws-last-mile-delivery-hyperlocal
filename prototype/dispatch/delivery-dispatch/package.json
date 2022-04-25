@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "mvn:package": "./mvnw clean package -DskipTests=true",
+    "mvn:package": "./mvnw  -Pbuild:sameday:directpudo:prod && ./mvnw -Pbuild:instant:sequential:prod",
     "builddir:create": "mkdir -p build/instant/sequential/config && mkdir -p build/instant/mixedpudo/config && mkdir -p build/sameday/directpudo/config",
     "builddir:rm": "rm -rf build/*",
     "builddir:reset": "yarn builddir:rm && yarn builddir:create",
