@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
 
     <title>Yarn Audit Report</title>
-    <meta name="description" content="71 known vulnerabilities found.">
+    <meta name="description" content="47 known vulnerabilities found.">
 
     <style>
         html {
@@ -80,9 +80,9 @@
             <h1>Yarn Audit Report</h1>
 
             <h3>
-                17 unique from
-                71 known vulnerabilities |
-                6007 dependencies
+                16 unique from
+                47 known vulnerabilities |
+                6006 dependencies
             </h3>
         </div>
     </div>
@@ -370,19 +370,19 @@
                             </div>
                             <div class="col-md-6">
                                 <ul>
-                                    <li>Vulnerable: &lt;3.2.2</li>
-                                    <li>Patched: &gt;=3.2.2</li>
+                                    <li>Vulnerable: &lt;2.6.4</li>
+                                    <li>Patched: &gt;=2.6.4</li>
                                     
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>A vulnerability exists in Async through 3.2.1 (fixed in 3.2.2) , which could let a malicious user obtain privileges via the mapValues() method.</p>
+                        <div class="card-text"><p>A vulnerability exists in Async through 3.2.1 for 3.x and through 2.6.3 for 2.x (fixed in 3.2.2 and 2.6.4), which could let a malicious user obtain privileges via the <code>mapValues()</code> method.</p>
 </div>
 
                         
                             <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 3.2.2 or later</p>
+                            <div class="card-text"><p>Upgrade to version 2.6.4 or later</p>
 </div>
                         
                         
@@ -393,6 +393,9 @@
 <li><a href="https://github.com/caolan/async/blob/master/lib/internal/iterator.js">https://github.com/caolan/async/blob/master/lib/internal/iterator.js</a></li>
 <li><a href="https://github.com/caolan/async/blob/master/lib/mapValuesLimit.js">https://github.com/caolan/async/blob/master/lib/mapValuesLimit.js</a></li>
 <li><a href="https://jsfiddle.net/oz5twjd9/">https://jsfiddle.net/oz5twjd9/</a></li>
+<li><a href="https://github.com/caolan/async/pull/1828">https://github.com/caolan/async/pull/1828</a></li>
+<li><a href="https://github.com/caolan/async/commit/8f7f90342a6571ba1c197d747ebed30c368096d2">https://github.com/caolan/async/commit/8f7f90342a6571ba1c197d747ebed30c368096d2</a></li>
+<li><a href="https://github.com/caolan/async/blob/v2.6.4/CHANGELOG.md#v264">https://github.com/caolan/async/blob/v2.6.4/CHANGELOG.md#v264</a></li>
 <li><a href="https://github.com/advisories/GHSA-fwr7-v2mv-hh25">https://github.com/advisories/GHSA-fwr7-v2mv-hh25</a></li>
 </ul>
 </div>
@@ -440,19 +443,19 @@
                             </div>
                             <div class="col-md-6">
                                 <ul>
-                                    <li>Vulnerable: &lt;3.2.2</li>
-                                    <li>Patched: &gt;=3.2.2</li>
+                                    <li>Vulnerable: &lt;2.6.4</li>
+                                    <li>Patched: &gt;=2.6.4</li>
                                     
                                 </ul>
                             </div>
                         </div>
                         <h3>Overview</h3>
-                        <div class="card-text"><p>A vulnerability exists in Async through 3.2.1 (fixed in 3.2.2) , which could let a malicious user obtain privileges via the mapValues() method.</p>
+                        <div class="card-text"><p>A vulnerability exists in Async through 3.2.1 for 3.x and through 2.6.3 for 2.x (fixed in 3.2.2 and 2.6.4), which could let a malicious user obtain privileges via the <code>mapValues()</code> method.</p>
 </div>
 
                         
                             <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 3.2.2 or later</p>
+                            <div class="card-text"><p>Upgrade to version 2.6.4 or later</p>
 </div>
                         
                         
@@ -463,6 +466,9 @@
 <li><a href="https://github.com/caolan/async/blob/master/lib/internal/iterator.js">https://github.com/caolan/async/blob/master/lib/internal/iterator.js</a></li>
 <li><a href="https://github.com/caolan/async/blob/master/lib/mapValuesLimit.js">https://github.com/caolan/async/blob/master/lib/mapValuesLimit.js</a></li>
 <li><a href="https://jsfiddle.net/oz5twjd9/">https://jsfiddle.net/oz5twjd9/</a></li>
+<li><a href="https://github.com/caolan/async/pull/1828">https://github.com/caolan/async/pull/1828</a></li>
+<li><a href="https://github.com/caolan/async/commit/8f7f90342a6571ba1c197d747ebed30c368096d2">https://github.com/caolan/async/commit/8f7f90342a6571ba1c197d747ebed30c368096d2</a></li>
+<li><a href="https://github.com/caolan/async/blob/v2.6.4/CHANGELOG.md#v264">https://github.com/caolan/async/blob/v2.6.4/CHANGELOG.md#v264</a></li>
 <li><a href="https://github.com/advisories/GHSA-fwr7-v2mv-hh25">https://github.com/advisories/GHSA-fwr7-v2mv-hh25</a></li>
 </ul>
 </div>
@@ -729,6 +735,74 @@ by Hal Finney.</p>
                     <div class="card-body">
                         <h1 class="card-title">
                             <span class="badge badge-warning">high</span>
+                            Prototype Pollution in immer
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/immer" target="_blank">immer</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 8.0.1</li>
+                                    
+                                    <li>Published: 9/8/2021, 6:57:14 AM</li>
+                                    
+                                    <li>CWE-915,CWE-1321</li>
+                                    
+                                        <li>CVE-2021-3757</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &lt;9.0.6</li>
+                                    <li>Patched: &gt;=9.0.6</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes (&#39;Prototype Pollution&#39;)</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 9.0.6 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3757">https://nvd.nist.gov/vuln/detail/CVE-2021-3757</a></li>
+<li><a href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a></li>
+<li><a href="https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa">https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa</a></li>
+<li><a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx">https://github.com/advisories/GHSA-c36v-fmgq-m8hx</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-8" type="checkbox">
+                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
                             Uncontrolled Resource Consumption in ansi-html
                         </h1>
                         <div class="row">
@@ -778,8 +852,8 @@ by Hal Finney.</p>
 </div>
                         
                         
-                            <input id="vulnerability-reasons-8" type="checkbox">
-                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-9" type="checkbox">
+                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -790,74 +864,6 @@ by Hal Finney.</p>
                         
 
                         <a href="https://github.com/advisories/GHSA-whgm-jr23-g3j9" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-warning">high</span>
-                            Prototype Pollution in immer
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/immer" target="_blank">immer</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 8.0.1</li>
-                                    
-                                    <li>Published: 9/8/2021, 6:57:14 AM</li>
-                                    
-                                    <li>CWE-915,CWE-1321</li>
-                                    
-                                        <li>CVE-2021-3757</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;9.0.6</li>
-                                    <li>Patched: &gt;=9.0.6</li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>immer is vulnerable to Improperly Controlled Modification of Object Prototype Attributes (&#39;Prototype Pollution&#39;)</p>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 9.0.6 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-3757">https://nvd.nist.gov/vuln/detail/CVE-2021-3757</a></li>
-<li><a href="https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237">https://github.com/immerjs/immer/commit/fa671e55ee9bd42ae08cc239102b665a23958237</a></li>
-<li><a href="https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa">https://huntr.dev/bounties/23d38099-71cd-42ed-a77a-71e68094adfa</a></li>
-<li><a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx">https://github.com/advisories/GHSA-c36v-fmgq-m8hx</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-9" type="checkbox">
-                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;immer</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-c36v-fmgq-m8hx" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
@@ -1174,74 +1180,6 @@ app.listen(port, () =&gt; {
                     <div class="card-body">
                         <h1 class="card-title">
                             <span class="badge badge-secondary">moderate</span>
-                            Exposure of Sensitive Information to an Unauthorized Actor in follow-redirects
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/follow-redirects" target="_blank">follow-redirects</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 1.14.7</li>
-                                    
-                                    <li>Published: 2/10/2022, 8:00:31 AM</li>
-                                    
-                                    <li>CWE-200</li>
-                                    
-                                        <li>CVE-2022-0536</li>
-                                    
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Vulnerable: &lt;1.14.8</li>
-                                    <li>Patched: &gt;=1.14.8</li>
-                                    
-                                </ul>
-                            </div>
-                        </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>Exposure of Sensitive Information to an Unauthorized Actor in NPM follow-redirects prior to 1.14.8.</p>
-</div>
-
-                        
-                            <h3>Remediation</h3>
-                            <div class="card-text"><p>Upgrade to version 1.14.8 or later</p>
-</div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
-<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-0536">https://nvd.nist.gov/vuln/detail/CVE-2022-0536</a></li>
-<li><a href="https://github.com/follow-redirects/follow-redirects/commit/62e546a99c07c3ee5e4e0718c84a6ca127c5c445">https://github.com/follow-redirects/follow-redirects/commit/62e546a99c07c3ee5e4e0718c84a6ca127c5c445</a></li>
-<li><a href="https://huntr.dev/bounties/7cf2bf90-52da-4d59-8028-a73b132de0db">https://huntr.dev/bounties/7cf2bf90-52da-4d59-8028-a73b132de0db</a></li>
-<li><a href="https://github.com/advisories/GHSA-pw2r-vq6v-hr8c">https://github.com/advisories/GHSA-pw2r-vq6v-hr8c</a></li>
-</ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-14" type="checkbox">
-                            <h3><label for="vulnerability-reasons-14">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
-                                
-                                    <div class="card-text">
-                                        <code>@lambda/external-webhook-invoker&gt;axios&gt;follow-redirects</code>
-                                    </div>
-                                
-                            </div>
-                        
-
-                        <a href="https://github.com/advisories/GHSA-pw2r-vq6v-hr8c" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
                             Open Redirect in node-forge
                         </h1>
                         <div class="row">
@@ -1289,8 +1227,8 @@ app.listen(port, () =&gt; {
 </div>
                         
                         
-                            <input id="vulnerability-reasons-15" type="checkbox">
-                            <h3><label for="vulnerability-reasons-15">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-14" type="checkbox">
+                            <h3><label for="vulnerability-reasons-14">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -1357,8 +1295,8 @@ app.listen(port, () =&gt; {
 </div>
                         
                         
-                            <input id="vulnerability-reasons-16" type="checkbox">
-                            <h3><label for="vulnerability-reasons-16">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-15" type="checkbox">
+                            <h3><label for="vulnerability-reasons-15">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -1379,7 +1317,7 @@ app.listen(port, () =&gt; {
         
         
 
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 4/14/2022, 2:47:57 PM</h6>
+        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 4/26/2022, 5:21:27 PM</h6>
     </div>
 </div>
 </body>
