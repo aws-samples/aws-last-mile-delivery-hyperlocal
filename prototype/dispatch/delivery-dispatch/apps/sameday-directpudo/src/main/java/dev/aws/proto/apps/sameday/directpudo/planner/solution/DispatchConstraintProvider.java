@@ -19,7 +19,6 @@ package dev.aws.proto.apps.sameday.directpudo.planner.solution;
 
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVehicle;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
-import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -29,17 +28,26 @@ import org.optaplanner.core.api.score.stream.Joiners;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 
 public class DispatchConstraintProvider implements ConstraintProvider {
+
+    /**
+     * We define the constraints here.
+     * <p>
+     * IMPORTANT to note, that the outcome will depend on the _order_ of the constraints in this list - at least that are on the same "level".
+     * <p>
+     * Check out the docs for constraint steams here: {@see https://www.optaplanner.org/docs/optaplanner/latest/constraint-streams/constraint-streams.html}
+     */
     @Override
     public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
         return new Constraint[]{
-//                testConstraint(constraintFactory),
-                vehicleCapacity(constraintFactory),
+                limitVisitsPerVehicle(constraintFactory),
+                vehicleCapacityMedium(constraintFactory),
                 pickupAndDropoffBySameVehicle(constraintFactory),
                 pickupBeforeDropoff(constraintFactory),
                 distanceToPreviousVisitOrVehicle(constraintFactory),
                 distanceFromLastVisitToHub(constraintFactory),
-//                limitDeliveryJobToMaxDuration(constraintFactory),
-//                vehicleCapacity(constraintFactory),
+
+                // not used ATM
+                // limitDeliveryJobToMaxDuration(constraintFactory),
         };
     }
 
@@ -87,33 +95,47 @@ public class DispatchConstraintProvider implements ConstraintProvider {
         return factory.forEach(PlanningVisit.class)
                 .filter(PlanningVisit::isLastVisit)
                 .penalize("Distance from last visit back to hub",
-                        HardMediumSoftLongScore.ONE_SOFT,
+                        HardMediumSoftLongScore.ONE_MEDIUM,
                         PlanningVisit::scoreForDistanceFromLastVisitToHub
                 );
     }
 
     protected Constraint limitDeliveryJobToMaxDuration(ConstraintFactory factory) {
-        return factory.forEach(PlanningVisit.class)
-                .filter(visit -> visit.getDeliveryDurationUntilNow() > Constants.MaxDurationOfDeliveryJobInSeconds)
+        return factory.forEach(PlanningVehicle.class)
                 .penalize("Limit max duration of a delivery job",
                         HardMediumSoftLongScore.ONE_HARD,
-                        PlanningVisit::scoreForMaxDurationOfDeliveryJob
+                        PlanningVehicle::scoreForDeliveryJobMaxDuration
                 );
     }
 
     protected Constraint vehicleCapacity(ConstraintFactory factory) {
         return factory.forEach(PlanningVehicle.class)
                 .penalize(
-                        "Vehicle capacity",
+                        "Vehicle capacity - HARD score",
                         HardMediumSoftLongScore.ONE_HARD,
-                        PlanningVehicle::scoreForCapacityViolation
+                        PlanningVehicle::scoreForCapacityViolationHard
+                );
+    }
+
+    protected Constraint vehicleCapacityMedium(ConstraintFactory factory) {
+        return factory.forEach(PlanningVehicle.class)
+                .penalize(
+                        "Vehicle capacity - MEDIUM/SOFT score",
+                        HardMediumSoftLongScore.ONE_SOFT,
+                        PlanningVehicle::scoreForCapacityViolationMedium
                 );
     }
 
     protected Constraint limitVisitsPerVehicle(ConstraintFactory factory) {
         return factory.forEach(PlanningVisit.class)
+                // create the groups per vehicle, the collector is the count() method
                 .groupBy(PlanningVisit::getPlanningVehicle, count())
-                .filter((visit, visitCount) -> visitCount > 30)
-                .penalize("Limit visits per vehicle", HardMediumSoftLongScore.ONE_HARD);
+                // pick those that have more than N visits
+                .filter((visit, visitCount) -> visitCount > 20)
+                // and penalize them
+                .penalize(
+                        "Limit the number of visits per vehicle",
+                        HardMediumSoftLongScore.ONE_HARD
+                );
     }
 }

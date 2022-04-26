@@ -22,6 +22,7 @@ import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCap
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
 import dev.aws.proto.apps.sameday.directpudo.location.HubLocation;
 import dev.aws.proto.apps.sameday.directpudo.location.Location;
+import dev.aws.proto.apps.sameday.directpudo.util.Constants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -91,7 +92,7 @@ public class PlanningVehicle extends PlanningBase<String> implements VisitOrVehi
         return len;
     }
 
-    public int scoreForCapacityViolation() {
+    public int scoreForCapacityViolationHard() {
         CurrentCapacity currentCapacity = CurrentCapacity.ZERO;
         currentCapacity.setMaxCapacity(this.maxCapacity);
 
@@ -111,5 +112,50 @@ public class PlanningVehicle extends PlanningBase<String> implements VisitOrVehi
         }
 
         return 0;
+    }
+
+    public int scoreForCapacityViolationMedium() {
+        CurrentCapacity currentCapacity = CurrentCapacity.ZERO;
+        currentCapacity.setMaxCapacity(this.maxCapacity);
+
+        int penaltyScore = 0;
+        PlanningVisit visit = this.getNextPlanningVisit();
+        while (visit != null) {
+            Parcel parcel = visit.getRide().getParcel();
+            if (visit.getVisitType() == PlanningVisit.VisitType.PICKUP) {
+                currentCapacity.addParcel(parcel);
+
+                penaltyScore += (int) currentCapacity.excessAmountForHeight();
+                penaltyScore += (int) currentCapacity.excessAmountForWeight() * 10;
+
+                if (penaltyScore > 0) {
+                    return penaltyScore * 1000;
+                }
+            } else {
+                currentCapacity.removeParcel(parcel);
+            }
+
+            visit = visit.getNextPlanningVisit();
+        }
+
+        return 0;
+    }
+
+    /**
+     * NOT USED ATM
+     */
+    public int scoreForDeliveryJobMaxDuration() {
+        long durationInSeconds = 0;
+
+        VisitOrVehicle prev = this;
+        PlanningVisit visit = this.getNextPlanningVisit();
+        while (visit != null) {
+            durationInSeconds += prev.getLocation().distanceTo(visit.getLocation()).getDistanceInSeconds();
+            prev = visit;
+            visit = visit.getNextPlanningVisit();
+        }
+
+//        return (int) Math.max(durationInSeconds - Constants.MaxDurationOfDeliveryJobInSeconds, 0) * 100;
+        return durationInSeconds > Constants.MaxDurationOfDeliveryJobInSeconds ? 1 : 0;
     }
 }

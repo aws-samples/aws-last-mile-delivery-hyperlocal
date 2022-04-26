@@ -18,7 +18,6 @@
 package dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity;
 
 import dev.aws.proto.apps.sameday.directpudo.data.Parcel;
-import dev.aws.proto.apps.sameday.directpudo.exception.CapacityException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,14 +42,22 @@ public class CurrentCapacity extends CapacityBase {
     }
 
     public void addParcel(Parcel parcel) {
-        if (!this.canAddParcel(parcel)) {
-            throw new CapacityException(String.format("Cannot add parcel %s, it exceeds max capacity %s", parcel, maxCapacity));
-        }
+//        if (!this.canAddParcel(parcel)) {
+//            throw new CapacityException(String.format("Cannot add parcel %s, it exceeds max capacity %s", parcel, maxCapacity));
+//        }
 
         this.setLength(Math.max(this.getLength(), parcel.getLength()));
         this.setHeight(this.getHeight() + parcel.getHeight());
         this.setWidth(Math.max(this.getWidth(), parcel.getWidth()));
         this.setWeight(this.getWeight() + parcel.getWeight());
+    }
+
+    public float excessAmountForWeight() {
+        return (float) Math.max(this.getWeight() - this.maxCapacity.getWeight(), 0.0);
+    }
+
+    public float excessAmountForHeight() {
+        return (float) Math.max(this.getHeight() - this.maxCapacity.getHeight(), 0.0);
     }
 
     public boolean tryAddParcel(Parcel parcel) {
