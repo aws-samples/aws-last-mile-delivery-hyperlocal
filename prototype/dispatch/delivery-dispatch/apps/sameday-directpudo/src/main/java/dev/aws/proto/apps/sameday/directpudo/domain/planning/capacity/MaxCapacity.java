@@ -26,7 +26,7 @@ public class MaxCapacity extends CapacityBase {
                 length > this.getLength()
                         || height > this.getHeight()
                         || width > this.getWidth()
-                        || weight > this.getWidth();
+                        || weight > this.getWeight();
     }
 
     @Override

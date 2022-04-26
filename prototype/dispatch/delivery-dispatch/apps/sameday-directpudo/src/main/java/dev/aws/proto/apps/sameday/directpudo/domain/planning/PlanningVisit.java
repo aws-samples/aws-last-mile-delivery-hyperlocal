@@ -130,7 +130,7 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
         }
 
         TravelDistance distance = this.location.distanceTo(previousVisitOrVehicle.getLocation());
-        return (int) distance.getDistanceInMeters();
+        return (int) (distance.getDistanceInMeters() * distance.getDistanceInSeconds());
     }
 
     public boolean isLastVisit() {
@@ -143,7 +143,7 @@ public class PlanningVisit extends PlanningBase<String> implements VisitOrVehicl
         }
 
         TravelDistance distance = this.location.distanceTo(this.getPlanningVehicle().getLocation());
-        return (int) distance.getDistanceInMeters();
+        return (int) (distance.getDistanceInMeters() * distance.getDistanceInSeconds());
     }
 
     public int scoreForMaxDurationOfDeliveryJob() {

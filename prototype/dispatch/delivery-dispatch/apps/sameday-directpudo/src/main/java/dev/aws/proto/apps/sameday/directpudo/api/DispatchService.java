@@ -33,6 +33,7 @@ import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVehicle;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningVisit;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.CurrentCapacity;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
+import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.VehicleType;
 import dev.aws.proto.apps.sameday.directpudo.location.DropoffLocation;
 import dev.aws.proto.apps.sameday.directpudo.location.HubLocation;
 import dev.aws.proto.apps.sameday.directpudo.location.Location;
@@ -94,19 +95,20 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         this.solutionConfig = solutionConfig;
         this.distanceCachingConfig = distanceCachingConfig;
 
+        // instantiate the graphhopper router
         this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper(), routingConfig.routingProfile());
+
+        // instantiate distance cache
         ICachePersistence distanceMatrixPersistence = distanceCachingConfig.getCachePersistence();
         this.h3DistanceCache = distanceMatrixPersistence.importCache();
 
+        // create the solver config and the solver manager
         SolverConfig solverConfig = SolverConfig.createFromXmlFile(java.nio.file.Path.of(this.solutionConfig.getSolverConfigXmlPath()).toFile());
         this.solverManager = SolverManager.create(solverConfig, new SolverManagerConfig());
         this.solutionMap = new ConcurrentHashMap<>();
     }
 
     /**
-     * TODO: reminder -- we can query drivers and do geoclustering on them, use clusters' centroids as
-     * "depot location" without using depot concept per se
-     *
      * @param problemId The generated ID for the problem.
      * @param req       The dispatch request object.
      */
@@ -122,7 +124,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         logger.debug("Pulling vehicle capacity information");
         Map<String, MaxCapacity> maxCapacities = vehicleCapacityService.getMaxCapacities();
 
-        // maintain lookup tables for all locations, pickups and dropoffs
+        // maintain lookup tables for all locations, also for pickups and drop-offs
         Map<String, Location> locationMap = new HashMap<>();
         Map<String, Location> pickupLocations = new HashMap<>();
         Map<String, Location> dropoffLocations = new HashMap<>();
@@ -133,24 +135,29 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
             locationMap.put(hub.getId(), hubLoc);
         }
 
-        // TEMPORARY HACK - DO NOT USE IN PROD
-        // TODO: review this
+        // THIS IS A HACK - DO NOT USE IN PROD
         // -------------------------------------------------------------------------------------------------------------
-        // Removes all the orders that have either a pickup or a dropoff location that is NOT inside the cached area.
+        // Removes all the orders that have either a pickup or a dropoff location that is NOT inside the cached area,
+        // which we determine if it has a distance cached already inside our coverage area.
         // For prod, either report these removed orders and feed it back to the queue or filter out on the backend so
         // dispatcher doesn't have to handle it.
+        // -------------------------------------------------------------------------------------------------------------
         H3Core h3 = H3.h3();
+
+        // this lat/long should be somewhere in the center of your coverage area
         long centerHexa = h3.geoToH3(14.617794, 121.001995, h3DistanceCache.getH3Resolution());
 
-        // the orders that have only "valid" pickup/dropoff locations for our caching mechanism
+        // keep the orders that have only "valid" pickup/dropoff locations for our caching mechanism
         Map<String, Order> validOrdersMap = new HashMap<>();
 
         for (Order o : req.getOrders()) {
+            // filter orders that have the same order ID --> @PlanningId MUST BE UNIQUE
             if (validOrdersMap.containsKey(o.getOrderId())) {
                 logger.warn("Skipping order {}: DUPLICATE ORDER ID", o.getOrderId());
                 continue;
             }
 
+            // check if origin/destination coordinates are in the cache coverage area
             Coordinate origin = o.getOrigin();
             Coordinate dest = o.getDestination();
 
@@ -164,16 +171,17 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
                 continue;
             }
 
+            // save valid order
             validOrdersMap.put(o.getOrderId(), o);
         }
         List<Order> validOrders = new ArrayList<>(validOrdersMap.values());
-        // -------------------------------------------------------------------------------------------------------------
-        // --------------------------
-
         logger.debug("Original orders: {}, valid orders: {}", req.getOrders().length, validOrders.size());
+        // -------------------------------------------------------------------------------------------------------------
+        // -------------------------------------------------------------------------------------------------------------
 
         // create pickup and dropoff locations
         // reuse objects if the location IDs are reused
+        // Location IDs MUST BE UNIQUE -> @PlanningId
         for (Order o : validOrders) {
             if (!locationMap.containsKey(o.getOrigin().getId())) {
                 PickupLocation pickup = new PickupLocation(o.getOrigin().getId(), (Coordinate) o.getOrigin());
@@ -190,6 +198,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         }
 
         // break down the orders to visits (and rides)
+        // NOTE: Visits' IDs MUST BE UNIQUE --> @PlanningId
         List<PlanningVisit> planningVisits = new ArrayList<>();
         List<DeliveryRide> rides = new ArrayList<>();
         long rideId = 0;
@@ -232,8 +241,10 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
 
         // this time we pick the "smallest" motorbike as a max capacity definition
         // this can be obviously changed later
-        MaxCapacity MOTORBIKE_MAXCAPACITY = maxCapacities.getOrDefault("Motorbike-150cc",
+        MaxCapacity MOTORBIKE_MAXCAPACITY = maxCapacities.getOrDefault(VehicleType.MOTORCYCLE_150cc,
                 MaxCapacity.builder().length(50).height(60).width(50).weight(10).build());
+
+        logger.debug("Motorcycle Max capacity loaded: {}", MOTORBIKE_MAXCAPACITY);
 
         for (PlanningHub hub : hubs) {
             // hub location already added

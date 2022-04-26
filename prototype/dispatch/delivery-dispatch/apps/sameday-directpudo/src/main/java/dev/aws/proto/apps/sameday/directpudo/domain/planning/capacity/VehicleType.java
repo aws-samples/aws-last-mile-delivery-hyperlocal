@@ -15,29 +15,20 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.sameday.directpudo.util;
+package dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity;
 
-import java.time.format.DateTimeFormatter;
+public enum VehicleType {
+    MOTORCYCLE_150cc("Motorcycle-150cc"),
+    MOTORCYCLE_400cc("Motorcycle-400cc"),
+    CAR_MEDIUM("Car-Medium");
 
-/**
- * Helper class to hold constant values.
- */
-public class Constants {
-    public static final DateTimeFormatter DATETIMEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private final String vehicleType;
 
-    public static final String PreviousVisitOrVehicle = "previousVisitOrVehicle";
-    public static final String PlanningVehicleRange = "PlanningVehicleRange";
-    public static final String PlanningVisitRange = "PlanningVisitRange";
-
-    public static final int MaxDurationOfDeliveryJobInSeconds;
-
-    static {
-        MaxDurationOfDeliveryJobInSeconds = 7200; // 2 hours
-//         TODO: implement
-//         MaxDurationOfDeliveryJobInSeconds = SsmUtility.getParameterValue("MaxDurationOfDeliveryJobInSeconds");
+    private VehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
     }
 
-    private Constants() {
-        throw new AssertionError("Utility class");
+    public String toString() {
+        return this.vehicleType;
     }
 }
