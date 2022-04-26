@@ -19,6 +19,7 @@ package dev.aws.proto.apps.sameday.directpudo.data;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.aws.proto.apps.appcore.api.response.UnitValue;
 import dev.aws.proto.apps.appcore.data.DdbServiceBase;
 import dev.aws.proto.apps.sameday.directpudo.config.DdbProperties;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.capacity.MaxCapacity;
@@ -38,6 +39,9 @@ import java.util.Map;
 @ApplicationScoped
 public class DdbVehicleCapacityService extends DdbServiceBase {
     private static final Logger logger = LoggerFactory.getLogger(DdbVehicleCapacityService.class);
+
+    public static class UnitValueStringFloat extends UnitValue<String, Float> {
+    }
 
     @Inject
     DdbProperties ddbProperties;
@@ -62,6 +66,15 @@ public class DdbVehicleCapacityService extends DdbServiceBase {
         throw new UnsupportedOperationException("Only READ is allowed for this table");
     }
 
+    /**
+     * Loads max capacity settings from the database.
+     * <p>
+     * <b>IMPORTANT:</b>
+     * <li>Internally we don't use units. It is the implementer's responsibility to do any conversion necessary</li>
+     * <li>If the units differ in the dispatch-request payload from these, you must sync them</li>
+     *
+     * @return The lookup table for {@link MaxCapacity} items
+     */
     public Map<String, MaxCapacity> getMaxCapacities() {
         logger.debug("Loading vehicle capacities");
 
@@ -78,14 +91,18 @@ public class DdbVehicleCapacityService extends DdbServiceBase {
 
         for (Map<String, AttributeValue> dbItem : dbItems) {
             try {
-                VehicleCapacity cap = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem), VehicleCapacity.class);
+                String id = dbItem.get("ID").s();
+                UnitValue<String, Float> length = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("length")), UnitValueStringFloat.class);
+                UnitValue<String, Float> height = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("height")), UnitValueStringFloat.class);
+                UnitValue<String, Float> width = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("width")), UnitValueStringFloat.class);
+                UnitValue<String, Float> weight = mapper.treeToValue(JsonAttributeValueUtil.fromAttributeValue(dbItem.get("weight")), UnitValueStringFloat.class);
                 MaxCapacity maxCap = MaxCapacity.builder()
-                        .length(cap.getLength().getValue())
-                        .height(cap.getHeight().getValue())
-                        .width(cap.getWidth().getValue())
-                        .weight(cap.getWeight().getValue())
+                        .length(length.getValue())
+                        .height(height.getValue())
+                        .width(width.getValue())
+                        .weight(weight.getValue())
                         .build();
-                maxCapacities.put(cap.getID(), maxCap);
+                maxCapacities.put(id, maxCap);
             } catch (JsonProcessingException e) {
                 logger.error("Error parsing vehicle capacity ddbItem", e);
             }
