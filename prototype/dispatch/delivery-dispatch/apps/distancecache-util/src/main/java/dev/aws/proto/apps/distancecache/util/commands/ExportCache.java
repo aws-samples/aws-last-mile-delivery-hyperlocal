@@ -62,7 +62,7 @@ public class ExportCache implements Callable<Integer> {
     private String localOsmDir = "~/.graphhopper/openstreetmap";
 
     @CommandLine.Option(names = "--local-graphhopper-dir", description = "The graphhopper cache dir")
-    private String localGraphhopperDir = "~/graphhopper/graphhopper";
+    private String localGraphhopperDir = "~/.graphhopper/graphhopper";
 
     @CommandLine.Option(names = "--local-osm-file", description = "The OSM file")
     private String osmFile = "mapfile.osm.pbf";
@@ -106,9 +106,9 @@ public class ExportCache implements Callable<Integer> {
         logger.info("Number of covering hexagons is {} at resolution {}", dim, resolution);
         logger.info("This will result a {}x{} distance matrix cache ({} cells).", dim, dim, dim * dim);
 
-        long bytesNum = (4 + 4 + dim * 8 + (dim * dim) * (8 + 8 + 4));
-        long mb = (bytesNum / 1024) / 1024;
-        logger.info("Predicted size of the cache file: {} MB", mb);
+        double bytesNum = (4 + 4 + dim * 8 + (dim * dim) * (8 + 8 + 4));
+        double mb = (bytesNum / 1024.0) / 1024.0;
+        logger.info("Predicted size of the cache file: {} MB", String.format("%.3f", mb));
 
         logger.info("Attempting to load Graphhopper...");
         GraphhopperLoader ghLoader = new GraphhopperLoader(localOsmDir, localGraphhopperDir, osmFile);
