@@ -37,8 +37,7 @@ const handler = (event, context) => {
 		}
 
 		if (event.source) {
-		// event from EventBus, to be handled by specific command that will write in redis
-
+			// event from EventBus, to be handled by specific command that will write in redis
 			return commands.buildStats(event)
 		}
 	} catch (err) {

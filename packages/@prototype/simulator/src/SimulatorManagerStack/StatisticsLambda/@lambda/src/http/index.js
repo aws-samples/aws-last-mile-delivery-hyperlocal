@@ -15,7 +15,9 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const get = require('./get').default
+const del = require('./del').default
 
 module.exports = {
 	get,
+	delete: del,
 }

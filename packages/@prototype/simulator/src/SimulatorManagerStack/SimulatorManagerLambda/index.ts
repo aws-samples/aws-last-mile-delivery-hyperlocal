@@ -24,10 +24,10 @@ export interface SimulatorManagerLambdaProps {
 	readonly vpc: ec2.IVpc
 	readonly securityGroup: ec2.SecurityGroup
 	readonly cluster: ecs.Cluster
-	readonly taskDefinition: ecs.TaskDefinition
+	readonly taskDefinition: ecs.ITaskDefinition
 	readonly containerDefinition: ecs.ContainerDefinition
-	readonly taskExecutionRole: iam.Role
-	readonly taskDefinitionRole: iam.Role
+	readonly taskExecutionRole: iam.IRole
+	readonly taskDefinitionRole: iam.IRole
 	readonly simulatorTable: ddb.ITable
 	readonly iotEndpointAddress: string
 }

@@ -36,6 +36,9 @@ module.exports = {
 	[config.instantDeliveryWebhookProviderServiceName]: {
 		ORDER_UPDATE: updateOrder,
 	},
+	[config.sameDayDeliveryWebhookProviderServiceName]: {
+		ORDER_UPDATE: updateOrder,
+	},
 	[config.geofencingSeviceName]: {
 		GEOFENCE_START: geofenceToOrder,
 		GEOFENCE_ENTER: geofenceHandler('enter'),

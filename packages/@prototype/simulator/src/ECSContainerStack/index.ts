@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito } from 'aws-cdk-lib'
+import { aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito, aws_secretsmanager as secrets } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { SimulatorContainer } from './SimulatorContainer'
 import { sync as findup } from 'find-up'
@@ -100,6 +100,10 @@ export class ECSContainerStack extends Construct {
 			...props,
 		})
 
+		const destinationPasswordSecret = new secrets.Secret(this, 'DestinationPasswordSecret', {
+			secretStringBeta1: secrets.SecretStringValueBeta1.fromUnsafePlaintext(props.destinationUserPassword),
+		})
+
 		this.destinationSimulator = new SimulatorContainer(this, 'DestinationSimulatorContainer', {
 			name: 'destination',
 			cpu: 256,
@@ -112,7 +116,7 @@ export class ECSContainerStack extends Construct {
 				DESTINATION_TABLE_NAME: props.destinationTable.tableName,
 				DESTINATION_EXECUTIONID_INDEX: props.destinationExecutionIdIndex,
 				DESTINATION_AREA_INDEX: props.destinationAreaIndex,
-				DESTINATION_PASSWORD: props.destinationUserPassword,
+				DESTINATION_PASSWORD_SECRET: destinationPasswordSecret.secretArn,
 				DESTINATION_STATUS_UPDATE_RULE_NAME: props.iotDestinationStatusRuleName,
 			},
 		})
@@ -130,6 +134,21 @@ export class ECSContainerStack extends Construct {
 				],
 			}),
 		)
+		this.destinationSimulator.taskDefinitionRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: [
+					'secretsmanager:GetSecretValue',
+				],
+				effect: iam.Effect.ALLOW,
+				resources: [
+					`${destinationPasswordSecret.secretArn}*`,
+				],
+			}),
+		)
+
+		const originPasswordSecret = new secrets.Secret(this, 'OriginPasswordSecret', {
+			secretStringBeta1: secrets.SecretStringValueBeta1.fromUnsafePlaintext(props.originUserPassword),
+		})
 
 		this.originSimulator = new SimulatorContainer(this, 'OriginSimulatorContainer', {
 			name: 'origin',
@@ -143,7 +162,7 @@ export class ECSContainerStack extends Construct {
 				ORIGIN_TABLE_NAME: props.originTable.tableName,
 				ORIGIN_EXECUTIONID_INDEX: props.originExecutionIdIndex,
 				ORIGIN_AREA_INDEX: props.originAreaIndex,
-				ORIGIN_PASSWORD: props.originUserPassword,
+				ORIGIN_PASSWORD_SECRET: originPasswordSecret.secretArn,
 				ORIGIN_STATUS_UPDATE_RULE_NAME: props.iotOriginStatusRuleName,
 			},
 		})
@@ -158,6 +177,17 @@ export class ECSContainerStack extends Construct {
 					props.originTable.tableArn,
 					`${props.originTable.tableArn}/index/${props.originExecutionIdIndex}`,
 					`${props.originTable.tableArn}/index/${props.originAreaIndex}`,
+				],
+			}),
+		)
+		this.originSimulator.taskDefinitionRole.addToPolicy(
+			new iam.PolicyStatement({
+				actions: [
+					'secretsmanager:GetSecretValue',
+				],
+				effect: iam.Effect.ALLOW,
+				resources: [
+					`${originPasswordSecret.secretArn}*`,
 				],
 			}),
 		)

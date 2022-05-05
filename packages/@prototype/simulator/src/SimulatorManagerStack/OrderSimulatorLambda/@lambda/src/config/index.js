@@ -24,4 +24,5 @@ module.exports = {
 	examplePollingProviderServiceName: process.env.EXAMPLE_POLLING_PROVIDER_SERVICE_NAME,
 	exampleWebhookProviderServiceName: process.env.EXAMPLE_WEBHOOK_PROVIDER_SERVICE_NAME,
 	instantDeliveryWebhookProviderServiceName: process.env.INSTANT_DELIVERY_PROVIDER_SERVICE,
+	sameDayDeliveryWebhookProviderServiceName: process.env.SAME_DAY_DELIVERY_PROVIDER_SERVICE,
 }
