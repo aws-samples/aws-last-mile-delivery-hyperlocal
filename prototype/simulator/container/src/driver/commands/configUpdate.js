@@ -19,7 +19,7 @@ const state = require('../state')
 
 const execute = async (payload) => {
 	logger.info('Executing command: configUpdate')
-	logger.info('Payload', JSON.stringify(payload, null, 2))
+	logger.info('Payload', JSON.stringify(payload))
 
 	const { passiveState, activeState } = payload
 	const current = state.getStateRaw().status

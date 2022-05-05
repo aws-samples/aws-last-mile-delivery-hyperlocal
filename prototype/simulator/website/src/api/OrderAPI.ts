@@ -43,47 +43,8 @@ const getOrder = (id: string): Promise<any> => {
 	return common.commonGetRequest(`/order/${id}`)
 }
 
-const getDispatchAssignmentsAll = (nextToken?: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/assignment/all', nextToken
-		? {
-			nextToken,
-		}
-		: {})
-}
-
-const getDispatchAssignmentById = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/assignment/byId/?id=${id}`)
-}
-const getDispatchAssignmentsAfter = (timestamp: number): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/assignment/after/?timestamp=${timestamp}`)
-}
-const getDispatchAssignmentsBetween = (from: number, to: number): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/assignment/between/?from=${from}&to=${to}`)
-}
-
-const getOrderRoutes = (orderIdList: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/assignment/orderRoutes', {
-		orderIdList,
-	})
-}
-
 export default {
 	createOrder,
 	getOrder,
 	getOrders,
-	getDispatchAssignmentsAll,
-	getDispatchAssignmentById,
-	getDispatchAssignmentsAfter,
-	getDispatchAssignmentsBetween,
-	getOrderRoutes,
 }

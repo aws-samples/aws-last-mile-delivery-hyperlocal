@@ -21,11 +21,12 @@ const helper = require('../common/helper')
 const commandHandler = require('./commands').default
 
 class Origin {
-	constructor (config, params, userData, managerInstance) {
+	constructor (config, params, userData, managerInstance, originPassword) {
 		this.params = params
 		this.config = config
 		this.userData = userData
 		this.originManager = managerInstance
+		this.originPassword = originPassword
 	}
 
 	get inputParams () {
@@ -39,7 +40,7 @@ class Origin {
 	async init () {
 		const { creds, usr } = await helper.setupLogin(
 			this.userData.email,
-			this.config.originPassword,
+			this.originPassword,
 		)
 
 		this.cognitoUser = usr

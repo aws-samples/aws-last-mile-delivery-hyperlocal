@@ -21,15 +21,15 @@ const helper = require('../common/helper')
 const ddb = require('../common/lib/dynamoDB')
 const requestHelper = require('./helper/request')
 const utils = require('./utils')
-const { sleep } = require('../common/utils')
 const commandHandler = require('./commands').default
 
 class Destination {
-	constructor (config, params, userData, managerInstance) {
+	constructor (config, params, userData, managerInstance, destinationPassword) {
 		this.params = params
 		this.config = config
 		this.userData = userData
 		this.destinationManager = managerInstance
+		this.destinationPassword = destinationPassword
 		this.cognitoUser = {}
 	}
 
@@ -40,7 +40,7 @@ class Destination {
 	async init () {
 		const { creds, usr } = await helper.setupLogin(
 			this.userData.email,
-			this.config.destinationPassword,
+			this.destinationPassword,
 		)
 
 		this.cognitoUser = usr
@@ -123,7 +123,7 @@ class Destination {
 
 				logger.info(`Batch ${nowInSeconds} sent with ${validOrders[nowInSeconds].length} orders`)
 
-				if (errors) {
+				if (errors && errors.length > 0) {
 					logger.error(`Errors on batch ${nowInSeconds}, ${errors.length} orders were not sent (total ${validOrders[nowInSeconds].length})`)
 					logger.error(errors)
 				}
@@ -151,6 +151,7 @@ class Destination {
 					long: this.userData.long,
 				},
 				this.cognitoUser.signInUserSession.getIdToken().getJwtToken(),
+				this.generatePayload(),
 			)
 
 			logger.info('Order submitted: ', res)
@@ -163,6 +164,25 @@ class Destination {
 				logger.error(err.response.headers)
 			}
 		}
+	}
+
+	generatePayload () {
+		if (this.params.deliveryType === 'same-day') {
+			return {
+				deliveryType: 'same-day',
+				pickupTimeframe: { from: 1650315600761, to: 1650351600761 },
+				dropoffTimeframe: { from: 1650330000761, to: 1650376800761 },
+				parcel: {
+					type: 'pouch',
+					length: helper.randomBetween(10, 25),
+					height: helper.randomBetween(3, 12),
+					width: helper.randomBetween(8, 20),
+					weight: helper.randomBetween(0.1, 2),
+				},
+			}
+		}
+
+		return undefined
 	}
 
 	async refreshToken (that) {

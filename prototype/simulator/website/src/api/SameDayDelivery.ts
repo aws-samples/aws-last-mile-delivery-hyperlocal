@@ -14,81 +14,53 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { ILatLong } from '../components/LatLongPairComponent'
-import { IArea } from '../pages/NewSimulation'
 import common, { APIS } from './Common'
-import { v4 } from 'uuid'
 
-const createSimulation = (name: string, areas: IArea[], procNum: number): Promise<any> => {
+const getDispatchAssignmentsAll = (nextToken?: string): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
-	return common.commonPostRequest('/simulator', {
-		name,
-		areas,
-		procNum,
+	return common.commonGetRequest('/same-day-delivery/assignment/all', nextToken
+		? {
+			nextToken,
+		}
+		: {})
+}
+
+const getDispatchAssignmentById = (id: string): Promise<any> => {
+	common.setApiName(APIS.SIMULATOR)
+
+	return common.commonGetRequest(`/same-day-delivery/assignment/byId/?id=${id}`)
+}
+const getDispatchAssignmentsAfter = (timestamp: number): Promise<any> => {
+	common.setApiName(APIS.SIMULATOR)
+
+	return common.commonGetRequest(`/same-day-delivery/assignment/after/?timestamp=${timestamp}`)
+}
+const getDispatchAssignmentsBetween = (from: number, to: number): Promise<any> => {
+	common.setApiName(APIS.SIMULATOR)
+
+	return common.commonGetRequest(`/same-day-delivery/assignment/between/?from=${from}&to=${to}`)
+}
+
+const getDeliveryJobs = (solverJobId: string): Promise<any> => {
+	common.setApiName(APIS.SIMULATOR)
+
+	return common.commonGetRequest('/same-day-delivery/assignment/deliveryJobs', {
+		solverJobId,
 	})
 }
 
-const getSimulations = (): Promise<any> => {
+const getDeliveryHubs = (): Promise<any> => {
 	common.setApiName(APIS.SIMULATOR)
 
-	return common.commonGetRequest('/simulator')
-}
-
-const getSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/simulator/${id}`)
-}
-
-const deleteSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/simulator/${id}`)
-}
-
-const createPolygon = (name: string, vertices: ILatLong[]): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonPostRequest('/polygon', {
-		ID: v4(),
-		name,
-		vertices,
-	})
-}
-
-const getPolygons = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/polygon')
-}
-
-const deletePolygon = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/polygon/${id}`)
-}
-
-const getStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/stats')
-}
-
-const deleteStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest('/stats')
+	return common.commonGetRequest('/same-day-delivery/assignment/hubs')
 }
 
 export default {
-	getSimulations,
-	createSimulation,
-	getSimulation,
-	deleteSimulation,
-	createPolygon,
-	getPolygons,
-	deletePolygon,
-	getStats,
-	deleteStats,
+	getDispatchAssignmentsAll,
+	getDispatchAssignmentById,
+	getDispatchAssignmentsAfter,
+	getDispatchAssignmentsBetween,
+	getDeliveryJobs,
+	getDeliveryHubs,
 }

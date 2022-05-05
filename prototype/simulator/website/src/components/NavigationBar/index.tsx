@@ -58,8 +58,13 @@ const navigationItems = [
 	},
 	{
 		type: SideNavigationItemType.LINK,
-		text: 'Dispatching (Instant Delivery)',
-		href: '/dispatching-instant-delivery',
+		text: 'Instant Delivery dispatching',
+		href: '/instant-delivery-dispatching',
+	},
+	{
+		type: SideNavigationItemType.LINK,
+		text: 'Same Day Delivery dispatching',
+		href: '/same-day-delivery-dispatching',
 	},
 	{ type: SideNavigationItemType.DIVIDER },
 	{

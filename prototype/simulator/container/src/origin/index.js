@@ -15,6 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 const ddb = require('../common/lib/dynamoDB')
+const secretsManager = require('../common/lib/secretsManager')
 const logger = require('../common/utils/logger')
 const Origin = require('./origin')
 
@@ -33,11 +34,12 @@ class OriginApp {
 
 	async init () {
 		logger.log(`Retrieving origins for execution: ${this.params.executionId}`)
+		const originPassword = await secretsManager.getSecretValue(this.config.originPasswordSecret)
 		const data = await ddb.query(this.config.originTable, this.config.originExecutionIdIndex, {
 			executionId: this.params.executionId,
 		})
 		const users = data.Items
-		const origins = users.map(u => new Origin(this.config, this.params, u, this))
+		const origins = users.map(u => new Origin(this.config, this.params, u, this, originPassword))
 		logger.log('Initialising origins')
 
 		for (let i = 0; i < origins.length; i++) {

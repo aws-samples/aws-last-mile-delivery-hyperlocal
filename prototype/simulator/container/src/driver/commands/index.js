@@ -17,11 +17,17 @@
 const stopSimulation = require('./stopSimulation').default
 const newOrder = require('./newOrder').default
 const configUpdate = require('./configUpdate').default
+const newAssignment = require('./newAssignment').default
+const confirmAssignment = require('./confirmAssignment').default
+const rejectAssignment = require('./rejectAssignment').default
 
 const commandHandler = (personalTopic, commonTopic) => {
 	return {
 		[personalTopic]: {
-			NEW_ORDER: newOrder,
+			NEW_ORDER: newOrder, // instant-delivery
+			NEW_ASSIGNMENT: newAssignment, // same-day-delivery
+			CONFIRM_ASSIGNMENT: confirmAssignment,
+			REJECT_ASSIGNMENT: rejectAssignment,
 		},
 		[commonTopic]: {
 			STOP_SIMULATION: stopSimulation,

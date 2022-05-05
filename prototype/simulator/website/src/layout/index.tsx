@@ -35,6 +35,7 @@ import SystemStatus from '../pages/SystemStatus'
 import NotFound from '../pages/404'
 import AuthRoute from '../components/AuthRoute'
 import InstantDeliveryDispatching from '../pages/InstantDeliveryDispatching'
+import SameDayDeliveryDispatching from '../pages/SameDayDeliveryDispatching'
 
 const Layout: React.FC = (): React.ReactElement => {
 	return (
@@ -55,7 +56,8 @@ const Layout: React.FC = (): React.ReactElement => {
 					<AuthRoute exact path='/orders' component={Orders} />
 					<AuthRoute exact path='/origins' component={Origins} />
 					<AuthRoute exact path='/destinations' component={Destinations} />
-					<AuthRoute exact path='/dispatching-instant-delivery' component={InstantDeliveryDispatching} />
+					<AuthRoute exact path='/instant-delivery-dispatching' component={InstantDeliveryDispatching} />
+					<AuthRoute exact path='/same-day-delivery-dispatching' component={SameDayDeliveryDispatching} />
 					<AuthRoute exact path='/system-status' component={SystemStatus} />
 					<AuthRoute component={NotFound} />
 				</Switch>

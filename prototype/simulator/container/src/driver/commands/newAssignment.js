@@ -14,81 +14,29 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { ILatLong } from '../components/LatLongPairComponent'
-import { IArea } from '../pages/NewSimulation'
-import common, { APIS } from './Common'
-import { v4 } from 'uuid'
+const logger = require('../../common/utils/logger')
+const state = require('../state')
 
-const createSimulation = (name: string, areas: IArea[], procNum: number): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
+// this is for same-day-delivery
+const execute = async (payload) => {
+	logger.info('Executing command: newAssignment')
+	logger.info('Payload', JSON.stringify(payload))
 
-	return common.commonPostRequest('/simulator', {
-		name,
-		areas,
-		procNum,
-	})
+	const { jobId, segments } = payload
+	const currentState = state.getStateRaw()
+	const current = currentState.assignmentStatus
+
+	if (current === state.ASSIGNMENT_STATUS.IDLE) {
+		const sortedSegments = segments.sort((a, b) => a.index - b.index)
+		const orderIdsList = sortedSegments.reduce((inc, curr) => ({ ...inc, [curr.orderId]: state.STATUSES.ACCEPTED }), {})
+
+		state.setState('segments', sortedSegments)
+		state.setState('jobId', jobId)
+		state.setState('orderId', undefined)
+		state.setState('orderIdsList', orderIdsList)
+		state.setState('status', state.STATUSES.ACCEPTED)
+		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.TO_CONFIRM)
+	}
 }
 
-const getSimulations = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/simulator')
-}
-
-const getSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/simulator/${id}`)
-}
-
-const deleteSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/simulator/${id}`)
-}
-
-const createPolygon = (name: string, vertices: ILatLong[]): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonPostRequest('/polygon', {
-		ID: v4(),
-		name,
-		vertices,
-	})
-}
-
-const getPolygons = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/polygon')
-}
-
-const deletePolygon = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/polygon/${id}`)
-}
-
-const getStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/stats')
-}
-
-const deleteStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest('/stats')
-}
-
-export default {
-	getSimulations,
-	createSimulation,
-	getSimulation,
-	deleteSimulation,
-	createPolygon,
-	getPolygons,
-	deletePolygon,
-	getStats,
-	deleteStats,
-}
+module.exports.default = execute

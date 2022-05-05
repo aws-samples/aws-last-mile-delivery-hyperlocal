@@ -30,6 +30,7 @@ export type IAdditionalInputResults = {
 	orders: number
 	orderInterval: string
 	rejectionRate: number
+	deliveryType: string
 	eventsFilePath?: string
 }
 
@@ -48,6 +49,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 	const [selectedOption, setSeletedOption] = useState<any>()
 	const [eventsFilePath, setEventsFilePath] = useState<string>()
 	const [errorMessage, setErrorMessage] = useState<string>()
+	const [selectedDeliveryOption, setSelectedDeliveryOption] = useState<any>()
 
 	const options = [
 		{ label: 'Second', value: 's' },
@@ -56,6 +58,14 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 	]
 	const onChange = (event: any) => {
 		setSeletedOption(options.find(o => o.value === event.target.value))
+	}
+
+	const deliveryOptions = [
+		{ label: 'Instant Delivery', value: 'instant' },
+		{ label: 'Same Day Delivery', value: 'same-day' },
+	]
+	const onDeliveryChange = (event: any) => {
+		setSelectedDeliveryOption(deliveryOptions.find(o => o.value === event.target.value))
 	}
 
 	const onStart = () => {
@@ -70,6 +80,7 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 			rejectionRate,
 			orderInterval: selectedOption.value,
 			eventsFilePath,
+			deliveryType: selectedDeliveryOption.value,
 		})
 	}
 
@@ -155,6 +166,20 @@ const DestinationAdditionalInputs: React.FC<IAdditionalInput> =
 					controlId='rRate'
 					onChange={(v: string) => setRejectionRate(Number(v))}
 					value={rejectionRate}
+				/>
+			</FormField>
+			<FormField
+				label='Delivery Type'
+				errorText={errorText}
+				controlId='dDelivery'
+			>
+
+				<Select
+					controlId='dDelivery'
+					placeholder="Choose an option"
+					options={deliveryOptions}
+					selectedOption={selectedDeliveryOption}
+					onChange={onDeliveryChange}
 				/>
 			</FormField>
 			<hr />

@@ -19,7 +19,7 @@ const logger = require('../../common/utils/logger')
 
 const execute = async (payload) => {
 	logger.info('Executing command: stopSimulation')
-	logger.info('Payload', JSON.stringify(payload, null, 2))
+	logger.info('Payload', JSON.stringify(payload))
 
 	try {
 		await helper.terminateUser()
