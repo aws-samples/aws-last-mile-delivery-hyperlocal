@@ -16,7 +16,6 @@
  *********************************************************************************************************************/
 const driver = require('./driver').execute
 const order = require('./order').execute
-const dispatching = require('./dispatching').execute
 const orderManager = require('./orderManager').execute
 const providerManager = require('./providerManager').execute
 const config = require('../config')
@@ -28,5 +27,5 @@ module.exports = {
 	[config.examplePollingProviderService]: providerManager(config.pollingProviderName),
 	[config.exampleWebhookProviderService]: providerManager(config.webhookProviderName),
 	[config.instantDeliveryWebhookProviderService]: providerManager(config.instantDeliveryProviderName),
-	[config.dispatchEngineService]: dispatching,
+	[config.sameDayDeliveryWebhookProviderService]: providerManager(config.sameDayDeliveryProviderName),
 }

@@ -28,7 +28,8 @@ export interface APIGatewayResourceStackProps {
 	readonly originSimulatorLambda: lambda.Function
 	readonly destinationSimulatorLambda: lambda.Function
 	readonly statisticSimulatorLambda: lambda.Function
-	readonly dispatcherAssignmentQueryLambda: lambda.Function
+	readonly instantDeliveryDispatcherAssignmentQueryLambda: lambda.Function
+	readonly sameDayDeliveryDispatcherAssignmentQueryLambda: lambda.Function
 	readonly s3PresignedUrlLambda: lambda.Function
 	readonly simulatorRestApi: api.RestApi
 }
@@ -46,7 +47,8 @@ export class APIGatewayResourceStack extends Construct {
 			originSimulatorLambda,
 			destinationSimulatorLambda,
 			statisticSimulatorLambda,
-			dispatcherAssignmentQueryLambda,
+			instantDeliveryDispatcherAssignmentQueryLambda,
+			sameDayDeliveryDispatcherAssignmentQueryLambda,
 			s3PresignedUrlLambda,
 			userPool,
 		} = props
@@ -355,11 +357,30 @@ export class APIGatewayResourceStack extends Construct {
 			},
 		})
 
-		// queryType = "all" | "orderRoutes" | "byId" (?id=) | "after" (?timestamp=) | "between" (?from=&to=)
-		const assignmentsEndpoint = simulatorRestApi.addResourceWithAbsolutePath('assignment/{queryType}')
+		simulatorRestApi.addFunctionToResource(stats, {
+			function: statisticSimulatorLambda,
+			httpMethod: 'DELETE',
+			methodOptions: {
+				authorizer: cognitoAuth,
+			},
+		})
 
-		simulatorRestApi.addFunctionToResource(assignmentsEndpoint, {
-			function: dispatcherAssignmentQueryLambda,
+		// queryType = "all" | "orderRoutes" | "byId" (?id=) | "after" (?timestamp=) | "between" (?from=&to=)
+		const instantDeliveryAssignmentsEndpoint = simulatorRestApi.addResourceWithAbsolutePath('/instant-delivery/assignment/{queryType}')
+
+		simulatorRestApi.addFunctionToResource(instantDeliveryAssignmentsEndpoint, {
+			function: instantDeliveryDispatcherAssignmentQueryLambda,
+			httpMethod: 'GET',
+			methodOptions: {
+				authorizer: cognitoAuth,
+			},
+		})
+
+		// queryType = "all" | "orderRoutes" | "byId" (?id=) | "after" (?timestamp=) | "between" (?from=&to=)
+		const sameDayDeliveryAssignmentsEndpoint = simulatorRestApi.addResourceWithAbsolutePath('/same-day-delivery/assignment/{queryType}')
+
+		simulatorRestApi.addFunctionToResource(sameDayDeliveryAssignmentsEndpoint, {
+			function: sameDayDeliveryDispatcherAssignmentQueryLambda,
 			httpMethod: 'GET',
 			methodOptions: {
 				authorizer: cognitoAuth,

@@ -25,12 +25,14 @@ export const SERVICE_NAME = {
 	EXAMPLE_POLLING_PROVIDER_SERVICE: 'com.aws.proto.provider.examplePollingProvider',
 	EXAMPLE_WEBHOOK_PROVIDER_SERVICE: 'com.aws.proto.provider.exampleWebhookProvider',
 	INSTANT_DELIVERY_PROVIDER_SERVICE: 'com.aws.proto.provider.instantDeliveryProvider',
+	SAME_DAY_DELIVERY_PROVIDER_SERVICE: 'com.aws.proto.provider.sameDayDeliveryProvider',
 }
 
 export const PROVIDER_NAME = {
 	EXAMPLE_POLLING_PROVIDER: 'ExamplePollingProvider',
 	EXAMPLE_WEBHOOK_PROVIDER: 'ExampleWebhookProvider',
 	INSTANT_DELIVERY_PROVIDER: 'InstantDeliveryProvider',
+	SAME_DAY_DELIVERY_PROVIDER: 'SameDayDeliveryProvider',
 }
 
 export const COUNTRIES = {

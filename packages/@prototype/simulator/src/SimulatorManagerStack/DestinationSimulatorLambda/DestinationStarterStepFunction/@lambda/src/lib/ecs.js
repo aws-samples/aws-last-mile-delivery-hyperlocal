@@ -27,6 +27,7 @@ const runTask = (
 	orderInterval,
 	rejectionRate,
 	eventsFilePath,
+	deliveryType,
 ) => {
 	console.debug(`Starting ECS tasks, count: ${cnt}, num of processes per container: ${executionId}`)
 
@@ -57,6 +58,7 @@ const runTask = (
 						{ name: 'SIMULATOR_API', value: `${config.simulatorApi}` },
 						{ name: 'SIMULATOR_CONFIG_BUCKET', value: `${config.simulatorConfigBucket}` },
 						{ name: 'EVENTS_FILE_PATH', value: eventsFilePath ? `${eventsFilePath}` : '' },
+						{ name: 'DELIVERY_TYPE', value: `${deliveryType}` },
 						// TODO: change in prod
 						{ name: 'LOG_LEVEL', value: 'verbose' },
 					],

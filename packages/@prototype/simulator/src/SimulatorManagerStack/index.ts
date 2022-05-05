@@ -28,7 +28,8 @@ import { PolygonManagerLambda } from './PolygonManagerLambda'
 import { EventSimulatorLambda } from './EventSimulatorLambda'
 import { StatisticsLambda } from './StatisticsLambda'
 import { SimulatorContainer } from '../ECSContainerStack/SimulatorContainer'
-import { DispatcherAssignmentQueryLambda } from './DispatcherAssignmentQueryLambda'
+import { InstantDeliveryDispatcherAssignmentQueryLambda } from './InstantDeliveryDispatcherAssignmentQueryLambda'
+import { SameDayDeliveryDispatcherAssignmentQueryLambda } from './SameDayDeliveryDispatcherAssignmentQueryLambda'
 
 export interface SimulatorManagerStackProps {
 	readonly vpc: ec2.IVpc
@@ -60,6 +61,10 @@ export interface SimulatorManagerStackProps {
 	readonly geoPolygonTable: ddb.ITable
 	readonly dispatcherAssignmentsTable: ddb.ITable
 	readonly instantDeliveryProviderOrdersTable: ddb.ITable
+	readonly sameDayDirectPudoDeliveryJobsTable: ddb.ITable
+	readonly sameDayDirectPudoSolverJobsTable: ddb.ITable
+	readonly sameDayDirectPudoHubsTable: ddb.ITable
+	readonly sameDayDirectPudoDeliveryJobsSolverJobIdIndexName: string
 	readonly eventBus: events.EventBus
 
 	readonly lambdaRefs: { [key: string]: lambda.IFunction, }
@@ -128,6 +133,10 @@ export class SimulatorManagerStack extends Construct {
 			lambdaLayers,
 			dispatcherAssignmentsTable,
 			instantDeliveryProviderOrdersTable,
+			sameDayDirectPudoDeliveryJobsTable,
+			sameDayDirectPudoSolverJobsTable,
+			sameDayDirectPudoHubsTable,
+			sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
 			iotEndpointAddress,
 			simulatorConfigBucket,
 			country,
@@ -219,10 +228,19 @@ export class SimulatorManagerStack extends Construct {
 			vpcNetworking,
 		})
 
-		const dispatcherAssignmentQueryLambda = new DispatcherAssignmentQueryLambda(this, 'DispatcherAssignmentQueryLambda', {
+		const instantDeliveryDispatcherAssignmentQueryLambda = new InstantDeliveryDispatcherAssignmentQueryLambda(this, 'InstantDeliveryDispatcherAssignmentQueryLambda', {
 			dependencies: {
 				dispatcherAssignmentsTable,
 				instantDeliveryProviderOrdersTable,
+			},
+		})
+
+		const sameDayDeliveryDispatcherAssignmentQueryLambda = new SameDayDeliveryDispatcherAssignmentQueryLambda(this, 'SameDayDeliveryDispatcherAssignmentQueryLambda', {
+			dependencies: {
+				sameDayDirectPudoDeliveryJobsTable,
+				sameDayDirectPudoSolverJobsTable,
+				sameDayDirectPudoHubsTable,
+				sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
 			},
 		})
 
@@ -235,7 +253,8 @@ export class SimulatorManagerStack extends Construct {
 			s3PresignedUrlLambda: this.destinationSimulator.s3PresignedUrlLambda,
 			statisticSimulatorLambda: statisticsLambdaSimulator.lambda,
 			polygonManagerLambda,
-			dispatcherAssignmentQueryLambda,
+			instantDeliveryDispatcherAssignmentQueryLambda,
+			sameDayDeliveryDispatcherAssignmentQueryLambda,
 			simulatorRestApi,
 			userPool,
 		})

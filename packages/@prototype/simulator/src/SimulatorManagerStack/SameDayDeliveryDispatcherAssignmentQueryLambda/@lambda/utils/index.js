@@ -14,12 +14,37 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const buildStats = require('./buildStats').execute
-const getStats = require('./getStats').execute
-const deleteStats = require('./deleteStats').execute
+const success = body => {
+	return {
+		statusCode: 200,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+		body: JSON.stringify(body),
+	}
+}
+
+const fail = (err, statusCode) => {
+	return {
+		statusCode: statusCode || 500,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+		},
+		body: JSON.stringify(err),
+	}
+}
+
+const trimArray = (array, size) => {
+	const nArray = []
+	while (array.length) {
+		nArray.push(array.splice(0, size))
+	}
+
+	return nArray
+}
 
 module.exports = {
-	buildStats,
-	getStats,
-	deleteStats,
+	success,
+	fail,
+	trimArray,
 }

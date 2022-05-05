@@ -19,7 +19,24 @@ const config = require('../config')
 const { getRedisClient } = require('/opt/redis-client')
 const { REDIS_HASH } = require('/opt/lambda-utils')
 
-const { DRIVER_STATUS_STATISTICS } = REDIS_HASH
+const { DRIVER_STATUS_STATISTICS, DISPATCH_ENGINE_STATS } = REDIS_HASH
+
+const tryAddDispatchingDetails = async (detail, client) => {
+	const { driverId, status } = detail
+
+	// move this stats to the accepted event since is more accurate
+	if (status === 'ACCEPTED') {
+		const ordersPerDriver = await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:ordersPerDriver`, driverId, 1)
+
+		await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver, 1)
+
+		if (ordersPerDriver > 1) {
+			/// decrease the driver counter
+			/// in the previous group
+			await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver - 1, -1)
+		}
+	}
+}
 
 const mapper = {
 	DRIVER_STATUS_CHANGE: async (detail) => {
@@ -45,6 +62,7 @@ const mapper = {
 			return client.hDel(`${DRIVER_STATUS_STATISTICS}:${s}`, driverId)
 		})
 
+		await tryAddDispatchingDetails(detail, client)
 		await Promise.all(promises)
 	},
 }

@@ -19,7 +19,7 @@ const ecs = require('../lib/ecs')
 const ddb = require('../lib/dynamoDB')
 const config = require('../config')
 
-const runTask = async (executionId, orderRate, orderInterval, rejectionRate, eventsFilePath) => {
+const runTask = async (executionId, orderRate, orderInterval, rejectionRate, eventsFilePath, deliveryType) => {
 	try {
 		const res = await ecs.runTask(
 			1,
@@ -29,6 +29,7 @@ const runTask = async (executionId, orderRate, orderInterval, rejectionRate, eve
 			orderInterval,
 			rejectionRate,
 			eventsFilePath,
+			deliveryType,
 		)
 
 		const { failures, tasks } = res
@@ -67,6 +68,7 @@ const execute = async (payload) => {
 		Item.orderInterval,
 		Item.rejectionRate,
 		Item.eventsFilePath,
+		Item.deliveryType,
 	)
 	const { tasks, failures } = res
 

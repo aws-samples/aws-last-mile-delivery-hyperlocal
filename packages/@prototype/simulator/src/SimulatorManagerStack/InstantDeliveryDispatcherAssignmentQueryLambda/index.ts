@@ -14,42 +14,47 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const logger = require('../utils/logger')
-const config = require('../config')
-const { getRedisClient } = require('/opt/redis-client')
-const { REDIS_HASH } = require('/opt/lambda-utils')
+import { Construct } from 'constructs'
+import { Duration, aws_lambda as lambda, aws_dynamodb as ddb } from 'aws-cdk-lib'
+import { DeclaredLambdaFunction, ExposedDeclaredLambdaProps, DeclaredLambdaProps, DeclaredLambdaEnvironment, DeclaredLambdaDependencies } from '@aws-play/cdk-lambda'
+import { namespaced } from '@aws-play/cdk-core'
+import { readDDBTablePolicyStatement } from '@prototype/lambda-common'
 
-const { DISPATCH_ENGINE_STATS } = REDIS_HASH
+interface Environment extends DeclaredLambdaEnvironment {
+	ASSIGNMENTS_TABLE: string
+	ORDER_TABLE: string
+}
 
-const mapper = {
-	ORDER_FULFILLED: async (detail) => {
-		const client = await getRedisClient()
-		const { driverId } = detail
+interface Dependencies extends DeclaredLambdaDependencies {
+	readonly dispatcherAssignmentsTable: ddb.ITable
+	readonly instantDeliveryProviderOrdersTable: ddb.ITable
+}
 
-		const ordersPerDriver = await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:ordersPerDriver`, driverId, 1)
+type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
 
-		await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver, 1)
+export class InstantDeliveryDispatcherAssignmentQueryLambda extends DeclaredLambdaFunction<Environment, Dependencies> {
+	constructor (scope: Construct, id: string, props: ExposedDeclaredLambdaProps<Dependencies>) {
+		const {
+			dispatcherAssignmentsTable,
+			instantDeliveryProviderOrdersTable,
+		} = props.dependencies
 
-		if (ordersPerDriver > 1) {
-			/// decrease the driver counter
-			/// in the previous group
-			await client.hIncrBy(`${DISPATCH_ENGINE_STATS}:group`, ordersPerDriver - 1, -1)
+		const declaredProps: TDeclaredProps = {
+			functionName: namespaced(scope, 'InstantDeliveryDispatcherAssignmentManager'),
+			description: 'Dispatcher Assignment Query functions for instant delivery',
+			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/instant-delivery-dispatcher-assignment-query.zip')),
+			dependencies: props.dependencies,
+			timeout: Duration.minutes(2),
+			environment: {
+				ASSIGNMENTS_TABLE: dispatcherAssignmentsTable.tableName,
+				ORDER_TABLE: instantDeliveryProviderOrdersTable.tableName,
+			},
+			initialPolicy: [
+				readDDBTablePolicyStatement(dispatcherAssignmentsTable.tableArn),
+				readDDBTablePolicyStatement(instantDeliveryProviderOrdersTable.tableArn),
+			],
 		}
-	},
-}
 
-const execute = async (detailType, detail) => {
-	if (!mapper[detailType]) {
-		logger.warn(`Mapper not found for builder '${config.dispatchEngineService}' and detailType '${detailType}'`)
-
-		return
+		super(scope, id, declaredProps)
 	}
-
-	logger.info(`Executing build '${config.dispatchEngineService}' for detailType '${detailType}'`)
-
-	return mapper[detailType](detail)
-}
-
-module.exports = {
-	execute,
 }

@@ -14,12 +14,17 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-const buildStats = require('./buildStats').execute
-const getStats = require('./getStats').execute
-const deleteStats = require('./deleteStats').execute
+const utils = require('../utils')
+const logger = require('../utils/logger')
+const commands = require('../commands')
 
-module.exports = {
-	buildStats,
-	getStats,
-	deleteStats,
+module.exports.default = () => {
+	try {
+		return commands.deleteStats()
+	} catch (err) {
+		logger.error('Error while deleting action')
+		logger.error(err)
+
+		return utils.fail({ error: 'Error while deleting the stats' })
+	}
 }
