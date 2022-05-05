@@ -84,7 +84,7 @@ export class IoTStack extends Construct {
 		const prefix = `arn:aws:iot:${stack.region}:${stack.account}`
 
 		this.iotDriverPolicy = new iot.CfnPolicy(this, 'IoTDriverPolicy', {
-			policyName: namespaced(this, 'driver_policy2', { delimiter: '_' }),
+			policyName: namespaced(this, 'driver_policy', { delimiter: '_' }),
 			policyDocument: {
 				Version: '2012-10-17',
 				Statement: [
