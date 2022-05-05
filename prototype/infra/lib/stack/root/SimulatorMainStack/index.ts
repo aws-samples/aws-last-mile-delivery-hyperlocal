@@ -83,6 +83,10 @@ export class SimulatorMainStack extends Stack {
 					orderTable,
 					dispatcherAssignmentsTable,
 					instantDeliveryProviderOrders,
+					sameDayDirectPudoDeliveryJobs,
+					sameDayDirectPudoSolverJobs,
+					sameDayDirectPudoHubs,
+					sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
 				},
 				backendBaseNestedStack: {
 					vpcNetworking,
@@ -197,6 +201,10 @@ export class SimulatorMainStack extends Stack {
 			orderTable,
 			dispatcherAssignmentsTable,
 			instantDeliveryProviderOrdersTable: instantDeliveryProviderOrders,
+			sameDayDirectPudoDeliveryJobsTable: sameDayDirectPudoDeliveryJobs,
+			sameDayDirectPudoSolverJobsTable: sameDayDirectPudoSolverJobs,
+			sameDayDirectPudoHubsTable: sameDayDirectPudoHubs,
+			sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
 
 			iotEndpointAddress,
 			simulatorConfigBucket: dataStack.simulatorConfigBucket,
