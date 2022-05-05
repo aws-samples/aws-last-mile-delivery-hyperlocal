@@ -14,7 +14,8 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Clear } from '@material-ui/icons'
 import ReactEChartsCore from 'echarts-for-react/lib/core'
 import * as echarts from 'echarts/core'
 import {
@@ -63,14 +64,17 @@ const Simulations: React.FC = () => {
 			ExamplePollingProvider: {},
 			ExampleWebhookProvider: {},
 			InstantDeliveryProvider: {},
+			SameDayDeliveryProvider: {},
 		},
 		orderExecutionTime: {
 			ExamplePollingProvider: 0,
 			ExampleWebhookProvider: 0,
 			InstantDeliveryProvider: 0,
+			SameDayDeliveryProvider: 0,
 		},
 		errors: {
 			InstantDeliveryProvider: 0,
+			SameDayDeliveryProvider: 0,
 		},
 		ordersPerDriver: {},
 	})
@@ -99,10 +103,24 @@ const Simulations: React.FC = () => {
 		setRefresh((q) => q + 1)
 	}, [])
 
+	const clearStats = useCallback(async () => {
+		try {
+			setLoading(true)
+			await SimulatorAPI.deleteStats()
+
+			setRefresh((old) => old + 1)
+		} catch (err) {
+			console.error(err)
+		} finally {
+			setLoading(false)
+		}
+	}, [])
+
 	return (
 		<>
 			<Box textAlign='right'>
-				<Button disabled={loading} icon='refresh' onClick={() => setRefresh((old) => old + 1)}>Refresh</Button>
+				<Button disabled={loading} icon='refresh' onClick={() => setRefresh((old) => old + 1)}>Refresh</Button>&nbsp;
+				<Button disabled={loading} icon={Clear} onClick={clearStats}>Clear</Button>
 			</Box>
 
 			<ColumnLayout>
@@ -226,13 +244,21 @@ const Simulations: React.FC = () => {
 							>
 								<KeyValuePair label='Instant Delivery Provider (Impl.)' value={dayjs.duration(status.orderExecutionTime.InstantDeliveryProvider).humanize()} />
 							</Popover>
+							<Popover
+								position="right"
+								size="small"
+								triggerType="text"
+								content={`${Math.floor(status.orderExecutionTime.SameDayDeliveryProvider / 1000)} seconds`}
+							>
+								<KeyValuePair label='Same Day Delivery Provider (Impl.)' value={dayjs.duration(status.orderExecutionTime.SameDayDeliveryProvider).humanize()} />
+							</Popover>
 						</Inline>
 					</Container>
 				</Column>
 				<Column key="c2">
 					<Container
 						headingVariant='h2'
-						title='Orders per Driver'
+						title='Orders/Jobs per Driver'
 						style={{ marginTop: '25px', width: '100%' }}
 					>
 						<ReactEChartsCore

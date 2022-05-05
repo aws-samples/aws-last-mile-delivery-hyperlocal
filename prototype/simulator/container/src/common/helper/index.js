@@ -136,27 +136,33 @@ const toRadians = (angdeg) => {
  * @return {Object} The generated random points as JS object with latitude and longitude attributes.
  */
 const generateRandomPoint = (lat, long, radius) => {
-	var y0 = Number(lat)
-	var x0 = Number(long)
+	const y0 = Number(lat)
+	const x0 = Number(long)
 
 	// Convert Radius from meters to degrees.
-	var rd = Number(radius) / 111000.0
+	const rd = Number(radius) / 111000.0
 
-	var u = Math.random()
-	var v = Math.random()
+	const u = Math.random()
+	const v = Math.random()
 
-	var w = rd * Math.sqrt(u)
-	var t = 2 * Math.PI * v
-	var x = w * Math.cos(t)
-	var y = w * Math.sin(t)
+	const w = rd * Math.sqrt(u)
+	const t = 2 * Math.PI * v
+	const x = w * Math.cos(t)
+	const y = w * Math.sin(t)
 
-	var xp = x / Math.cos(toRadians(y0))
+	const xp = x / Math.cos(toRadians(y0))
 
 	return {
 		latitude: y + y0,
 		longitude: xp + x0,
 		elevation: Number((Math.random() * 10).toFixed(2)),
 	}
+}
+
+function randomBetween (min, max) {
+	const rnd = Math.random() * (max - min + 1) + min
+
+	return Math.round(rnd * 100) / 100
 }
 
 module.exports = {
@@ -169,4 +175,5 @@ module.exports = {
 	publishMessage,
 	generateRandomPoint,
 	setupLogin,
+	randomBetween,
 }

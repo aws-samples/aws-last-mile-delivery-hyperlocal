@@ -27,14 +27,31 @@ class Scheduler {
 		this.driverIdentity = driverIdentity
 
 		this.sendIntervalId = -1
+		this.sendStatusIntervalId = -1
 		this.locationUpdateIntervalId = -1
 
 		this.currentStatus = null
+		this.currentOrderStatus = {}
 		this.locations = []
 
 		// register state changed handlers
 		state.setStateChangeHandler('updatesConfig', this.updatesConfigChanged.bind(this))
 		state.setStateChangeHandler('updates', this.updatesChanged.bind(this))
+	}
+
+	trySendStatusUpdateMessage = () => {
+		const currentState = state.getState()
+		const newOrderId = currentState.orderId
+		const orderStatus = currentState.orderIdsList[newOrderId]
+		const newStatus = currentState.status
+
+		if (newOrderId && this.currentOrderStatus[newOrderId] !== orderStatus) {
+			this.publishStatusUpdateMessage()
+			this.currentOrderStatus[newOrderId] = orderStatus
+		} else if (this.currentStatus !== newStatus) {
+			this.publishStatusUpdateMessage()
+			this.currentStatus = newStatus
+		}
 	}
 
 	startSendProcess () {
@@ -48,22 +65,24 @@ class Scheduler {
 			if (message.locations.length > 0) {
 				this.publishLocationUpdateMessage(message)
 			}
-			const newState = state.getState().status
-
-			logger.debug('currentStatus = ', this.currentStatus, ' | newState = ', newState)
-
-			if (this.currentStatus !== newState) {
-				this.publishStatusUpdateMessage()
-				this.currentStatus = newState
-			}
 		}, sendIntervalMs, this)
+
+		// this interval is detached from the location interval and gets triggered as frequently
+		// as when the status get updated
+		this.sendStatusIntervalId = setInterval(async () => {
+			this.trySendStatusUpdateMessage()
+		}, 500, this)
+
 		logger.debug(`Started send process interval with id ${this.sendIntervalId}`)
+		logger.debug(`Started send status process interval with id ${this.sendStatusIntervalId}`)
 	}
 
 	stopSendProcess () {
 		// stop the sender
 		logger.debug(`Clearing send process interval with id ${this.sendIntervalId}`)
 		clearInterval(this.sendIntervalId)
+		logger.debug(`Clearing send status process interval with id ${this.sendStatusIntervalId}`)
+		clearInterval(this.sendStatusIntervalId)
 
 		// publish outstanding collected locations
 		const message = this.buildLocationUpdateMessage()
@@ -74,12 +93,7 @@ class Scheduler {
 		}
 
 		// check if there was status change
-		const newState = state.getStateRaw().status
-
-		if (this.currentStatus !== newState) {
-			this.publishStatusUpdateMessage()
-			this.currentStatus = newState
-		}
+		this.trySendStatusUpdateMessage()
 	}
 
 	startLocationCollectionProcess () {
@@ -90,7 +104,7 @@ class Scheduler {
 			const currentState = state.getStateRaw()
 			const params = currentState.params
 			const [latitude, longitude, elevation] =
-				messageGenerator.getCoordinates(params.lat, params.long, params.range, currentState.status)
+				await messageGenerator.getCoordinates(params.lat, params.long, params.range, currentState.status)
 
 			this.locations.push({
 				timestamp: Date.now(),
@@ -147,7 +161,7 @@ class Scheduler {
 
 	publishStatusUpdateMessage () {
 		const message = state.generateChangeStatusMessage(this.driverId, this.driverIdentity)
-		logger.debug(`[${this.sendIntervalId}] Sending STATUS_CHANGE message with status`, message.status)
+		logger.debug(`[${this.sendStatusIntervalId}] Sending STATUS_CHANGE message with status`, message.status)
 		helper.publishMessage(
 			this.device,
 			`$aws/rules/${this.config.iotDriverStatusUpdateRule}`,
@@ -156,10 +170,13 @@ class Scheduler {
 	}
 
 	buildLocationUpdateMessage () {
+		const currentState = state.getState()
+		const orderStatus = currentState.orderId ? currentState.orderIdsList[currentState.orderId] : undefined
+
 		return {
 			type: 'LOCATION_UPDATE',
 			locations: this.locations,
-			status: state.getStateRaw().status,
+			status: orderStatus || currentState.status,
 			driverId: this.driverId,
 			driverIdentity: this.driverIdentity,
 		}

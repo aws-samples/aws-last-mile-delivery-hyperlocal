@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 module.exports = {
-	originPassword: process.env.ORIGIN_PASSWORD,
+	originPasswordSecret: process.env.ORIGIN_PASSWORD_SECRET,
 	originTable: process.env.ORIGIN_TABLE_NAME,
 	originExecutionIdIndex: process.env.ORIGIN_EXECUTIONID_INDEX,
 	originStatusUpdateRule: process.env.ORIGIN_STATUS_UPDATE_RULE_NAME,

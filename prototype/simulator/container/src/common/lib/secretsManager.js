@@ -14,81 +14,24 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { ILatLong } from '../components/LatLongPairComponent'
-import { IArea } from '../pages/NewSimulation'
-import common, { APIS } from './Common'
-import { v4 } from 'uuid'
+const AWS = require('aws-sdk')
 
-const createSimulation = (name: string, areas: IArea[], procNum: number): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
+const secretsManager = new AWS.SecretsManager()
 
-	return common.commonPostRequest('/simulator', {
-		name,
-		areas,
-		procNum,
-	})
+const getSecretValue = async (secretName) => {
+	const result = await secretsManager.getSecretValue({
+		SecretId: secretName,
+	}).promise()
+
+	if (result.SecretString) {
+		return result.SecretString
+	}
+
+	const buff = Buffer.from(result.SecretBinary, 'base64')
+
+	return buff.toString('ascii')
 }
 
-const getSimulations = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/simulator')
-}
-
-const getSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest(`/simulator/${id}`)
-}
-
-const deleteSimulation = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/simulator/${id}`)
-}
-
-const createPolygon = (name: string, vertices: ILatLong[]): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonPostRequest('/polygon', {
-		ID: v4(),
-		name,
-		vertices,
-	})
-}
-
-const getPolygons = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/polygon')
-}
-
-const deletePolygon = (id: string): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest(`/polygon/${id}`)
-}
-
-const getStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonGetRequest('/stats')
-}
-
-const deleteStats = (): Promise<any> => {
-	common.setApiName(APIS.SIMULATOR)
-
-	return common.commonDeleteRequest('/stats')
-}
-
-export default {
-	getSimulations,
-	createSimulation,
-	getSimulation,
-	deleteSimulation,
-	createPolygon,
-	getPolygons,
-	deletePolygon,
-	getStats,
-	deleteStats,
+module.exports = {
+	getSecretValue,
 }

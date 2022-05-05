@@ -61,6 +61,7 @@ const startSimulator = (data: IAdditionalInputResults): Promise<any> => {
 		orderInterval: data.orderInterval,
 		rejectionRate: data.rejectionRate,
 		eventsFilePath: data.eventsFilePath,
+		deliveryType: data.deliveryType,
 	})
 }
 

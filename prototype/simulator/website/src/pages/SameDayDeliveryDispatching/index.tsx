@@ -14,24 +14,27 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Box, Button, Column, ColumnLayout, Inline, LoadingIndicator, Table } from 'aws-northstar'
-import AssignmentMap from '../../components/MapComponent/AssignmentMap'
+import { Box, Button, Column, ColumnLayout, Inline, LoadingIndicator, Stack, Table } from 'aws-northstar'
+import SameDayAssignmentMap from '../../components/MapComponent/SameDayAssignmentMap'
 import React, { useEffect, useState } from 'react'
 import { DateRangeOutlined, DateRangeRounded } from '@material-ui/icons'
-import InstantDelivery from '../../api/InstantDelivery'
-import { columnDefinitions } from './table-columns'
+import SameDayDelivery from '../../api/SameDayDelivery'
+import { columnDefinitions, deliveryJobsColumnDefinition } from './table-columns'
 
-const InstantDeliveryDispatching: React.FC = () => {
+const SameDayDeliveryDispatching: React.FC = () => {
 	const [assignments, setAssignments] = useState<any>([])
+	const [deliveryJobs, setDeliveryJobs] = useState<any>([])
 	const [selectedAssignment, setSelectedAssignment] = useState<any>()
+	const [selectedDeliveryJob, setSelectedDeliveryJob] = useState<any>()
 	const [loading, setLoading] = useState(false)
+	const [loadingDeliveryJobs, setLoadingDeliveryJobs] = useState(false)
 	const [relDate, setRelDate] = useState(true)
 	const [nextToken, setNextToken] = useState(undefined)
 
 	const fetchAssignments = async (nextToken?: string, hardRefresh = false) => {
 		try {
 			setLoading(true)
-			const result = await InstantDelivery.getDispatchAssignmentsAll(nextToken)
+			const result = await SameDayDelivery.getDispatchAssignmentsAll(nextToken)
 
 			if (!hardRefresh) {
 				setAssignments((old: any) => [...old, ...result.data.assignments])
@@ -55,11 +58,38 @@ const InstantDeliveryDispatching: React.FC = () => {
 		fetchAssignments()
 	}, [])
 
-	const onTableSelectionChange = (selectedItems: any[]) => {
+	useEffect(() => {
+		const fetchDeliveryJobs = async () => {
+			try {
+				setLoadingDeliveryJobs(true)
+				const result = await SameDayDelivery.getDeliveryJobs(selectedAssignment.ID)
+
+				setDeliveryJobs(result.data.deliveryJobs)
+			} catch (err) {
+				console.log(err)
+			} finally {
+				setLoadingDeliveryJobs(false)
+			}
+		}
+
+		if (selectedAssignment) {
+			fetchDeliveryJobs()
+		}
+	}, [selectedAssignment])
+
+	const onAssignmentChange = (selectedItems: any[]) => {
 		if (selectedItems.length > 0) {
 			setSelectedAssignment(selectedItems[0])
 		} else {
 			setSelectedAssignment(null)
+		}
+	}
+
+	const onDeliveryJobChange = (selectedItems: any[]) => {
+		if (selectedItems.length > 0) {
+			setSelectedDeliveryJob(selectedItems[0])
+		} else {
+			setSelectedDeliveryJob(null)
 		}
 	}
 
@@ -73,34 +103,52 @@ const InstantDeliveryDispatching: React.FC = () => {
 
 	return (
 		<>
-			<ColumnLayout>
-				<Column key='table'>
-					<Box display="flex" width="100%" height="100%" alignItems="center" justifyContent="center">
-						<Table
-							tableTitle={'Instant Delivery Dispatch Assignments'}
-							columnDefinitions={columnDefinitions(relDate)}
-							actionGroup={tableActions}
-							items={assignments}
-							loading={loading}
-							multiSelect={false}
-							disableRowSelect={false}
-							defaultPageSize={25}
-							sortBy={[{ id: 'created', desc: true }]}
-							pageSizes={[25, 50, 100]}
-							rowCount={assignments.length}
-							onSelectionChange={onTableSelectionChange}
-						/>
-					</Box>
-				</Column>
-				<Column key='map'>
-					<Box display="flex" width="100%" height="100%" alignItems="center" justifyContent="center">
-						<AssignmentMap assignment={selectedAssignment} />
-					</Box>
-				</Column>
-			</ColumnLayout>
+			<Stack>
+				<Box >
+					<ColumnLayout>
+						<Column key='table'>
+							<Table
+								tableTitle={'Same Day Delivery Dispatch Assignments'}
+								columnDefinitions={columnDefinitions(relDate)}
+								actionGroup={tableActions}
+								items={assignments}
+								loading={loading}
+								multiSelect={false}
+								disableRowSelect={false}
+								defaultPageSize={25}
+								sortBy={[{ id: 'created', desc: true }]}
+								pageSizes={[25, 50, 100]}
+								rowCount={assignments.length}
+								onSelectionChange={onAssignmentChange}
+							/>
+						</Column>
+						<Column key='map'>
+							<Table
+								tableTitle={'Same Day Delivery Jobs'}
+								columnDefinitions={deliveryJobsColumnDefinition(relDate)}
+								items={deliveryJobs}
+								loading={loadingDeliveryJobs}
+								multiSelect={false}
+								disableRowSelect={false}
+								defaultPageSize={100}
+								sortBy={[{ id: 'created', desc: true }]}
+								pageSizes={[25, 50, 100]}
+								rowCount={deliveryJobs.length}
+								onSelectionChange={onDeliveryJobChange}
+							/>
+						</Column>
+					</ColumnLayout>
+				</Box>
+				<Box>
+					<SameDayAssignmentMap
+						segments={selectedDeliveryJob ? selectedDeliveryJob.segments : undefined}
+						route={selectedDeliveryJob ? selectedDeliveryJob.route : undefined}
+					/>
+				</Box>
+			</Stack>
 
 		</>
 	)
 }
 
-export default InstantDeliveryDispatching
+export default SameDayDeliveryDispatching

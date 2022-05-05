@@ -142,7 +142,7 @@ const Destinations: React.FC = () => {
 					key={`sim-${idx}`}
 					simulation={sim}
 					onStop={stopSimulation}
-					extraProps={['rejectionRate', 'orderRate', 'orderInterval', 'eventsFilePath']}
+					extraProps={['rejectionRate', 'orderRate', 'orderInterval', 'eventsFilePath', 'deliveryType']}
 					entityName='Destinations'
 				/>
 			</>))}

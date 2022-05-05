@@ -28,6 +28,7 @@ const STATUSES = {
 
 const ASSIGNMENT_STATUS = {
 	IDLE: 'IDLE',
+	TO_CONFIRM: 'TO_CONFIRM',
 	IN_PROGRESS: 'IN_PROGRESS',
 }
 
@@ -35,7 +36,8 @@ const state = {
 	assignmentStatus: 'IDLE',
 	status: 'IDLE',
 	orderId: undefined,
-	jobId: '',
+	jobId: undefined,
+	orderIdsList: [],
 	segments: [],
 	updatesConfig: {
 		passiveState: {
@@ -58,34 +60,7 @@ const stateChangeHandlers = {
 	updates: null,
 }
 
-const randomBetween = (loSec, hiSec) => {
-	return Math.floor(loSec * 1000 + (Math.random() * (hiSec - loSec) * 1000))
-}
-
 const getState = () => {
-	// simple state workflow
-	if (state.status === STATUSES.ACCEPTED) {
-		setTimeout(() => {
-			setState('status', STATUSES.PICKING_UP_GOODS)
-			setState('updates', state.updatesConfig.activeState)
-		}, randomBetween(7, 11))
-	} else if (state.status === STATUSES.ARRIVED_AT_ORIGIN) {
-		setTimeout(() => {
-			setState('status', STATUSES.DELIVERING)
-			setState('updates', state.updatesConfig.activeState)
-		}, randomBetween(8, 10))
-	} else if (state.status === STATUSES.ARRIVED_AT_DESTINATION) {
-		setTimeout(() => {
-			setState('status', STATUSES.DELIVERED)
-			setState('updates', state.updatesConfig.passiveState)
-		}, randomBetween(7, 11))
-	} else if (state.status === STATUSES.DELIVERED) {
-		setTimeout(() => {
-			setState('status', STATUSES.IDLE)
-			setState('updates', state.updatesConfig.passiveState)
-		}, randomBetween(6, 10))
-	}
-
 	return state
 }
 
@@ -117,8 +92,11 @@ const generateChangeStatusMessage = (driverId, driverIdentity) => {
 	}
 
 	if (status !== STATUSES.IDLE) {
+		const orderStatus = state.orderId ? state.orderIdsList[state.orderId] : undefined
+
 		baseMessage.orderId = state.orderId
 		baseMessage.jobId = state.jobId
+		baseMessage.status = orderStatus || status
 	}
 
 	return baseMessage

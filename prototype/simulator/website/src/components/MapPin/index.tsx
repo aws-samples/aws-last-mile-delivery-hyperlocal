@@ -19,7 +19,6 @@ import Icon, { IconName } from 'aws-northstar/components/Icon'
 import Popover from 'aws-northstar/components/Popover'
 import MarkdownViewer from 'aws-northstar/components/MarkdownViewer'
 import { MapContext } from 'react-map-gl'
-import { convertToObject } from 'typescript'
 
 export type IMapPin = {
 	longitude: number

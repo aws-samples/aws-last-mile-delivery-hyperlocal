@@ -16,6 +16,7 @@
  *********************************************************************************************************************/
 const logger = require('../common/utils/logger')
 const ddb = require('../common/lib/dynamoDB')
+const secretsManager = require('../common/lib/secretsManager')
 const Destination = require('./destination')
 
 class DestinationApp {
@@ -26,6 +27,7 @@ class DestinationApp {
 			orderInterval: config.orderInterval || options.orderInterval,
 			rejectionRate: config.rejectionRate || options.rejectionRate,
 			eventsFilePath: config.eventsFilePath || options.eventsFilePath,
+			deliveryType: config.deliveryType || options.deliveryType,
 		}
 		logger.debug('Starting the Destination App with params: ', JSON.stringify(params))
 
@@ -36,12 +38,13 @@ class DestinationApp {
 
 	async init () {
 		logger.log(`Retrieving destinations for execution: ${this.params.executionId}`)
+		const destinationPassword = await secretsManager.getSecretValue(this.config.destinationPasswordSecret)
 		const data = await ddb.query(this.config.destinationTable, this.config.destinationExecutionIdIndex, {
 			executionId: this.params.executionId,
 		})
 		// in case we replay an existing file we need just one destination object to perform the order submission
 		const users = this.params.eventsFilePath ? [data.Items[0]] : data.Items
-		const destinations = users.map(u => new Destination(this.config, this.params, u, this))
+		const destinations = users.map(u => new Destination(this.config, this.params, u, this, destinationPassword))
 		logger.log('Initialising destinations')
 
 		for (let i = 0; i < destinations.length; i++) {

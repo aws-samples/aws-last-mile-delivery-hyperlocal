@@ -41,10 +41,12 @@ const getIdlePosition = (lat, long, radius) => {
 	return [currentPosition.latitude, currentPosition.longitude, currentPosition.elevation]
 }
 
-const getSegmentLocations = (lat, long, radius, status, segments) => {
+const getSegmentLocations = async (lat, long, radius, _status, segments) => {
 	if (currentSegment >= segments.length) {
 		logger.info('Played all segments for assigment.')
+
 		state.setState('assignmentStatus', state.ASSIGNMENT_STATUS.IDLE)
+		state.setState('status', state.STATUSES.IDLE)
 
 		return getIdlePosition(lat, long, radius)
 	}
@@ -56,33 +58,70 @@ const getSegmentLocations = (lat, long, radius, status, segments) => {
 	if (!currentPath) {
 		currentPath = polyline.decode(route.pointsEncoded)
 
-		logger.info('Following path on: ', JSON.stringify(currentPath))
+		logger.info('Following path for order: ', orderId, ' on: ', JSON.stringify(currentPath))
 	}
-	const [_lat, _long] = currentPath[currentProgress]
+	const [_lat, _long] = currentPath[currentProgress] || currentPath[currentProgress - 1] || [lat, long]
 
-	if (currentProgress < currentPath.length - 1) {
-		currentProgress++
+	const currentState = state.getState()
+	const status = currentState.orderIdsList[currentState.orderId]
 
-		return [_lat, _long, 0]
+	if (currentProgress < currentPath.length) {
+		logger.debug(`Order [${currentState.orderId}]: ${status}`)
+
+		// simple state workflow
+		if (currentState.orderIdsList[currentState.orderId] === state.STATUSES.ACCEPTED) {
+			state.setState('orderIdsList', {
+				...currentState.orderIdsList,
+				[currentState.orderId]: state.STATUSES.PICKING_UP_GOODS,
+			})
+			state.setState('updates', currentState.updatesConfig.activeState)
+		} else if (currentState.orderIdsList[currentState.orderId] === state.STATUSES.ARRIVED_AT_ORIGIN) {
+			state.setState('orderIdsList', {
+				...currentState.orderIdsList,
+				[currentState.orderId]: state.STATUSES.DELIVERING,
+			})
+			state.setState('updates', currentState.updatesConfig.activeState)
+		}
+
+		if ([state.STATUSES.DELIVERING, state.STATUSES.PICKING_UP_GOODS].includes(status)) {
+			currentProgress++
+		}
 	} else {
+		logger.debug('============ switching segement =============')
+
 		if (segmentType === 'TO_ORIGIN' && status === state.STATUSES.PICKING_UP_GOODS) {
 			logger.info('Arrived at origin. Order: ', orderId)
 
-			state.setState('status', state.STATUSES.ARRIVED_AT_ORIGIN)
+			state.setState('orderIdsList', {
+				...currentState.orderIdsList,
+				[currentState.orderId]: state.STATUSES.ARRIVED_AT_ORIGIN,
+			})
 		}
 
 		if (segmentType === 'TO_DESTINATION' && status === state.STATUSES.DELIVERING) {
 			logger.info('Arrived at destination. Order: ', orderId)
 
-			state.setState('status', state.STATUSES.ARRIVED_AT_DESTINATION)
+			// ARRIVED_AT_DESTINATION is a status that might make sense only in real-life scenario
+			// for this simulation if the order has been finalised we'd just set it to delivered
+			// state.setState('orderIdsList', {
+			// 	...currentState.orderIdsList,
+			// 	[currentState.orderId]: state.STATUSES.ARRIVED_AT_DESTINATION,
+			// })
+
+			state.setState('orderIdsList', {
+				...currentState.orderIdsList,
+				[currentState.orderId]: state.STATUSES.DELIVERED,
+			})
 		}
 
-		currentPath = null
-		currentProgress = 0
-		currentSegment++
-
-		return getSegmentLocations(lat, long, radius, status, segments)
+		if (currentPath) {
+			currentPath = null
+			currentProgress = 0
+			currentSegment++
+		}
 	}
+
+	return [_lat, _long, 0]
 }
 
 const getCoordinates = (lat, long, radius, status) => {
@@ -91,19 +130,27 @@ const getCoordinates = (lat, long, radius, status) => {
 		currentProgress = 0
 		currentSegment = 0
 
-		state.setState('segments', state.DEFAULT_STATE.segments)
-		state.setState('jobId', state.DEFAULT_STATE.jobId)
-		state.setState('orderId', state.DEFAULT_STATE.orderId)
+		state.setState('segments', [])
+		state.setState('jobId', undefined)
+		state.setState('orderId', undefined)
+		state.setState('orderIdsList', [])
+		state.setState('updates', state.DEFAULT_STATE.updatesConfig.passiveState)
 
 		return getIdlePosition(lat, long, radius)
 	}
 
+	if (state.getState().assignmentStatus === state.ASSIGNMENT_STATUS.TO_CONFIRM) {
+		// waiting for backend confirmation in case of same-day-delivery
+		return getIdlePosition(lat, long, radius)
+	}
+
+	// get the segment location only if the status of the assignmnet is IN_PROGRESS
 	return getSegmentLocations(lat, long, radius, status, state.getState().segments)
 }
 
 /// range not used anymore at this point, due to wrong random point generation
-const generatePoint = (lat, long, range) => {
-	const [latitude, longitude, elevation] = getCoordinates(lat, long, range, state.getState().status)
+const generatePoint = async (lat, long, range) => {
+	const [latitude, longitude, elevation] = await getCoordinates(lat, long, range, state.getState().status)
 
 	return {
 		type: 'LOCATION_UPDATE',
