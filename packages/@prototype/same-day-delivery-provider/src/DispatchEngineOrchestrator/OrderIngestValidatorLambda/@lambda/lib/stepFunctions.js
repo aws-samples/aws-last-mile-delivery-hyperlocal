@@ -14,7 +14,18 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const aws = require('aws-sdk')
+const config = require('../config')
+
+const stepFunctions = new aws.StepFunctions()
+
+const startDispatchEngineOrchestrator = (input) => {
+	return stepFunctions.startExecution({
+		stateMachineArn: config.dispatchEngineOrchestratorManagerArn,
+		input: JSON.stringify(input),
+	}).promise()
+}
+
+module.exports = {
+	startDispatchEngineOrchestrator,
+}

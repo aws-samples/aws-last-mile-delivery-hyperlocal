@@ -14,7 +14,9 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+module.exports = {
+	sameDayDeliveryProviderLocks: process.env.PROVIDER_LOCKS_TABLE,
+	sameDayDeliveryProviderOrdersStatusIndex: process.env.PROVIDER_ORDERS_STATUS_INDEX,
+	sameDayDeliveryProviderOrders: process.env.PROVIDER_ORDERS_TABLE,
+	driverAcknowledgeTimeoutInSeconds: Number(process.env.DRIVER_ACK_SECONDS) || 15,
+}

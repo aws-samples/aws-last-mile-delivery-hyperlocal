@@ -242,13 +242,18 @@ providersConfig:
 
   # the example implementation of an instant delivery provider
   InstantDeliveryProvider:
-    apiKeySecretName: InternalWebhookProviderApiKeySecret
+    apiKeySecretName: InstantDeliveryWebhookProviderApiKeySecret
+
+  # the example implementation of an same day delivery provider
+  SameDayDeliveryProvider:
+    apiKeySecretName: SameDayDeliveryWebhookProviderApiKeySecret
+
 
 # settings for the order manager component
 orderManagerSettings:
   # timeout for the provider feedback
   # if we don't get an update by then, it will find a new provider
-  providerTimeoutInMinutes: 45
+  providerTimeoutInMinutes: 240
 
   # timeout that is used for the origin (eg. restaurant) to ack the order
   # if a reject/accept event doesn't come by then, the order will be automaticall rejected
@@ -304,6 +309,40 @@ instantDeliveryProviderSettings:
   # bias for geocluster algo
   # see https://github.com/yetzt/node-geocluster
   geoClusteringBias: 1.8
+
+# settigns for the example same day delivery provider implementation
+sameDayDeliveryProviderSettings:
+  # number of retry attempts before the message goes in a dead letter queue
+  orderIngestRetryAttempts: 20
+
+  # order ingest max batchsize, if reach this value the dispatcher will start
+  orderIngestMaxBatchingSize: 150
+
+  # trigger the dispatcher orchestrator in max XXX min if it doesn't reach its orderIngestMaxBatchingSize before
+  orderIngestMaxBatchingWindowMinutes: 20
+
+  # trigger the order ingestion validator that would verify if either the batch size or batch window is reached in order to trigger the dispatcher
+  orderIngestionValidatorIntervalInMinutes: 2
+
+  # run the driver cleanup lambda every XX seconds
+  driverCleanupIntervalInSeconds: 15
+
+  # timeout for driver to acknowledge an assigned job - otherwise orders in the job goes back as unassigned
+  driverAcknowledgeTimeoutInSeconds: 30
+
+  # interval in mins for subMinuteStepFunction helper
+  subMinuteStepFunctionIntervalInMinutes: 10
+
+  # subMinuteStepFunction timeout
+  subMinuteStepFunctionTimeoutInMinutes: 12
+
+  # cancel orders after XX minutes if not assigned
+  orderCancellationTimeoutInMinutes: 360
+
+  # define the max timeout for dispatching orders to drivers
+  # executions that take longer than this will be aborted
+  orderDispatchTimeoutInMinutes: 60
+
 
 # graphhopper ECS service-related docker settings
 graphhopperSettings:

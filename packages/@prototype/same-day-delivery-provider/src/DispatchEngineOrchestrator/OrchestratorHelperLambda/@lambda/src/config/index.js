@@ -14,7 +14,16 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+module.exports = {
+	iotEndpoint: process.env.IOT_ENDPOINT,
+	sameDayDeliveryProviderOrdersTable: process.env.SAME_DAY_DELIVERY_PROVIDER_ORDERS_TABLE,
+	sameDayDeliveryProviderOrdersBatchIdIndex: process.env.SAME_DAY_DELIVERY_PROVIDER_ORDERS_BATCH_ID_INDEX,
+	eventBusName: process.env.EVENT_BUS,
+	serviceName: process.env.SERVICE_NAME,
+	// not used for now
+	graphhopperElbDNS: process.env.GRAPH_HOPPER_ELB_DNS,
+	dispatchEngineElbDNS: process.env.DISPATCH_ENGINE_ELB_DNS,
+	geotrackingUrl: process.env.GEOTRACKING_API_URL,
+	geoTrackingSecretName: process.env.GEOTRACKING_API_KEY_SECRET_NAME,
+	sameDayDirectPudoDeliveryJobsTable: process.env.SAME_DAY_DELIVERY_PUDO_DELIVERY_JOBS_TABLE,
+}

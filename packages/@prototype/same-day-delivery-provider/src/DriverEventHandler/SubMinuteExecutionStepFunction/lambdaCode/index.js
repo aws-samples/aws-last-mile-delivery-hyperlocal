@@ -14,7 +14,59 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+/* eslint-disable no-console */
+const commands = {
+	configureIterations: (paylad) => {
+		console.log('Configure iterations command started')
+		const { timeoutInSeconds, stepFunctionIntervalInMinutes } = paylad
+		const maxIterations = Math.round((60 * stepFunctionIntervalInMinutes) / timeoutInSeconds)
+		const msInMinute = 60 * 1000
+
+		return {
+			maxIterations,
+			timeoutInMs: msInMinute / Math.round(maxIterations / stepFunctionIntervalInMinutes),
+		}
+	},
+	waitForXSeconds: (payload) => {
+		console.log('WaitForXSeconds command started')
+
+		const { timeoutInMs } = payload
+
+		return new Promise((resolve) => setTimeout(() => resolve(true), timeoutInMs))
+	},
+	incrementCurrentCounter: (payload) => {
+		console.log('IncrementCurrentCounter command started')
+		const { input } = payload
+		const { currentCounter } = input
+		let iteration = 0
+
+		if (currentCounter && currentCounter.iteration) {
+			iteration = currentCounter.iteration
+		}
+
+		return {
+			iteration: ++iteration,
+		}
+	},
+}
+
+const handler = async (event, context) => {
+	console.log('Execution started with the following payload')
+	console.log(JSON.stringify(event))
+
+	const { cmd, payload } = event
+
+	if (!commands[cmd]) {
+		console.error('Cannot find command: ', cmd)
+
+		return
+	}
+
+	const res = await commands[cmd](payload)
+
+	console.info('Execution completed: ', JSON.stringify(res))
+
+	return res
+}
+
+exports.handler = handler

@@ -14,7 +14,24 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const AWS = require('aws-sdk')
+
+const secretsManager = new AWS.SecretsManager()
+
+const getSecretValue = async (secretName) => {
+	const result = await secretsManager.getSecretValue({
+		SecretId: secretName,
+	}).promise()
+
+	if (result.SecretString) {
+		return result.SecretString
+	}
+
+	const buff = Buffer.from(result.SecretBinary, 'base64')
+
+	return buff.toString('ascii')
+}
+
+module.exports = {
+	getSecretValue,
+}

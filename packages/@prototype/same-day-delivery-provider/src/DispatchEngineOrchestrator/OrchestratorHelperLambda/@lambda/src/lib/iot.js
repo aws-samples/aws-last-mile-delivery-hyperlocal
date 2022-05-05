@@ -14,7 +14,31 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const aws = require('aws-sdk')
+const config = require('../config')
+
+let iotData
+
+const createOrGetIoTData = async () => {
+	if (!iotData) {
+		iotData = new aws.IotData({
+			endpoint: config.iotEndpoint,
+		})
+	}
+
+	return iotData
+}
+
+const publishMessage = async (topic, message) => {
+	const iot = await createOrGetIoTData()
+
+	return iot.publish({
+		topic: topic,
+		payload: JSON.stringify(message),
+		qos: 1,
+	}).promise()
+}
+
+module.exports = {
+	publishMessage,
+}

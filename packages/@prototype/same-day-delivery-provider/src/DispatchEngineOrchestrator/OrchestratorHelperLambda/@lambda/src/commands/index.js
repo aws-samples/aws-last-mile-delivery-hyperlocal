@@ -14,7 +14,12 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const queryDispatch = require('./queryDispatch').execute
+const invokeDispatch = require('./invokeDispatch').execute
+const broadcastToDrivers = require('./broadcastToDrivers').execute
+
+module.exports = {
+	queryDispatch,
+	invokeDispatch,
+	broadcastToDrivers,
+}

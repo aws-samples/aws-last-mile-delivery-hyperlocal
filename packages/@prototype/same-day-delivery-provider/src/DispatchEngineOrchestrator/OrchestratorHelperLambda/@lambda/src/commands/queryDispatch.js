@@ -14,7 +14,48 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const axios = require('axios').default
+const logger = require('../utils/logger')
+const config = require('../config')
+
+const execute = async (payload) => {
+	logger.info('Executing query dispatch for payload')
+	logger.info(payload)
+	const { problemId } = payload
+	const url = `http://${config.dispatchEngineElbDNS}/sameday/directpudo/dispatch/status/${problemId}`
+
+	try {
+		const results = await axios.get(url, {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+
+		logger.debug('Results from query:')
+		logger.debug(JSON.stringify(results.data))
+		const { data: { state, deliveryJobs } } = results
+
+		if (state === 'NOT_SOLVING') {
+			return {
+				inProgress: false,
+				deliveryJobs: deliveryJobs.map(q => ({
+					problemId,
+					jobId: q.id,
+				})),
+			}
+		}
+
+		return {
+			inProgress: true,
+		}
+	} catch (err) {
+		logger.error('Error on dispatch request')
+		logger.error(err)
+
+		throw Error('Error invoking the dispacher')
+	}
+}
+
+module.exports = {
+	execute,
+}
