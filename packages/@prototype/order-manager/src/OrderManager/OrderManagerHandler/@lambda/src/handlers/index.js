@@ -27,4 +27,5 @@ module.exports = {
 	[config.examplePollingService]: provider(config.examplePollingService),
 	[config.exampleWehookService]: provider(config.exampleWehookService),
 	[config.instantDeliveryService]: provider(config.instantDeliveryService),
+	[config.sameDayDeliveryService]: provider(config.sameDayDeliveryService),
 }

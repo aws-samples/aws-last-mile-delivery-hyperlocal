@@ -43,6 +43,7 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 		const pollingProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'PollingProviderSecret', providersConfig.ExamplePollingProvider.apiKeySecretName)
 		const webhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'WebhookProviderSecret', providersConfig.ExampleWebhookProvider.apiKeySecretName)
 		const instantDeliveryProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'InstantDeliverySecret', providersConfig.InstantDeliveryProvider.apiKeySecretName)
+		const sameDayDeliveryProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'SameDayDeliverySecret', providersConfig.SameDayDeliveryProvider.apiKeySecretName)
 
 		const declaredProps: TDeclaredProps = {
 			functionName: namespaced(scope, 'ProviderRuleEngineLambda'),
@@ -59,6 +60,8 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 				EXAMPLE_WEBHOOK_PROVIDER_URL: providerApiUrls.ExampleWebhookProvider.url,
 				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 				INSTANT_DELIVERY_PROVIDER_URL: providerApiUrls.InstantDeliveryProvider.url,
+				SAME_DAY_DELIVERY_PROVIDER_SECRET_NAME: providersConfig.SameDayDeliveryProvider.apiKeySecretName,
+				SAME_DAY_DELIVERY_PROVIDER_URL: providerApiUrls.SameDayDeliveryProvider.url,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({
@@ -80,6 +83,7 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 						`${pollingProviderSecret.secretArn}*`,
 						`${webhookProviderSecret.secretArn}*`,
 						`${instantDeliveryProviderSecret.secretArn}*`,
+						`${sameDayDeliveryProviderSecret.secretArn}*`,
 					],
 				}),
 				...LambdaInsightsExecutionPolicyStatements(),

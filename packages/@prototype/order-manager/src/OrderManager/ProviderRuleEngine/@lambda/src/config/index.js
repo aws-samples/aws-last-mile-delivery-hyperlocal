@@ -29,4 +29,8 @@ module.exports = {
 		secretName: process.env.INSTANT_DELIVERY_PROVIDER_SECRET_NAME,
 		url: process.env.INSTANT_DELIVERY_PROVIDER_URL,
 	},
+	SameDayDeliveryProvider: {
+		secretName: process.env.SAME_DAY_DELIVERY_PROVIDER_SECRET_NAME,
+		url: process.env.SAME_DAY_DELIVERY_PROVIDER_URL,
+	},
 }
