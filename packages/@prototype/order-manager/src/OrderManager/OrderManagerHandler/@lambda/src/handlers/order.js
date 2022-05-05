@@ -21,7 +21,7 @@ const config = require('../config')
 
 const mapper = {
 	NEW_ORDER: async (detail) => {
-		const { ID: orderId, origin, destination, createdAt } = detail
+		const { ID: orderId, origin, destination, payload, createdAt } = detail
 
 		logger.info('Starting step function: ')
 
@@ -30,6 +30,7 @@ const mapper = {
 			origin,
 			destination,
 			createdAt,
+			payload,
 		}, config.orderOrchestrationStateMachine)
 
 		logger.info('Starting step function: ')

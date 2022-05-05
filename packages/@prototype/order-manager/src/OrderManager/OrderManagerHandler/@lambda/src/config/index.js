@@ -20,6 +20,7 @@ const services = {
 	exampleWehookService: process.env.EXAMPLE_WEBHOOK_PROVIDER_SERVICE_NAME,
 	examplePollingService: process.env.EXAMPLE_POLLING_PROVIDER_SERVICE_NAME,
 	instantDeliveryService: process.env.INSTANT_DELIVERY_PROVIDER_SERVICE_NAME,
+	sameDayDeliveryService: process.env.SAME_DAY_DELIVERY_PROVIDER_SERVICE_NAME,
 }
 
 module.exports = {
