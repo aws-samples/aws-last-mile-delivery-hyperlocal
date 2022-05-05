@@ -36,6 +36,8 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly orderTable: ddb.ITable
 
+	public readonly dispatcherAssignmentsTable: ddb.ITable
+
 	public readonly instantDeliveryProviderOrders: ddb.ITable
 
 	public readonly instantDeliveryProviderLocks: ddb.ITable
@@ -43,8 +45,6 @@ export class DataStoragePersistent extends NestedStack {
 	public readonly instantDeliveryProviderOrdersStatusIndex: string
 
 	public readonly instantDeliveryProviderOrdersJobIdIndex: string
-
-	public readonly dispatcherAssignmentsTable: ddb.ITable
 
 	public readonly demographicAreaDispatchSettings: ddb.ITable
 
@@ -177,13 +177,6 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		new DatabaseSeeder(this, 'DatabaseSeeder', {
-			demographicAreaProviderEngineSettings: this.demographicAreaProviderEngineSettings,
-			demographicAreaDispatcherEngineSettings: this.demographicAreaDispatchSettings,
-			geoPolygonTable: this.geoPolygonTable,
-			country,
-		})
-
 		const dispatcherAssignmentsTableName = namespaced(this, 'dispatcher-assignments')
 		this.dispatcherAssignmentsTable = new hyperlocal_ddb.Table(this, 'DispatcherAssignments', {
 			tableName: dispatcherAssignmentsTableName,
@@ -205,14 +198,14 @@ export class DataStoragePersistent extends NestedStack {
 		this.ssmStringParameters[parameterStoreKeys.assignmentsTableName] = dispatcherAssignmentsTableNameParameter
 
 		const sameDayDeliveryProviderOrders = new hyperlocal_ddb.Table(this, 'sameDayDeliveryProviderOrders', {
-			tableName: namespaced(this, 'same-day-delivery-provider-orders'),
+			tableName: namespaced(this, 'sameday-delivery-provider-orders'),
 			partitionKey: {
 				name: 'ID',
 				type: ddb.AttributeType.STRING,
 			},
 		})
 
-		const sameDayDeliveryProviderOrdersStatusIndex = 'idx-same-day-delivery-provider-orders-status'
+		const sameDayDeliveryProviderOrdersStatusIndex = 'idx-sameday-delivery-provider-orders-status'
 		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
 			indexName: sameDayDeliveryProviderOrdersStatusIndex,
 			partitionKey: {
@@ -225,7 +218,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		const sameDayDeliveryProviderOrdersJobIdIndex = 'idx-same-day-delivery-provider-orders-job-id'
+		const sameDayDeliveryProviderOrdersJobIdIndex = 'idx-sameday-delivery-provider-orders-job-id'
 		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
 			indexName: sameDayDeliveryProviderOrdersJobIdIndex,
 			partitionKey: {
@@ -234,7 +227,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		const sameDayDeliveryProviderOrdersBatchIdIndex = 'idx-same-day-delivery-provider-orders-batch-id'
+		const sameDayDeliveryProviderOrdersBatchIdIndex = 'idx-sameday-delivery-provider-orders-batch-id'
 		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
 			indexName: sameDayDeliveryProviderOrdersBatchIdIndex,
 			partitionKey: {
@@ -243,7 +236,7 @@ export class DataStoragePersistent extends NestedStack {
 			},
 		})
 
-		const sameDayDeliveryProviderOrdersStatusPartitionIndex = 'idx-same-day-delivery-provider-orders-status-partition'
+		const sameDayDeliveryProviderOrdersStatusPartitionIndex = 'idx-sameday-delivery-provider-orders-status-partition'
 		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
 			indexName: sameDayDeliveryProviderOrdersStatusPartitionIndex,
 			partitionKey: {
@@ -259,7 +252,7 @@ export class DataStoragePersistent extends NestedStack {
 		this.sameDayDeliveryProviderOrders = sameDayDeliveryProviderOrders
 
 		this.sameDayDeliveryProviderLocks = new hyperlocal_ddb.Table(this, 'SameDayDeliveryProviderLocks', {
-			tableName: namespaced(this, 'same-day-delivery-provider-locks'),
+			tableName: namespaced(this, 'sameday-delivery-provider-locks'),
 			removalPolicy: props.removalPolicy,
 			partitionKey: {
 				name: 'ID',
@@ -364,6 +357,13 @@ export class DataStoragePersistent extends NestedStack {
 
 		new SameDayDirectPudoVehicleCapacitySeeder(this, 'SameDayDirectPudoVehicleCapacitySeeder', {
 			sameDayDirectPudoVehicleCapacity: sameDayDirectPudoVehicleCapacityTable,
+		})
+
+		new DatabaseSeeder(this, 'DatabaseSeeder', {
+			demographicAreaProviderEngineSettings: this.demographicAreaProviderEngineSettings,
+			demographicAreaDispatcherEngineSettings: this.demographicAreaDispatchSettings,
+			geoPolygonTable: this.geoPolygonTable,
+			country,
 		})
 	}
 }
