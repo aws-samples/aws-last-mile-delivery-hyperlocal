@@ -229,7 +229,7 @@
           "type": "WARN",
           "message": "AWS::ApiGateway::Deployment resources should be associated with an AWS::ApiGateway::UsagePlan. ",
           "logical_resource_ids": [
-            "SimulatorRestApiDeployment7165AE7Bc8bfa179c8f078024bdfb65d757d669e"
+            "SimulatorRestApiDeployment7165AE7Be09d81ee7b2dd284320adec20e708e3e"
           ],
           "line_numbers": [
             200
@@ -283,7 +283,7 @@
             "SimulatorManagerDestinationSimulatorLambdaDestinationGeneratorStepFunctionDestinationGeneratorHelperServiceRoleDefaultPolicy26A5D211",
             "SimulatorManagerDestinationSimulatorLambdaServiceRoleDefaultPolicyEC8238D5",
             "SimulatorManagerDestinationSimulatorLambdaDestinationStatusUpdateLambdaServiceRoleDefaultPolicy876D5AC8",
-            "UpdateLambdaConfigurationl2fs6vrhCustomResourcePolicyA934E126"
+            "UpdateLambdaConfigurationl2ss8axsCustomResourcePolicy5D7939FA"
           ],
           "line_numbers": [
             5,
@@ -673,7 +673,7 @@
           "type": "WARN",
           "message": "IAM role should not allow * resource on its permissions policy",
           "logical_resource_ids": [
-            "devprotoInternalUserPoolsmsRole32FADC23"
+            "hyperprotoInternalUserPoolsmsRole5B1A9ACC"
           ],
           "line_numbers": [
             4
@@ -732,13 +732,13 @@
             452,
             500,
             533,
-            807,
-            863,
-            966,
-            999,
-            1088,
-            1136,
-            1184
+            566,
+            622,
+            725,
+            758,
+            847,
+            895,
+            943
           ],
           "element_types": [
             "resource",
@@ -762,15 +762,15 @@
           "type": "WARN",
           "message": "IAM policy should not allow * resource",
           "logical_resource_ids": [
+            "SameDayDirectPudoVehicleCapacitySeederSeedDBSameDayDirectPudoVehicleCapacityCustomResourcePolicy427A1177",
             "DatabaseSeederSeedDBDemographicAreaProviderEngineSettingsCustomResourcePolicy07D102DC",
             "DatabaseSeederSeedDBdemographicAreaDispatcherEngineSettingsCustomResourcePolicy4A4DBC5E",
-            "DatabaseSeederSeedDBPolygonTableCoordsCustomResourcePolicy86F9826E",
-            "SameDayDirectPudoVehicleCapacitySeederSeedDBSameDayDirectPudoVehicleCapacityCustomResourcePolicy427A1177"
+            "DatabaseSeederSeedDBPolygonTableCoordsCustomResourcePolicy86F9826E"
           ],
           "line_numbers": [
-            566,
-            622,
-            678,
+            991,
+            1120,
+            1176,
             1232
           ],
           "element_types": [
@@ -789,7 +789,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            774
+            1087
           ],
           "element_types": [
             "resource"
@@ -804,7 +804,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            774
+            1087
           ],
           "element_types": [
             "resource"
@@ -819,7 +819,7 @@
             "AWS679f53fac002430cb0da5b7982bd22872D164C4C"
           ],
           "line_numbers": [
-            774
+            1087
           ],
           "element_types": [
             "resource"
@@ -852,13 +852,13 @@
             452,
             500,
             533,
-            807,
-            863,
-            966,
-            999,
-            1088,
-            1136,
-            1184
+            566,
+            622,
+            725,
+            758,
+            847,
+            895,
+            943
           ],
           "element_types": [
             "resource",
@@ -1027,7 +1027,7 @@
             "ExampleWebhookProviderRequestOrderFulfillmentLambdaServiceRoleDefaultPolicy5234EEC9",
             "ExampleWebhookProviderGetOrderStatusLambdaServiceRoleDefaultPolicyE5BADB9D",
             "ExampleWebhookProviderCancelOrderLambdaServiceRoleDefaultPolicy5FD707BE",
-            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcel2fs6rzfCustomResourcePolicyFFC6EAA9",
+            "ExampleWebhookProviderWebhookProviderLambdaConfigurationResourcel2ss874nCustomResourcePolicy0A6BA4C4",
             "InstantDeliveryProviderInternalCallbackLambdaServiceRoleDefaultPolicy5703DF3B",
             "InstantDeliveryProviderRequestOrderFulfillmentLambdaServiceRoleDefaultPolicy1E302C8A",
             "InstantDeliveryProviderGetOrderStatusLambdaServiceRoleDefaultPolicyB83AB6F6",
@@ -2015,9 +2015,9 @@
           "type": "WARN",
           "message": "EC2 Subnet should not have MapPublicIpOnLaunch set to true",
           "logical_resource_ids": [
-            "VpcPersistentVpcdevprotopublicSubnet1SubnetC72F26B2",
-            "VpcPersistentVpcdevprotopublicSubnet2Subnet81CE9099",
-            "VpcPersistentVpcdevprotopublicSubnet3Subnet509A8694"
+            "VpcPersistentVpchyperprotopublicSubnet1SubnetFA85D8C8",
+            "VpcPersistentVpchyperprotopublicSubnet2SubnetE58445CE",
+            "VpcPersistentVpchyperprotopublicSubnet3SubnetD6999EC0"
           ],
           "line_numbers": [
             29,
@@ -2189,7 +2189,7 @@
           "type": "WARN",
           "message": "AWS::Cognito::IdentityPool AllowUnauthenticatedIdentities property should be false but CAN be true if proper restrictive IAM roles and permissions are established for unauthenticated users.",
           "logical_resource_ids": [
-            "devprotoIdentityPool"
+            "hyperprotoIdentityPool"
           ],
           "line_numbers": [
             266
@@ -2204,7 +2204,7 @@
           "type": "WARN",
           "message": "IAM role should not allow * resource on its permissions policy",
           "logical_resource_ids": [
-            "devprotoUserPoolsmsRole3D49E401",
+            "hyperprotoUserPoolsmsRole614F432B",
             "AuthenticatedRole86104F1A"
           ],
           "line_numbers": [
@@ -2223,7 +2223,7 @@
           "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
           "logical_resource_ids": [
             "AuthenticatedRole86104F1A",
-            "devprotoUnauthenticatedRole29C9E543"
+            "hyperprotoUnauthenticatedRole73422B8B"
           ],
           "line_numbers": [
             311,
@@ -2828,7 +2828,7 @@
           "type": "WARN",
           "message": "Resource found with an explicit name, this disallows updates that require replacement of this resource",
           "logical_resource_ids": [
-            "GeoTrackingRestApidevprotoApiKeyGeoTrackingApiZ14orxO5BD65768"
+            "GeoTrackingRestApihyperprotoApiKeyGeoTrackingApiZ14orxO22A52444"
           ],
           "line_numbers": [
             2582
