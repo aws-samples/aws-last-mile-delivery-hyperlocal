@@ -65,7 +65,7 @@ export class DatabaseSeeder extends Construct {
 						{
 							fact: 'get-percentage',
 							operator: 'lessThanInclusive',
-							value: 20,
+							value: 10,
 							priority: 10,
 						},
 						{
@@ -79,7 +79,7 @@ export class DatabaseSeeder extends Construct {
 								{
 									fact: 'get-percentage',
 									operator: 'lessThanInclusive',
-									value: 30,
+									value: 15,
 									priority: 20,
 								},
 							],
@@ -109,13 +109,13 @@ export class DatabaseSeeder extends Construct {
 							{
 								fact: 'get-percentage',
 								operator: 'greaterThan',
-								value: 20,
+								value: 10,
 								priority: 10,
 							},
 							{
 								fact: 'get-percentage',
 								operator: 'lessThanInclusive',
-								value: 50,
+								value: 30,
 								priority: 10,
 							},
 						],
@@ -131,13 +131,13 @@ export class DatabaseSeeder extends Construct {
 							{
 								fact: 'get-percentage',
 								operator: 'greaterThan',
-								value: 30,
+								value: 15,
 								priority: 20,
 							},
 							{
 								fact: 'get-percentage',
 								operator: 'lessThanInclusive',
-								value: 55,
+								value: 35,
 								priority: 20,
 							},
 						],
@@ -150,7 +150,7 @@ export class DatabaseSeeder extends Construct {
 						provider: 'ExampleWebhookProvider',
 					},
 				},
-				priority: 20,
+				priority: 10,
 			},
 			{
 				name: 'InstantDeliveryProvider',
@@ -161,7 +161,59 @@ export class DatabaseSeeder extends Construct {
 								{
 									fact: 'get-percentage',
 									operator: 'greaterThan',
-									value: 50,
+									value: 30,
+									priority: 10,
+								},
+								{
+									fact: 'get-percentage',
+									operator: 'lessThanInclusive',
+									value: 65,
+									priority: 10,
+								},
+							],
+						},
+						{
+							all: [
+								{
+									fact: 'get-date',
+									operator: 'includes',
+									value: '12-25',
+									priority: 20,
+								},
+								{
+									fact: 'get-percentage',
+									operator: 'greaterThan',
+									value: 35,
+									priority: 20,
+								},
+								{
+									fact: 'get-percentage',
+									operator: 'lessThanInclusive',
+									value: 65,
+									priority: 20,
+								},
+							],
+						},
+					],
+				},
+				event: {
+					type: 'instant-delivery-provider-triggered',
+					params: {
+						provider: 'InstantDeliveryProvider',
+					},
+				},
+				priority: 20,
+			},
+			{
+				name: 'SameDayDeliveryProvider',
+				conditions: {
+					any: [
+						{
+							all: [
+								{
+									fact: 'get-percentage',
+									operator: 'greaterThanInclusive',
+									value: 65,
 									priority: 10,
 								},
 								{
@@ -183,8 +235,8 @@ export class DatabaseSeeder extends Construct {
 								{
 									fact: 'get-percentage',
 									operator: 'greaterThan',
-									value: 55,
-									priority: 10,
+									value: 65,
+									priority: 20,
 								},
 								{
 									fact: 'get-percentage',
@@ -197,9 +249,9 @@ export class DatabaseSeeder extends Construct {
 					],
 				},
 				event: {
-					type: 'instant-delivery-provider-triggered',
+					type: 'same-day-delivery-provider-triggered',
 					params: {
-						provider: 'InstantDeliveryProvider',
+						provider: 'SameDayDeliveryProvider',
 					},
 				},
 				priority: 20,

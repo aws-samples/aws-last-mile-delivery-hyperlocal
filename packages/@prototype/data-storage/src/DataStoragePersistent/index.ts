@@ -50,7 +50,21 @@ export class DataStoragePersistent extends NestedStack {
 
 	public readonly demographicAreaProviderEngineSettings: ddb.ITable
 
+	public readonly sameDayDeliveryProviderLocks: ddb.ITable
+
+	public readonly sameDayDeliveryProviderOrders: ddb.ITable
+
+	public readonly sameDayDeliveryProviderOrdersStatusIndex: string
+
+	public readonly sameDayDeliveryProviderOrdersStatusPartitionIndex: string
+
+	public readonly sameDayDeliveryProviderOrdersJobIdIndex: string
+
+	public readonly sameDayDeliveryProviderOrdersBatchIdIndex: string
+
 	public readonly sameDayDirectPudoDeliveryJobs: ddb.ITable
+
+	public readonly sameDayDirectPudoDeliveryJobsSolverJobIdIndexName: string
 
 	public readonly sameDayDirectPudoSolverJobs: ddb.ITable
 
@@ -190,6 +204,69 @@ export class DataStoragePersistent extends NestedStack {
 		})
 		this.ssmStringParameters[parameterStoreKeys.assignmentsTableName] = dispatcherAssignmentsTableNameParameter
 
+		const sameDayDeliveryProviderOrders = new hyperlocal_ddb.Table(this, 'sameDayDeliveryProviderOrders', {
+			tableName: namespaced(this, 'same-day-delivery-provider-orders'),
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
+		const sameDayDeliveryProviderOrdersStatusIndex = 'idx-same-day-delivery-provider-orders-status'
+		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: sameDayDeliveryProviderOrdersStatusIndex,
+			partitionKey: {
+				name: 'status',
+				type: ddb.AttributeType.STRING,
+			},
+			sortKey: {
+				name: 'updatedAt',
+				type: ddb.AttributeType.NUMBER,
+			},
+		})
+
+		const sameDayDeliveryProviderOrdersJobIdIndex = 'idx-same-day-delivery-provider-orders-job-id'
+		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: sameDayDeliveryProviderOrdersJobIdIndex,
+			partitionKey: {
+				name: 'jobId',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
+		const sameDayDeliveryProviderOrdersBatchIdIndex = 'idx-same-day-delivery-provider-orders-batch-id'
+		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: sameDayDeliveryProviderOrdersBatchIdIndex,
+			partitionKey: {
+				name: 'batchId',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
+		const sameDayDeliveryProviderOrdersStatusPartitionIndex = 'idx-same-day-delivery-provider-orders-status-partition'
+		sameDayDeliveryProviderOrders.addGlobalSecondaryIndex({
+			indexName: sameDayDeliveryProviderOrdersStatusPartitionIndex,
+			partitionKey: {
+				name: 'status',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
+		this.sameDayDeliveryProviderOrdersJobIdIndex = sameDayDeliveryProviderOrdersJobIdIndex
+		this.sameDayDeliveryProviderOrdersStatusIndex = sameDayDeliveryProviderOrdersStatusIndex
+		this.sameDayDeliveryProviderOrdersBatchIdIndex = sameDayDeliveryProviderOrdersBatchIdIndex
+		this.sameDayDeliveryProviderOrdersStatusPartitionIndex = sameDayDeliveryProviderOrdersStatusPartitionIndex
+		this.sameDayDeliveryProviderOrders = sameDayDeliveryProviderOrders
+
+		this.sameDayDeliveryProviderLocks = new hyperlocal_ddb.Table(this, 'SameDayDeliveryProviderLocks', {
+			tableName: namespaced(this, 'same-day-delivery-provider-locks'),
+			removalPolicy: props.removalPolicy,
+			partitionKey: {
+				name: 'ID',
+				type: ddb.AttributeType.STRING,
+			},
+		})
+
 		// ---------------- same day delivery related resources -------------------------------------------------------
 		// ------------------------------------------------------------------------------------------------------------
 		const sameDayDirectPudoDeliveryJobsTableName = namespaced(this, 'sameday-directpudo-delivery-jobs')
@@ -218,6 +295,7 @@ export class DataStoragePersistent extends NestedStack {
 			stringValue: sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
 			description: 'sameDayDirectPudo DeliveryJobs solverJobId index parameter for dispatcher',
 		})
+		this.sameDayDirectPudoDeliveryJobsSolverJobIdIndexName = sameDayDirectPudoDeliveryJobsSolverJobIdIndexName
 		this.ssmStringParameters[parameterStoreKeys.sameDayDirectPudoDeliveryJobsSolverJobIdIndex] =
 			sameDayDirectPudoDeliveryJobsSolverJobIdIndexParameter
 
