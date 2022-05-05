@@ -76,6 +76,11 @@ export class CustomResourcesStack extends NestedStack {
 				keyId: providerNestedStack.instantDeliveryWebhookProvider.apiKey.keyId,
 				secret: providersConfig.InstantDeliveryProvider.apiKeySecretName,
 			},
+			{
+				keyArn: providerNestedStack.sameDayDeliveryWebhookProvider.apiKey.keyArn,
+				keyId: providerNestedStack.sameDayDeliveryWebhookProvider.apiKey.keyId,
+				secret: providersConfig.SameDayDeliveryProvider.apiKeySecretName,
+			},
 		]
 
 		if (additionalApiConfig !== undefined) {

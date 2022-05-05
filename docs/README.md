@@ -21,6 +21,7 @@
 * [dispatch-setup](../packages/@prototype/dispatch-setup/README.md)
 * [external-provider-mock](../packages/@prototype/external-provider-mock/README.md)
 * [instant-delivery-provider](../packages/@prototype/instant-delivery-provider/README.md)
+* [same-day-delivery-provider](../packages/@prototype/same-day-delivery-provider/README.md)
 * [lambda-functions](../packages/@prototype/lambda-functions/README.md)
 * [iot-ingestion](../packages/@prototype/iot-iot-ingestion/README.md)
 * [lambda-common](../packages/@prototype/lambda-common/README.md)

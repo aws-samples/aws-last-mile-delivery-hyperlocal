@@ -29,8 +29,6 @@ import { CustomResourcesStack } from '../../nested/CustomResourcesStack'
 import { IoTStack } from '@prototype/iot-ingestion'
 import { ExternalProviderType } from '../ExternalProviderStack'
 import { DispatcherStack } from '../../nested/DispatcherStack'
-import { sync as findUp } from 'find-up'
-import * as path from 'path'
 
 export interface BackendStackProps extends StackProps {
 	readonly namespace: string
@@ -46,6 +44,7 @@ export interface BackendStackProps extends StackProps {
 		MockWebhookProvider: ExternalProviderType
 	}
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
+	readonly sameDayDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
 	readonly geoTrackingApiKeySecretName: string
 	readonly graphhopperSettings: Record<string, string | number>
@@ -91,6 +90,12 @@ export class BackendStack extends Stack {
 					instantDeliveryProviderOrders,
 					instantDeliveryProviderOrdersStatusIndex,
 					instantDeliveryProviderOrdersJobIdIndex,
+					sameDayDeliveryProviderLocks,
+					sameDayDeliveryProviderOrders,
+					sameDayDeliveryProviderOrdersStatusIndex,
+					sameDayDeliveryProviderOrdersJobIdIndex,
+					sameDayDeliveryProviderOrdersBatchIdIndex,
+					sameDayDeliveryProviderOrdersStatusPartitionIndex,
 					sameDayDirectPudoDeliveryJobs,
 					sameDayDirectPudoSolverJobs,
 					sameDayDirectPudoHubs,
@@ -109,6 +114,7 @@ export class BackendStack extends Stack {
 			pollingProviderSettings,
 			webhookProviderSettings,
 			instantDeliveryProviderSettings,
+			sameDayDeliveryProviderSettings,
 			providersConfig,
 			externalProviderConfig,
 			env,
@@ -209,10 +215,21 @@ export class BackendStack extends Stack {
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderLocks,
 			dispatchEngineLB: dispatcherStack.dispatcherLB,
+			sameDayDeliveryDispatcherLB: dispatcherStack.sameDayDeliveryDispatcherLB,
 			providersConfig,
 			backendEcsCluster,
 			graphhopperSettings,
 			iotEndpointAddress,
+			sameDayDeliveryProviderLocks,
+			sameDayDeliveryProviderOrders,
+			sameDayDeliveryProviderOrdersStatusIndex,
+			sameDayDeliveryProviderSettings,
+			sameDayDeliveryProviderOrdersJobIdIndex,
+			sameDayDeliveryProviderOrdersBatchIdIndex,
+			sameDayDeliveryProviderOrdersStatusPartitionIndex,
+			sameDayDirectPudoDeliveryJobs,
+			geoTrackingRestApi: microServiceNestedStack.geoTrackingRestApi,
+			geoTrackingApiKeySecretName,
 		})
 
 		const orderOrchestrationStack = new OrderOrchestrationStack(this, 'OrderOrchestrationStack', {
@@ -227,6 +244,7 @@ export class BackendStack extends Stack {
 			orderManagerSettings,
 			providerApiUrls: {
 				InstantDeliveryProvider: providerNestedStack.instantDeliveryWebhookProvider.apiGwInstance,
+				SameDayDeliveryProvider: providerNestedStack.sameDayDeliveryWebhookProvider.apiGwInstance,
 				ExampleWebhookProvider: providerNestedStack.exampleWebhookProvider.apiGwInstance,
 				ExamplePollingProvider: providerNestedStack.examplePollingProvider.apiGwInstance,
 			},
