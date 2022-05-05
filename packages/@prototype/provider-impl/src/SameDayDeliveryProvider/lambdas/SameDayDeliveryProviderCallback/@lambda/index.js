@@ -14,7 +14,52 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+/* eslint-disable no-console */
+const aws = require('aws-sdk')
+const { success, fail } = require('/opt/lambda-utils')
+
+const eventBridge = new aws.EventBridge()
+
+const handler = async (event, context) => {
+	if (event.body === undefined) {
+		console.error(` :: WebhookProvider-ExampleCallback :: POST :: 'body' not found in event object: ${JSON.stringify(event)}`)
+
+		return fail({ error: 'Unrecognized message format' })
+	}
+
+	// check body
+	let { body } = event
+
+	if (typeof body === 'string' || body instanceof String) {
+		body = JSON.parse(body)
+	}
+
+	if (!recordValid(body)) {
+		console.error(`Record not valid. Skipping. Data received: ${JSON.stringify(body)}`)
+
+		return fail({ error: 'Message format invalid' })
+	}
+
+	try {
+		await eventBridge.putEvents({
+			Entries: [{
+				EventBusName: process.env.EVENT_BUS,
+				Source: process.env.SERVICE_NAME,
+				DetailType: 'ORDER_UPDATE',
+				Detail: JSON.stringify(body),
+			}],
+		}).promise()
+
+		console.debug(`WEBHOOK_ORDER_UPDATE :: ${JSON.stringify(body)} :: Successfully sent to Event Bridge`)
+
+		return success()
+	} catch (err) {
+		console.error(`Error sending message to Event Bridge :: ${JSON.stringify(body)}`)
+		console.error(err)
+	}
+}
+
+const recordValid = (record) => {
+	return !!record.orderId && !!record.status
+}
+exports.handler = handler

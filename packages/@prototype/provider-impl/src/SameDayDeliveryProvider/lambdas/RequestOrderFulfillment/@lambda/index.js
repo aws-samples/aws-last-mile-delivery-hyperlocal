@@ -14,7 +14,71 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+/* eslint-disable no-console */
+const aws = require('aws-sdk')
+const ddb = require('./lib/dynamoDB')
+const { success, fail } = require('/opt/lambda-utils')
+
+const eventBridge = new aws.EventBridge()
+
+const handler = async (event, context) => {
+	if (event.body === undefined) {
+		console.error(`:: POST :: 'body' not found in event object: ${JSON.stringify(event)}`)
+
+		return fail({ error: 'Unrecognized message format' })
+	}
+
+	// check body
+	let { body } = event
+
+	if (typeof body === 'string' || body instanceof String) {
+		body = JSON.parse(body)
+	}
+
+	if (!recordValid(body)) {
+		console.error(`Record not valid. Skipping. Data received: ${JSON.stringify(body)}`)
+
+		return fail({ error: 'Message format invalid' })
+	}
+
+	try {
+		const { orderId, ...others } = body
+
+		const exists = await ddb.get(process.env.PROVIDER_ORDERS_TABLE, orderId)
+
+		if (exists.Item) {
+			return fail({ error: `The record with ID ${orderId} was already sent to the provider` })
+		}
+
+		await ddb.putItem(process.env.PROVIDER_ORDERS_TABLE, {
+			ID: orderId,
+			status: 'UNASSIGNED',
+			...others,
+		})
+
+		const payload = JSON.stringify(body)
+
+		await eventBridge.putEvents({
+			Entries: [{
+				EventBusName: process.env.EVENT_BUS,
+				Source: process.env.SERVICE_NAME,
+				DetailType: 'ORDER_FULFILLMENT_REQUESTED',
+				Detail: payload,
+			}],
+		}).promise()
+
+		console.debug(`ORDER_FULFILLMENT_REQUESTED :: ${body} :: Successfully sent to Event Bridge and to KDS`)
+
+		return success()
+	} catch (err) {
+		console.error(`Error sending message to Event Bridge or KDS :: ${body}`)
+		console.error(err)
+	}
+}
+
+const recordValid = (record) => {
+	return !!record.orderId &&
+		!!record.destination &&
+		!!record.origin
+}
+exports.handler = handler

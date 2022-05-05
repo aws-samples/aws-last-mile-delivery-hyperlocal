@@ -14,7 +14,35 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+/* eslint-disable no-console */
+const aws = require('aws-sdk')
+const { success, fail } = require('/opt/lambda-utils')
+
+const ddb = new aws.DynamoDB.DocumentClient()
+
+const handler = async (event, context) => {
+	const orderId = event.pathParameters.orderId
+
+	try {
+		const stat = await ddb.get({
+			TableName: process.env.PROVIDER_ORDERS_TABLE,
+			Key: {
+				ID: orderId,
+			},
+		}).promise()
+
+		if (stat.Item) {
+			const { status } = stat.Item
+
+			return success({ status, orderId })
+		} else {
+			return fail({ message: `Unable to find order with ID ${orderId}` }, 404)
+		}
+	} catch (err) {
+		console.error(`Error :: ${JSON.stringify(err)}`)
+
+		return fail({ error: err })
+	}
+}
+
+exports.handler = handler

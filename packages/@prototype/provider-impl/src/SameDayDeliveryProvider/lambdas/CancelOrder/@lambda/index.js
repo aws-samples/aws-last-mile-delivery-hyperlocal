@@ -14,7 +14,53 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+/* eslint-disable no-console */
+const aws = require('aws-sdk')
+const ddb = require('./lib/dynamoDB')
+const { success, fail } = require('/opt/lambda-utils')
+
+const eventBridge = new aws.EventBridge()
+const allowedStatus = ['UNASSIGNED', 'REJECTED']
+
+const handler = async (event, context) => {
+	const orderId = event.pathParameters.orderId
+
+	try {
+		const order = await ddb.get(process.env.PROVIDER_ORDERS_TABLE, orderId)
+
+		if (!order.Item) {
+			return fail({ message: `Cannot find order with ID ${orderId}` }, 404)
+		}
+
+		const { status } = order.Item
+
+		if (!allowedStatus.includes(status)) {
+			return fail({ message: 'Order cannot be cancelled as already in process' })
+		}
+
+		await ddb.updateItem(process.env.PROVIDER_ORDERS_TABLE, orderId, {
+			status: 'CANCELLED',
+		})
+
+		// push event to event bridge
+		await eventBridge.putEvents({
+			Entries: [{
+				EventBusName: process.env.EVENT_BUS,
+				Source: process.env.SERVICE_NAME,
+				DetailType: 'ORDER_CANCELLED',
+				Detail: JSON.stringify({ orderId }),
+			}],
+		}).promise()
+
+		console.debug(`${orderId} :: Successfully sent to Event Bridge`)
+
+		return success()
+	} catch (err) {
+		console.error(`Error sending ORDER_CANCELLED message to Event Bridge :: ${orderId} :: ${JSON.stringify(err)}`)
+	}
+}
+
+const recordValid = (record) => {
+	return record.ID
+}
+exports.handler = handler

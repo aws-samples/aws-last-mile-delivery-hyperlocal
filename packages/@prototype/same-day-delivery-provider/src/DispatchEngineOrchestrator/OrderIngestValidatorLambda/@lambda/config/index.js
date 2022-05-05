@@ -14,7 +14,14 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+module.exports = {
+	dispatchEngineOrchestratorManagerArn: process.env.DISPATCH_ENGINE_MANAGER_ARN,
+	sameDayDeliveryProviderOrders: process.env.SAME_DAY_DELIVERY_PROVIDER_ORDERS_TABLE_NAME,
+	sameDayDeliveryProviderOrdersStatusPartitionIndex:
+		process.env.SAME_DAY_DELIVERY_PROVIDER_ORDERS_STATUS_PARTITION_INDEX,
+	sameDayDeliveryProviderApiSecretName: process.env.SAME_DAY_DELIVERY_PROVIDER_SECRET_NAME,
+	sameDayDeliveryProviderApiUrl: process.env.SAME_DAY_DELIVERY_CALLBACK_API_URL,
+	orderTimeoutInMinutes: Number(process.env.ORDER_TIMEOUT_MINUTES) || 120,
+	orderIngestMaxBatchingWindowMinutes: Number(process.env.MAX_BATCHING_WINDOW_MINUTES) || 30,
+	orderIngestMaxBatchingSize: Number(process.env.MAX_BATCHING_SIZE) || 250,
+}

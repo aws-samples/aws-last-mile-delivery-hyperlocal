@@ -14,7 +14,22 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const logger = require('./src/utils/logger')
+const commands = require('./src/commands')
+
+const handler = async (event, context) => {
+	logger.debug('Incoming Event: ')
+	logger.debug(JSON.stringify(event, null, 2))
+
+	const { cmd, payload } = event
+
+	if (!commands[cmd]) {
+		logger.warn(`Cannot find command for action ${cmd}, skipping`)
+
+		throw new Error(`Cannot find command for action ${cmd}, skipping`)
+	}
+
+	return commands[cmd](payload)
+}
+
+exports.handler = handler

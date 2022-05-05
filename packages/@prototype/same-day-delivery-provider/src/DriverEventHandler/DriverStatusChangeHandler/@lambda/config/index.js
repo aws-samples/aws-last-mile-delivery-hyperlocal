@@ -14,7 +14,13 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+module.exports = {
+	iotEndpoint: process.env.IOT_ENDPOINT,
+	sameDayDeliveryProviderOrders: process.env.PROVIDER_ORDERS_TABLE,
+	sameDayDeliveryProviderOrdersJobIdIndex: process.env.PROVIDER_ORDERS_JOBID_INDEX,
+	eventBusName: process.env.EVENT_BUS,
+	serviceName: process.env.SERVICE_NAME,
+	sameDayDeliveryProviderApiSecretName: process.env.SAME_DAY_DELIVERY_PROVIDER_SECRET_NAME,
+	sameDayDeliveryProviderApiUrl: process.env.SAME_DAY_DELIVERY_CALLBACK_API_URL,
+	sameDayDeliveryProviderLocksTable: process.env.PROVIDER_LOCKS_TABLE,
+}

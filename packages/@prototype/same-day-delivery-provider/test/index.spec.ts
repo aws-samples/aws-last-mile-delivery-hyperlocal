@@ -14,7 +14,10 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+import { DispatchEngineOrchestrator } from '../src'
+
+describe('@prototype/same-day-delivery-provider', () => {
+	test('module exists', () => {
+		expect(DispatchEngineOrchestrator).toBeDefined()
+	})
+})

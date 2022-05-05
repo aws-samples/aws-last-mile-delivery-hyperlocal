@@ -14,7 +14,32 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const aws = require('aws-sdk')
+
+const ddb = new aws.DynamoDB.DocumentClient()
+
+const get = (tableName, id, keyName = 'ID') => {
+	return ddb
+	.get({
+		ConsistentRead: true,
+		TableName: tableName,
+		Key: {
+			[keyName]: id,
+		},
+	})
+	.promise()
+}
+
+const putItem = (tableName, item) => {
+	return ddb
+	.put({
+		TableName: tableName,
+		Item: { ...item, createdAt: Date.now() },
+	})
+	.promise()
+}
+
+module.exports = {
+	putItem,
+	get,
+}

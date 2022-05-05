@@ -14,7 +14,33 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './ExamplePollingProvider'
-export * from './ExampleWebhookProvider'
-export * from './InstantDeliveryProvider'
-export * from './SameDayDeliveryProvider'
+const axios = require('axios').default
+const secrets = require('../lib/secretsManager')
+const config = require('../config')
+
+let apiKey
+const queryDrivers = async (lat, long, radius, distanceUnit = 'm', status = 'IDLE', maxResults = 25) => {
+	if (!apiKey) {
+		apiKey = await secrets.getSecretValue(config.geoTrackingSecretName)
+	}
+
+	const result = await axios.get(`${config.geotrackingUrl}/api/geotracking/internal/driver-location/query`, {
+		params: {
+			lat,
+			long,
+			distanceUnit,
+			status: status,
+			distance: radius,
+			count: maxResults,
+		},
+		headers: {
+			'x-api-key': apiKey,
+		},
+	})
+
+	return result.data
+}
+
+module.exports = {
+	queryDrivers,
+}
