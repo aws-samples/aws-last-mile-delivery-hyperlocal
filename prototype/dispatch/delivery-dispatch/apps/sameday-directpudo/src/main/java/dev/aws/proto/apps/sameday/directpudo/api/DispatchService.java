@@ -18,7 +18,6 @@
 package dev.aws.proto.apps.sameday.directpudo.api;
 
 import com.uber.h3core.H3Core;
-import dev.aws.proto.apps.appcore.config.DistanceCachingConfig;
 import dev.aws.proto.apps.appcore.config.SolutionConfig;
 import dev.aws.proto.apps.appcore.planner.solution.SolutionState;
 import dev.aws.proto.apps.sameday.directpudo.Order;
@@ -26,6 +25,7 @@ import dev.aws.proto.apps.sameday.directpudo.api.request.DispatchRequest;
 import dev.aws.proto.apps.sameday.directpudo.api.response.DeliveryJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJob;
 import dev.aws.proto.apps.sameday.directpudo.api.response.SolverJobWithDeliveryJobs;
+import dev.aws.proto.apps.sameday.directpudo.config.DistanceCachingConfig;
 import dev.aws.proto.apps.sameday.directpudo.data.*;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.DeliveryRide;
 import dev.aws.proto.apps.sameday.directpudo.domain.planning.PlanningHub;
@@ -99,7 +99,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         this.graphhopperRouter = new GraphhopperRouter(routingConfig.graphHopper(), routingConfig.routingProfile());
 
         // instantiate distance cache
-        ICachePersistence distanceMatrixPersistence = distanceCachingConfig.getCachePersistence();
+        ICachePersistence<H3DistanceCache> distanceMatrixPersistence = distanceCachingConfig.getCachePersistence();
         this.h3DistanceCache = distanceMatrixPersistence.importCache();
 
         // create the solver config and the solver manager

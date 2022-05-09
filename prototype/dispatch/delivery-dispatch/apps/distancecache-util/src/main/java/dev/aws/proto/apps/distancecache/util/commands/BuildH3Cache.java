@@ -23,7 +23,7 @@ import com.mapbox.geojson.Polygon;
 import com.uber.h3core.util.GeoCoord;
 import dev.aws.proto.core.routing.H3;
 import dev.aws.proto.core.routing.cache.H3DistanceCache;
-import dev.aws.proto.core.routing.cache.persistence.FilePersistence;
+import dev.aws.proto.core.routing.cache.persistence.h3.FilePersistence;
 import dev.aws.proto.core.routing.route.GraphhopperLoader;
 import dev.aws.proto.core.routing.route.GraphhopperRouter;
 import org.slf4j.Logger;
@@ -36,9 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "export", description = "Generate H3DistanceCache and export")
-public class ExportCache implements Callable<Integer> {
-    private static final Logger logger = LoggerFactory.getLogger(ExportCache.class);
+@CommandLine.Command(name = "build-h3", description = "Build H3DistanceCache and export")
+public class BuildH3Cache implements Callable<Integer> {
+    private static final Logger logger = LoggerFactory.getLogger(BuildH3Cache.class);
 
     @CommandLine.Parameters(index = "0", description = "The GeoJSON file input")
     private File geoJsonFile;
@@ -122,7 +122,7 @@ public class ExportCache implements Callable<Integer> {
         logger.info("H3DistanceCache generated successfully.");
 
         FilePersistence filePersistence = new FilePersistence(outputFilename);
-        filePersistence.exportCache(distanceCache);
+        filePersistence.buildCache(distanceCache);
 
         return 0;
     }

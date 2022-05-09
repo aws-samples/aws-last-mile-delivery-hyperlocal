@@ -35,6 +35,7 @@ import java.util.stream.IntStream;
 public class DistanceMatrix implements IDistanceMatrix<Distance> {
     private static final Logger logger = LoggerFactory.getLogger(DistanceMatrix.class);
 
+    @Getter
     private final Map<ILocation, Map<ILocation, Distance>> matrix;
     @Getter
     private final long generatedTime;
@@ -63,6 +64,10 @@ public class DistanceMatrix implements IDistanceMatrix<Distance> {
         Map<ILocation, Distance> distanceRow = this.matrix.get(origin);
 
         return distanceRow.get(destination);
+    }
+
+    public static DistanceMatrix fromMatrix(Map<ILocation, Map<ILocation, Distance>> matrix) {
+        return new DistanceMatrix(matrix, 0);
     }
 
     public static DistanceMatrix generate(List<ILocation> locationList, GraphhopperRouter router) {
