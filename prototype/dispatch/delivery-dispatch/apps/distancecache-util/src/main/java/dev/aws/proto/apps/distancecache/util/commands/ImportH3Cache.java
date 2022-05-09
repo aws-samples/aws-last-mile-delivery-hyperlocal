@@ -18,7 +18,7 @@
 package dev.aws.proto.apps.distancecache.util.commands;
 
 import dev.aws.proto.core.routing.cache.H3DistanceCache;
-import dev.aws.proto.core.routing.cache.persistence.FilePersistence;
+import dev.aws.proto.core.routing.cache.persistence.h3.FilePersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -26,13 +26,13 @@ import picocli.CommandLine;
 import java.io.File;
 import java.util.concurrent.Callable;
 
-@CommandLine.Command(name = "import", header = "Import h3 cache file")
-public class ImportCache implements Callable<Integer> {
-    private static final Logger logger = LoggerFactory.getLogger(ImportCache.class);
+@CommandLine.Command(name = "import-h3", header = "Import h3 cache file")
+public class ImportH3Cache implements Callable<Integer> {
+    private static final Logger logger = LoggerFactory.getLogger(ImportH3Cache.class);
 
     @CommandLine.Parameters(index = "0", description = "The cache file")
     private File cacheFile;
-    
+
     @Override
     public Integer call() throws Exception {
         logger.info("Importing cache file from {}", cacheFile.toPath().toString());

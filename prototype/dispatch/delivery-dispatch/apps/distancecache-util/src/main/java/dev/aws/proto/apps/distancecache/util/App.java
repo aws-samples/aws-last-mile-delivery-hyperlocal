@@ -17,8 +17,10 @@
 
 package dev.aws.proto.apps.distancecache.util;
 
-import dev.aws.proto.apps.distancecache.util.commands.ExportCache;
-import dev.aws.proto.apps.distancecache.util.commands.ImportCache;
+import dev.aws.proto.apps.distancecache.util.commands.BuildH3Cache;
+import dev.aws.proto.apps.distancecache.util.commands.BuildLatLongCache;
+import dev.aws.proto.apps.distancecache.util.commands.ImportH3Cache;
+import dev.aws.proto.apps.distancecache.util.commands.ImportLatLongCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -29,12 +31,15 @@ import java.util.concurrent.Callable;
 @Command(
         name = "distance-cache-util", mixinStandardHelpOptions = true,
         version = "1.0",
-        description = "Utility to import and export distance cache for H3 and graphhopper",
+        description = "Utility to import and export distance cache for H3 and lat/long distance matrices",
         commandListHeading = "%nCommands:%n%nThe most commonly used git commands are:%n",
         footer = "%nSee 'distance-cache-util help <command>' to read about a specific subcommand or concept.",
         subcommands = {
-                ImportCache.class,
-                ExportCache.class
+                ImportH3Cache.class,
+                BuildH3Cache.class,
+
+                BuildLatLongCache.class,
+                ImportLatLongCache.class,
         }
 )
 public class App implements Callable<Integer> {

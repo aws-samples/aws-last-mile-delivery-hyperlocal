@@ -15,9 +15,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.core.routing.cache.persistence;
+package dev.aws.proto.core.routing.cache.persistence.h3;
 
 import dev.aws.proto.core.routing.cache.H3DistanceCache;
+import dev.aws.proto.core.routing.cache.persistence.CachePersistenceException;
+import dev.aws.proto.core.routing.cache.persistence.ICachePersistence;
 import dev.aws.proto.core.util.aws.S3Utility;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ import java.nio.file.Paths;
  * - Exports the cache object to a temporary file and uploads to S3;
  * - Downloads the cache file from S3 and loads it into memory.
  */
-public class S3FilePersistence implements ICachePersistence {
+public class S3FilePersistence implements ICachePersistence<H3DistanceCache> {
     /**
      * The {@link FilePersistence} object to load/write temporary file.
      */
@@ -64,8 +66,8 @@ public class S3FilePersistence implements ICachePersistence {
      * @param h3DistanceCache The cache object.
      */
     @Override
-    public void exportCache(H3DistanceCache h3DistanceCache) {
-        this.filePersistence.exportCache(h3DistanceCache);
+    public void buildCache(H3DistanceCache h3DistanceCache) {
+        this.filePersistence.buildCache(h3DistanceCache);
         S3Utility.uploadFile(this.bucketName, this.cacheFileKeyPath, Paths.get(this.filePersistence.getCacheFilePath()));
     }
 

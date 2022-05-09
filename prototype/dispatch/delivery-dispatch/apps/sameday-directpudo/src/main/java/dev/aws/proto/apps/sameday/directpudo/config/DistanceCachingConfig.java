@@ -15,11 +15,13 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.apps.appcore.config;
+package dev.aws.proto.apps.sameday.directpudo.config;
 
-import dev.aws.proto.core.routing.cache.persistence.FilePersistence;
+import dev.aws.proto.apps.appcore.config.DistanceCachingProperties;
+import dev.aws.proto.core.routing.cache.H3DistanceCache;
 import dev.aws.proto.core.routing.cache.persistence.ICachePersistence;
-import dev.aws.proto.core.routing.cache.persistence.S3FilePersistence;
+import dev.aws.proto.core.routing.cache.persistence.h3.FilePersistence;
+import dev.aws.proto.core.routing.cache.persistence.h3.S3FilePersistence;
 import dev.aws.proto.core.util.PathHelper;
 import lombok.Getter;
 
@@ -31,7 +33,7 @@ import javax.ws.rs.NotSupportedException;
 public class DistanceCachingConfig {
 
     @Getter
-    private final ICachePersistence cachePersistence;
+    private final ICachePersistence<H3DistanceCache> cachePersistence;
 
     @Inject
     DistanceCachingProperties distanceCachingProperties;

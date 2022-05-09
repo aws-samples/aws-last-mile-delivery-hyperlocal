@@ -92,7 +92,7 @@ public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceM
         return new H3DistanceMatrix<>(h3DistanceCache, distances, locIdxLookup);
     }
 
-    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(ICachePersistence persistence, List<TLocation> locationList) {
+    public static <TLocation extends ILocation> H3DistanceMatrix<TLocation> generate(ICachePersistence<H3DistanceCache> persistence, List<TLocation> locationList) {
         long start = System.currentTimeMillis();
         H3DistanceCache h3DistanceCache = persistence.importCache();
         long importTime = System.currentTimeMillis() - start;

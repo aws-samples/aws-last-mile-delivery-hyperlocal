@@ -17,10 +17,8 @@
 
 package dev.aws.proto.core.routing.cache.persistence;
 
-import dev.aws.proto.core.routing.cache.H3DistanceCache;
+public interface ICachePersistence<TDistanceCache> {
+    void buildCache(TDistanceCache distanceCache);
 
-public interface ICachePersistence {
-    void exportCache(H3DistanceCache h3DistanceCache);
-
-    H3DistanceCache importCache();
+    TDistanceCache importCache();
 }

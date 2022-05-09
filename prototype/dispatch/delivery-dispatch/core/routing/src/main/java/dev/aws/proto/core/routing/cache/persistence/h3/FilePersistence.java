@@ -15,9 +15,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package dev.aws.proto.core.routing.cache.persistence;
+package dev.aws.proto.core.routing.cache.persistence.h3;
 
 import dev.aws.proto.core.routing.cache.H3DistanceCache;
+import dev.aws.proto.core.routing.cache.persistence.CachePersistenceException;
+import dev.aws.proto.core.routing.cache.persistence.ICachePersistence;
 import dev.aws.proto.core.routing.distance.TravelDistance;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -36,7 +38,7 @@ import java.io.*;
  * [Dim x 8] -- Hexagons
  * [Dim * Dim x [8 (meters, long) + 8 (seconds, long) +4 (h3Distance, int) ] ] -- TravelDistances
  */
-public class FilePersistence implements ICachePersistence {
+public class FilePersistence implements ICachePersistence<H3DistanceCache> {
     private static final Logger logger = LoggerFactory.getLogger(FilePersistence.class);
 
     @Getter
@@ -52,7 +54,7 @@ public class FilePersistence implements ICachePersistence {
      * @param h3DistanceCache The cache object.
      */
     @Override
-    public void exportCache(H3DistanceCache h3DistanceCache) {
+    public void buildCache(H3DistanceCache h3DistanceCache) {
         logger.info("Exporting H3DistanceCache (dim = {})", h3DistanceCache.getH3Hexagons().length);
 
         try (FileOutputStream fos = new FileOutputStream(this.cacheFilePath)) {
