@@ -32,10 +32,11 @@
 
         1. Instant delivery
         1.1 Sequential - orders (pickup-dropoff) assigned to drivers sequentially
-        1.2 Mixed Pickup-Dropoff - PU and DO visits assigned to drivers in a mixed fashion
+        1.2 [NOTIMPLEMENTEDYET] Mixed Pickup-Dropoff - PU and DO visits assigned to drivers in a mixed fashion
         2. Same day delivery
         2.1 Direct Pickup-Dropoff - Time-windowed Vehicle Routing Problem with constraints
-        2.2 With warehouse concept - Time-windowed Vehicle Routing Problem with additional warehouses
+        2.2 [NOTIMPLEMENTEDYET] With warehouse concept - Time-windowed Vehicle Routing Problem with additional
+        warehouses
         3. TBA
     </description>
     <url>https://github.com/aws-samples/aws-last-mile-delivery-hyperlocal</url>
