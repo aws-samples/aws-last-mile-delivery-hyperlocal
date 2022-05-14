@@ -79,14 +79,22 @@ export class SimulatorMainStack extends Stack {
 					identityPool,
 				},
 				dataStoragePersistent: {
-					geoPolygonTable,
-					orderTable,
-					dispatcherAssignmentsTable,
-					instantDeliveryProviderOrders,
-					sameDayDirectPudoDeliveryJobs,
-					sameDayDirectPudoSolverJobs,
-					sameDayDirectPudoHubs,
-					sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
+					rootDataStorage: {
+						orderTable,
+					},
+					locationServiceDataStorage: {
+						geoPolygonTable,
+					},
+					instantDeliveryDataStorage: {
+						dispatcherAssignmentsTable,
+						instantDeliveryProviderOrders,
+					},
+					sameDayDeliveryDataStorage: {
+						sameDayDirectPudoDeliveryJobs,
+						sameDayDirectPudoSolverJobs,
+						sameDayDirectPudoHubs,
+						sameDayDirectPudoDeliveryJobsSolverJobIdIndexName,
+					},
 				},
 				backendBaseNestedStack: {
 					vpcNetworking,
