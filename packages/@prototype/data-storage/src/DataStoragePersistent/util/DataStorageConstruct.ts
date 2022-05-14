@@ -14,54 +14,36 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_ssm as ssm } from 'aws-cdk-lib'
-import { RootDataStorage } from './RootDataStorage'
-import { InstantDeliveryDataStorage } from './InstantDeliveryDataStorage'
-import { LocationServiceDataStorage } from './LocationServiceDataStorage'
-import { SameDayDeliveryDataStorage } from './SamedayDeliveryDataStorage'
-import { DataStorageProps } from './util/DataStorageConstruct'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DataStoragePersistentProps extends NestedStackProps {
+import { Construct } from 'constructs'
+import { aws_ssm as ssm, RemovalPolicy } from 'aws-cdk-lib'
+
+export interface DataStorageProps {
 	readonly parameterStoreKeys: Record<string, string>
+	readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 	readonly country: string
+    readonly removalPolicy?: RemovalPolicy
 }
 
-export class DataStoragePersistent extends NestedStack {
-	public readonly ssmStringParameters: Record<string, ssm.IStringParameter>
+export abstract class DataStorage<TProps extends DataStorageProps> extends Construct {
+	private readonly ssmStringParameters: Record<string, ssm.IStringParameter>
 
-	public readonly rootDataStorage: RootDataStorage
+	protected readonly country: string
 
-	public readonly locationServiceDataStorage: LocationServiceDataStorage
+	constructor (scope: Construct, id: string, props: TProps) {
+		super(scope, id)
 
-	public readonly instantDeliveryDataStorage: InstantDeliveryDataStorage
-
-	public readonly sameDayDeliveryDataStorage: SameDayDeliveryDataStorage
-
-	constructor (scope: Construct, id: string, props: DataStoragePersistentProps) {
-		super(scope, id, props)
-
-		const { country, parameterStoreKeys } = props
-
-		this.ssmStringParameters = {}
-
-		const dataStorageProps: DataStorageProps = {
-			parameterStoreKeys,
-			country,
-			ssmStringParameters: this.ssmStringParameters,
-			removalPolicy: props.removalPolicy,
-		}
-
-		this.rootDataStorage = new RootDataStorage(this, 'RootDataStorage', dataStorageProps)
-		this.locationServiceDataStorage = new LocationServiceDataStorage(this, 'LocationServiceDataStorage', dataStorageProps)
-		this.instantDeliveryDataStorage = new InstantDeliveryDataStorage(this, 'InstantDeliveryDataStorage', dataStorageProps)
-		this.sameDayDeliveryDataStorage = new SameDayDeliveryDataStorage(this, 'SameDayDeliveryDataStorage', dataStorageProps)
-
-		// seed DB if necessary
-		this.rootDataStorage.runDbSeed()
-		this.locationServiceDataStorage.runDbSeed()
-		this.instantDeliveryDataStorage.runDbSeed()
-		this.sameDayDeliveryDataStorage.runDbSeed()
+		this.ssmStringParameters = props.ssmStringParameters
+		this.country = props.country
 	}
+
+	addToSsmStringParameters (resourceId: string, paramName: string, paramValue: string, descriptionKey: string): void {
+		this.ssmStringParameters[paramName] = new ssm.StringParameter(this, resourceId, {
+			parameterName: paramName,
+			stringValue: paramValue,
+			description: `${descriptionKey}`,
+		})
+	}
+
+	abstract runDbSeed (): void
 }
