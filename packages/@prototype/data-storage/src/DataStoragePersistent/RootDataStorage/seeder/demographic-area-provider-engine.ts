@@ -14,48 +14,28 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
+
 import { Construct } from 'constructs'
 import { aws_dynamodb as ddb, custom_resources } from 'aws-cdk-lib'
 import * as utils from '@aws-sdk/util-dynamodb'
-import { DEMOGRAPHIC_AREA, STATIC_AREAS_POLYGON, SUPPORTED_COUNTRIES, COUNTRIES, DISTRICTS, AREAS } from '@prototype/common'
+import { SUPPORTED_COUNTRIES, DISTRICTS } from '@prototype/common'
+import { getDemographicArea } from '../../util'
 
 export interface DatabaseSeederProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
-	readonly demographicAreaDispatcherEngineSettings: ddb.ITable
-	readonly geoPolygonTable: ddb.ITable
 	readonly country: string
-}
-
-const getDemographicArea = (country: string, district: string): string => {
-	switch (country) {
-		case COUNTRIES.PHILIPPINES:
-			return (DEMOGRAPHIC_AREA.PHILIPPINES.MANILA as any)[district]
-		case COUNTRIES.INDONESIA:
-		default:
-			return (DEMOGRAPHIC_AREA.INDONESIA.JAKARTA as any)[district]
-	}
-}
-
-const getPolygonDefinition = (country: string, area: string): string => {
-	switch (country) {
-		case COUNTRIES.PHILIPPINES:
-			return (STATIC_AREAS_POLYGON.PHILIPPINES.MANILA as any)[area]
-		case COUNTRIES.INDONESIA:
-		default:
-			return (STATIC_AREAS_POLYGON.INDONESIA.JAKARTA as any)[area]
-	}
 }
 
 export class DatabaseSeeder extends Construct {
 	constructor (scope: Construct, id: string, props: DatabaseSeederProps) {
 		super(scope, id)
 
-		const {
-			demographicAreaProviderEngineSettings,
-			demographicAreaDispatcherEngineSettings,
-			geoPolygonTable,
-			country,
-		} = props
+		const {	demographicAreaProviderEngineSettings, country } = props
+		const supportedCountry = country.toUpperCase()
+
+		if (!SUPPORTED_COUNTRIES.includes(supportedCountry)) {
+			throw new Error(`${country} is not a supported country`)
+		}
 
 		const commonRules = [
 			{
@@ -258,13 +238,7 @@ export class DatabaseSeeder extends Construct {
 			},
 		]
 
-		const supportedCountry = country.toUpperCase()
-
-		if (!SUPPORTED_COUNTRIES.includes(supportedCountry)) {
-			throw new Error(`${country} is not a supported country`)
-		}
-
-		new custom_resources.AwsCustomResource(this, 'SeedDBDemographicAreaProviderEngineSettings', {
+		new custom_resources.AwsCustomResource(this, 'RootDataStorageDemographicAreaProviderEngineSettings', {
 			onCreate: {
 				service: 'DynamoDB',
 				action: 'batchWriteItem',
@@ -315,113 +289,6 @@ export class DatabaseSeeder extends Construct {
 					},
 				},
 				physicalResourceId: custom_resources.PhysicalResourceId.of('onDemographicAreaDBSeed'),
-			},
-			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
-			}),
-		})
-
-		const dispatcherCommonSettings = {
-			olderOrdersCannotBeAssignedAfterFresher: true,
-			preferCloserDriverToPickupLocation: true,
-			preferOccupiedDrivers: true,
-		}
-
-		new custom_resources.AwsCustomResource(this, 'SeedDBdemographicAreaDispatcherEngineSettings', {
-			onCreate: {
-				service: 'DynamoDB',
-				action: 'batchWriteItem',
-				parameters: {
-					RequestItems: {
-						[demographicAreaDispatcherEngineSettings.tableName]: [
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: getDemographicArea(supportedCountry, DISTRICTS.CENTRAL),
-										...dispatcherCommonSettings,
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: getDemographicArea(supportedCountry, DISTRICTS.NORTH),
-										...dispatcherCommonSettings,
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: getDemographicArea(supportedCountry, DISTRICTS.SOUTH),
-										...dispatcherCommonSettings,
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: getDemographicArea(supportedCountry, DISTRICTS.WEST),
-										...dispatcherCommonSettings,
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: getDemographicArea(supportedCountry, DISTRICTS.EAST),
-										...dispatcherCommonSettings,
-									}),
-								},
-							},
-						],
-					},
-				},
-				physicalResourceId: custom_resources.PhysicalResourceId.of('onDemographicAreaDispatchSettingsDBSeed'),
-			},
-			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
-				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
-			}),
-		})
-
-		new custom_resources.AwsCustomResource(this, 'SeedDBPolygonTableCoords', {
-			onCreate: {
-				service: 'DynamoDB',
-				action: 'batchWriteItem',
-				parameters: {
-					RequestItems: {
-						[geoPolygonTable.tableName]: [
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: 'daf8ef58-366f-4703-921b-c76ad3027011',
-										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA1),
-										name: 'Area 1',
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: '7bd50f84-e58b-4c6d-a964-2b09d39743dc',
-										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA2),
-										name: 'Area 2',
-									}),
-								},
-							},
-							{
-								PutRequest: {
-									Item: utils.marshall({
-										ID: 'fae2971c-08d4-494d-b8b8-14993a0cccd3',
-										vertices: getPolygonDefinition(supportedCountry, AREAS.AREA3),
-										name: 'Area 3',
-									}),
-								},
-							},
-						],
-					},
-				},
-				physicalResourceId: custom_resources.PhysicalResourceId.of('onPolygonTableSeedDBCoords'),
 			},
 			policy: custom_resources.AwsCustomResourcePolicy.fromSdkCalls({
 				resources: custom_resources.AwsCustomResourcePolicy.ANY_RESOURCE,
