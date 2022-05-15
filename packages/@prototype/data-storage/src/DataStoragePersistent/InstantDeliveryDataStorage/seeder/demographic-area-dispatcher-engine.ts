@@ -18,7 +18,7 @@
 import { Construct } from 'constructs'
 import { aws_dynamodb as ddb, custom_resources } from 'aws-cdk-lib'
 import * as utils from '@aws-sdk/util-dynamodb'
-import { DISTRICTS, SUPPORTED_COUNTRIES } from 'packages/@prototype/common'
+import { DISTRICTS, SUPPORTED_COUNTRIES } from '@prototype/common'
 import { getDemographicArea } from '../../util'
 
 export interface DatabaseSeederProps {
