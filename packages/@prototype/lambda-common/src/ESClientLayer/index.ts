@@ -24,7 +24,7 @@ export class ESClientLayer extends SharedLayer {
 	constructor (scope: Construct, id: string) {
 		super(scope, id, {
 			layerId: 'ESClientLayer',
-			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
 			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'ES Client Layer',
 			layerVersionName: namespaced(scope, 'ESClient'),

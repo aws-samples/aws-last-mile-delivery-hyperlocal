@@ -24,7 +24,7 @@ export class LambdaUtilsLayer extends SharedLayer {
 	constructor (scope: Construct, id: string) {
 		super(scope, id, {
 			layerId: 'LambdaUtilsLayer',
-			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
 			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'Lambda Utils Layer',
 			layerVersionName: namespaced(scope, 'LambdaUtils'),

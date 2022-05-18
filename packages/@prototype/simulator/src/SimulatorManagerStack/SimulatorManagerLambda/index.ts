@@ -70,7 +70,7 @@ export class SimulatorManagerLambda extends Construct {
 			description: 'Lambda used to handle ECS Task for Driver Simulator',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/simulator-manager-lambda.zip')),
 			handler: 'index.handler',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {

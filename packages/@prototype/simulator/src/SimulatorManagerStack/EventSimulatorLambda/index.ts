@@ -38,7 +38,7 @@ export class EventSimulatorLambda extends Construct {
 			description: 'Lambda used to expose events coming in the event bridge for debug/simulation purpose',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/event-simulator-lambda.zip')),
 			handler: 'index.handler',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {

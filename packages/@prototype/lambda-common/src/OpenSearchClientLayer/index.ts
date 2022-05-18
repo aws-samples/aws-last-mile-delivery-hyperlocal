@@ -24,7 +24,7 @@ export class OpenSearchClientLayer extends SharedLayer {
 	constructor (scope: Construct, id: string) {
 		super(scope, id, {
 			layerId: 'OpenSearchClientLayer',
-			compatibleRuntimes: [lambda.Runtime.NODEJS_14_X],
+			compatibleRuntimes: [lambda.Runtime.NODEJS_16_X],
 			compatibleArchitectures: [lambda.Architecture.ARM_64],
 			description: 'OpenSearch Client Layer',
 			layerVersionName: namespaced(scope, 'OpenSearchClient'),

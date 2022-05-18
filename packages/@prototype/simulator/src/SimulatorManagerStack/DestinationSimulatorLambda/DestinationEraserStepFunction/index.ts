@@ -44,7 +44,7 @@ export class DestinationEraserStepFunction extends Construct {
 			description: 'Lambda used by step function to delete destination',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/destination-eraser-helper.zip')),
 			handler: 'index.handler',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {

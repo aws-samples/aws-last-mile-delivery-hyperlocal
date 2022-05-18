@@ -32,7 +32,7 @@
     "review": "yarn cfn-nag"
   },
   "devDependencies": {
-    "aws-cdk": "^2.10.0",
+    "aws-cdk": "^2.24.1",
     "jest": "^27.5.0",
     "ts-jest": "27.1.3",
     "typescript": "^4.5.5"
@@ -42,9 +42,9 @@
     "@aws-play/cdk-cicd": "^0.0.0-alpha.25",
     "@aws-play/cdk-constants": "^0.0.0-alpha.3",
     "@aws-play/cdk-web": "^0.0.0-alpha.3",
-    "aws-cdk-lib": "^2.10.0",
-    "constructs": "^10.0.0",
+    "aws-cdk-lib": "^2.24.1",
     "config": "^3.3.6",
+    "constructs": "^10.0.0",
     "eslint": "^7.3.1",
     "ts-node": "^10.4.0"
   }

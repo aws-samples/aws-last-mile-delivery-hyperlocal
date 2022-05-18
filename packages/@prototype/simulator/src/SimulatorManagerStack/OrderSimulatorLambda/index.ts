@@ -43,7 +43,7 @@ export class OrderSimulatorLambda extends Construct {
 			description: 'Lambda used to simulate the order service',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/order-simulator-lambda.zip')),
 			handler: 'index.handler',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.seconds(120),
 			environment: {

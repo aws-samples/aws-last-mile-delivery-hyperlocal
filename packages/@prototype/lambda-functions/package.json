@@ -30,7 +30,7 @@
     "cdk-iam-actions": "^1.0.0"
   },
   "peerDependencies": {
-    "aws-cdk-lib": "^2.10.0",
+    "aws-cdk-lib": "^2.24.1",
     "constructs": "^10.0.0",
     "typescript": "^4.5.5"  
   }
