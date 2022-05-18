@@ -48,7 +48,7 @@ export class OpenSearchInitialSetupLambda extends DeclaredLambdaFunction<Environ
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-initial-setup.zip')),
 			dependencies: props.dependencies,
 			timeout: Duration.seconds(30),
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			environment: {
 				DOMAIN_ENDPOINT: openSearchDomain.domainEndpoint,

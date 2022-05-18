@@ -42,7 +42,7 @@ export class ExternalWebhookInvokerStack extends Construct {
 			description: 'External Webhook Invoker the internal webhook endpoint to update the system on the order status',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/external-webhook-invoker.zip')),
 			handler: 'index.handler',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.minutes(1),
 			environment: {

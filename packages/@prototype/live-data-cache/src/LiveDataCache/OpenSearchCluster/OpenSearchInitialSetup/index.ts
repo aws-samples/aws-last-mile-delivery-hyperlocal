@@ -36,7 +36,7 @@ export class OpenSearchInitialSetup extends Construct {
 			description: 'Setup initial OpenSearch settings - Custom Resource Lambda',
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/opensearch-setup-customresource.zip')),
 			handler: 'index.onEvent',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			environment: {
 				SETUP_LAMBDA_ARN: setupLambdaArn,

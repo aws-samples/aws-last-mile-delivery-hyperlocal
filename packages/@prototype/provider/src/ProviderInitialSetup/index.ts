@@ -40,7 +40,7 @@ export class ProviderInitialSetup extends Construct {
 			description: `Setup provider APIkey secrets - Custom Resource Lambda. Last update: ${Date.now()}`,
 			code: lambda.Code.fromAsset(DeclaredLambdaFunction.getLambdaDistPath(__dirname, '@lambda/provider-setup-customresource.zip')),
 			handler: 'index.onEvent',
-			runtime: lambda.Runtime.NODEJS_14_X,
+			runtime: lambda.Runtime.NODEJS_16_X,
 			architecture: lambda.Architecture.ARM_64,
 			environment: {
 				APIKEY_SECRETNAME_JSON: JSON.stringify(apiKeySecretNameList.map(item => {
