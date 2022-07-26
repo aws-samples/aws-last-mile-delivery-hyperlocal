@@ -93,7 +93,7 @@ export class InstantDeliveryDataStorage extends DataStorage<DataStorageProps> {
 		instantDeliveryProviderOrders.addGlobalSecondaryIndex({
 			indexName: instantDeliveryProviderOrdersJobIdIndex,
 			partitionKey: {
-				name: 'jobid',
+				name: 'jobId',
 				type: ddb.AttributeType.STRING,
 			},
 		})
