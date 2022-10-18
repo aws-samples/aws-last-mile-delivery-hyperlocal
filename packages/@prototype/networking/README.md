@@ -1,6 +1,6 @@
 # `@prototype/networking`
 
-VPC and Networking Setup for Lambda - Redis/ElasticSearch interactions
+VPC and Networking Setup for Lambda - Redis/OpenSearch interactions
 
 This package exposes a `Construct`.
 

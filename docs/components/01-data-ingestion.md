@@ -12,7 +12,7 @@ The AWS IoT Rule has an action to forward the incoming events into Amazon Kinesi
 
 ## Driver Status Updates
 
-An additional AWS IoT Rule (**devproto_driver_status_update**) is used to capture driver status change events. Whenever a driver change status during a delivery (eg. from `IDLE` to `PICKING_UP_GOODS`), the simulator sends a message to AWS IoT Core using the specific rule which eventually invokes an AWS Lambda function that handle the incoming message and updates Amazon Elasticache (Redis) and Amazon ElasticSearch with the new status before forwarding the message to Amazon EventBridge.
+An additional AWS IoT Rule (**devproto_driver_status_update**) is used to capture driver status change events. Whenever a driver change status during a delivery (eg. from `IDLE` to `PICKING_UP_GOODS`), the simulator sends a message to AWS IoT Core using the specific rule which eventually invokes an AWS Lambda function that handle the incoming message and updates Amazon MemoryDB (Redis) and Amazon OpenSearch with the new status before forwarding the message to Amazon EventBridge.
 
 The message in EventBridge is subscribed by downstream services (eg. Order Service) and used to handle other system changes such as Order Status change or starting Geofencing tracking for that specific driver.
 

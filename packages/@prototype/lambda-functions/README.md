@@ -6,19 +6,19 @@ Implementations of lambda handlers for catching various events from the system.
 
 ### DriverLocationUpdateIngestLambda
 
-This function handles `LOCATION_UPDATE` messages originating from the driver's app (simulator). After validation, it'll take the latest location and update Redis and Elasticsearch. It also creates a `TTL` value for drivers (`timestamp + 120 seconds`) and stores it.
+This function handles `LOCATION_UPDATE` messages originating from the driver's app (simulator). After validation, it'll take the latest location and update Redis and OpenSearch. It also creates a `TTL` value for drivers (`timestamp + 120 seconds`) and stores it.
 
 Triggered by Kinesis Data Stream.
 
 ### DriverStatusUpdateIngestLambda
 
-This function handles `STATUS_UPDATE` messages originating from the driver's app (simulator). After validation, it'll update Redis and Elasticsearch.
+This function handles `STATUS_UPDATE` messages originating from the driver's app (simulator). After validation, it'll update Redis and OpenSearch.
 
 Triggered by Kinesis Data Stream.
 
 ### DriverLocationCleanupLambda
 
-This function observes the current status of Redis and ElasticSearch. If a driver doesn't send an update by `TTL` value, it means driver is offline/not reachable, so this lambda will cleanup the driver's related records from both Redis and OpenSearch.
+This function observes the current status of Redis and OpenSearch. If a driver doesn't send an update by `TTL` value, it means driver is offline/not reachable, so this lambda will cleanup the driver's related records from both Redis and OpenSearch.
 
 Triggered by Cloudwatch, once a minute.
 
@@ -47,7 +47,7 @@ const lambdaFunctions = new LambdaFunctions(this, 'LambdaFunctions', {
     cleanupScheduleMins: 1,
     driverDataIngestStream: driverDataStream.driverDataIngestStream,
     driverLocationUpdateTTLInMs: memoryDBConfig.driverLocationUpdateTTLInMS as number,
-    openSearchDomain: elasticSearchCluster,
+    openSearchDomain: openSearchCluster,
     eventBus,
     geofencingBatchSize: kinesisConfig.geofencingBatchSize as number,
     geofencingParallelizationFactor: kinesisConfig.geofencingParallelizationFactor as number,

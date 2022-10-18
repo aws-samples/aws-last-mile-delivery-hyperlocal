@@ -2,8 +2,8 @@
 
 ## Resources
 
-* https://aws.amazon.com/premiumsupport/knowledge-center/kibana-outside-vpc-cognito-elasticsearch/
-* https://aws.amazon.com/premiumsupport/knowledge-center/kibana-outside-vpc-nginx-elasticsearch/
+* https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-dashboards-vpc-cognito/
+* https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-outside-vpc-nginx/
 
 ## Current solution [DEV]
 

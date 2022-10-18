@@ -4,7 +4,7 @@ System wide a8n.
 
 This package exposes two `NestedStack`s:
   * `IdentityStackPersistent` - System wide a8n. Used for users of the system (drivers, customers, restaurants, etc)
-  * `InternalIdentityStackPersistent` - System wide a8n. Used for system operators/admins. Currently it's used to access ElasticSearch's Kibana
+  * `InternalIdentityStackPersistent` - System wide a8n. Used for system operators/admins. Currently it's used to access OpenSearch's Kibana
 
 
 ## IdentityStackPersistent
@@ -25,7 +25,7 @@ System wide a8n. Used for users of the system (drivers, customers, restaurants, 
 
 ## `InternalIdentityStackPersistent` resources
 
-System wide a8n. Used for system operators/admins. Currently it's used to access ElasticSearch's Kibana
+System wide a8n. Used for system operators/admins. Currently it's used to access OpenSearch's Kibana
 
 * Cognito
   * Users - UserPool - to handle users of the system

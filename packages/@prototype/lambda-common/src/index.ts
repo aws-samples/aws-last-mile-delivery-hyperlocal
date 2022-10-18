@@ -15,7 +15,6 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 export * from './LambdaUtils'
-export * from './ESClientLayer'
 export * from './OpenSearchClientLayer'
 export * from './RedisClientLayer'
 export * from './LambdaInsights'
