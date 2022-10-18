@@ -51,7 +51,7 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly sameDayDeliveryProviderOrdersJobIdIndex: string
 	readonly sameDayDeliveryProviderOrdersBatchIdIndex: string
 	readonly sameDayDeliveryProviderOrdersStatusPartitionIndex: string
-	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
+	readonly instantDeliveryDispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly sameDayDeliveryDispatcherLB: elb.IApplicationLoadBalancer
 	readonly backendEcsCluster: ecs.ICluster
 	readonly graphhopperSettings: Record<string, string | number>
@@ -97,7 +97,7 @@ export class ProviderStack extends NestedStack {
 			sameDayDeliveryProviderOrdersStatusPartitionIndex,
 			sameDayDirectPudoDeliveryJobs,
 			providersConfig,
-			dispatchEngineLB,
+			instantDeliveryDispatchEngineLB,
 			sameDayDeliveryDispatcherLB,
 			backendEcsCluster,
 			graphhopperSettings,
@@ -169,7 +169,7 @@ export class ProviderStack extends NestedStack {
 			instantDeliveryProviderOrders,
 			instantDeliveryProviderLocks,
 			eventBus,
-			dispatchEngineLB,
+			instantDeliveryDispatchEngineLB,
 			graphhopperLB,
 			vpc,
 			lambdaSecurityGroups: [securityGroups.lambda],
