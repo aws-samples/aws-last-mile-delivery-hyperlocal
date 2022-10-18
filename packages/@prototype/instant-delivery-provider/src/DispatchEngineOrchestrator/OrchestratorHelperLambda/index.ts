@@ -44,7 +44,7 @@ interface Dependencies extends DeclaredLambdaDependencies {
 	readonly instantDeliveryProviderApi: RestApi
 	readonly instantDeliveryProviderApiSecretName: string
 	readonly iotEndpointAddress: string
-	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
+	readonly instantDeliveryDispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly graphhopperLB: elb.IApplicationLoadBalancer
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
@@ -63,7 +63,7 @@ export class OrchestratorHelperLambda extends DeclaredLambdaFunction<Environment
 				instantDeliveryProviderSettings,
 				instantDeliveryProviderApi,
 				instantDeliveryProviderApiSecretName,
-				dispatchEngineLB,
+				instantDeliveryDispatchEngineLB,
 				graphhopperLB,
 				vpc,
 				lambdaSecurityGroups,
@@ -89,7 +89,7 @@ export class OrchestratorHelperLambda extends DeclaredLambdaFunction<Environment
 				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: instantDeliveryProviderApiSecretName,
 				INSTANT_DELIVERY_CALLBACK_API_URL: instantDeliveryProviderApi.url,
 				GRAPH_HOPPER_ELB_DNS: graphhopperLB.loadBalancerDnsName,
-				DISPATCH_ENGINE_ELB_DNS: dispatchEngineLB.loadBalancerDnsName,
+				DISPATCH_ENGINE_ELB_DNS: instantDeliveryDispatchEngineLB.loadBalancerDnsName,
 				// TODO: configure the bias accordingly: the smaller the more clusters
 				GEO_CLUSTERING_BIAS: instantDeliveryProviderSettings.geoClusteringBias.toString(),
 				IOT_ENDPOINT: iotEndpointAddress,
