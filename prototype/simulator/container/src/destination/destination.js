@@ -182,7 +182,9 @@ class Destination {
 			}
 		}
 
-		return undefined
+		return {
+			deliveryType: 'instant',
+		}
 	}
 
 	async refreshToken (that) {

@@ -137,6 +137,13 @@ export class DatabaseSeeder extends Construct {
 				conditions: {
 					any: [
 						{
+							fact: 'payload',
+							operator: 'equal',
+							value: 'instant',
+							path: '$.deliveryType',
+							priority: 500,
+						},
+						{
 							all: [
 								{
 									fact: 'get-percentage',
@@ -188,6 +195,13 @@ export class DatabaseSeeder extends Construct {
 				name: 'SameDayDeliveryProvider',
 				conditions: {
 					any: [
+						{
+							fact: 'payload',
+							operator: 'equal',
+							value: 'same-day',
+							path: '$.deliveryType',
+							priority: 500,
+						},
 						{
 							all: [
 								{
