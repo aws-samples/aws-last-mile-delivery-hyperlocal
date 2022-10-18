@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
 import { aws_dynamodb as ddb, aws_ec2 as ec2, aws_ecs as ecs, aws_elasticloadbalancingv2 as elb, aws_s3 as s3, aws_ssm as ssm } from 'aws-cdk-lib'
-import { DispatchEcsService } from './DispatchEcsService'
+import { InstantDispatchEcsService } from './InstantDispatchEcsService'
 import { DispatchEcsCluster } from './DispatchEcsCluster'
 import { SameDayDispatchEcsService } from './SameDayDispatchEcsService'
 
@@ -40,7 +40,7 @@ export interface DispatchSetupProps {
 export class DispatchSetup extends Construct {
 	readonly dispatcherEcsCluster: ecs.ICluster
 
-	readonly loadBalancer: elb.IApplicationLoadBalancer
+	readonly instantDeliveryLoadBalancer: elb.IApplicationLoadBalancer
 
 	readonly sameDayDeliveryLoadBalancer: elb.IApplicationLoadBalancer
 
@@ -71,7 +71,7 @@ export class DispatchSetup extends Construct {
 		})
 		this.dispatcherEcsCluster = dispatchEcsCluster.cluster
 
-		const dispatchEcsService = new DispatchEcsService(this, 'DispatchEcsService', {
+		const instantDispatchEcsService = new InstantDispatchEcsService(this, 'DispatchEcsService', {
 			demAreaDispatchEngineSettingsTable,
 			dispatchConfig: dispatcherSettings.instant.sequential as Record<string, string | number>,
 			dispatchEngineBucket,
@@ -84,7 +84,7 @@ export class DispatchSetup extends Construct {
 			vpc,
 		})
 
-		this.loadBalancer = dispatchEcsService.loadBalancer
+		this.instantDeliveryLoadBalancer = instantDispatchEcsService.loadBalancer
 
 		const sameDayDeliveryDispatchEcsService = new SameDayDispatchEcsService(this, 'SameDayDispatchEcsService', {
 			dispatchConfig: dispatcherSettings.sameday.directpudo as Record<string, string | number>,

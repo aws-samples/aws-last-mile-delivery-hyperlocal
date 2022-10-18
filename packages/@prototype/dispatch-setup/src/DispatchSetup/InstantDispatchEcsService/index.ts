@@ -23,7 +23,7 @@ import { readDDBTablePolicyStatement, updateDDBTablePolicyStatement } from '@pro
 import path from 'path'
 import { sync as findup } from 'find-up'
 
-export interface DispatchEcsServiceProps {
+export interface InstantDispatchEcsServiceProps {
 	readonly demAreaDispatchEngineSettingsTable: ddb.ITable
 	readonly dispatchConfig: Record<string, string | number>
 	readonly dispatchEngineBucket: s3.IBucket
@@ -36,12 +36,12 @@ export interface DispatchEcsServiceProps {
 	readonly vpc: ec2.IVpc
 }
 
-export class DispatchEcsService extends Construct {
+export class InstantDispatchEcsService extends Construct {
 	readonly loadBalancer: elb.IApplicationLoadBalancer
 
 	readonly dispatcherService: ecs.Ec2Service
 
-	constructor (scope: Construct, id: string, props: DispatchEcsServiceProps) {
+	constructor (scope: Construct, id: string, props: InstantDispatchEcsServiceProps) {
 		super(scope, id)
 
 		const {

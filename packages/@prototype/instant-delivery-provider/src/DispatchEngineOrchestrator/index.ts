@@ -32,7 +32,7 @@ export interface DispatchEngineOrchestratorProps {
 	readonly iotEndpointAddress: string
 	readonly instantDeliveryProviderApiSecretName: string
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
-	readonly dispatchEngineLB: elb.IApplicationLoadBalancer
+	readonly instantDeliveryDispatchEngineLB: elb.IApplicationLoadBalancer
 	readonly graphhopperLB: elb.IApplicationLoadBalancer
 	readonly vpc: ec2.IVpc
 	readonly lambdaSecurityGroups: ec2.ISecurityGroup[]
@@ -50,7 +50,7 @@ export class DispatchEngineOrchestrator extends Construct {
 			eventBus,
 			instantDeliveryProviderApi,
 			instantDeliveryProviderApiSecretName,
-			dispatchEngineLB,
+			instantDeliveryDispatchEngineLB,
 			graphhopperLB,
 			vpc,
 			lambdaSecurityGroups,
@@ -66,7 +66,7 @@ export class DispatchEngineOrchestrator extends Construct {
 				instantDeliveryProviderSettings,
 				instantDeliveryProviderApi,
 				instantDeliveryProviderApiSecretName,
-				dispatchEngineLB,
+				instantDeliveryDispatchEngineLB,
 				graphhopperLB,
 				vpc,
 				lambdaSecurityGroups,

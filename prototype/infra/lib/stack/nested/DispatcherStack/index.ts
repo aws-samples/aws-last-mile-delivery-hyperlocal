@@ -40,7 +40,7 @@ export interface DispatcherStackProps extends NestedStackProps {
 export class DispatcherStack extends NestedStack {
 	readonly graphhopperLB: elb.IApplicationLoadBalancer
 
-	readonly dispatcherLB: elb.IApplicationLoadBalancer
+	readonly instantDeliveryDispatcherLB: elb.IApplicationLoadBalancer
 
 	readonly sameDayDeliveryDispatcherLB: elb.IApplicationLoadBalancer
 
@@ -83,7 +83,7 @@ export class DispatcherStack extends NestedStack {
 			vpc,
 		})
 
-		this.dispatcherLB = dispatchSetup.loadBalancer
+		this.instantDeliveryDispatcherLB = dispatchSetup.instantDeliveryLoadBalancer
 		this.sameDayDeliveryDispatcherLB = dispatchSetup.sameDayDeliveryLoadBalancer
 	}
 }

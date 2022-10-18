@@ -222,7 +222,7 @@ export class BackendStack extends Stack {
 			externalProviderConfig,
 			instantDeliveryProviderSettings,
 			instantDeliveryProviderLocks,
-			dispatchEngineLB: dispatcherStack.dispatcherLB,
+			instantDeliveryDispatchEngineLB: dispatcherStack.instantDeliveryDispatcherLB,
 			sameDayDeliveryDispatcherLB: dispatcherStack.sameDayDeliveryDispatcherLB,
 			providersConfig,
 			backendEcsCluster,
