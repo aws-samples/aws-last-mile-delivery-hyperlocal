@@ -2,12 +2,12 @@
 
 Location service is the collection of various resources that support ingesting and maintaining information about couriers' locations that change through time.
 
-Our approach to use location data is to keep them in _live data stores_ where the _latest_ update is maintained of the drivers. This enables us to access the most up-to-date information with very low latency. We solve this with two managed AWS services: Elasticache  (Redis) and ElasticSearch.
+Our approach to use location data is to keep them in _live data stores_ where the _latest_ update is maintained of the drivers. This enables us to access the most up-to-date information with very low latency. We solve this with two managed AWS services: MemoryDB (Redis) and OpenSearch.
 
 
-## Elasticache (Redis)
+## MemoryDB (Redis)
 
-An Elasticache cluster with Redis engine enables us to access information fast. We keep driver location and status data in Redis key-value store.
+A MemoryDB cluster with Redis engine enables us to access information fast. We keep driver location and status data in Redis key-value store.
 
 In the following table we show how we keep the latest location and status data in memory:
 
@@ -20,12 +20,9 @@ In the following table we show how we keep the latest location and status data i
 | driver:stat:updated | Hash | driverId - timestamp | Latest status reported timestamp |
 | geofence:location | GeoHash | long/lat - driverId | Location for a driver Id |
 
-Current implementation deploys a Redis Cluster in Elasticache, with one instance. We highly recommend to deploy a `ReplicaSet` for Redis with multiple **READ** nodes.
-Once read nodes are operational, lambda functions (and other processes) that only perform read operations (e.g. queries) should use the endpoints of the read-replicas, while other lambda functions (and other processes) that perform write/delete operations should use the master nodes' endpoints.
-
 For further performance enhancements, we recommend to run multiple load tests to find a proper balance between redis read/write performance and number of drivers/orders in the system and find the right instance size for the nodes.
 
-## Elasticsearch
+## OpenSearch
 
 An ElasticSeach cluster enables us to store drivers' location and status updates in an indexed format, so we can perform complicated geo-queries and build isochrones in the future phases.
 
@@ -78,9 +75,9 @@ CDK parameters that can be adjusted to change the behaviour of the consumer:
 
 #### Driver Location Ingest
 
-Driver Location Ingest instead, takes the incoming events and update Amazon Elasticache (Redis) and Amazon ElasticSearch with the new location data so that subsequent API Calls to the Location Service to query drivers will get the updated information.
+Driver Location Ingest instead, takes the incoming events and update Amazon MemoryDB (Redis) and Amazon MemoryDB with the new location data so that subsequent API Calls to the Location Service to query drivers will get the updated information.
 
-Both write query on Redis and ElasticSearch are performed as batch to improve overall performance.
+Both write query on Redis and MemoryDB are performed as batch to improve overall performance.
 
 CDK parameters that can be adjusted to change the behaviour of the consumer:
 
@@ -105,7 +102,7 @@ This lambda handler is handling `DRIVER_STATUS_UPDATE` messages originated from 
 
 1. Update driver's status in the `driver:stat:status` Redis hash
 2. Update driver's status timestamp in the `driver:stat:updated` Redis hash
-3. Update driver's status _and_ timestamp in the `driver-location` ElasticSearch index
+3. Update driver's status _and_ timestamp in the `driver-location` MemoryDB index
 4. Push an `DRIVER_STATUS_CHANGE` event to EventBridge
 
 ### Geofencing lambda
@@ -126,7 +123,7 @@ The `DriverLocationCleanupLambda` lambda function is setup to run once every min
 1. Check if there are any drivers who haven't reported for TTL amount of time: lookup all drivers from `driver:loc:ttls` Redis sorted set (between -infinity and now)
 2. Remove those drivers from `driver:loc:ttls` redis sorted set, from `driver:loc:location` redis geohash, and also from `driver:loc:raw` redis hash.
 3. [Current implementation] Remove those drivers from `driver:stat:status` and `driver:stat:updated` redis hashes
-4. [Current implementation] Remove those drivers from `driver-location` Elasticsearch index
+4. [Current implementation] Remove those drivers from `driver-location` MemoryDB index
 
 **[Recommended implementation:]** Update those drivers' status to `OFFLINE` in `driver:stat:status` redis hash and in `driver-location` OPENSEARCH index.
 
@@ -138,8 +135,5 @@ The location service provides a RESTful API to query drivers for the following u
 * Query driver by ID - return the last location the driver reported in the system
 * Query drivers around a location
   * lat/long with radius of a circle - return the list of drivers with their last location reported, and distance from the query location
-  * lat/long with side of a rectangle - return the list of drivers with their last location reported, and distance from the query location`*`
+  * lat/long with side of a rectangle - return the list of drivers with their last location reported, and distance from the query location
 * Query drivers available in an area - return drivers located inside a defined polygon
-
-`*` - Currently not supported by Elasticache. This functionality is available from Redis `v6.2`, however Elasticache runs Redis `v6.0.5` at the time of writing this document.
-

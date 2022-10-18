@@ -141,20 +141,20 @@ done
 ### --------------------------------------------------------------------------------------------------------------------
 
 ### --------------------------------------------------------------------------------------------------------------------
-printf "\n\n### Nuking ElasticSearch Domains ####\n\n"
+printf "\n\n### Nuking OpenSearch Domains ####\n\n"
 CMD="aws es list-domain-names --query 'DomainNames[?starts_with(DomainName, \`$prefix-\`) == \`true\`].DomainName' --output text --profile $profile --region $region"
 DOMAINNAMES_RESP=`eval ${CMD}`
 DOMAINNAMES=(${DOMAINNAMES_RESP//:/ })
 
 for id in "${DOMAINNAMES[@]}"
 do
-    DELETECOMMAND="aws es delete-elasticsearch-domain --domain-name $id --profile $profile --region $region"
+    DELETECOMMAND="aws opensearch delete-domain --domain-name $id --profile $profile --region $region"
     executeCommand "$DELETECOMMAND" "ES Domain" "$id"
 done
 ### --------------------------------------------------------------------------------------------------------------------
 
 # TODO: add Nuke VPC
-# TODO: add Nuke Elasticache Redis Cluster + Subnet Group
+# TODO: add Nuke MemoryDB for Redis Cluster + Subnet Group
 
 ### --------------------------------------------------------------------------------------------------------------------
 printf "\n\n### Nuking Log Groups ####\n\n"

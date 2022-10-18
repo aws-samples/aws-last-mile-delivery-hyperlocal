@@ -80,8 +80,8 @@ export class MemoryDBCluster extends Construct {
 			aclName: acl.ref,
 			clusterName: commonName,
 			// eslint-disable-next-line max-len
-			// https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/CacheNodes.SupportedTypes.html#CacheNodes.SupportedTypesByRegion
-			nodeType: nodeType || 'cache.t3.medium',
+			// https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.supportedtypes.html
+			nodeType: nodeType || 'db.t4g.medium',
 			autoMinorVersionUpgrade: true,
 			description: 'MemDB for Hyperlocal',
 			numReplicasPerShard: numReplicasPerShard || 1,

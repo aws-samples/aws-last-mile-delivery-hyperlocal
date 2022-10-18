@@ -18,20 +18,16 @@ import { Construct } from 'constructs'
 import { aws_opensearchservice as opensearchservice } from 'aws-cdk-lib'
 import { OpenSearchCluster, OpenSearchClusterProps } from './OpenSearchCluster'
 import { MemoryDBCluster, MemoryDBClusterProps } from './MemoryDBCluster'
-// import { memoryDBCluster, memoryDBClusterProps } from './memoryDBCluster'
 
 export interface LiveDataCacheProps {
 	readonly memoryDBClusterProps: MemoryDBClusterProps
 	readonly openSearchClusterProps: OpenSearchClusterProps
-	// readonly memoryDBClusterProps: memoryDBClusterProps
 }
 
 export class LiveDataCache extends Construct {
 	readonly openSearchDomain: opensearchservice.IDomain
 
 	readonly memoryDBCluster: MemoryDBCluster
-
-	// readonly memoryDBCluster: memorydb.CfnCluster
 
 	constructor (scope: Construct, id: string, props: LiveDataCacheProps) {
 		super(scope, id)
@@ -43,8 +39,5 @@ export class LiveDataCache extends Construct {
 
 		const memoryDBCluster = new MemoryDBCluster(this, 'MemoryDBCluster', memoryDBClusterProps)
 		this.memoryDBCluster = memoryDBCluster
-
-		// const ecCluster = new memoryDBCluster(this, 'memoryDBCluster', memoryDBClusterProps)
-		// this.memoryDBCluster = ecCluster.memoryDBCluster
 	}
 }
