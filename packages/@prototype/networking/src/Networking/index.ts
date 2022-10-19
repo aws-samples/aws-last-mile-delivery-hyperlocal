@@ -18,7 +18,6 @@ import { Construct } from 'constructs'
 import { aws_ec2 as ec2 } from 'aws-cdk-lib'
 import { IngressRule } from './IngressRule'
 import { SecurityGroupSetup } from './SecurityGroupSetup'
-// import { BastionHostSetup } from './BastionHostSetup'
 
 export interface NetworkingProps {
 	readonly vpc: ec2.IVpc
@@ -27,8 +26,6 @@ export interface NetworkingProps {
 
 export class Networking extends Construct {
 	readonly securityGroups: { [key: string]: ec2.ISecurityGroup, }
-
-	// readonly bastionInstance: IInstance
 
 	constructor (scope: Construct, id: string, props: NetworkingProps) {
 		super(scope, id)
@@ -41,13 +38,5 @@ export class Networking extends Construct {
 		})
 
 		this.securityGroups = securityGroupSetup.securityGroups
-
-		// setup bastion host
-		// const bastionHostSetup = new BastionHostSetup(this, 'BastionHostSetup', {
-		// 	vpc,
-		// 	bastionSecurityGroup: securityGroupSetup.securityGroups.dmz,
-		// })
-
-		// this.bastionInstance = bastionHostSetup.bastionInstance
 	}
 }
