@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito, aws_secretsmanager as secrets } from 'aws-cdk-lib'
+import { aws_ecs as ecs, aws_ecr_assets as ecr_assets, aws_s3 as s3, aws_iot as iot, aws_iam as iam, aws_dynamodb as ddb, aws_ec2 as ec2, custom_resources as cr, aws_cognito as cognito, aws_secretsmanager as secrets, SecretValue } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { SimulatorContainer } from './SimulatorContainer'
 import { sync as findup } from 'find-up'
@@ -101,7 +101,7 @@ export class ECSContainerStack extends Construct {
 		})
 
 		const destinationPasswordSecret = new secrets.Secret(this, 'DestinationPasswordSecret', {
-			secretStringBeta1: secrets.SecretStringValueBeta1.fromUnsafePlaintext(props.destinationUserPassword),
+			secretStringValue: SecretValue.unsafePlainText(props.destinationUserPassword),
 		})
 
 		this.destinationSimulator = new SimulatorContainer(this, 'DestinationSimulatorContainer', {
@@ -147,7 +147,7 @@ export class ECSContainerStack extends Construct {
 		)
 
 		const originPasswordSecret = new secrets.Secret(this, 'OriginPasswordSecret', {
-			secretStringBeta1: secrets.SecretStringValueBeta1.fromUnsafePlaintext(props.originUserPassword),
+			secretStringValue: SecretValue.unsafePlainText(props.originUserPassword),
 		})
 
 		this.originSimulator = new SimulatorContainer(this, 'OriginSimulatorContainer', {
