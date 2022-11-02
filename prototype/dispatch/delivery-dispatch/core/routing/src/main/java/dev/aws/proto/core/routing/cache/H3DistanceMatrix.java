@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceMatrix<TravelDistance> {
     private static final Logger logger = LoggerFactory.getLogger(H3DistanceMatrix.class);
@@ -65,25 +66,28 @@ public class H3DistanceMatrix<TLocation extends ILocation> implements IDistanceM
         }
 
         TravelDistance[][] distances = new TravelDistance[dim][dim];
+        int cellCnt = dim*dim;
+        IntStream.range(0, cellCnt)
+                .parallel()
+                .forEach(idx -> {
+                    int i = idx / dim;
+                    int j = idx % dim;
 
-        for (int i = 0; i < dim; i++) {
-            for (int j = 0; j < dim; j++) {
-                Coordinate coord1 = locationList.get(i).coordinate();
-                Coordinate coord2 = locationList.get(j).coordinate();
+                    Coordinate coord1 = locationList.get(i).coordinate();
+                    Coordinate coord2 = locationList.get(j).coordinate();
 
-                long hexa1 = h3.geoToH3(coord1.getLatitude(), coord1.getLongitude(), h3DistanceCache.getH3Resolution());
-                long hexa2 = h3.geoToH3(coord2.getLatitude(), coord2.getLongitude(), h3DistanceCache.getH3Resolution());
+                    long hexa1 = h3.geoToH3(coord1.getLatitude(), coord1.getLongitude(), h3DistanceCache.getH3Resolution());
+                    long hexa2 = h3.geoToH3(coord2.getLatitude(), coord2.getLongitude(), h3DistanceCache.getH3Resolution());
 
-                TravelDistance distance = h3DistanceCache.getDistance(hexa1, hexa2);
+                    TravelDistance distance = h3DistanceCache.getDistance(hexa1, hexa2);
 
-                if (distance == null) {
-                    // TODO: calculate with graphhopper
-                    logger.warn("No distance found between {} -- {}", locationList.get(i), locationList.get(j));
-                }
+                    if (distance == null) {
+                        // TODO: calculate with graphhopper
+                        logger.warn("No distance found between {} -- {}", locationList.get(i), locationList.get(j));
+                    }
 
-                distances[i][j] = distance;
-            }
-        }
+                    distances[i][j] = distance;
+                });
 
         long generatedTime = System.currentTimeMillis() - start;
 
