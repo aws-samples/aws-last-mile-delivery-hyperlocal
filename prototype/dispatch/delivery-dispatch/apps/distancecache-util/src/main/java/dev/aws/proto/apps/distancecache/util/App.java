@@ -21,6 +21,8 @@ import dev.aws.proto.apps.distancecache.util.commands.BuildH3Cache;
 import dev.aws.proto.apps.distancecache.util.commands.BuildLatLongCache;
 import dev.aws.proto.apps.distancecache.util.commands.ImportH3Cache;
 import dev.aws.proto.apps.distancecache.util.commands.ImportLatLongCache;
+import dev.aws.proto.apps.distancecache.util.experimental.BuildMatrixRaw;
+import dev.aws.proto.apps.distancecache.util.experimental.BuildMatrixWithH3Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
@@ -40,11 +42,13 @@ import java.util.concurrent.Callable;
 
                 BuildLatLongCache.class,
                 ImportLatLongCache.class,
+
+                // experimental
+                BuildMatrixWithH3Cache.class,
+                BuildMatrixRaw.class,
         }
 )
 public class App implements Callable<Integer> {
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
-
     @CommandLine.Spec
     CommandLine.Model.CommandSpec spec;
 

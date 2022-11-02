@@ -6,12 +6,13 @@
 Make sure you have the proper graphhopper setup with openstreetmap file of your choice and a geojson polygon as your coverage area.
 
 Example:
-* OSM mapfile: https://download.geofabrik.de/asia/philippines-latest.osm.pbf
+
+* OSM mapfile: <https://download.geofabrik.de/asia/philippines-latest.osm.pbf>
 * GeoJson file: `prototype/dispatch/delivery-dispatch/data/metro-manila-geojson.json`
 
 ## Generate distance cache file
 
-```zsh
+```bash
 # build the project
 cd prototype/dispatch/delivery-dispatch
 mvn clean install
@@ -23,7 +24,8 @@ java -jar distance-cache-util-jar-with-dependencies.jar build-h3 --resolution 7 
 ```
 
 Output:
-```zsh
+
+```bash
 [main] DEBUG d.a.p.a.d.util.commands.ExportCache - Parameters:
 [main] DEBUG d.a.p.a.d.util.commands.ExportCache -         geoJsonFile = ../../../data/metro-manila-geojson.json
 [main] DEBUG d.a.p.a.d.util.commands.ExportCache -         persistenceType = file
@@ -73,10 +75,11 @@ Output:
 ## Import/check existing distance cache file
 
 ```zsh
-java -jar distance-cache-util-jar-with-dependencies.jar import-h3 ../../../data/metro-manila-res7.distcache 
+java -jar distance-cache-util-jar-with-dependencies.jar import-h3 ../../../data/metro-manila-res7.distcache
 ```
 
 Output:
+
 ```zsh
 [main] INFO  d.a.p.a.d.util.commands.ImportCache - Importing cache file from ../../../data/metro-manila-res7.distcache
 [main] INFO  d.a.p.c.r.c.p.FilePersistence - Importing H3DistanceCache from ../../../data/metro-manila-res7.distcache
@@ -92,7 +95,8 @@ Output:
 Make sure you have the proper graphhopper setup with openstreetmap file of your choice and the input file is JSON of array of "lat"/"long" objects.
 
 Example:
-* OSM mapfile: https://download.geofabrik.de/asia/philippines-latest.osm.pbf
+
+* OSM mapfile: <https://download.geofabrik.de/asia/philippines-latest.osm.pbf>
 * Input file: `prototype/dispatch/delivery-dispatch/data/distmatrix-lat-longs.json`
 
 ## Generate distance cache file
@@ -108,7 +112,8 @@ cd apps/distancecache-util/target
 java -jar distance-cache-util-jar-with-dependencies.jar build-lat-long ../../../data/distmatrix-lat-longs.json -o ../../../data/distmatrix.latlongcache
 ```
 
-### Output:
+### Output
+
 ```zsh
 [main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache - Parameters:
 [main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache -     locationsFile = ../../../data/distmatrix-lat-longs.json
@@ -118,7 +123,7 @@ java -jar distance-cache-util-jar-with-dependencies.jar build-lat-long ../../../
 [main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache -     localGraphhopperDir = ~/.graphhopper/graphhopper
 [main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache -     osmFile = mapfile.osm.pbf
 [main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache -     outputFilename = ../../../data/distmatrix.latlongcache
-[main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache - 
+[main] DEBUG d.a.p.a.d.u.c.BuildLatLongCache -
 
 [main] INFO  d.a.p.a.d.u.c.BuildLatLongCache - Loading locations file ../../../data/distmatrix-lat-longs.json
 [main] INFO  d.a.p.a.d.u.c.BuildLatLongCache - Loaded 16 lat/long pairs
@@ -149,7 +154,8 @@ java -jar distance-cache-util-jar-with-dependencies.jar build-lat-long ../../../
 java -jar distance-cache-util-jar-with-dependencies.jar import-lat-long ../../../data/distmatrix.latlongcache
 ```
 
-### Output:
+### Output
+
 ```zsh
 [main] INFO  d.a.p.a.d.u.c.ImportLatLongCache - Importing cache file from ../../../data/distmatrix.latlongcache
 [main] INFO  d.a.p.c.r.c.p.l.FilePersistence - Importing DistanceMatrix from ../../../data/distmatrix.latlongcache

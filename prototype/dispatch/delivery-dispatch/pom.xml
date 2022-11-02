@@ -61,6 +61,7 @@
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <opencsv.version>3.8</opencsv.version>
         <optaplanner.version>8.20.0.Final</optaplanner.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <picocli.version>4.6.3</picocli.version>
@@ -160,6 +161,12 @@
                 <groupId>org.optaplanner</groupId>
                 <artifactId>optaplanner-quarkus</artifactId>
                 <version>${optaplanner.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
             </dependency>
 
         </dependencies>

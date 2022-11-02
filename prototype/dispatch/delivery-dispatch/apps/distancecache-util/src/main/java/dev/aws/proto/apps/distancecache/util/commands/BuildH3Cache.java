@@ -106,7 +106,7 @@ public class BuildH3Cache implements Callable<Integer> {
         logger.info("Number of covering hexagons is {} at resolution {}", dim, resolution);
         logger.info("This will result a {}x{} distance matrix cache ({} cells).", dim, dim, dim * dim);
 
-        double bytesNum = (4 + 4 + dim * 8 + (dim * dim) * (8 + 8 + 4));
+        long bytesNum = (4 + 4 + dim * 8 + (dim * dim) * (8 + 8 + 4));
         double mb = (bytesNum / 1024.0) / 1024.0;
         logger.info("Predicted size of the cache file: {} MB", String.format("%.3f", mb));
 
