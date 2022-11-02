@@ -117,8 +117,7 @@ public class DistanceMatrix implements IDistanceMatrix<Distance> {
 
         long generatedTime = System.currentTimeMillis() - start;
 
-        logger.debug("DistanceMatrix :: calc time = {}ms :: dim = {}x{} :: per cell = {}ms", generatedTime, locCnt, locCnt, ((double) generatedTime / (locCnt * locCnt)));
-        logger.debug("DistanceMatrix :: errors = {}", router.getErrorCnt().get());
+        logger.info("DistanceMatrix :: calc time = {}ms :: dim = {}x{} :: per cell = {}ms :: errors = {}", generatedTime, locCnt, locCnt, ((double) generatedTime / (locCnt * locCnt)), router.getErrorCnt().get());
         router.getErrorCnt().set(0);
         return new DistanceMatrix(matrix, generatedTime);
     }
