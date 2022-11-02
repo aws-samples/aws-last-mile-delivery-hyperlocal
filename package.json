@@ -73,10 +73,18 @@
   "resolutions": {
     "browserslist": "^4.16.5",
     "dot-prop": "^4.2.1",
+    "ejs": "^3.1.7",
     "eslint": "^7.3.1",
+    "eventsource": "^1.1.2",
     "glob-parent": "^5.1.2",
+    "immer": "^9.0.6",
     "jest": "^27.5.0",
+    "minimist": "^1.2.6",
+    "parse-url": "^8.1.0",
+    "shell-quote": "^1.7.3",
+    "semver-regex": "^4.0.5",
     "tar": "^4.4.14",
+    "terser": "^5.15.1",
     "trim-newlines": "^3.0.1",
     "ws": "^7.4.6"
   },
