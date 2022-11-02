@@ -30,8 +30,8 @@
     "worker-loader": "^3.0.8"
   },
   "scripts": {
-    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
-    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build",
+    "start": "SKIP_PREFLIGHT_CHECK=true NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "SKIP_PREFLIGHT_CHECK=true NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -76,5 +76,8 @@
     "eslint-plugin-standard": "5.0.0",
     "prettier": "2.2.1",
     "react-scripts": "4.0.3"
+  },
+  "resolutions": {
+    "@types/react": "^16.9.53"
   }
 }

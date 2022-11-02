@@ -12,9 +12,9 @@
   "author": "Amazon Web Services - ASEAN Prototying",
   "license": "MIT-0",
   "dependencies": {
-    "uuid": "^8.3.2",
     "aws-amplify": "^4.3.14",
-    "nanoid": "^3.2.0"
+    "nanoid": "^3.2.0",
+    "uuid": "^8.3.2"
   },
   "workspaces": {
     "nohoist": [
