@@ -17,7 +17,7 @@ SERVICE_NAME=$NAMESPACE-Dispatcher-SameDay-DirectPudo
 cd ../../
 
 # 1. build project
-yarn build:order-dispatcher
+yarn build:delivery-dispatch
 
 # 2. docker build
 pushd prototype/dispatch/delivery-dispatch/build/sameday/directpudo
