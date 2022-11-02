@@ -139,6 +139,24 @@ export class OpenSearchCluster extends Construct {
 			}),
 		)
 
+		const masterNodeInstanceType = openSearchConfig.masterNodeInstanceType as string || 't3.medium.search'
+		const dataNodeInstanceType = openSearchConfig.dataNodeInstanceType as string || 't3.medium.search'
+
+		// if using large instance, use high IOPS
+		let ebs: opensearchservice.EbsOptions = {
+			// NOTE: verify the right value for prod
+			iops: 1600,
+			volumeSize: 64,
+			volumeType: ec2.EbsDeviceVolumeType.IO1,
+		}
+
+		if (masterNodeInstanceType.indexOf('medium') > -1 || masterNodeInstanceType.indexOf('small') > -1 ||
+		dataNodeInstanceType.indexOf('medium') > -1 || dataNodeInstanceType.indexOf('small') > -1) {
+			ebs = {
+				volumeSize: 64,
+			}
+		}
+
 		const domain = new opensearchservice.Domain(this, 'ESCluster', {
 			version: opensearchservice.EngineVersion.OPENSEARCH_1_1, // or remove this to get the latest OPENSEARCH version
 			domainName,
@@ -147,8 +165,8 @@ export class OpenSearchCluster extends Construct {
 			capacity: {
 				masterNodes: openSearchConfig.masterNodes as number || 3,
 				dataNodes: openSearchConfig.dataNodes as number || 3,
-				masterNodeInstanceType: openSearchConfig.masterNodeInstanceType as string || 't3.medium.search',
-				dataNodeInstanceType: openSearchConfig.dataNodeInstanceType as string || 't3.medium.search',
+				masterNodeInstanceType,
+				dataNodeInstanceType,
 			},
 			vpc,
 			vpcSubnets: [vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE_ISOLATED })],
@@ -166,12 +184,7 @@ export class OpenSearchCluster extends Construct {
 				userPoolId,
 				role: cognitoDashboardsRole,
 			},
-			ebs: {
-				// NOTE: verify the right value for prod
-				iops: 1600,
-				volumeSize: 64,
-				volumeType: ec2.EbsDeviceVolumeType.IO1,
-			},
+			ebs,
 			accessPolicies: [
 				// eslint-disable-next-line max-len
 				// https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html#cognito-auth-config-ac
