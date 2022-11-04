@@ -64,7 +64,10 @@ export class DispatchSetup extends Construct {
 			vpc,
 		} = props
 
+		const dispatchAsgInstanceType = new ec2.InstanceType(dispatcherSettings.dispatchAsgInstanceType)
+
 		const dispatchEcsCluster = new DispatchEcsCluster(this, 'DispatchEcsCluster', {
+			dispatchAsgInstanceType,
 			dispatchEngineBucket,
 			dmzSecurityGroup,
 			vpc,

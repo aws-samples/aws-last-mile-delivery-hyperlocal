@@ -20,9 +20,10 @@ import * as cdkconsts from 'cdk-constants'
 import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 
 export interface DispatchEcsClusterProps {
-  readonly vpc: ec2.IVpc
-  readonly dmzSecurityGroup: ec2.ISecurityGroup
+	readonly dispatchAsgInstanceType: ec2.InstanceType
   readonly dispatchEngineBucket: s3.IBucket
+  readonly dmzSecurityGroup: ec2.ISecurityGroup
+  readonly vpc: ec2.IVpc
 }
 
 export class DispatchEcsCluster extends Construct {
@@ -35,6 +36,7 @@ export class DispatchEcsCluster extends Construct {
 			vpc,
 			dmzSecurityGroup,
 			dispatchEngineBucket,
+			dispatchAsgInstanceType,
 		} = props
 
 		const dispatchEcsCluster = new ecs.Cluster(this, 'DispatcherEcsCluster', {
@@ -71,7 +73,7 @@ export class DispatchEcsCluster extends Construct {
 
 		// TODO: pass instanceType as a parameter
 		const asg = new autoscaling.AutoScalingGroup(this, 'DispatcherEcsAsg', {
-			instanceType: ec2.InstanceType.of(ec2.InstanceClass.C6G, ec2.InstanceSize.XLARGE8),
+			instanceType: dispatchAsgInstanceType,
 			machineImage: ecs.EcsOptimizedImage.amazonLinux2(ecs.AmiHardwareType.ARM),
 			vpc,
 			vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },

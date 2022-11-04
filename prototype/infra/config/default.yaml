@@ -364,6 +364,12 @@ graphhopperSettings:
 
 # settings for various dispatcher domains
 dispatcherSettings:
+  # the instance type for the dispatcher ECS cluster's autoscaling group
+  # you should use GRAVITON INSTANCES for higher performance and lower price
+  # if you choose to use non-graviton instances, you'll need to change the machine image in the code
+  # make sure the instance type is available in your region (i.e.: use c7g instances if you can)
+  dispatchAsgInstanceType: c6g.xlarge
+
   # instant delivery domain
   instant:
     # instant - sequential dispatcher
