@@ -24,6 +24,7 @@ import { SimulatorMainStack } from '../lib/stack/root/SimulatorMainStack'
 import { SimulatorPersistentStack } from '../lib/stack/root/SimulatorPersistentStack'
 import { DebugStack } from '../lib/stack/root/DebugStack'
 import { ExternalProviderStack } from '../lib/stack/root/ExternalProviderStack'
+import { CloudFrontWebACLStack } from '../lib/stack/root/CloudFrontWebACLStack'
 
 const app = new App()
 
@@ -40,6 +41,7 @@ const backendStack = new BackendStack(app, 'Dev-Backend', {
 	...config,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const debugStack = new DebugStack(app, 'Dev-DebugStack', {
 	stackName: 'Dev-DebugStack',
 	description: 'Debug resources',
@@ -47,14 +49,34 @@ const debugStack = new DebugStack(app, 'Dev-DebugStack', {
 	...config,
 })
 
+// ---------------------------------------------------------------------------------------------------------------------
+// SIMULATOR
+const simulatorNamespace = 'sim'
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const cloudfrontWebACLStack = new CloudFrontWebACLStack(app, 'CloudFrontWebACL', {
+	stackName: 'CloudFrontWebACL',
+	description: 'CloudFront Web ACL stack',
+	webAclName: 'SimulatorCFWebACL',
+	webAclArnParameterStoreKey: config.parameterStoreKeys.webAclArn as string,
+	ssmParamRegion: config.env?.region as string,
+	env: {
+		...config.env,
+		region: 'us-east-1', // CLOUDFRONT WebACL must be created in us-east-1 region
+	},
+})
+
 const simulatorPersistentStack = new SimulatorPersistentStack(app, 'Simulator-Persistent', {
 	stackName: 'Simulator-Persistent',
 	persistent: persistentBackendStack,
 	backend: backendStack,
 	...config,
-	namespace: 'sim',
+	namespace: simulatorNamespace,
 })
 
+simulatorPersistentStack.addDependency(cloudfrontWebACLStack)
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const simulatorMainStack = new SimulatorMainStack(app, 'Simulator-Backend', {
 	stackName: 'Simulator-Backend',
 	description: 'Simulator Stack',
@@ -62,9 +84,10 @@ const simulatorMainStack = new SimulatorMainStack(app, 'Simulator-Backend', {
 	backend: backendStack,
 	...config,
 	simulatorPersistent: simulatorPersistentStack,
-	namespace: 'sim',
+	namespace: simulatorNamespace,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const externalProver = new ExternalProviderStack(app, 'ExternalProviderStack-Mock', {
 	stackName: 'ExternalProviderStack-Mock',
 	description: 'External Provider Mock Stack',

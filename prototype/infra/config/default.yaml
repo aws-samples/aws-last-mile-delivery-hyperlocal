@@ -57,6 +57,9 @@ geoTrackingApiKeySecretName: GeoTrackingApiKeySecret
 
 # SSM ParameterStore keys
 parameterStoreKeys:
+  # the parameter name to use the CLOUDFRONT WebACL's ARN
+  webAclArn: /Hyperlocal/Waf/WebAclArn
+
   # the parameter name we use to refer to geoTrackingApiUrl in SSM ParameterStore
   geoTrackingApiUrl: /Hyperlocal/Api/GeoTracking/Url
 
@@ -68,7 +71,7 @@ parameterStoreKeys:
 
   # key for sameday-directpudo -- delivery jobs table name
   sameDayDirectPudoDeliveryJobsTableName: /HyperLocal/Ddb/SameDayDirectPudoDeliveryJobs/TableName
-  
+
   # key for sameday-directpudo -- delivery jobs table secondary index for solverJobId
   sameDayDirectPudoDeliveryJobsSolverJobIdIndex: /HyperLocal/Ddb/SameDayDirectPudoDeliveryJobs/Index/SolverJobId
 
@@ -259,8 +262,8 @@ orderManagerSettings:
   # if a reject/accept event doesn't come by then, the order will be automaticall rejected
   originTimeoutInMinutes: 5
 
-  # timeout for the order execution. if the order has not been 
-  # elaborate within this timeout the execution would be aborted. 
+  # timeout for the order execution. if the order has not been
+  # elaborate within this timeout the execution would be aborted.
   # default: 5 hours
   orderTimeoutInMinutes: 300
 
