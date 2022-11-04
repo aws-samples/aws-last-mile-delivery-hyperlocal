@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { Stack, StackProps, aws_s3 as s3 } from 'aws-cdk-lib'
+import { Stack, StackProps, aws_s3 as s3, aws_ssm as ssm } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { WebsiteHosting } from '@aws-play/cdk-web'
 import { PersistentBackendStack } from '../PersistentBackendStack'
@@ -32,6 +32,7 @@ export interface SimulatorPersistentStackProps extends StackProps {
 	readonly persistent: PersistentBackendStack
 	readonly backend: BackendStack
 	readonly simulatorConfig: { [key: string]: string | number, }
+	readonly parameterStoreKeys: { [key: string]: string, }
 }
 
 /**
@@ -74,6 +75,7 @@ export class SimulatorPersistentStack extends Stack {
 			},
 			simulatorConfig,
 			env,
+			parameterStoreKeys,
 		} = props
 
 		setNamespace(this, namespace)
@@ -110,6 +112,10 @@ export class SimulatorPersistentStack extends Stack {
 			simulatorConfigBucket: this.dataStack.simulatorConfigBucket,
 		})
 
+		// take the CLOUDFRONT WEBACL's ARN value from SSM store
+		// cross-stack reference --> can't pass
+		const webAclArnSSMParameter = ssm.StringParameter.fromStringParameterName(this, 'webAclArnSSMParameter', parameterStoreKeys.webAclArn)
+
 		const websiteHosting = new WebsiteHosting(this, 'SimulatorWebsiteHosting', {
 			bucketName: 'simulator-website',
 
@@ -121,6 +127,8 @@ export class SimulatorPersistentStack extends Stack {
 					responsePagePath: '/',
 				},
 			],
+
+			webAclArn: webAclArnSSMParameter.stringValue,
 		})
 		this.simulatorWebsiteBucket = websiteHosting.hostingBucket
 	}

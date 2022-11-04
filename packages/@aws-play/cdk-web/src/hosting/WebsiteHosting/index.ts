@@ -19,10 +19,8 @@ import {
 	aws_s3 as s3,
 	aws_iam as iam,
 	aws_cloudfront as cloudfront,
-	Stack,
 } from 'aws-cdk-lib'
 import { namespacedBucket, retainResource } from '@aws-play/cdk-core'
-import CloudFrontWebAcl from './CloudFrontWaf'
 
 /**
  * Properties for creating website hosting construct
@@ -65,6 +63,11 @@ export interface WebsiteHostingProps {
 		},
 	]
 
+	/**
+	 * The WebACL ARN (WAF for CloudFront)
+	 */
+	readonly webAclArn: string
+
 	readonly errorConfigurations?: cloudfront.CfnDistribution.CustomErrorResponseProperty[]
 }
 
@@ -92,6 +95,7 @@ export class WebsiteHosting extends Construct {
 			retainResources = true,
 			additionalHostingBuckets,
 			errorConfigurations,
+			webAclArn,
 		} = props
 
 		// S3 :: WebsiteBucket
@@ -163,22 +167,12 @@ export class WebsiteHosting extends Construct {
 			})
 		}
 
-		// Web ACL
-		const webAcl = new CloudFrontWebAcl(this, 'WebACL', {
-			name: 'WebAcl',
-			suffix: 'web-acl',
-			managedRules: [
-				{ VendorName: 'AWS', Name: 'AWSManagedRulesCommonRuleSet' },
-				{ VendorName: 'AWS', Name: 'AWSManagedRulesKnownBadInputsRuleSet' },
-			],
-		})
-
 		// cloudfront web distribution
 		const cloudFrontDistribution = new cloudfront.CloudFrontWebDistribution(
 			this,
 			'CloudFrontDistro',
 			{
-				webACLId: webAcl.getArn(Stack.of(this).account),
+				webACLId: webAclArn,
 				originConfigs: [
 					{
 						s3OriginSource: {

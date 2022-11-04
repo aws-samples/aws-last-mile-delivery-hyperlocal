@@ -14,7 +14,40 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-export * from './hosting/AppVariables'
-export * from './hosting/CloudFrontWaf'
-export * from './hosting/HostingDeployment'
-export * from './hosting/WebsiteHosting'
+import { aws_wafv2 as wafv2 } from 'aws-cdk-lib'
+import { Construct } from 'constructs'
+
+const CLOUDFRONT_SCOPE = 'CLOUDFRONT'
+
+export interface CloudFrontWebAclProps {
+	readonly name: string
+	readonly rulesToAdd: wafv2.CfnWebACL.RuleProperty[]
+}
+
+/**
+ * This construct creates a WAFv2 Web ACL for cloudfront in the us-east-1 region (required for cloudfront) no matter the
+ * region of the parent cloudformation/cdk stack.
+ */
+export class CloudFrontWebAcl extends Construct {
+	public readonly webAclArn: string
+
+	constructor (scope: Construct, id: string, props: CloudFrontWebAclProps) {
+		super(scope, id)
+
+		const { name, rulesToAdd } = props
+
+		const cfnWebACL = new wafv2.CfnWebACL(this, 'WebACL', {
+			name,
+			defaultAction: { allow: {} },
+			scope: CLOUDFRONT_SCOPE,
+			visibilityConfig: {
+				cloudWatchMetricsEnabled: true,
+				metricName: id,
+				sampledRequestsEnabled: true,
+			},
+			rules: rulesToAdd,
+		})
+
+		this.webAclArn = cfnWebACL.attrArn
+	}
+}
