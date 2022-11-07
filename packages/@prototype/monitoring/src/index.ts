@@ -15,3 +15,4 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 export * from './Monitoring'
+export * from './MemDbMonitoring'

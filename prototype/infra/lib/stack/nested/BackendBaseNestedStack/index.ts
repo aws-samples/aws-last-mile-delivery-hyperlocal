@@ -29,6 +29,7 @@ export interface BackendBaseNestedStackProps extends NestedStackProps {
 	readonly vpcNetworkConfig: { [key: string]: [{ cidr: string, port: number, }], }
 	readonly openSearchConfig: { [key: string]: string | number, }
 	readonly memoryDBConfig: { [key: string]: string | number, }
+	readonly parameterStoreKeys: Record<string, string>
 }
 
 /**
@@ -51,6 +52,7 @@ export class BackendBaseNestedStack extends NestedStack {
 			vpcNetworkConfig,
 			openSearchConfig,
 			memoryDBConfig,
+			parameterStoreKeys,
 		} = props
 
 		this.vpcNetworking = new Networking(this, 'Networking', {
@@ -79,8 +81,10 @@ export class BackendBaseNestedStack extends NestedStack {
 				numShards: memoryDBConfig.numShards as number,
 				numReplicasPerShard: memoryDBConfig.numReplicasPerShard as number,
 				nodeType: memoryDBConfig.instanceType as string,
+				port: memoryDBConfig.port as number,
 				securityGroups: [securityGroups.memoryDB],
 				vpc,
+				parameterStoreKeys,
 			},
 		})
 	}

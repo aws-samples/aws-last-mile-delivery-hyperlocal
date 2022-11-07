@@ -20,13 +20,14 @@ import { namespaced } from '@aws-play/cdk-core'
 
 export interface DefaultWafProps {
   readonly resourceArn: string
+	readonly defaultAction?: waf.CfnWebACL.DefaultActionProperty
 }
 
 export class DefaultWaf extends Construct {
 	constructor (scope: Construct, id: string, props: DefaultWafProps) {
 		super(scope, id)
 
-		const { resourceArn } = props
+		const { resourceArn, defaultAction } = props
 
 		const wafRules: waf.CfnWebACL.RuleProperty[] = []
 		const rulesToAdd = [
@@ -63,11 +64,15 @@ export class DefaultWaf extends Construct {
 			wafRules.push(wafRule)
 		}
 
+		let _defaultAction = defaultAction
+
+		if (_defaultAction == null) {
+			_defaultAction = { allow: {} }
+		}
+
 		const webACL = new waf.CfnWebACL(this, 'ApiGatewayWebACL', {
 			name: namespaced(this, `${this.node.id}-DefaultWaf`),
-			defaultAction: {
-				allow: {},
-			},
+			defaultAction: _defaultAction,
 			scope: 'REGIONAL',
 			visibilityConfig: {
 				cloudWatchMetricsEnabled: true,

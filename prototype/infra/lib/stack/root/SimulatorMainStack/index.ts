@@ -22,6 +22,7 @@ import { PersistentBackendStack } from '../PersistentBackendStack'
 import { SimulatorManagerStack, IoTPolicyStack, IoTRuleStack } from '@prototype/simulator'
 import { CENTROID, BASE_LOCATION, COUNTRIES, AREAS, DefaultWaf } from '@prototype/common'
 import { SharedLayer } from '@prototype/lambda-common'
+import { MemDBMonitoring } from '@prototype/monitoring'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { WebsiteHostingStack } from '../../nested/WebsiteHostingStack'
 import { SimulatorPersistentStack } from '../SimulatorPersistentStack'
@@ -39,6 +40,8 @@ export interface SimulatorMainStackProps extends StackProps {
 	readonly backend: BackendStack
 	readonly simulatorPersistent: SimulatorPersistentStack
 	readonly simulatorConfig: { [key: string]: string | number, }
+	readonly memoryDBConfig: Record<string, string | number>
+	readonly parameterStoreKeys: Record<string, string>
 	readonly country: string
 }
 
@@ -123,6 +126,8 @@ export class SimulatorMainStack extends Stack {
 			},
 			env,
 			simulatorConfig,
+			memoryDBConfig,
+			parameterStoreKeys,
 			country,
 		} = props
 
@@ -274,6 +279,14 @@ export class SimulatorMainStack extends Stack {
 			policy: cr.AwsCustomResourcePolicy.fromSdkCalls({
 				resources: cr.AwsCustomResourcePolicy.ANY_RESOURCE,
 			}),
+		})
+
+		new MemDBMonitoring(this, 'MemDBMonitoring', {
+			dmzSecurityGroup: vpcNetworking.securityGroups.dmz,
+			ecsTaskCount: 1,
+			memoryDBConfig,
+			parameterStoreKeys,
+			vpc,
 		})
 	}
 }

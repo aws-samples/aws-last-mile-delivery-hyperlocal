@@ -104,6 +104,7 @@ export class PersistentBackendStack extends Stack {
 			vpcNetworkConfig,
 			openSearchConfig,
 			memoryDBConfig,
+			parameterStoreKeys,
 		})
 
 		this.vpcPersistent = vpcPersistent

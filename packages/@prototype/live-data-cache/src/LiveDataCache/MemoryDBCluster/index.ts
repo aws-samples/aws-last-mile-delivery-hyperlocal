@@ -16,7 +16,7 @@
  *********************************************************************************************************************/
 /* eslint-disable no-console */
 import { Construct } from 'constructs'
-import { aws_memorydb as memorydb, aws_ec2 as ec2, aws_secretsmanager as secrets } from 'aws-cdk-lib'
+import { aws_memorydb as memorydb, aws_ec2 as ec2, aws_secretsmanager as secrets, aws_ssm as ssm } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 
 export interface MemoryDBClusterProps {
@@ -25,8 +25,10 @@ export interface MemoryDBClusterProps {
 	readonly numShards?: number
 	readonly numReplicasPerShard?: number
 	readonly nodeType?: string
+	readonly port?: number
 	readonly vpc: ec2.IVpc
 	readonly securityGroups: ec2.ISecurityGroup[]
+	readonly parameterStoreKeys: Record<string, string>
 }
 
 export class MemoryDBCluster extends Construct {
@@ -42,11 +44,13 @@ export class MemoryDBCluster extends Construct {
 		const {
 			vpc,
 			securityGroups,
-			nodeType,
 			numShards,
+			nodeType,
+			port,
 			numReplicasPerShard,
 			adminUsername,
 			adminAccessString,
+			parameterStoreKeys,
 		} = props
 
 		const commonName = namespaced(this, 'live-data', { lowerCase: true }) // NOTE: lowercase
@@ -58,6 +62,12 @@ export class MemoryDBCluster extends Construct {
 		})
 		const adminPasswordSecret = new secrets.Secret(this, 'MemoryDBClusterPassword', {
 			description: `The password used by the memorydb user: ${adminUsername}`,
+		})
+
+		// store the password's ARN in SSM for monitoring use
+		new ssm.StringParameter(this, 'MemoryDBAdminPwdSecretArn', {
+			stringValue: adminPasswordSecret.secretArn,
+			parameterName: parameterStoreKeys.memoryDBAdminPassSecretArn,
 		})
 
 		const adminUser = new memorydb.CfnUser(this, 'MemoryDBAdminUser', {
@@ -90,10 +100,16 @@ export class MemoryDBCluster extends Construct {
 			securityGroupIds: securityGroups.map(group => group.securityGroupId),
 			subnetGroupName: subnetGroup.ref,
 			tlsEnabled: true,
-			port: 6379,
+			port: port || 6379,
 		})
 
 		cluster.node.addDependency(subnetGroup)
+
+		// store the password's ARN in SSM for monitoring use
+		new ssm.StringParameter(this, 'MemoryDBClusterEndpoint', {
+			stringValue: cluster.attrClusterEndpointAddress,
+			parameterName: parameterStoreKeys.memoryDBClusterEndpoint,
+		})
 
 		this.cluster = cluster
 		this.adminUsername = adminUsername
