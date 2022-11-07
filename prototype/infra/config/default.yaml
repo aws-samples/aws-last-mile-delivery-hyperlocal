@@ -29,9 +29,11 @@ env:
   mapBoxToken: XXXXXX
 
   # origin (e.g.: restaurant) simulator users' password (users are generated for simulation)
+  # IMPORTANT: the password MUST conform with the password requirements set up in `cognito-auth` package
   originUserPassword: XXXXXX
 
   # destination (e.g.: customer) simulator users' password (users are generated for simulation)
+  # IMPORTANT: the password MUST conform with the password requirements set up in `cognito-auth` package
   destinationUserPassword: XXXXXX
 
 # string prefix for resources created by CDK
