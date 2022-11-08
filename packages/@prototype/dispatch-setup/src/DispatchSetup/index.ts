@@ -68,6 +68,7 @@ export class DispatchSetup extends Construct {
 
 		const dispatchEcsCluster = new DispatchEcsCluster(this, 'DispatchEcsCluster', {
 			dispatchAsgInstanceType,
+			dispatchAsgDesiredCapacity: dispatcherSettings.dispatchAsgDesiredCapacity as number,
 			dispatchEngineBucket,
 			dmzSecurityGroup,
 			vpc,

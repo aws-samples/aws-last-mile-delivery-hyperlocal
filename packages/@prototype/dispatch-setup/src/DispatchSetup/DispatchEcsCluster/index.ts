@@ -21,6 +21,7 @@ import { namespaced, regionalNamespaced } from '@aws-play/cdk-core'
 
 export interface DispatchEcsClusterProps {
 	readonly dispatchAsgInstanceType: ec2.InstanceType
+	readonly dispatchAsgDesiredCapacity: number
   readonly dispatchEngineBucket: s3.IBucket
   readonly dmzSecurityGroup: ec2.ISecurityGroup
   readonly vpc: ec2.IVpc
@@ -37,6 +38,7 @@ export class DispatchEcsCluster extends Construct {
 			dmzSecurityGroup,
 			dispatchEngineBucket,
 			dispatchAsgInstanceType,
+			dispatchAsgDesiredCapacity,
 		} = props
 
 		const dispatchEcsCluster = new ecs.Cluster(this, 'DispatcherEcsCluster', {
@@ -71,7 +73,6 @@ export class DispatchEcsCluster extends Construct {
 			roleName: regionalNamespaced(this, 'Dispatch-ASG-Instance'),
 		})
 
-		// TODO: pass instanceType as a parameter
 		const asg = new autoscaling.AutoScalingGroup(this, 'DispatcherEcsAsg', {
 			instanceType: dispatchAsgInstanceType,
 			machineImage: ecs.EcsOptimizedImage.amazonLinux2(ecs.AmiHardwareType.ARM),
@@ -85,7 +86,7 @@ export class DispatchEcsCluster extends Construct {
 					encrypted: true,
 				}),
 			}],
-			desiredCapacity: 2,
+			desiredCapacity: dispatchAsgDesiredCapacity,
 			role: asgInstanceRole,
 		})
 

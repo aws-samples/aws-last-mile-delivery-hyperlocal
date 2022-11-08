@@ -381,6 +381,9 @@ dispatcherSettings:
   # make sure the instance type is available in your region (i.e.: use c7g instances if you can)
   dispatchAsgInstanceType: c6g.xlarge
 
+  # the desired capacity for the dispatcher ECS cluster's autoscaling group
+  dispatchAsgDesiredCapacity: 2
+
   # instant delivery domain
   instant:
     # instant - sequential dispatcher
