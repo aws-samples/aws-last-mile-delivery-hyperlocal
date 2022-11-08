@@ -53,10 +53,10 @@ const execute = async (payload) => {
 			result: res.data,
 		}
 	} catch (err) {
-		console.error('Error cancelling the order to the provider')
+		console.error(`Error cancelling the order to the provider ${providerName}`)
 		console.error(err)
 
-		throw new Error('Error cancelling the order to the provider')
+		throw new Error(`Error cancelling the order to the provider ${providerName}`)
 	}
 }
 

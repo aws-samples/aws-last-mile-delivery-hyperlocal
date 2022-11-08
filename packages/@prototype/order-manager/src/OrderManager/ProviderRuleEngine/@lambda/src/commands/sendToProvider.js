@@ -53,11 +53,11 @@ const execute = async (payload) => {
 			result: res.data,
 		}
 	} catch (err) {
-		console.error('Error sending the order to the provider')
+		console.error(`Error sending the order to the provider: ${providerName}`)
 		console.error(err)
 
 		// handled by the step function
-		throw new Error('Error sending the order to the provider')
+		throw new Error(`Error sending the order to the provider: ${providerName}`)
 	}
 }
 

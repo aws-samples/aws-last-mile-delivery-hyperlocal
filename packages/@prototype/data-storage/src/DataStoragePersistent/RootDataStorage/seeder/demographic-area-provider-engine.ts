@@ -45,24 +45,8 @@ export class DatabaseSeeder extends Construct {
 						{
 							fact: 'get-percentage',
 							operator: 'lessThanInclusive',
-							value: 10,
+							value: 50,
 							priority: 10,
-						},
-						{
-							all: [
-								{
-									fact: 'get-date',
-									operator: 'includes',
-									value: '12-25',
-									priority: 20,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'lessThanInclusive',
-									value: 15,
-									priority: 20,
-								},
-							],
 						},
 						{
 							fact: 'origin',
@@ -84,44 +68,19 @@ export class DatabaseSeeder extends Construct {
 			{
 				name: 'WebhookProvider',
 				conditions: {
-					any: [{
-						all: [
-							{
-								fact: 'get-percentage',
-								operator: 'greaterThan',
-								value: 10,
-								priority: 10,
-							},
-							{
-								fact: 'get-percentage',
-								operator: 'lessThanInclusive',
-								value: 30,
-								priority: 10,
-							},
-						],
-					},
-					{
-						all: [
-							{
-								fact: 'get-date',
-								operator: 'includes',
-								value: '12-25',
-								priority: 20,
-							},
-							{
-								fact: 'get-percentage',
-								operator: 'greaterThan',
-								value: 15,
-								priority: 20,
-							},
-							{
-								fact: 'get-percentage',
-								operator: 'lessThanInclusive',
-								value: 35,
-								priority: 20,
-							},
-						],
-					},
+					any: [
+						{
+							fact: 'get-percentage',
+							operator: 'greaterThan',
+							value: 50,
+							priority: 10,
+						},
+						{
+							fact: 'get-percentage',
+							operator: 'lessThanInclusive',
+							value: 100,
+							priority: 10,
+						},
 					],
 				},
 				event: {
@@ -135,51 +94,13 @@ export class DatabaseSeeder extends Construct {
 			{
 				name: 'InstantDeliveryProvider',
 				conditions: {
-					any: [
+					all: [
 						{
 							fact: 'payload',
 							operator: 'equal',
 							value: 'instant',
 							path: '$.deliveryType',
 							priority: 500,
-						},
-						{
-							all: [
-								{
-									fact: 'get-percentage',
-									operator: 'greaterThan',
-									value: 30,
-									priority: 10,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'lessThanInclusive',
-									value: 65,
-									priority: 10,
-								},
-							],
-						},
-						{
-							all: [
-								{
-									fact: 'get-date',
-									operator: 'includes',
-									value: '12-25',
-									priority: 20,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'greaterThan',
-									value: 35,
-									priority: 20,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'lessThanInclusive',
-									value: 65,
-									priority: 20,
-								},
-							],
 						},
 					],
 				},
@@ -194,51 +115,13 @@ export class DatabaseSeeder extends Construct {
 			{
 				name: 'SameDayDeliveryProvider',
 				conditions: {
-					any: [
+					all: [
 						{
 							fact: 'payload',
 							operator: 'equal',
 							value: 'same-day',
 							path: '$.deliveryType',
-							priority: 500,
-						},
-						{
-							all: [
-								{
-									fact: 'get-percentage',
-									operator: 'greaterThanInclusive',
-									value: 65,
-									priority: 10,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'lessThanInclusive',
-									value: 100,
-									priority: 10,
-								},
-							],
-						},
-						{
-							all: [
-								{
-									fact: 'get-date',
-									operator: 'includes',
-									value: '12-25',
-									priority: 20,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'greaterThan',
-									value: 65,
-									priority: 20,
-								},
-								{
-									fact: 'get-percentage',
-									operator: 'lessThanInclusive',
-									value: 100,
-									priority: 20,
-								},
-							],
+							priority: 600,
 						},
 					],
 				},
