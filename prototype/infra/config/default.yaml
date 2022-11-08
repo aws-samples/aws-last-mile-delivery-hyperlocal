@@ -62,6 +62,12 @@ parameterStoreKeys:
   # the parameter name to use the CLOUDFRONT WebACL's ARN
   webAclArn: /Hyperlocal/Waf/WebAclArn
 
+  # the ARN of the secret manager entry where MemoryDB generates the admin password
+  memoryDBAdminPassSecretArn: /HyperLocal/MemoryDB/AdminPassSecretArn
+
+  # the endpoint address of the MemoryDB
+  memoryDBClusterEndpoint: /HyperLocal/MemoryDB/ClusterEndpoint
+
   # the parameter name we use to refer to geoTrackingApiUrl in SSM ParameterStore
   geoTrackingApiUrl: /Hyperlocal/Api/GeoTracking/Url
 
@@ -106,6 +112,9 @@ memoryDBConfig:
 
   # number of read replicas per shard
   numReplicasPerShard: 2
+
+  # port
+  port: 6379
 
   # timeout in MS for driverLocationUpdate TTL in DDB
   driverLocationUpdateTTLInMS: 120000
