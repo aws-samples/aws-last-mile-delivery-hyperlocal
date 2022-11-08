@@ -134,6 +134,7 @@ export class SimulatorContainer extends Construct {
 
 		// taskDef
 		this.taskDefinition = new ecs.TaskDefinition(this, `ECSTaskDefinition-${name}`, {
+			family: namespaced(this, `simulator-${name}`),
 			taskRole: this.taskDefinitionRole,
 			executionRole: this.taskExecutionRole,
 			networkMode: ecs.NetworkMode.AWS_VPC,
