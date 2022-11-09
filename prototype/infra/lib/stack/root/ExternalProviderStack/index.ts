@@ -19,18 +19,18 @@ import { Stack, StackProps } from 'aws-cdk-lib'
 import { setNamespace } from '@aws-play/cdk-core'
 import { ExternalPollingProviderStack, ExternalProviderSetup, ExternalWebhookProviderStack } from '@prototype/external-provider-mock'
 
-export interface ExternalProviderType {
+type ExternalProviderType = 'polling-provider' | 'webhook-provider'
+export interface ExternalProviderEntry {
 	apiKeySecretName: string
-	url: string
+	apiUrlParameterStoreKey: string
+	type: ExternalProviderType
+	callbackProviderName?: string
 }
 
 export interface ExternalProviderStackProps extends StackProps {
   readonly namespace: string
 	readonly providersConfig: { [key: string]: any, }
-	readonly externalProviderConfig: {
-		MockPollingProvider: ExternalProviderType
-		MockWebhookProvider: ExternalProviderType
-	}
+	readonly externalProviderConfig: Record<string, ExternalProviderEntry>
 }
 
 /**
@@ -47,22 +47,42 @@ export class ExternalProviderStack extends Stack {
 
 		setNamespace(this, namespace)
 
-		const polling = new ExternalPollingProviderStack(this, 'ExternalPollingProviderStack', {})
+		const apiKeySecretNameList = []
 
-		const webhook = new ExternalWebhookProviderStack(this, 'ExternalWebhookProviderStack', {
-			exampleWebhookApiSecretName: providersConfig.ExampleWebhookProvider.apiKeySecretName,
-		})
+		for (const providerName in externalProviderConfig) {
+			const providerDescriptor = externalProviderConfig[providerName]
+
+			let externalProviderStack: ExternalPollingProviderStack | ExternalWebhookProviderStack
+
+			switch (providerDescriptor.type) {
+				case 'polling-provider':
+					externalProviderStack = new ExternalPollingProviderStack(this, `ExternalPolling-${providerName}`, {
+						providerName,
+						apiUrlParameterStoreKey: providerDescriptor.apiUrlParameterStoreKey,
+					})
+					break
+
+				case 'webhook-provider':
+					externalProviderStack = new ExternalWebhookProviderStack(this, `ExternalWebhook-${providerName}`, {
+						providerName,
+						apiUrlParameterStoreKey: providerDescriptor.apiUrlParameterStoreKey,
+						callbackApiKeySecretName: providersConfig[providerDescriptor.callbackProviderName as string].apiKeySecretName,
+					})
+					break
+
+				default:
+					throw new Error(`External provider type ${providerDescriptor.type} not supported.`)
+			}
+
+			apiKeySecretNameList.push({
+				keyArn: externalProviderStack.apiKey.keyArn,
+				keyId: externalProviderStack.apiKey.keyId,
+				secret: providerDescriptor.apiKeySecretName,
+			})
+		}
 
 		new ExternalProviderSetup(this, 'ExternalProviderSetup', {
-			apiKeySecretNameList: [{
-				keyArn: polling.apiKey.keyArn,
-				keyId: polling.apiKey.keyId,
-				secret: externalProviderConfig.MockPollingProvider.apiKeySecretName,
-			}, {
-				keyArn: webhook.apiKey.keyArn,
-				keyId: webhook.apiKey.keyId,
-				secret: externalProviderConfig.MockWebhookProvider.apiKeySecretName,
-			}],
+			apiKeySecretNameList,
 		})
 	}
 }

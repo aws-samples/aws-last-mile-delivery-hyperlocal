@@ -20,7 +20,7 @@ import { DeclaredLambdaFunction } from '@aws-play/cdk-lambda'
 import { namespaced } from '@aws-play/cdk-core'
 
 interface ExternalWebhookInvokerStackProps {
-	readonly exampleWebhookApiSecretName: string
+	readonly callbackApiKeySecretName: string
 	readonly externalOrderFinalisedIndex: string
 	readonly externalOrderTable: ddb.ITable
 }
@@ -31,11 +31,11 @@ export class ExternalWebhookInvokerStack extends Construct {
 
 		const {
 			externalOrderTable,
-			exampleWebhookApiSecretName,
+			callbackApiKeySecretName,
 			externalOrderFinalisedIndex,
 		} = props
 
-		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'ExternalWebhookSecret', exampleWebhookApiSecretName)
+		const exampleWebhookProviderSecret = secretsmanager.Secret.fromSecretNameV2(scope, 'ExternalWebhookSecret', callbackApiKeySecretName)
 
 		const webhookInvoker = new lambda.Function(this, 'ExternalWebhookInvoker', {
 			functionName: namespaced(this, 'WebhookInvoker'),
@@ -46,7 +46,7 @@ export class ExternalWebhookInvokerStack extends Construct {
 			architecture: lambda.Architecture.ARM_64,
 			timeout: Duration.minutes(1),
 			environment: {
-				EXAMPLE_WEBHOOK_SECRET: exampleWebhookApiSecretName,
+				EXAMPLE_WEBHOOK_SECRET: callbackApiKeySecretName,
 				EXTERNAL_ORDER_TABLE: externalOrderTable.tableName,
 				EXTERNAL_ORDER_FINALISED_INDEX: externalOrderFinalisedIndex,
 			},
