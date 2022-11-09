@@ -2,8 +2,8 @@
 
 ## Resources
 
-* https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-dashboards-vpc-cognito/
-* https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-outside-vpc-nginx/
+* <https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-dashboards-vpc-cognito/>
+* <https://aws.amazon.com/premiumsupport/knowledge-center/opensearch-outside-vpc-nginx/>
 
 ## Current solution [DEV]
 

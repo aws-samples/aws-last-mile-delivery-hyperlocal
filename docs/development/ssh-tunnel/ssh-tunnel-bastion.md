@@ -8,13 +8,7 @@
 
 1. Add the following SSH config entry to your `~/.ssh/config`:
 
-    ```
-    Host bastion
-        User ec2-user
-        IdentityFile ~/.ssh/id_rsa
-        ProxyCommand ~/.ssh/aws-ssm-ec2-proxy-command.sh hyperlocalAdmin ap-southeast-1 ec2-user 22 ~/.ssh/id_rsa.pub devproto-BastionHost
-        StrictHostKeyChecking no
-
+    ```text
     Host debugInstance
         User ec2-user
         IdentityFile ~/.ssh/id_rsa
@@ -22,9 +16,8 @@
         StrictHostKeyChecking no
     ```
 
-1. Connect to the bastion host: `ssh bastion`
+1. Connect to the debug instance host: `ssh debugInstance`
 
 ## Resources
 
-* https://github.com/qoomon/aws-ssm-ec2-proxy-command
-
+* <https://github.com/qoomon/aws-ssm-ec2-proxy-command>
