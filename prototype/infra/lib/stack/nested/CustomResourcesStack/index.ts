@@ -62,13 +62,13 @@ export class CustomResourcesStack extends NestedStack {
 
 		let apiKeySecretNameList: ApiKeySecretConfigItem[] = [
 			{
-				keyArn: providerNestedStack.examplePollingProvider.apiKey.keyArn,
-				keyId: providerNestedStack.examplePollingProvider.apiKey.keyId,
+				keyArn: providerNestedStack.pollingProviders.ExamplePollingProvider.apiKey.keyArn,
+				keyId: providerNestedStack.pollingProviders.ExamplePollingProvider.apiKey.keyId,
 				secret: providersConfig.ExamplePollingProvider.apiKeySecretName,
 			},
 			{
-				keyArn: providerNestedStack.exampleWebhookProvider.apiKey.keyArn,
-				keyId: providerNestedStack.exampleWebhookProvider.apiKey.keyId,
+				keyArn: providerNestedStack.webhookProviders.ExampleWebhookProvider.apiKey.keyArn,
+				keyId: providerNestedStack.webhookProviders.ExampleWebhookProvider.apiKey.keyId,
 				secret: providersConfig.ExampleWebhookProvider.apiKeySecretName,
 			},
 			{

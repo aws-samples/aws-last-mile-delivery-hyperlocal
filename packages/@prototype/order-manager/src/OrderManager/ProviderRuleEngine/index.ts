@@ -27,7 +27,7 @@ interface Environment extends DeclaredLambdaEnvironment {
 interface Dependencies extends DeclaredLambdaDependencies {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
 	readonly providersConfig: { [key: string]: any, }
-	readonly providerApiUrls: {[key: string]: apigw.RestApi, }
+	readonly providerApiUrls: Record<string, string>
 }
 
 type TDeclaredProps = DeclaredLambdaProps<Environment, Dependencies>
@@ -55,13 +55,13 @@ export class ProviderRuleEngineLambda extends DeclaredLambdaFunction<Environment
 				PROVIDERS: Object.keys(providersConfig).join(','),
 				DEMOGRAPHIC_AREA_SETTINGS_TABLE: demographicAreaProviderEngineSettings.tableName,
 				EXAMPLE_POLLING_PROVIDER_SECRET_NAME: providersConfig.ExamplePollingProvider.apiKeySecretName,
-				EXAMPLE_POLLING_PROVIDER_URL: providerApiUrls.ExamplePollingProvider.url,
+				EXAMPLE_POLLING_PROVIDER_URL: providerApiUrls.ExamplePollingProvider,
 				EXAMPLE_WEBHOOK_PROVIDER_SECRET_NAME: providersConfig.ExampleWebhookProvider.apiKeySecretName,
-				EXAMPLE_WEBHOOK_PROVIDER_URL: providerApiUrls.ExampleWebhookProvider.url,
+				EXAMPLE_WEBHOOK_PROVIDER_URL: providerApiUrls.ExampleWebhookProvider,
 				INSTANT_DELIVERY_PROVIDER_SECRET_NAME: providersConfig.InstantDeliveryProvider.apiKeySecretName,
-				INSTANT_DELIVERY_PROVIDER_URL: providerApiUrls.InstantDeliveryProvider.url,
+				INSTANT_DELIVERY_PROVIDER_URL: providerApiUrls.InstantDeliveryProvider,
 				SAME_DAY_DELIVERY_PROVIDER_SECRET_NAME: providersConfig.SameDayDeliveryProvider.apiKeySecretName,
-				SAME_DAY_DELIVERY_PROVIDER_URL: providerApiUrls.SameDayDeliveryProvider.url,
+				SAME_DAY_DELIVERY_PROVIDER_URL: providerApiUrls.SameDayDeliveryProvider,
 			},
 			initialPolicy: [
 				new iam.PolicyStatement({

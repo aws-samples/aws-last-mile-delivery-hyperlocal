@@ -28,6 +28,14 @@ import { CloudFrontWebACLStack } from '../lib/stack/root/CloudFrontWebACLStack'
 
 const app = new App()
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const externalProvider = new ExternalProviderStack(app, 'ExternalProviderStack-Mock', {
+	stackName: 'ExternalProviderStack-Mock',
+	description: 'External Provider Mock Stack',
+	...config,
+	namespace: 'external',
+})
+
 const persistentBackendStack = new PersistentBackendStack(app, 'Dev-PersistentBackend', {
 	stackName: 'Dev-PersistentBackend',
 	description: 'Persistent Stack for RETAIN resources',
@@ -40,6 +48,10 @@ const backendStack = new BackendStack(app, 'Dev-Backend', {
 	persistent: persistentBackendStack,
 	...config,
 })
+
+// add explicit dependency: external providers must be created before this
+// so the ssm params are already in place for the external api's urls
+backendStack.addDependency(externalProvider)
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const debugStack = new DebugStack(app, 'Dev-DebugStack', {
@@ -85,14 +97,6 @@ const simulatorMainStack = new SimulatorMainStack(app, 'Simulator-Backend', {
 	...config,
 	simulatorPersistent: simulatorPersistentStack,
 	namespace: simulatorNamespace,
-})
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const externalProver = new ExternalProviderStack(app, 'ExternalProviderStack-Mock', {
-	stackName: 'ExternalProviderStack-Mock',
-	description: 'External Provider Mock Stack',
-	...config,
-	namespace: 'external',
 })
 
 Tags.of(app).add('proto:deployment:id', `${config.namespace}-lastmiledelivery-deployment`)

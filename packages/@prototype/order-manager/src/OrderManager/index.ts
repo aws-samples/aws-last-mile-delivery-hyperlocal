@@ -30,7 +30,7 @@ export interface OrderManagerStackProps {
 	readonly demographicAreaProviderEngineSettings: ddb.ITable
 	readonly orderTable: ddb.ITable
 	readonly providersConfig: { [key: string]: any, }
-	readonly providerApiUrls: {[key: string]: apigw.RestApi, }
+	readonly providerApiUrls: Record<string, string>
 	readonly privateVpc: ec2.IVpc
 	readonly vpcNetworking: Networking
 	readonly memoryDBCluster: MemoryDBCluster

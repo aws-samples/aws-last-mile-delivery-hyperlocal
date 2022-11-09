@@ -229,17 +229,22 @@ webhookProviderSettings: {}
 # EXTERNAL provider config
 # * key: the _name_ of the external provider
 # * value:
-#     * apiKeySecretName: the entry key in SecretsManager wherre the API key is stored
-#     * url: the endpoint of the external provider
+#     * apiKeySecretName: the entry key in SecretsManager where the API key is stored
+#     * apiUrlParameterStoreKey: the entry key in SSM ParameterStore where the API URL is stored
+#     * type: the type of the provider: polling-provider | webhook-provider\
+#     * callbackProviderName: [only for mock/external webhook provider] the name of the internal provider to callback to
 externalProviderConfig:
   # example polling provider
   MockPollingProvider:
     apiKeySecretName: ExternalMockPollingProviderApiKeySecret
-    url: https://XXXXXXXXXX.execute-api.ap-southeast-1.amazonaws.com/prod
+    apiUrlParameterStoreKey: /Hyperlocal/ExternalProvider/MockPollingProvider/Url
+    type: 'polling-provider'
   # example webhook provider
   MockWebhookProvider:
     apiKeySecretName: ExternalMockWebhookProviderApiKeySecret
-    url: https://XXXXXXXXXX.execute-api.ap-southeast-1.amazonaws.com/prod
+    apiUrlParameterStoreKey: /Hyperlocal/ExternalProvider/MockWebhookProvider/Url
+    type: 'webhook-provider'
+    callbackProviderName: 'ExampleWebhookProvider'
 
 # providers in the system (non-external)
 # * key: the name of the provider

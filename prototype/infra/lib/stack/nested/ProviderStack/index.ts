@@ -15,15 +15,16 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_ec2 as ec2 } from 'aws-cdk-lib'
+import { NestedStack, NestedStackProps, aws_lambda as lambda, aws_events as events, aws_ecs as ecs, aws_dynamodb as ddb, aws_elasticloadbalancingv2 as elb, aws_ec2 as ec2, aws_ssm as ssm } from 'aws-cdk-lib'
 import { Networking } from '@prototype/networking'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { ExamplePollingProvider, ExampleWebhookProvider, InstantDeliveryProvider, SameDayDeliveryProvider } from '@prototype/provider-impl'
 import { GraphhopperSetup } from '@prototype/dispatch-setup'
 import { MemoryDBCluster } from '@prototype/live-data-cache'
-import { ExternalProviderType } from '../../root/ExternalProviderStack'
+import { ExternalProviderEntry } from '../../root/ExternalProviderStack'
 import * as instantDelivery from '@prototype/instant-delivery-provider'
 import * as sameDayDelivery from '@prototype/same-day-delivery-provider'
+import { PollingProviderBase, WebhookProviderBase } from '@prototype/provider'
 
 export interface ProviderStackProps extends NestedStackProps {
 	readonly vpc: ec2.IVpc
@@ -41,10 +42,7 @@ export interface ProviderStackProps extends NestedStackProps {
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly sameDayDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly providersConfig: { [key: string]: any, }
-	readonly externalProviderConfig: {
-		MockPollingProvider: ExternalProviderType
-		MockWebhookProvider: ExternalProviderType
-	}
+	readonly externalProviderConfig: Record<string, ExternalProviderEntry>
 	readonly instantDeliveryProviderOrdersStatusIndex: string
 	readonly instantDeliveryProviderOrdersJobIdIndex: string
 	readonly sameDayDeliveryProviderOrdersStatusIndex: string
@@ -61,9 +59,9 @@ export interface ProviderStackProps extends NestedStackProps {
 }
 
 export class ProviderStack extends NestedStack {
-	public readonly examplePollingProvider: ExamplePollingProvider
+	public readonly pollingProviders: Record<string, PollingProviderBase>
 
-	public readonly exampleWebhookProvider: ExampleWebhookProvider
+	public readonly webhookProviders: Record<string, WebhookProviderBase>
 
 	public readonly instantDeliveryWebhookProvider: InstantDeliveryProvider
 
@@ -121,21 +119,36 @@ export class ProviderStack extends NestedStack {
 			eventBus: events.EventBus.fromEventBusArn(this, 'EventBus', eventBus.eventBusArn),
 		}
 
-		this.examplePollingProvider = new ExamplePollingProvider(this, 'ExamplePollingProvider', {
+		this.pollingProviders = {}
+		this.webhookProviders = {}
+
+		const mockPollingProviderApiUrlSSMParam = ssm.StringParameter.fromStringParameterName(
+			this,
+			'mockPollingProviderApiUrlSSMParam',
+			externalProviderConfig.MockPollingProvider.apiUrlParameterStoreKey,
+		)
+		const examplePollingProvider = new ExamplePollingProvider(this, 'ExamplePollingProvider', {
 			pollingProviderSettings,
-			externalProviderMockUrl: externalProviderConfig.MockPollingProvider.url,
+			externalProviderMockUrl: mockPollingProviderApiUrlSSMParam.stringValue,
 			externalProviderSecretName: externalProviderConfig.MockPollingProvider.apiKeySecretName,
 			memoryDBCluster,
 			...baseParams,
 		})
+		this.pollingProviders.ExamplePollingProvider = examplePollingProvider
 
-		this.exampleWebhookProvider = new ExampleWebhookProvider(this, 'ExampleWebhookProvider', {
+		const mockWebhookProviderApiUrlSSMParam = ssm.StringParameter.fromStringParameterName(
+			this,
+			'mockWebhookProviderApiUrlSSMParam',
+			externalProviderConfig.MockWebhookProvider.apiUrlParameterStoreKey,
+		)
+		const exampleWebhookProvider = new ExampleWebhookProvider(this, 'ExampleWebhookProvider', {
 			webhookProviderSettings,
-			externalProviderMockUrl: externalProviderConfig.MockWebhookProvider.url,
+			externalProviderMockUrl: mockWebhookProviderApiUrlSSMParam.stringValue,
 			externalProviderSecretName: externalProviderConfig.MockWebhookProvider.apiKeySecretName,
 			memoryDBCluster,
 			...baseParams,
 		})
+		this.webhookProviders.ExampleWebhookProvider = exampleWebhookProvider
 
 		this.instantDeliveryWebhookProvider = new InstantDeliveryProvider(this, 'InstantDeliveryProvider', {
 			instantDeliveryProviderSettings,
