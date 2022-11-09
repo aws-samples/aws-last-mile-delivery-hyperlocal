@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_ssm as ssm } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { RestApi } from '@aws-play/cdk-apigateway'
 import { DefaultWaf } from '@prototype/common'
@@ -24,7 +24,9 @@ import { ExternalWebhookServiceLambda } from './ServiceLambda'
 import { ExternalWebhookInvokerStack } from './WebhookInvoker'
 
 export interface ExternalWebhookProviderStackProps {
-	readonly exampleWebhookApiSecretName: string
+	readonly callbackApiKeySecretName: string
+	readonly apiUrlParameterStoreKey: string
+	readonly providerName: string
 }
 
 export class ExternalWebhookProviderStack extends Construct {
@@ -34,7 +36,9 @@ export class ExternalWebhookProviderStack extends Construct {
 		super(scope, id)
 
 		const {
-			exampleWebhookApiSecretName,
+			apiUrlParameterStoreKey,
+			callbackApiKeySecretName,
+			providerName,
 		} = props
 
 		const dataStack = new ExternalWebhookDataStack(this, 'ExternalWebhookData', {})
@@ -47,7 +51,7 @@ export class ExternalWebhookProviderStack extends Construct {
 		new ExternalWebhookInvokerStack(this, 'ExternalWebhookInvokerStack', {
 			externalOrderTable: dataStack.externalOrderTable,
 			externalOrderFinalisedIndex: dataStack.externalOrderFinalisedIndex,
-			exampleWebhookApiSecretName,
+			callbackApiKeySecretName,
 		})
 
 		// create RestApi instance here, re-use everywhere else
@@ -64,6 +68,12 @@ export class ExternalWebhookProviderStack extends Construct {
 		})
 
 		this.apiKey = externalProviderApi.addApiKeyWithUsagePlanAndStage('ApiKey-ExternalWebhook')
+
+		new ssm.StringParameter(this, `ApiUrlParam-${providerName}`, {
+			parameterName: apiUrlParameterStoreKey,
+			stringValue: externalProviderApi.url,
+			type: ssm.ParameterType.STRING,
+		})
 
 		const createOrder = externalProviderApi.addResourceWithAbsolutePath('order')
 		externalProviderApi.addFunctionToResource(createOrder, {

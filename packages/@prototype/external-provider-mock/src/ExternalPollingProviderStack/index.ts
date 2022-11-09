@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import { Construct } from 'constructs'
-import { aws_apigateway as apigw } from 'aws-cdk-lib'
+import { aws_apigateway as apigw, aws_ssm as ssm } from 'aws-cdk-lib'
 import { namespaced } from '@aws-play/cdk-core'
 import { DefaultWaf } from '@prototype/common'
 import { RestApi } from '@aws-play/cdk-apigateway'
@@ -23,7 +23,8 @@ import { ExternalPollingDataStack } from './DataStack'
 import { ExternalPollingServiceLambda } from './ServiceLambda'
 
 export interface ExternalPollingProviderStackProps {
-	readonly none?: string
+	readonly apiUrlParameterStoreKey: string
+	readonly providerName: string
 }
 
 export class ExternalPollingProviderStack extends Construct {
@@ -31,6 +32,8 @@ export class ExternalPollingProviderStack extends Construct {
 
 	constructor (scope: Construct, id: string, props: ExternalPollingProviderStackProps) {
 		super(scope, id)
+
+		const { apiUrlParameterStoreKey, providerName } = props
 
 		const dataStack = new ExternalPollingDataStack(this, 'ExternalPollingData', {})
 		const serviceLambda = new ExternalPollingServiceLambda(this, 'ExternalPollingServiceLambda', {
@@ -53,6 +56,12 @@ export class ExternalPollingProviderStack extends Construct {
 		})
 
 		this.apiKey = externalProviderApi.addApiKeyWithUsagePlanAndStage('ApiKey-ExternalPolling')
+
+		new ssm.StringParameter(this, `ApiUrlParam-${providerName}`, {
+			parameterName: apiUrlParameterStoreKey,
+			stringValue: externalProviderApi.url,
+			type: ssm.ParameterType.STRING,
+		})
 
 		const createOrder = externalProviderApi.addResourceWithAbsolutePath('order')
 		externalProviderApi.addFunctionToResource(createOrder, {
