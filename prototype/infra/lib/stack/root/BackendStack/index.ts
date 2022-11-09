@@ -27,7 +27,7 @@ import { AppConfigNestedStack } from '@prototype/appconfig'
 import { ProviderStack } from '../../nested/ProviderStack'
 import { CustomResourcesStack } from '../../nested/CustomResourcesStack'
 import { IoTStack } from '@prototype/iot-ingestion'
-import { ExternalProviderType } from '../ExternalProviderStack'
+import { ExternalProviderEntry } from '../ExternalProviderStack'
 import { DispatcherStack } from '../../nested/DispatcherStack'
 
 export interface BackendStackProps extends StackProps {
@@ -39,10 +39,7 @@ export interface BackendStackProps extends StackProps {
 	readonly pollingProviderSettings: { [key: string]: string | number, }
 	readonly webhookProviderSettings: { [key: string]: string | number, }
 	readonly providersConfig: { [key: string]: any, }
-	readonly externalProviderConfig: {
-		MockPollingProvider: ExternalProviderType
-		MockWebhookProvider: ExternalProviderType
-	}
+	readonly externalProviderConfig: Record<string, ExternalProviderEntry>
 	readonly instantDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly sameDayDeliveryProviderSettings: { [key: string]: string | number | boolean, }
 	readonly orderManagerSettings: { [key: string]: string | number | boolean, }
@@ -251,10 +248,10 @@ export class BackendStack extends Stack {
 			memoryDBCluster: liveDataCache.memoryDBCluster,
 			orderManagerSettings,
 			providerApiUrls: {
-				InstantDeliveryProvider: providerNestedStack.instantDeliveryWebhookProvider.apiGwInstance,
-				SameDayDeliveryProvider: providerNestedStack.sameDayDeliveryWebhookProvider.apiGwInstance,
-				ExampleWebhookProvider: providerNestedStack.exampleWebhookProvider.apiGwInstance,
-				ExamplePollingProvider: providerNestedStack.examplePollingProvider.apiGwInstance,
+				InstantDeliveryProvider: providerNestedStack.instantDeliveryWebhookProvider.apiGwInstance.url,
+				SameDayDeliveryProvider: providerNestedStack.sameDayDeliveryWebhookProvider.apiGwInstance.url,
+				ExampleWebhookProvider: providerNestedStack.webhookProviders.ExampleWebhookProvider.apiGwInstance.url,
+				ExamplePollingProvider: providerNestedStack.pollingProviders.ExamplePollingProvider.apiGwInstance.url,
 			},
 		})
 

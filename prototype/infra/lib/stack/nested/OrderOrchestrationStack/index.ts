@@ -27,7 +27,7 @@ export interface OrderOrchestrationStackProps extends NestedStackProps {
 	readonly orderTable: ddb.ITable
 	readonly eventBus: events.EventBus
 	readonly providersConfig: { [key: string]: any, }
-	readonly providerApiUrls: {[key: string]: api.RestApi, }
+	readonly providerApiUrls: Record<string, string>
 	readonly vpc: ec2.IVpc
 	readonly vpcNetworking: net.Networking
 	readonly lambdaLayers: { [key: string]: lambda.ILayerVersion, }

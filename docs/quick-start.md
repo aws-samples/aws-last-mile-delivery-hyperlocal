@@ -1,88 +1,56 @@
 # Deployment quick start
 
-1. Build the project:
+1. Make sure your environment is setup properly and `docker` is running
 
-```sh
-cd PrototypeCode
-yarn install
-yarn build:all
-```
+    * Make sure `docker` has enough resources (min. `16GB` mem), otherwise build will fail
 
-2. Deploy ExternalProviderMock stack
+1. Build the project
 
-```sh
-cd prototype/infra
-yarn dev:deploy:externalmock
-```
-
-3. Take the outputs of the API URLS and update `prototype/infra/config/default-XXXXXXXXXXXX.json` (where `XXX` is your AWS account ID):
-
-```json
-"externalProviderConfig": {
-    "MockPollingProvider": {
-        "apiKeySecretName": "ExternalMockPollingProviderApiKeySecret",
-        "url": "https://XXXXXXXXXX.execute-api.ap-southeast-1.amazonaws.com/prod" <---
-    },
-    "MockWebhookProvider": {
-        "apiKeySecretName": "ExternalMockWebhookProviderApiKeySecret",
-        "url": "https://YYYYYYYYYY.execute-api.ap-southeast-1.amazonaws.com/prod" <---
-    }
-},
-```
-
-4. Check out [ECS docs on ENI trunking](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html) and prepare your account.
-
-```sh
-aws ecs put-account-setting-default --name awsvpcTrunking --value enabled --region <YOUR_REGION> --profile <YOUR_AWS_PROFILE>
-
-# example
-aws ecs put-account-setting-default --name awsvpcTrunking --value enabled --region ap-southeast-1 --profile hyperlocalAdmin
-```
-
-5. Before the full stack deployment, build and push `graphhopper` and `order-dispacher` docker images.
-    In order to build these images, you need to download `indonesia-latest.osm.pbf` from `geofabrik.de` and
-    also pre-generate the graphhopper cache. This can be achieved running graphhopper locally built from source,
-    edit `config-example.yml` to point to the right `.osm.pbf` file:
-
-    ```sh
-    cd path/to/graphhopper
-    # edit config-example.yml
-    ./graphhopper.sh build
-    ./graphhopper.sh web path/to/openstreetmap/indonesia-latest.osm.pbf
+    ```bash
+    cd PrototypeCode
+    yarn install
+    yarn build:all
     ```
 
-    For more information, check out the [graphhopper README](./development/graphhopper/README.md).
+1. Setup your own configuration for your infrastructure
 
-    1. Graphhopper image
+    ```bash
+    cd prototype/infra/config
+    cp default.yml default-XXXXXXXXXXXX.yml # where XXXXXXXXXXXX is your AWS account ID (12-digit)
+    ```
 
-        ```sh
-        cd prototype/scripts/graphhopper
-        # review the parameters at the top of the file
-        ./build-and-upload.sh
-        ```
+    Open the newly copied `default-XXXXXXXXXXXX.yml` file and customize the configuraiton.
 
-    2. Order dispatcher image
-        ```sh
-        cd prototype/dispatch/order-dispatcher
-        # review the parameters at the top of the file
-        ./build-docker.sh
-        ```
+    Make sure that you have updated the following configuration parameters (MUST SET min list):
+      * env.account
+      * env.region
+      * env.originUserPassword
+      * env.destinationUserPassword
+      * administratorEmail
+      * graphhopperSettings.osmPbfMapFileUrl
 
-        NOTE: update `src/main/resources/application-docker.properties` after Step 6 and redeploy
-        
-        > !!! TODO: automate
+1. Check out [ECS docs on ENI trunking](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html) and prepare your account.
 
-6. Run the deployment
-   
-    ```sh
+    ```bash
+    # example (change region/profile values)
+    aws ecs put-account-setting-default --name awsvpcTrunking --value enabled --region ap-southeast-1 --profile hyperlocalAdmin
+    ```
+
+1. Bootstrap your account
+
+    ```bash
+    cd prototype/infra
+    yarn bootstrap
+    ```
+
+1. Run the deployment
+
+    ```bash
     cd prototype/infra
     yarn dev:deploy:all
     ```
 
-7. After deployment, build simulator docker image and push
-   
-    ```sh
-    cd prototype/simulator/container
-    # review the parameters at the top of the sh file
-    yarn build:docker
-    ```
+1. Check your email (set as `administratorEmail`) for your temporary password
+
+1. Check the URL for the newly created CloudFront Distribution, load it in your
+browser and login with your email/temp password
