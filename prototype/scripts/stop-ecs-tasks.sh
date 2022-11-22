@@ -1,13 +1,12 @@
 #!/bin/bash
 
+# make sure you created a `.env` file next to this and defined the following variables:
+# PROFILE, REGION
+source .env
 
 ## NOTE: this script is a bit buggy but does what it's supposed to do
 
 MAX_ITEMS=20
-
-PROFILE=hyperlocalAdmin
-REGION=ap-southeast-1
-
 CLUSTER_NAME=sim-simulator
 
 function executeCommand() {
@@ -16,7 +15,7 @@ function executeCommand() {
 }
 
 # ## and everything else
-while [ 1 ] 
+while [ 1 ]
 do
 
     LISTCMD="aws ecs list-tasks --cluster $CLUSTER_NAME --profile $PROFILE --region $REGION --max-items $MAX_ITEMS --desired-status RUNNING --output json"
