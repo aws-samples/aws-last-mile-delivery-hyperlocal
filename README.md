@@ -44,7 +44,7 @@ Hyperlocal businesses that involve Grocery, Food Delivery, Instant Courier, etc,
 * [AWS CLI version 2](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 * [VSCode](https://code.visualstudio.com) highly recommended
   * [VS Code ESLint extention](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) - Required if using vscode and want auto integration with eslint
-* [nodejs](https://nodejs.org) with [yarn](https://yarnpkg.com)
+* [nodejs v18](https://nodejs.org) with [yarn](https://yarnpkg.com)
 * Java -- [Corretto 11 preferred](https://aws.amazon.com/corretto)
 * [Docker](https://www.docker.com)
 

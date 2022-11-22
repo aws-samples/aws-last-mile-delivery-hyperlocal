@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
 
     <title>Yarn Audit Report</title>
-    <meta name="description" content="26 known vulnerabilities found.">
+    <meta name="description" content="56 known vulnerabilities found.">
 
     <style>
         html {
@@ -80,13 +80,313 @@
             <h1>Yarn Audit Report</h1>
 
             <h3>
-                13 unique from
-                26 known vulnerabilities |
+                21 unique from
+                56 known vulnerabilities |
                 6019 dependencies
             </h3>
         </div>
     </div>
     <div class="row">
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-danger">critical</span>
+                            Prototype pollution in webpack loader-utils
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 2.0.2</li>
+                                    
+                                    <li>Published: 10/13/2022, 8:00:28 PM</li>
+                                    
+                                    <li>CWE-1321</li>
+                                    
+                                        <li>CVE-2022-37601</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=2.0.0 &lt;2.0.3</li>
+                                    <li>Patched: &gt;=2.0.3</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils prior to version 2.0.3 via the name variable in parseQuery.js.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 2.0.3 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37601">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/212">https://github.com/webpack/loader-utils/issues/212</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v2.0.3">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/217">https://github.com/webpack/loader-utils/pull/217</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/220">https://github.com/webpack/loader-utils/pull/220</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v1.4.1">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</a></li>
+<li><a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq">https://github.com/advisories/GHSA-76p3-8jx3-jpfq</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-0" type="checkbox">
+                            <h3><label for="vulnerability-reasons-0">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;worker-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;@svgr/webpack&gt;loader-utils</code>
+                                    </div>
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;adjust-sourcemap-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-danger">critical</span>
+                            Prototype pollution in webpack loader-utils
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 2.0.0</li>
+                                    
+                                    <li>Published: 10/13/2022, 8:00:28 PM</li>
+                                    
+                                    <li>CWE-1321</li>
+                                    
+                                        <li>CVE-2022-37601</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=2.0.0 &lt;2.0.3</li>
+                                    <li>Patched: &gt;=2.0.3</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils prior to version 2.0.3 via the name variable in parseQuery.js.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 2.0.3 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37601">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/212">https://github.com/webpack/loader-utils/issues/212</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v2.0.3">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/217">https://github.com/webpack/loader-utils/pull/217</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/220">https://github.com/webpack/loader-utils/pull/220</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v1.4.1">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</a></li>
+<li><a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq">https://github.com/advisories/GHSA-76p3-8jx3-jpfq</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-1" type="checkbox">
+                            <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-danger">critical</span>
+                            Prototype pollution in webpack loader-utils
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.4.0</li>
+                                    
+                                    <li>Published: 10/13/2022, 8:00:28 PM</li>
+                                    
+                                    <li>CWE-1321</li>
+                                    
+                                        <li>CVE-2022-37601</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &lt;1.4.1</li>
+                                    <li>Patched: &gt;=1.4.1</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils prior to version 2.0.3 via the name variable in parseQuery.js.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.4.1 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37601">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/212">https://github.com/webpack/loader-utils/issues/212</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v2.0.3">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/217">https://github.com/webpack/loader-utils/pull/217</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/220">https://github.com/webpack/loader-utils/pull/220</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v1.4.1">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</a></li>
+<li><a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq">https://github.com/advisories/GHSA-76p3-8jx3-jpfq</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-2" type="checkbox">
+                            <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;babel-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-danger">critical</span>
+                            Prototype pollution in webpack loader-utils
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.2.3</li>
+                                    
+                                    <li>Published: 10/13/2022, 8:00:28 PM</li>
+                                    
+                                    <li>CWE-1321</li>
+                                    
+                                        <li>CVE-2022-37601</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &lt;1.4.1</li>
+                                    <li>Patched: &gt;=1.4.1</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>Prototype pollution vulnerability in function parseQuery in parseQuery.js in webpack loader-utils prior to version 2.0.3 via the name variable in parseQuery.js.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.4.1 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37601">https://nvd.nist.gov/vuln/detail/CVE-2022-37601</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/212">https://github.com/webpack/loader-utils/issues/212</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L11</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/parseQuery.js#L47</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v2.0.3">https://github.com/webpack/loader-utils/releases/tag/v2.0.3</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/217">https://github.com/webpack/loader-utils/pull/217</a></li>
+<li><a href="https://github.com/webpack/loader-utils/pull/220">https://github.com/webpack/loader-utils/pull/220</a></li>
+<li><a href="https://github.com/webpack/loader-utils/releases/tag/v1.4.1">https://github.com/webpack/loader-utils/releases/tag/v1.4.1</a></li>
+<li><a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq">https://github.com/advisories/GHSA-76p3-8jx3-jpfq</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-3" type="checkbox">
+                            <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-76p3-8jx3-jpfq" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
         
             <div class="col-md-12">
                 <div class="card mb-3">
@@ -151,8 +451,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-0" type="checkbox">
-                            <h3><label for="vulnerability-reasons-0">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-4" type="checkbox">
+                            <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -230,8 +530,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-1" type="checkbox">
-                            <h3><label for="vulnerability-reasons-1">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-5" type="checkbox">
+                            <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -298,8 +598,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-2" type="checkbox">
-                            <h3><label for="vulnerability-reasons-2">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-6" type="checkbox">
+                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -372,8 +672,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-3" type="checkbox">
-                            <h3><label for="vulnerability-reasons-3">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-7" type="checkbox">
+                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -445,8 +745,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-4" type="checkbox">
-                            <h3><label for="vulnerability-reasons-4">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-8" type="checkbox">
+                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -519,8 +819,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-5" type="checkbox">
-                            <h3><label for="vulnerability-reasons-5">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-9" type="checkbox">
+                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -531,6 +831,154 @@
                         
 
                         <a href="https://github.com/advisories/GHSA-93q8-gq69-wqmw" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
+                            loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 2.0.2</li>
+                                    
+                                    <li>Published: 10/15/2022, 3:00:38 AM</li>
+                                    
+                                    <li>CWE-400</li>
+                                    
+                                        <li>CVE-2022-37603</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=2.0.0 &lt;2.0.4</li>
+                                    <li>Patched: &gt;=2.0.4</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>A Regular expression denial of service (ReDoS) flaw was found in Function interpolateName in interpolateName.js in webpack loader-utils 2.0.0 via the url variable in interpolateName.js. A badly or maliciously formed string could be used to send crafted requests that cause a system to crash or take a disproportional amount of time to process. This issue has been patched in versions 1.4.2, 2.0.4 and 3.2.1.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 2.0.4 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37603">https://nvd.nist.gov/vuln/detail/CVE-2022-37603</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/213">https://github.com/webpack/loader-utils/issues/213</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/216">https://github.com/webpack/loader-utils/issues/216</a></li>
+<li><a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488">https://github.com/advisories/GHSA-3rfm-jhwj-7488</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-10" type="checkbox">
+                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;worker-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;@svgr/webpack&gt;loader-utils</code>
+                                    </div>
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;adjust-sourcemap-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
+                            loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 2.0.0</li>
+                                    
+                                    <li>Published: 10/15/2022, 3:00:38 AM</li>
+                                    
+                                    <li>CWE-400</li>
+                                    
+                                        <li>CVE-2022-37603</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=2.0.0 &lt;2.0.4</li>
+                                    <li>Patched: &gt;=2.0.4</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>A Regular expression denial of service (ReDoS) flaw was found in Function interpolateName in interpolateName.js in webpack loader-utils 2.0.0 via the url variable in interpolateName.js. A badly or maliciously formed string could be used to send crafted requests that cause a system to crash or take a disproportional amount of time to process. This issue has been patched in versions 1.4.2, 2.0.4 and 3.2.1.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 2.0.4 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37603">https://nvd.nist.gov/vuln/detail/CVE-2022-37603</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/213">https://github.com/webpack/loader-utils/issues/213</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/216">https://github.com/webpack/loader-utils/issues/216</a></li>
+<li><a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488">https://github.com/advisories/GHSA-3rfm-jhwj-7488</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-11" type="checkbox">
+                            <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;react-dev-utils&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
@@ -587,8 +1035,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-6" type="checkbox">
-                            <h3><label for="vulnerability-reasons-6">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-12" type="checkbox">
+                            <h3><label for="vulnerability-reasons-12">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -662,8 +1110,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-7" type="checkbox">
-                            <h3><label for="vulnerability-reasons-7">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-13" type="checkbox">
+                            <h3><label for="vulnerability-reasons-13">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -728,8 +1176,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-8" type="checkbox">
-                            <h3><label for="vulnerability-reasons-8">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-14" type="checkbox">
+                            <h3><label for="vulnerability-reasons-14">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -801,8 +1249,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-9" type="checkbox">
-                            <h3><label for="vulnerability-reasons-9">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-15" type="checkbox">
+                            <h3><label for="vulnerability-reasons-15">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -813,6 +1261,146 @@
                         
 
                         <a href="https://github.com/advisories/GHSA-f8q6-p94x-37v3" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
+                            loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.4.0</li>
+                                    
+                                    <li>Published: 10/15/2022, 3:00:38 AM</li>
+                                    
+                                    <li>CWE-400</li>
+                                    
+                                        <li>CVE-2022-37603</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=1.0.0 &lt;1.4.2</li>
+                                    <li>Patched: &gt;=1.4.2</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>A Regular expression denial of service (ReDoS) flaw was found in Function interpolateName in interpolateName.js in webpack loader-utils 2.0.0 via the url variable in interpolateName.js. A badly or maliciously formed string could be used to send crafted requests that cause a system to crash or take a disproportional amount of time to process. This issue has been patched in versions 1.4.2, 2.0.4 and 3.2.1.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.4.2 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37603">https://nvd.nist.gov/vuln/detail/CVE-2022-37603</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/213">https://github.com/webpack/loader-utils/issues/213</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/216">https://github.com/webpack/loader-utils/issues/216</a></li>
+<li><a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488">https://github.com/advisories/GHSA-3rfm-jhwj-7488</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-16" type="checkbox">
+                            <h3><label for="vulnerability-reasons-16">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;babel-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <span class="badge badge-warning">high</span>
+                            loader-utils is vulnerable to Regular Expression Denial of Service (ReDoS) via url variable
+                        </h1>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Module:
+                                        <a href="https://npmjs.com/package/loader-utils" target="_blank">loader-utils</a>
+                                    </li>
+                                    
+                                        <li>Installed version: 1.2.3</li>
+                                    
+                                    <li>Published: 10/15/2022, 3:00:38 AM</li>
+                                    
+                                    <li>CWE-400</li>
+                                    
+                                        <li>CVE-2022-37603</li>
+                                    
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul>
+                                    <li>Vulnerable: &gt;=1.0.0 &lt;1.4.2</li>
+                                    <li>Patched: &gt;=1.4.2</li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <h3>Overview</h3>
+                        <div class="card-text"><p>A Regular expression denial of service (ReDoS) flaw was found in Function interpolateName in interpolateName.js in webpack loader-utils 2.0.0 via the url variable in interpolateName.js. A badly or maliciously formed string could be used to send crafted requests that cause a system to crash or take a disproportional amount of time to process. This issue has been patched in versions 1.4.2, 2.0.4 and 3.2.1.</p>
+</div>
+
+                        
+                            <h3>Remediation</h3>
+                            <div class="card-text"><p>Upgrade to version 1.4.2 or later</p>
+</div>
+                        
+                        
+                            <h3>References</h3>
+                            <div class="card-text"><ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-37603">https://nvd.nist.gov/vuln/detail/CVE-2022-37603</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/213">https://github.com/webpack/loader-utils/issues/213</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L107</a></li>
+<li><a href="https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38">https://github.com/webpack/loader-utils/blob/d9f4e23cf411d8556f8bac2d3bf05a6e0103b568/lib/interpolateName.js#L38</a></li>
+<li><a href="https://github.com/webpack/loader-utils/issues/216">https://github.com/webpack/loader-utils/issues/216</a></li>
+<li><a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488">https://github.com/advisories/GHSA-3rfm-jhwj-7488</a></li>
+</ul>
+</div>
+                        
+                        
+                            <input id="vulnerability-reasons-17" type="checkbox">
+                            <h3><label for="vulnerability-reasons-17">Reasons this module exists</label></h3>
+                            <div class="mb-3 collapsible-wrapper">
+                                
+                                    <div class="card-text">
+                                        <code>simulator-webapp&gt;react-scripts&gt;resolve-url-loader&gt;loader-utils</code>
+                                    </div>
+                                
+                            </div>
+                        
+
+                        <a href="https://github.com/advisories/GHSA-3rfm-jhwj-7488" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
                     </div>
                 </div>
             </div>
@@ -835,7 +1423,7 @@
                                     
                                     <li>Published: 9/5/2020, 2:00:54 AM</li>
                                     
-                                    <li>CWE-915</li>
+                                    <li>CWE-915,CWE-1321</li>
                                     
                                         <li>CVE-2020-7608</li>
                                     
@@ -873,8 +1461,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-10" type="checkbox">
-                            <h3><label for="vulnerability-reasons-10">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-18" type="checkbox">
+                            <h3><label for="vulnerability-reasons-18">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -941,8 +1529,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-11" type="checkbox">
-                            <h3><label for="vulnerability-reasons-11">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-19" type="checkbox">
+                            <h3><label for="vulnerability-reasons-19">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -1019,8 +1607,8 @@
 </div>
                         
                         
-                            <input id="vulnerability-reasons-12" type="checkbox">
-                            <h3><label for="vulnerability-reasons-12">Reasons this module exists</label></h3>
+                            <input id="vulnerability-reasons-20" type="checkbox">
+                            <h3><label for="vulnerability-reasons-20">Reasons this module exists</label></h3>
                             <div class="mb-3 collapsible-wrapper">
                                 
                                     <div class="card-text">
@@ -1037,7 +1625,7 @@
         
         
 
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 11/2/2022, 2:09:38 PM</h6>
+        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 11/22/2022, 11:49:44 AM</h6>
     </div>
 </div>
 </body>
