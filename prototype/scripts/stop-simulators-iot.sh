@@ -1,7 +1,8 @@
 #!/bin/bash
 
-PROFILE=hyperlocalAdmin
-REGION=ap-southeast-1
+# make sure you created a `.env` file next to this and defined the following variables:
+# PROFILE, REGION
+source .env
 
 IOT_TOPIC=broadcast
 

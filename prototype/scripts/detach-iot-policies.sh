@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# make sure you created a `.env` file next to this and defined the following variables:
+# PROFILE, REGION
+source .env
+
 MAX_ITEMS=100
 
 if [ -z "$1" ]; then
@@ -10,10 +14,6 @@ if [ -z "$1" ]; then
 else
     POLICY_NAME=$1
 fi
-
-
-PROFILE=hyperlocalAdmin
-REGION=ap-southeast-1
 
 function executeCommand() {
     printf "\n\tExecuting: $1"

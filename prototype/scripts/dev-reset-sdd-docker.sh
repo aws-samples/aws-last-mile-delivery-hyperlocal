@@ -1,14 +1,11 @@
 #!/bin/bash
 
-if [ -f "./.env" ]; then
-    . ./.env
-else
-    PROFILE=hyperlocalAdmin
-    NAMESPACE=devproto
-    REGION=ap-southeast-1
-    SDD_DOCKER_TAG= #TODO add it here
-    MAPFILE_URL=https://download.geofabrik.de/asia/indonesia-latest.osm.pbf
-fi
+# make sure you created a `.env` file next to this and defined the following variables:
+# PROFILE, REGION, NAMESPACE
+source .env
+
+SDD_DOCKER_TAG= #TODO add it here
+MAPFILE_URL=https://download.geofabrik.de/asia/indonesia-latest.osm.pbf
 
 CLUSTER_NAME=$NAMESPACE-DispatcherCluster
 SERVICE_NAME=$NAMESPACE-Dispatcher-SameDay-DirectPudo

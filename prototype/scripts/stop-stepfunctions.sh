@@ -1,11 +1,12 @@
 #!/bin/bash
 
+# make sure you created a `.env` file next to this and defined the following variables:
+# PROFILE, REGION
+source .env
+
 MAX_ITEMS=20
 
-ACCOUNT_ID=XXXXXXXXXXXX
-PROFILE=hyperlocalAdmin
-REGION=ap-southeast-1
-
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text --profile $PROFILE)
 STATEMACHINE_ARN=arn:aws:states:ap-southeast-1:$ACCOUNT_ID:stateMachine:devproto-OrderManagerStepFunction
 
 function executeCommand() {
