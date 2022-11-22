@@ -20,7 +20,6 @@ module.exports = {
 		'plugin:react-hooks/recommended',
 	],
 	root: true,
-	plugins: ['import'],
 	rules: {
 		// turn on errors for missing imports
 		'import/no-unresolved': 'error',
