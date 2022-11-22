@@ -45,7 +45,10 @@ import static java.util.stream.Collectors.toList;
  */
 public class GraphhopperRouter implements IDistanceCalculator {
     private static final Logger logger = LoggerFactory.getLogger(GraphhopperRouter.class);
-    private static final RoundingMode roundingMode = RoundingMode.HALF_EVEN;
+    private static final RoundingMode roundingMode = RoundingMode.HALF_DOWN;
+
+    private static final int minGpsAccuracy = 3;
+    private static final int defaultGpsAccuracy = 5;
 
     /**
      * The allowed profiles for routing.
@@ -97,8 +100,8 @@ public class GraphhopperRouter implements IDistanceCalculator {
     private final AtomicInteger errorCnt;
 
     public GraphhopperRouter(GraphHopper graphhopper, String profile) {
-        // don't use additional gps accuracy
-        this(graphhopper, profile, -1);
+        // set default GPS accuracy to 5 (1.11m)
+        this(graphhopper, profile, defaultGpsAccuracy);
     }
 
     public GraphhopperRouter(GraphHopper graphhopper, String profile, int gpsAccuracy) {
@@ -119,19 +122,44 @@ public class GraphhopperRouter implements IDistanceCalculator {
         this.errorCnt = new AtomicInteger(0);
     }
 
-    private GHResponse getRoute(double fromLat, double fromLng, double toLat, double toLng) {
-        if (gpsAccuracy >= 0 && gpsAccuracy <= 8) {
-            fromLat = BigDecimal.valueOf(fromLat).setScale(gpsAccuracy, roundingMode).doubleValue();
-            fromLng = BigDecimal.valueOf(fromLng).setScale(gpsAccuracy, roundingMode).doubleValue();
-            toLat = BigDecimal.valueOf(toLat).setScale(gpsAccuracy, roundingMode).doubleValue();
-            toLng = BigDecimal.valueOf(toLng).setScale(gpsAccuracy, roundingMode).doubleValue();
+    private double getNormalizedDouble(double val, int accuracy) {
+        if (accuracy >= 0 && accuracy <= 8) {
+            return BigDecimal.valueOf(val).setScale(accuracy, roundingMode).doubleValue();
         }
+        return val;
+    }
 
+    private GHResponse getRoute(double fromLat, double fromLng, double toLat, double toLng) {
         logger.trace("getRoute between {}/{} and {}/{}", fromLat, fromLng, toLat, toLng);
+
+        GHResponse ghResponse = this.getRoute(fromLat, fromLng, toLat, toLng, this.gpsAccuracy);
+        return ghResponse;
+    }
+
+    private GHResponse getRoute(double fromLat, double fromLng, double toLat, double toLng, int accuracy) {
+        if (accuracy >= 0 && accuracy <= 8) {
+            fromLat = getNormalizedDouble(fromLat, accuracy);
+            fromLng = getNormalizedDouble(fromLng, accuracy);
+            toLat = getNormalizedDouble(toLat, accuracy);
+            toLng = getNormalizedDouble(toLng, accuracy);
+        }
 
         GHRequest ghRequest = new GHRequest(fromLat, fromLng, toLat, toLng);
         ghRequest.setProfile(this.profile);
-        return graphhopper.route(ghRequest);
+        GHResponse ghResponse = graphhopper.route(ghRequest);
+
+        if (ghResponse.hasErrors()) {
+            for (Throwable err : ghResponse.getErrors()) {
+                logger.warn("Error while calculating route between {}/{} and {}/{}: {}", fromLat, fromLng, toLat, toLng, err.getMessage());
+            }
+
+            if (accuracy - 1 >= minGpsAccuracy) {
+                logger.info("Attempting on lower ({}) accuracy", (accuracy - 1));
+                return this.getRoute(fromLat, fromLng, toLat, toLng, accuracy - 1);
+            }
+        }
+
+        return ghResponse;
     }
 
     /**
@@ -143,6 +171,7 @@ public class GraphhopperRouter implements IDistanceCalculator {
      */
     public List<Coordinate> getPath(Coordinate origin, Coordinate destination) {
         logger.trace("getPath between {} and {}", origin, destination);
+
         GHResponse ghResponse = this.getRoute(
                 origin.getLatitude(), origin.getLongitude(), destination.getLatitude(), destination.getLongitude());
 
@@ -169,12 +198,10 @@ public class GraphhopperRouter implements IDistanceCalculator {
      */
     public Distance travelDistance(GeoCoord from, GeoCoord to) {
         logger.trace("Calculating distance between {} and {}", from, to);
-
         GHResponse ghResponse = this.getRoute(from.lat, from.lng, to.lat, to.lng);
 
         if (ghResponse.hasErrors()) {
             for (Throwable err : ghResponse.getErrors()) {
-                logger.debug("Error while calculating route between {}/{} and {}/{}: {}", from.lat, from.lng, to.lat, to.lng, err.getMessage());
                 errorCnt.incrementAndGet();
             }
 
