@@ -71,6 +71,9 @@ parameterStoreKeys:
   # the parameter name we use to refer to geoTrackingApiUrl in SSM ParameterStore
   geoTrackingApiUrl: /Hyperlocal/Api/GeoTracking/Url
 
+  # the parameter name we use for the ALS route calculator
+  locationRouteCalculatorName: /Hyperlocal/Location/RouteCalculatorName
+
   # key for assignments table name
   assignmentsTableName: /HyperLocal/Ddb/Assigments/TableName
 
@@ -403,6 +406,13 @@ dispatcherSettings:
       containerPort: 8080
       hostPort: 8080
 
+      # what map provider and routing to use - available values: OSM or ALS
+      mapProvider: ALS
+
+      # [OPTIONAL] if mapProvider == ALS - available values: Esri / Grab / Here
+      # see: https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html
+      mapDataSource: Here
+
     # instant - mixed pickup dropoff dispatcher
     mixedpudo:
       # desired amount of ECS tasks that run in parallel to serve requests to the dispatcher
@@ -414,6 +424,13 @@ dispatcherSettings:
       # [OPTIONAL] port mapping
       containerPort: 8080
       hostPort: 8080
+
+      # what map provider and routing to use - available values: OSM or ALS
+      mapProvider: OSM
+
+      # [OPTIONAL] if mapProvider == ALS - available values: Esri / Grab / Here
+      # see: https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html
+      mapDataSource: Here
 
   # same-day delivery domain
   sameday:
@@ -431,6 +448,13 @@ dispatcherSettings:
       # [OPTIONAL] port mapping
       containerPort: 8080
       hostPort: 8080
+
+      # what map provider and routing to use - available values: OSM or ALS
+      mapProvider: OSM
+
+      # [OPTIONAL] if mapProvider == ALS - available values: Esri / Grab / Here
+      # see: https://docs.aws.amazon.com/location/latest/developerguide/what-is-data-provider.html
+      mapDataSource: Here
 
 
 # country to configure the simulator for. Allowed values: Philippines and Indonesia
