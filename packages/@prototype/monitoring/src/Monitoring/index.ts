@@ -89,6 +89,7 @@ export class Monitoring extends Construct {
 			vpc,
 			vpcSubnets: vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }),
 			role: debugInstanceRole,
+			requireImdsv2: true,
 		})
 
 		debugInstance.userData.addCommands(
