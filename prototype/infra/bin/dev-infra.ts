@@ -16,7 +16,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import 'source-map-support/register'
-import { App, Tags } from 'aws-cdk-lib'
+import { App, Aspects, Tags, aws_autoscaling as autoscaling } from 'aws-cdk-lib'
 import config from '../config'
 import { BackendStack } from '../lib/stack/root/BackendStack'
 import { PersistentBackendStack } from '../lib/stack/root/PersistentBackendStack'
@@ -99,4 +99,9 @@ const simulatorMainStack = new SimulatorMainStack(app, 'Simulator-Backend', {
 	namespace: simulatorNamespace,
 })
 
+// make sure that IMDSv2 is required on instances deployed by AutoScalingGroups
+const asgImdsv2Required = new autoscaling.AutoScalingGroupRequireImdsv2Aspect()
+Aspects.of(app).add(asgImdsv2Required)
+
+// tag all deployed resources
 Tags.of(app).add('proto:deployment:id', `${config.namespace}-lastmiledelivery-deployment`)
