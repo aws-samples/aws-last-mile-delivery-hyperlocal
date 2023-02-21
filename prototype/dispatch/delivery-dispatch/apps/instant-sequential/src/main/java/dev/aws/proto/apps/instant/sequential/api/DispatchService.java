@@ -48,8 +48,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,8 +82,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
     }
 
     @Override
-    public void solveDispatchProblem(UUID problemId, DispatchRequest req) {
-        long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
+    public void solveDispatchProblem(UUID problemId, long createdAt, DispatchRequest req) {
         String executionId = req.getExecutionId();
 
         logger.trace("SolveDispatchProblem request :: problemId={} :: executionId={}", problemId, executionId);
@@ -242,11 +239,11 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         }
     }
 
-    public void saveInitialEnqueued(UUID problemId, DispatchRequest req) {
+    public void saveInitialEnqueued(UUID problemId, long createdAt, DispatchRequest req) {
         assignmentService.saveAssignment(DispatchResult.builder()
                 .problemId(problemId)
                 .executionId(req.getExecutionId())
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()).getTime())
+                .createdAt(createdAt)
                 .assigned(new ArrayList<>())
                 .unassigned(new ArrayList<>())
                 .state("ENQUEUED")

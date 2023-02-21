@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.UUID;
@@ -60,8 +62,9 @@ public class DispatchResource {
         logger.info("Assign drivers request :: centroid :: {}/{} :: orders = {}", req.getCentroid().getLatitude(), req.getCentroid().getLongitude(), req.getOrders().length);
 
         UUID problemId = UUID.randomUUID();
-        jobScheduler.<DispatchService>enqueue(dispatcherService -> dispatcherService.solveDispatchProblem(problemId, req));
-        dispatcherService.saveInitialEnqueued(problemId, req);
+        long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
+        jobScheduler.<DispatchService>enqueue(dispatcherService -> dispatcherService.solveDispatchProblem(problemId, createdAt, req));
+        dispatcherService.saveInitialEnqueued(problemId, createdAt, req);
         return RequestResult.of(problemId.toString());
     }
 
@@ -111,4 +114,3 @@ public class DispatchResource {
 
 
 }
-
