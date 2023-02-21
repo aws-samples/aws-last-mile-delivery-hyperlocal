@@ -82,7 +82,7 @@ public abstract class DispatchService<
      * @param problemId The generated ID for the problem.
      * @param request   The request object that holds all the necessary information to build the planning variables/entities.
      */
-    protected abstract void solveDispatchProblem(UUID problemId, TDispatchRequest request);
+    protected abstract void solveDispatchProblem(UUID problemId, long createdAt, TDispatchRequest request);
 
     /**
      * Placeholder to create custom implementations for storing solution data, cleaning up, etc.

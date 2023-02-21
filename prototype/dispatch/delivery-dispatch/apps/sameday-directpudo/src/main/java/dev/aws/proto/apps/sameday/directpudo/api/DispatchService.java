@@ -113,8 +113,7 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
      * @param req       The dispatch request object.
      */
     @Override
-    public void solveDispatchProblem(UUID problemId, DispatchRequest req) {
-        long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
+    public void solveDispatchProblem(UUID problemId, long createdAt, DispatchRequest req) {
         String executionId = req.getExecutionId();
         logger.info("SolveDispatchProblem request :: problemId={} :: executionId={}", problemId, executionId);
 
@@ -344,11 +343,11 @@ public class DispatchService extends dev.aws.proto.apps.appcore.api.DispatchServ
         return result;
     }
 
-    public void saveInitialEnqueued(UUID problemId, DispatchRequest req) {
+    public void saveInitialEnqueued(UUID problemId, long createdAt, DispatchRequest req) {
         solverJobService.save(SolverJob.builder()
                 .problemId(problemId)
                 .executionId(req.getExecutionId())
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()).getTime())
+                .createdAt(createdAt)
                 .state("ENQUEUED")
                 .score("NA")
                 .build());

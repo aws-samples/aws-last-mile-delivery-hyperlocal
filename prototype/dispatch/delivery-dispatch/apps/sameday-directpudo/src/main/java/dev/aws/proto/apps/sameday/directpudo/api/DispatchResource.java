@@ -26,6 +26,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.UUID;
@@ -49,14 +51,15 @@ public class DispatchResource {
         logger.info("Dispatch solve request :: orders = {}", req.getOrders().length);
 
         UUID problemId = UUID.randomUUID();
+        long createdAt = Timestamp.valueOf(LocalDateTime.now()).getTime();
 
         try {
-            dispatchService.saveInitialEnqueued(problemId, req);
+            dispatchService.saveInitialEnqueued(problemId, createdAt, req);
         } catch (Exception e) {
             logger.error("There was an error saving the initial enqueued job into the database: {}", e.getMessage());
         }
 
-        jobScheduler.<DispatchService>enqueue(dispatchService -> dispatchService.solveDispatchProblem(problemId, req));
+        jobScheduler.<DispatchService>enqueue(dispatchService -> dispatchService.solveDispatchProblem(problemId, createdAt, req));
         return RequestResult.of(problemId.toString());
     }
 
