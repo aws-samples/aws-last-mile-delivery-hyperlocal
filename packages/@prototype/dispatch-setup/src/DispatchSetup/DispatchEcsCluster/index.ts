@@ -88,6 +88,7 @@ export class DispatchEcsCluster extends Construct {
 			}],
 			desiredCapacity: dispatchAsgDesiredCapacity,
 			role: asgInstanceRole,
+			requireImdsv2: true,
 		})
 
 		const asgCapacityProvider = new ecs.AsgCapacityProvider(this, 'DispatcherEcsClusterAsgCP', {
