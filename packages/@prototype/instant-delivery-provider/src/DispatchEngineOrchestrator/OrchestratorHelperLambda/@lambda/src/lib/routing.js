@@ -21,6 +21,7 @@ const queryGraphHopper = async (points) => {
 	const url = `http://${config.graphhopperElbDNS}/route`
 	const results = await axios.post(url, JSON.stringify({
 		points,
+		profile: 'car',
 	}), {
 		headers: {
 			'Content-Type': 'application/json',
