@@ -14,11 +14,11 @@
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN                                          *
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
-import React, { useContext } from 'react'
+import React from 'react'
 import Icon, { IconName } from 'aws-northstar/components/Icon'
 import Popover from 'aws-northstar/components/Popover'
 import MarkdownViewer from 'aws-northstar/components/MarkdownViewer'
-import { MapContext } from 'react-map-gl'
+import { useMap } from 'react-map-gl'
 
 export type IMapPin = {
 	longitude: number
@@ -29,14 +29,14 @@ export type IMapPin = {
 }
 
 const MapPin: React.FC<IMapPin> = ({ longitude, latitude, data, iconName, color }) => {
-	const context = useContext(MapContext)
-	const [x, y] = context.viewport?.project([longitude, latitude]) || [undefined, undefined]
+	const map = useMap()
+	const point = map.current?.project([longitude, latitude])
 	// console.log(color)
 
 	return (
 		<>
-			{x && y &&
-				<div style={{ position: 'absolute', left: x, top: y, color: color }}>
+			{point &&
+				<div style={{ position: 'absolute', left: point.x, top: point.y, color: color }}>
 					<Popover
 						position='top'
 						size="large"
