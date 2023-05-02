@@ -17,7 +17,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 import React, { useEffect, useState, useCallback } from 'react'
-import ReactMapGL, { NavigationControl, Source, Layer } from 'react-map-gl'
+import { NavigationControl, Source, Layer, Map } from 'react-map-gl'
 import * as polyline from '@mapbox/polyline'
 import Container from 'aws-northstar/layouts/Container'
 import Inline from 'aws-northstar/layouts/Inline'
@@ -155,15 +155,16 @@ const MapComponent: React.FC<MapInputProps> = ({ orders, geofences }) => {
 			}
 		>
 			{drivers.length === MAX_DRIVERS && <Alert>The Map only shows {MAX_DRIVERS} drivers</Alert>}
-			<ReactMapGL
-				width={viewport.width}
-				height={viewport.height}
-				latitude={viewport.latitude}
-				longitude={viewport.longitude}
-				zoom={viewport.zoom}
+			<Map
+				style={{ width: viewport.width, height: viewport.height }}
+				initialViewState={{
+					latitude: viewport.latitude,
+					longitude: viewport.longitude,
+					zoom: viewport.zoom,
+				}}
 				mapStyle="mapbox://styles/mapbox/streets-v11"
-				mapboxApiAccessToken={appVariables.MAP_BOX_TOKEN}
-				onViewportChange={(v: any) => setViewport(v)}
+				mapboxAccessToken={appVariables.MAP_BOX_TOKEN}
+				onMove={(v: any) => setViewport(v)}
 			>
 				<NavigationControl style={navControlStyle} showCompass={false} />
 				{drivers && drivers.map((d: any, idx: number) => (
@@ -214,7 +215,7 @@ const MapComponent: React.FC<MapInputProps> = ({ orders, geofences }) => {
 						}} />
 					</Source>
 				))}
-			</ReactMapGL>
+			</Map>
 		</Container>
 
 	)

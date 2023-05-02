@@ -15,7 +15,7 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                       *
  *********************************************************************************************************************/
 import React, { useState } from 'react'
-import ReactMapGL, { NavigationControl, Layer, Source } from 'react-map-gl'
+import { NavigationControl, Layer, Source, Map } from 'react-map-gl'
 import { FeatureCollection, Position } from 'geojson'
 import utils from '../../utils'
 
@@ -48,15 +48,16 @@ const PolygonMap: React.FC<PolyonMapInputProps> = ({ vertices }) => {
 	}
 
 	return (
-		<ReactMapGL
-			width={viewport.width}
-			height={viewport.height}
-			zoom={viewport.zoom}
-			latitude={viewport.latitude}
-			longitude={viewport.longitude}
+		<Map
+			style={{ width: viewport.width, height: viewport.height }}
+			initialViewState={{
+				latitude: viewport.latitude,
+				longitude: viewport.longitude,
+				zoom: viewport.zoom,
+			}}
 			mapStyle="mapbox://styles/mapbox/streets-v11"
-			mapboxApiAccessToken={appVariables.MAP_BOX_TOKEN}
-			onViewportChange={(v: any) => setViewport(v)}
+			mapboxAccessToken={appVariables.MAP_BOX_TOKEN}
+			onMove={(v: any) => setViewport(v)}
 		>
 			<NavigationControl style={navControlStyle} showCompass={false} />
 			<Source
@@ -73,7 +74,7 @@ const PolygonMap: React.FC<PolyonMapInputProps> = ({ vertices }) => {
 					'fill-opacity': 0.4,
 				}}
 			/>
-		</ReactMapGL>
+		</Map>
 	)
 }
 
