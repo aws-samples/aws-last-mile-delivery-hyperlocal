@@ -67,7 +67,7 @@
         <picocli.version>4.6.3</picocli.version>
         <quarkus.package.type>uber-jar</quarkus.package.type>
         <quarkus.platform.version>2.8.0.Final</quarkus.platform.version>
-        <sqlite.version>3.36.0.3</sqlite.version>
+        <sqlite.version>3.41.2.2</sqlite.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
     </properties>
 
