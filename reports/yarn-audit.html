@@ -1,172 +1,1163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootswatch@5.2/dist/materia/bootstrap.min.css"
+            crossorigin="anonymous"
+        />
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/materia/bootstrap.min.css" integrity="sha384-B4morbeopVCSpzeC1c4nyV0d0cqvlSAfyXVfrPJa25im5p+yEN/YmhlgQP/OyMZD" crossorigin="anonymous">
+        <title>Yarn Audit Report</title>
+        <meta name="description" content="31 overall vulnerabilities found." />
 
-    <title>Yarn Audit Report</title>
-    <meta name="description" content="2 known vulnerabilities found.">
+        <style>
+            label {
+                position: relative;
 
-    <style>
-        html {
-            font-size: 20px;
-        }
+                display: block;
+                padding-left: 30px;
+                margin-left: -10px;
 
-        label {
-            position: relative;
+                cursor: pointer;
+            }
 
-            display: block;
-            padding-left: 30px;
+            label:before {
+                position: absolute;
+                top: 50%;
+                left: 10px;
 
-            cursor: pointer;
-        }
+                width: 0;
+                height: 0;
 
-        label:before {
-            position: absolute;
-            top: 50%;
-            left: 10px;
+                border-left: 8px solid currentColor;
+                border-top: 8px solid transparent;
+                border-bottom: 8px solid transparent;
+                margin-top: -8px;
 
-            width: 0;
-            height: 0;
+                content: '';
+            }
 
-            border-left: 8px solid black;
-            border-top: 8px solid transparent;
-            border-bottom: 8px solid transparent;
-            margin-top: -8px;
+            .card-text p:last-child {
+                margin-bottom: 0;
+            }
 
-            content: "";
-        }
+            input[type='checkbox'] {
+                display: none;
+            }
 
-        input[type=checkbox] {
-            visibility: hidden;
-        }
+            input[type='checkbox']:checked + h3 label:before {
+                border-left: 8px solid transparent;
+                border-top: 8px solid black;
+                border-right: 8px solid transparent;
 
-        input[type=checkbox]:checked ~ h3 label:before {
-            border-left: 8px solid transparent;
-            border-top: 8px solid black;
-            border-right: 8px solid transparent;
+                margin-left: -4px;
+                margin-top: -4px;
+            }
 
-            margin-left: -4px;
-            margin-top: -4px
-        }
+            .collapsible-wrapper {
+                max-height: 0;
+                padding: 0;
+                padding-left: 30px;
+                overflow-y: auto;
 
-        .collapsible-wrapper {
-            max-height: 0;
-            padding-left: 30px;
-            overflow-y: auto;
+                transition: max-height 0.15s ease;
+            }
 
-            transition: max-height 0.15s ease;
-        }
+            input[type='checkbox']:checked + h3 + .collapsible-wrapper {
+                max-height: 500px;
+                padding: var(--bs-alert-padding-y) var(--bs-alert-padding-x);
+            }
 
-        input[type=checkbox]:checked ~ h3 ~ .collapsible-wrapper {
-            max-height: 500px;
-        }
+            h1,
+            .h1 {
+                font-size: calc(2.03125rem * 20 / 16);
+            }
+            h2,
+            .h2 {
+                font-size: calc(1.625rem * 20 / 16);
+            }
+            h3,
+            .h3 {
+                font-size: calc(1.421875rem * 20 / 16);
+            }
+            h4,
+            .h4 {
+                font-size: calc(1.21875rem * 20 / 16);
+            }
+            h5,
+            .h5 {
+                font-size: calc(1.015625rem * 20 / 16);
+            }
+            h6,
+            .h6 {
+                font-size: calc(0.8125rem * 20 / 16);
+            }
+            @media (min-width: 1200px) {
+                h1,
+                .h1 {
+                    font-size: calc(2.03125rem * 20 / 16);
+                }
+                h2,
+                .h2 {
+                    font-size: calc(1.625rem * 20 / 16);
+                }
+                h3,
+                .h3 {
+                    font-size: calc(1.421875rem * 20 / 16);
+                }
+                h4,
+                .h4 {
+                    font-size: calc(1.21875rem * 20 / 16);
+                }
+                h5,
+                .h5 {
+                    font-size: calc(1.015625rem * 20 / 16);
+                }
+                h6,
+                .h6 {
+                    font-size: calc(0.8125rem * 20 / 16);
+                }
+            }
+            .alert,
+            .alert .h1,
+            .alert .h2,
+            .alert .h3,
+            .alert .h4,
+            .alert .h5,
+            .alert .h6,
+            .alert h1,
+            .alert h2,
+            .alert h3,
+            .alert h4,
+            .alert h5,
+            .alert h6 {
+                color: var(--bs-body-color);
+            }
+        </style>
+    </head>
 
-        /* Disable button and badge transitions */
-        .badge,
-        .btn {
-            transition: none !important;
-        }
-    </style>
-</head>
+    <body>
+        <div class="container">
+            <div class="row my-3">
+                <div class="col-md text-center">
+                    <h1 class="h2">Yarn Audit Report</h1>
 
-<body>
-<div class="container">
-    <div class="row mb-3">
-        <div class="col-md text-center">
-            <h1>Yarn Audit Report</h1>
-
-            <h3>
-                1 unique from
-                2 known vulnerabilities |
-                4904 dependencies
-            </h3>
-        </div>
-    </div>
-    <div class="row">
-        
-            <div class="col-md-12">
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h1 class="card-title">
-                            <span class="badge badge-secondary">moderate</span>
-                            Server-Side Request Forgery in Request
-                        </h1>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul>
-                                    <li>Module:
-                                        <a href="https://npmjs.com/package/request" target="_blank">request</a>
-                                    </li>
-                                    
-                                        <li>Installed version: 2.88.2</li>
-                                    
-                                    <li>Published: 3/16/2023, 11:30:19 PM</li>
-                                    
-                                    <li>CWE-918</li>
-                                    
-                                        <li>CVE-2023-28155</li>
-                                    
-                                </ul>
+                    <h3 class="h5">
+                        9 unique from 31 overall vulnerabilities | 4,905 dependencies
+                    </h3>
+                </div>
+            </div>
+            <div class="row">
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-warning">
+                                    high
+                                </span>
+                                fast-xml-parser vulnerable to Regex Injection via Doctype Entities
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/fast-xml-parser"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                fast-xml-parser
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 3.19.0</li>
+                                        
+                                        <li>Vulnerable: &lt;4.2.4</li>
+                                        <li>Patched: &gt;=4.2.4</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 7, 2023 at 1:33:13 AM GMT+8</li>
+                                         
+                                        <li>CWE-1333</li>
+                                         
+                                        <li>CVE-2023-34104</li>
+                                        
+                                    </ul>
+                                </div>
                             </div>
-                            <div class="col-md-6">
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <h3>Impact</h3>
+<p>&quot;fast-xml-parser&quot; allows special characters in entity names, which are not escaped or sanitized. Since the entity name is used for creating a regex for searching and replacing entities in the XML body, an attacker can abuse it for DoS attacks. By crafting an entity name that results in an intentionally bad performing regex and utilizing it in the entity replacement step of the parser, this can cause the parser to stall for an indefinite amount of time.</p>
+<h3>Patches</h3>
+<p>The problem has been resolved in v4.2.4</p>
+<h3>Workarounds</h3>
+<p>Avoid using DOCTYPE parsing by <code>processEntities: false</code> option.</p>
+<h3>References</h3>
+<p><em>Are there any links users can visit to find out more?</em></p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.2.4 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-0" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-0">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
                                 <ul>
-                                    <li>Vulnerable: &lt;=2.88.2</li>
-                                    <li>Patched: &lt;0.0.0</li>
-                                    
-                                </ul>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-6w63-h3fj-q4vw">https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-6w63-h3fj-q4vw</a></li>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/commit/39b0e050bb909e8499478657f84a3076e39ce76c">https://github.com/NaturalIntelligence/fast-xml-parser/commit/39b0e050bb909e8499478657f84a3076e39ce76c</a></li>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-34104">https://nvd.nist.gov/vuln/detail/CVE-2023-34104</a></li>
+<li><a href="https://github.com/advisories/GHSA-6w63-h3fj-q4vw">https://github.com/advisories/GHSA-6w63-h3fj-q4vw</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-0" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-0"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-6w63-h3fj-q4vw"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
                             </div>
                         </div>
-                        <h3>Overview</h3>
-                        <div class="card-text"><p>The Request package through 2.88.2 for Node.js allows a bypass of SSRF mitigations via an attacker-controller server that does a cross-protocol redirect (HTTP to HTTPS, or HTTPS to HTTP). NOTE: This vulnerability only affects products that are no longer supported by the maintainer.</p>
-</div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-warning">
+                                    high
+                                </span>
+                                fast-xml-parser vulnerable to Regex Injection via Doctype Entities
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/fast-xml-parser"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                fast-xml-parser
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 3.21.1</li>
+                                        
+                                        <li>Vulnerable: &lt;4.2.4</li>
+                                        <li>Patched: &gt;=4.2.4</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 7, 2023 at 1:33:13 AM GMT+8</li>
+                                         
+                                        <li>CWE-1333</li>
+                                         
+                                        <li>CVE-2023-34104</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <h3>Impact</h3>
+<p>&quot;fast-xml-parser&quot; allows special characters in entity names, which are not escaped or sanitized. Since the entity name is used for creating a regex for searching and replacing entities in the XML body, an attacker can abuse it for DoS attacks. By crafting an entity name that results in an intentionally bad performing regex and utilizing it in the entity replacement step of the parser, this can cause the parser to stall for an indefinite amount of time.</p>
+<h3>Patches</h3>
+<p>The problem has been resolved in v4.2.4</p>
+<h3>Workarounds</h3>
+<p>Avoid using DOCTYPE parsing by <code>processEntities: false</code> option.</p>
+<h3>References</h3>
+<p><em>Are there any links users can visit to find out more?</em></p>
 
-                        
+                            </div>
+
+                            
                             <h3>Remediation</h3>
-                            <div class="card-text"><p>None</p>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.2.4 or later</p>
 </div>
-                        
-                        
-                            <h3>References</h3>
-                            <div class="card-text"><ul>
+                             
+                            <input id="vulnerability-references-1" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-1">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-6w63-h3fj-q4vw">https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-6w63-h3fj-q4vw</a></li>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/commit/39b0e050bb909e8499478657f84a3076e39ce76c">https://github.com/NaturalIntelligence/fast-xml-parser/commit/39b0e050bb909e8499478657f84a3076e39ce76c</a></li>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-34104">https://nvd.nist.gov/vuln/detail/CVE-2023-34104</a></li>
+<li><a href="https://github.com/advisories/GHSA-6w63-h3fj-q4vw">https://github.com/advisories/GHSA-6w63-h3fj-q4vw</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-1" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-1"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-6w63-h3fj-q4vw"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-warning">
+                                    high
+                                </span>
+                                fast-xml-parser vulnerable to Prototype Pollution through tag or attribute name
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/fast-xml-parser"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                fast-xml-parser
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 3.19.0</li>
+                                        
+                                        <li>Vulnerable: &lt;4.1.2</li>
+                                        <li>Patched: &gt;=4.1.2</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 13, 2023 at 8:44:34 PM GMT+8</li>
+                                         
+                                        <li>CWE-1321</li>
+                                         
+                                        <li>CVE-2023-26920</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <h3>Impact</h3>
+<p>As a part of this vulnerability, user was able to se code using <code>__proto__</code> as a tag or attribute name.</p>
+<pre><code class="language-js">const { XMLParser, XMLBuilder, XMLValidator} = require(&quot;fast-xml-parser&quot;);
+
+let XMLdata = &quot;&lt;__proto__&gt;&lt;polluted&gt;hacked&lt;/polluted&gt;&lt;/__proto__&gt;&quot;
+
+const parser = new XMLParser();
+let jObj = parser.parse(XMLdata);
+
+console.log(jObj.polluted) // should return hacked
+</code></pre>
+<h3>Patches</h3>
+<p>The problem has been patched in v4.1.2</p>
+<h3>Workarounds</h3>
+<p>User can check for &quot;<strong>proto</strong>&quot; in the XML string before parsing it to the parser.</p>
+<h3>References</h3>
+<p><a href="https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7">https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7</a></p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.1.2 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-2" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-2">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-x3cc-x39p-42qx">https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-x3cc-x39p-42qx</a></li>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/commit/2b032a4f799c63d83991e4f992f1c68e4dd05804">https://github.com/NaturalIntelligence/fast-xml-parser/commit/2b032a4f799c63d83991e4f992f1c68e4dd05804</a></li>
+<li><a href="https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7">https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7</a></li>
+<li><a href="https://github.com/advisories/GHSA-x3cc-x39p-42qx">https://github.com/advisories/GHSA-x3cc-x39p-42qx</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-2" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-2"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/geo&gt;@aws-sdk/client-location&gt;@aws-sdk/client-sts&gt;fast-xml-parser</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-x3cc-x39p-42qx"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-warning">
+                                    high
+                                </span>
+                                fast-xml-parser vulnerable to Prototype Pollution through tag or attribute name
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/fast-xml-parser"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                fast-xml-parser
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 3.21.1</li>
+                                        
+                                        <li>Vulnerable: &lt;4.1.2</li>
+                                        <li>Patched: &gt;=4.1.2</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 13, 2023 at 8:44:34 PM GMT+8</li>
+                                         
+                                        <li>CWE-1321</li>
+                                         
+                                        <li>CVE-2023-26920</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <h3>Impact</h3>
+<p>As a part of this vulnerability, user was able to se code using <code>__proto__</code> as a tag or attribute name.</p>
+<pre><code class="language-js">const { XMLParser, XMLBuilder, XMLValidator} = require(&quot;fast-xml-parser&quot;);
+
+let XMLdata = &quot;&lt;__proto__&gt;&lt;polluted&gt;hacked&lt;/polluted&gt;&lt;/__proto__&gt;&quot;
+
+const parser = new XMLParser();
+let jObj = parser.parse(XMLdata);
+
+console.log(jObj.polluted) // should return hacked
+</code></pre>
+<h3>Patches</h3>
+<p>The problem has been patched in v4.1.2</p>
+<h3>Workarounds</h3>
+<p>User can check for &quot;<strong>proto</strong>&quot; in the XML string before parsing it to the parser.</p>
+<h3>References</h3>
+<p><a href="https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7">https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7</a></p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.1.2 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-3" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-3">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-x3cc-x39p-42qx">https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-x3cc-x39p-42qx</a></li>
+<li><a href="https://github.com/NaturalIntelligence/fast-xml-parser/commit/2b032a4f799c63d83991e4f992f1c68e4dd05804">https://github.com/NaturalIntelligence/fast-xml-parser/commit/2b032a4f799c63d83991e4f992f1c68e4dd05804</a></li>
+<li><a href="https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7">https://gist.github.com/Sudistark/a5a45bd0804d522a1392cb5023aa7ef7</a></li>
+<li><a href="https://github.com/advisories/GHSA-x3cc-x39p-42qx">https://github.com/advisories/GHSA-x3cc-x39p-42qx</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-3" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-3"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/destination-generator-helper&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@lambda/origin-generator-helper&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">simulator-webapp&gt;aws-amplify&gt;@aws-amplify/predictions&gt;@aws-amplify/storage&gt;@aws-sdk/client-s3&gt;fast-xml-parser</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-x3cc-x39p-42qx"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-info">
+                                    moderate
+                                </span>
+                                tough-cookie Prototype Pollution vulnerability
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/tough-cookie"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                tough-cookie
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 4.1.2</li>
+                                        
+                                        <li>Vulnerable: &lt;4.1.3</li>
+                                        <li>Patched: &gt;=4.1.3</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: July 1, 2023 at 2:30:16 PM GMT+8</li>
+                                         
+                                        <li>CWE-1321</li>
+                                         
+                                        <li>CVE-2023-26136</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <p>Versions of the package tough-cookie before 4.1.3 are vulnerable to Prototype Pollution due to improper handling of Cookies when using CookieJar in <code>rejectPublicSuffixes=false</code> mode. This issue arises from the manner in which the objects are initialized.</p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.1.3 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-4" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-4">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-26136">https://nvd.nist.gov/vuln/detail/CVE-2023-26136</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/issues/282">https://github.com/salesforce/tough-cookie/issues/282</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/commit/12d474791bb856004e858fdb1c47b7608d09cf6e">https://github.com/salesforce/tough-cookie/commit/12d474791bb856004e858fdb1c47b7608d09cf6e</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/releases/tag/v4.1.3">https://github.com/salesforce/tough-cookie/releases/tag/v4.1.3</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JS-TOUGHCOOKIE-5672873">https://security.snyk.io/vuln/SNYK-JS-TOUGHCOOKIE-5672873</a></li>
+<li><a href="https://lists.debian.org/debian-lts-announce/2023/07/msg00010.html">https://lists.debian.org/debian-lts-announce/2023/07/msg00010.html</a></li>
+<li><a href="https://github.com/advisories/GHSA-72xf-g2v4-qvf3">https://github.com/advisories/GHSA-72xf-g2v4-qvf3</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-4" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-4"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;@jest/core&gt;jest-config&gt;jest-environment-jsdom&gt;jsdom&gt;tough-cookie</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;jest-cli&gt;@jest/core&gt;jest-config&gt;jest-environment-jsdom&gt;jsdom&gt;tough-cookie</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;jest-cli&gt;@jest/core&gt;jest-config&gt;jest-runner&gt;jest-environment-jsdom&gt;jsdom&gt;tough-cookie</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-72xf-g2v4-qvf3"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-info">
+                                    moderate
+                                </span>
+                                tough-cookie Prototype Pollution vulnerability
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/tough-cookie"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                tough-cookie
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 2.5.0</li>
+                                        
+                                        <li>Vulnerable: &lt;4.1.3</li>
+                                        <li>Patched: &gt;=4.1.3</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: July 1, 2023 at 2:30:16 PM GMT+8</li>
+                                         
+                                        <li>CWE-1321</li>
+                                         
+                                        <li>CVE-2023-26136</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <p>Versions of the package tough-cookie before 4.1.3 are vulnerable to Prototype Pollution due to improper handling of Cookies when using CookieJar in <code>rejectPublicSuffixes=false</code> mode. This issue arises from the manner in which the objects are initialized.</p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 4.1.3 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-5" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-5">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-26136">https://nvd.nist.gov/vuln/detail/CVE-2023-26136</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/issues/282">https://github.com/salesforce/tough-cookie/issues/282</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/commit/12d474791bb856004e858fdb1c47b7608d09cf6e">https://github.com/salesforce/tough-cookie/commit/12d474791bb856004e858fdb1c47b7608d09cf6e</a></li>
+<li><a href="https://github.com/salesforce/tough-cookie/releases/tag/v4.1.3">https://github.com/salesforce/tough-cookie/releases/tag/v4.1.3</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JS-TOUGHCOOKIE-5672873">https://security.snyk.io/vuln/SNYK-JS-TOUGHCOOKIE-5672873</a></li>
+<li><a href="https://lists.debian.org/debian-lts-announce/2023/07/msg00010.html">https://lists.debian.org/debian-lts-announce/2023/07/msg00010.html</a></li>
+<li><a href="https://github.com/advisories/GHSA-72xf-g2v4-qvf3">https://github.com/advisories/GHSA-72xf-g2v4-qvf3</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-5" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-5"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">lerna&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request&gt;tough-cookie</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">lerna&gt;@lerna/add&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request&gt;tough-cookie</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-72xf-g2v4-qvf3"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-info">
+                                    moderate
+                                </span>
+                                word-wrap vulnerable to Regular Expression Denial of Service
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/word-wrap"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                word-wrap
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 1.2.3</li>
+                                        
+                                        <li>Vulnerable: &lt;1.2.4</li>
+                                        <li>Patched: &gt;=1.2.4</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 22, 2023 at 2:30:18 PM GMT+8</li>
+                                         
+                                        <li>CWE-1333</li>
+                                         
+                                        <li>CVE-2023-26115</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <p>All versions of the package word-wrap are vulnerable to Regular Expression Denial of Service (ReDoS) due to the usage of an insecure regular expression within the result variable.</p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 1.2.4 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-6" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-6">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-26115">https://nvd.nist.gov/vuln/detail/CVE-2023-26115</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-4058657">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-4058657</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JS-WORDWRAP-3149973">https://security.snyk.io/vuln/SNYK-JS-WORDWRAP-3149973</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/blob/master/index.js#L39">https://github.com/jonschlinkert/word-wrap/blob/master/index.js#L39</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/releases/tag/1.2.4">https://github.com/jonschlinkert/word-wrap/releases/tag/1.2.4</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/commit/420dce9a2412b21881202b73a3c34f0edc53cb2e">https://github.com/jonschlinkert/word-wrap/commit/420dce9a2412b21881202b73a3c34f0edc53cb2e</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/blob/master/index.js%23L39">https://github.com/jonschlinkert/word-wrap/blob/master/index.js%23L39</a></li>
+<li><a href="https://github.com/advisories/GHSA-j8xg-fqg3-53r7">https://github.com/advisories/GHSA-j8xg-fqg3-53r7</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-6" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-6"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">eslint&gt;optionator&gt;word-wrap</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@aws-play/config-commitlint&gt;commitizen&gt;cz-conventional-changelog&gt;word-wrap</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;@jest/core&gt;jest-config&gt;jest-environment-jsdom&gt;jsdom&gt;escodegen&gt;optionator&gt;word-wrap</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;jest-cli&gt;@jest/core&gt;jest-config&gt;jest-environment-jsdom&gt;jsdom&gt;escodegen&gt;optionator&gt;word-wrap</code>
+                                </div>
+                                
+                                <div class="card-text">
+                                    <code class="text-body">jest&gt;jest-cli&gt;@jest/core&gt;jest-config&gt;jest-runner&gt;jest-environment-jsdom&gt;jsdom&gt;escodegen&gt;optionator&gt;word-wrap</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-info">
+                                    moderate
+                                </span>
+                                word-wrap vulnerable to Regular Expression Denial of Service
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/word-wrap"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                word-wrap
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 1.1.0</li>
+                                        
+                                        <li>Vulnerable: &lt;1.2.4</li>
+                                        <li>Patched: &gt;=1.2.4</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: June 22, 2023 at 2:30:18 PM GMT+8</li>
+                                         
+                                        <li>CWE-1333</li>
+                                         
+                                        <li>CVE-2023-26115</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <p>All versions of the package word-wrap are vulnerable to Regular Expression Denial of Service (ReDoS) due to the usage of an insecure regular expression within the result variable.</p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>Upgrade to version 1.2.4 or later</p>
+</div>
+                             
+                            <input id="vulnerability-references-7" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-7">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-26115">https://nvd.nist.gov/vuln/detail/CVE-2023-26115</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-4058657">https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-4058657</a></li>
+<li><a href="https://security.snyk.io/vuln/SNYK-JS-WORDWRAP-3149973">https://security.snyk.io/vuln/SNYK-JS-WORDWRAP-3149973</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/blob/master/index.js#L39">https://github.com/jonschlinkert/word-wrap/blob/master/index.js#L39</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/releases/tag/1.2.4">https://github.com/jonschlinkert/word-wrap/releases/tag/1.2.4</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/commit/420dce9a2412b21881202b73a3c34f0edc53cb2e">https://github.com/jonschlinkert/word-wrap/commit/420dce9a2412b21881202b73a3c34f0edc53cb2e</a></li>
+<li><a href="https://github.com/jonschlinkert/word-wrap/blob/master/index.js%23L39">https://github.com/jonschlinkert/word-wrap/blob/master/index.js%23L39</a></li>
+<li><a href="https://github.com/advisories/GHSA-j8xg-fqg3-53r7">https://github.com/advisories/GHSA-j8xg-fqg3-53r7</a></li>
+</ul>
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-7" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-7"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                
+                                <div class="card-text">
+                                    <code class="text-body">@aws-play/config-commitlint&gt;cz-lerna-changelog&gt;cz-customizable&gt;word-wrap</code>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-j8xg-fqg3-53r7"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body p-4">
+                            <h1 class="card-title h3 d-flex align-items-center gap-2">
+                                <span class="badge text-capitalize bg-info">
+                                    moderate
+                                </span>
+                                Server-Side Request Forgery in Request
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>
+                                            Module:
+                                            <a
+                                                href="https://npmjs.com/package/request"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                request
+                                            </a>
+                                        </li>
+                                        
+                                        <li>Installed version: 2.88.2</li>
+                                        
+                                        <li>Vulnerable: &lt;=2.88.2</li>
+                                        <li>Patched: &lt;0.0.0</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <ul>
+                                        <li>Published: March 16, 2023 at 11:30:19 PM GMT+8</li>
+                                         
+                                        <li>CWE-918</li>
+                                         
+                                        <li>CVE-2023-28155</li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                            <h3>Overview</h3>
+                            <div class="card-text alert alert-secondary overflow-auto mb-3">
+                                <p>The <code>request</code> package through 2.88.2 for Node.js and the <code>@cypress/request</code> package prior to 3.0.0 allow a bypass of SSRF mitigations via an attacker-controller server that does a cross-protocol redirect (HTTP to HTTPS, or HTTPS to HTTP).</p>
+<p>NOTE: The <code>request</code> package is no longer supported by the maintainer.</p>
+
+                            </div>
+
+                            
+                            <h3>Remediation</h3>
+                            <div class="card-text mb-3"><p>None</p>
+</div>
+                             
+                            <input id="vulnerability-references-8" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-references-8">References</label>
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
+                                <ul>
 <li><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-28155">https://nvd.nist.gov/vuln/detail/CVE-2023-28155</a></li>
 <li><a href="https://github.com/request/request/issues/3442">https://github.com/request/request/issues/3442</a></li>
 <li><a href="https://github.com/request/request/pull/3444">https://github.com/request/request/pull/3444</a></li>
 <li><a href="https://doyensec.com/resources/Doyensec_Advisory_RequestSSRF_Q12023.pdf">https://doyensec.com/resources/Doyensec_Advisory_RequestSSRF_Q12023.pdf</a></li>
 <li><a href="https://security.netapp.com/advisory/ntap-20230413-0007/">https://security.netapp.com/advisory/ntap-20230413-0007/</a></li>
+<li><a href="https://github.com/github/advisory-database/pull/2500">https://github.com/github/advisory-database/pull/2500</a></li>
+<li><a href="https://github.com/cypress-io/request/blob/master/lib/redirect.js#L116">https://github.com/cypress-io/request/blob/master/lib/redirect.js#L116</a></li>
+<li><a href="https://github.com/request/request/blob/master/lib/redirect.js#L111">https://github.com/request/request/blob/master/lib/redirect.js#L111</a></li>
+<li><a href="https://github.com/cypress-io/request/pull/28">https://github.com/cypress-io/request/pull/28</a></li>
+<li><a href="https://github.com/cypress-io/request/commit/c5bcf21d40fb61feaff21a0e5a2b3934a440024f">https://github.com/cypress-io/request/commit/c5bcf21d40fb61feaff21a0e5a2b3934a440024f</a></li>
+<li><a href="https://github.com/cypress-io/request/releases/tag/v3.0.0">https://github.com/cypress-io/request/releases/tag/v3.0.0</a></li>
 <li><a href="https://github.com/advisories/GHSA-p8p7-x288-28g6">https://github.com/advisories/GHSA-p8p7-x288-28g6</a></li>
 </ul>
-</div>
-                        
-                        
-                            <input id="vulnerability-reasons-0" type="checkbox">
-                            <h3><label for="vulnerability-reasons-0">Reasons this module exists</label></h3>
-                            <div class="mb-3 collapsible-wrapper">
+
+                            </div>
+                             
+                            <input id="vulnerability-reasons-8" type="checkbox" />
+                            <h3>
+                                <label for="vulnerability-reasons-8"
+                                    >Reasons this module exists</label
+                                >
+                            </h3>
+                            <div class="card-text alert alert-secondary collapsible-wrapper">
                                 
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request</code>
-                                    </div>
+                                <div class="card-text">
+                                    <code class="text-body">lerna&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request</code>
+                                </div>
                                 
-                                    <div class="card-text">
-                                        <code>lerna&gt;@lerna/add&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request</code>
-                                    </div>
+                                <div class="card-text">
+                                    <code class="text-body">lerna&gt;@lerna/add&gt;@lerna/bootstrap&gt;@lerna/run-lifecycle&gt;npm-lifecycle&gt;node-gyp&gt;request</code>
+                                </div>
                                 
                             </div>
-                        
+                            
 
-                        <a href="https://github.com/advisories/GHSA-p8p7-x288-28g6" class="btn btn-lg btn-primary" target="_blank">More about this vulnerability</a>
+                            <div class="d-flex justify-content-end">
+                                <a
+                                    href="https://github.com/advisories/GHSA-p8p7-x288-28g6"
+                                    class="btn btn-md btn-primary"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    More about this vulnerability
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                 
+
+                <h6 class="col-md-12 mb-3 pb=3 text-end">Report generated at November 2, 2023 at 2:42:26 PM GMT+8</h6>
             </div>
-        
-        
-
-        <h6 class="col-md-12 mb-0 pb=3 text-right">Report generated at 5/2/2023, 9:43:06 AM</h6>
-    </div>
-</div>
-</body>
-
+        </div>
+    </body>
 </html>

@@ -1,5 +1,5 @@
 {
-  "name": "aws-last-mile-delivery-hyperlocal",
+  "name": "@aws-samples/aws-last-mile-delivery-hyperlocal",
   "author": {
     "name": "Amazon Web Services - ASEAN Prototyping"
   },
@@ -73,6 +73,7 @@
   "resolutions": {
     "ansi-regex": "^5.0.1",
     "browserslist": "^4.21.5",
+    "crypto-js": "^4.2.0",
     "d3-color": "^3.1.0",
     "dot-prop": "^6.0.1",
     "ejs": "^3.1.9",
@@ -87,6 +88,7 @@
     "prismjs": "^1.29.0",
     "request": "^2.88.2",
     "shell-quote": "^1.8.1",
+    "semver": "^7.5.4",
     "semver-regex": "^4.0.5",
     "shelljs": "^0.8.5",
     "tar": "^6.1.13",
