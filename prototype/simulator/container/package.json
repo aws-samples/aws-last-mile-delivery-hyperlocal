@@ -18,7 +18,7 @@
     "aws-amplify": "^4.3.14",
     "aws-iot-device-sdk": "^2.2.6",
     "aws-sdk": "^2.868.0",
-    "axios": "^0.25.0",
+    "axios": "^1.6.0",
     "commander": "^7.2.0",
     "console-log-level": "^1.4.1",
     "dayjs": "^1.10.7",
